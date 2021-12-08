@@ -8,12 +8,12 @@ HANDLE Console::ConHandle = NULL;
 
 void Console::Output(const char* obj)
 {
-	WriteConsoleA(Console::ConHandle, obj, strlen(obj), 0, 0);
+	WriteConsoleA(Console::ConHandle, obj, (DWORD)strlen(obj), 0, 0);
 }
 
 void Console::Output(const wchar_t* obj)
 {
-	WriteConsoleW(Console::ConHandle, obj, wcslen(obj), 0, 0);
+	WriteConsoleW(Console::ConHandle, obj, (DWORD)wcslen(obj), 0, 0);
 }
 
 void Console::Output(const std::string& obj)
