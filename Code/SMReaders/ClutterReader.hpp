@@ -2,9 +2,9 @@
 
 #include "Tile/CellHeader.hpp"
 #include "Tile/TilePart.hpp"
+#include "Utils/Uuid.hpp"
 
 #include "lz4/lz4.h"
-#include "SMReaders/Data/Uuid.hpp"
 
 class ClutterReader
 {

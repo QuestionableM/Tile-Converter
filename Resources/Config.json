@@ -1,0 +1,23 @@
+{
+    "ProgramSettings": {
+        "Keywords": {
+			"$CHALLENGE_DATA": "$GAME_FOLDER/ChallengeData",
+			"$GAME_DATA": "$GAME_FOLDER/Data",
+			"$SURVIVAL_DATA": "$GAME_FOLDER/Survival"
+		},
+		"ResourceUpgradeFiles": [
+			"$GAME_DATA/upgrade_resources.json"
+		],
+		"ScrapAssetDatabase": [
+			"$CHALLENGE_DATA/Terrain/Database/AssetSets",
+			"$SURVIVAL_DATA/Terrain/Database/AssetSets",
+			"$GAME_DATA/Terrain/Database/AssetSets"
+		]
+    },
+    "UserSettings": {
+        "GamePath": "C:/Program Files (x86)/Steam/steamapps/common/Scrap Mechanic",
+        "WorkshopModFolders": [
+            "C:/Program Files (x86)/Steam/steamapps/workshop/content/387990"
+        ]
+    }
+}

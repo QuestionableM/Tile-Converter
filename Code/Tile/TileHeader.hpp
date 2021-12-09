@@ -1,8 +1,7 @@
 #pragma once
 
-#include "SMReaders/Data/FileStream.hpp"
-#include "SMReaders/Data/Memory.hpp"
-#include "SMReaders/ByteImpl.hpp"
+#include "Utils/Memory.hpp"
+#include "Utils/ByteImpl.hpp"
 
 #include "Tile/CellHeader.hpp"
 

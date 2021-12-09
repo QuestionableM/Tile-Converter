@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Console.hpp"
-#include "SMReaders/Data/Memory.hpp"
+#include "Utils/Memory.hpp"
 #include <vector>
 
-#include "SMReaders/ByteImpl.hpp"
+#include "Utils/ByteImpl.hpp"
 
 class CellHeader
 {

@@ -1,6 +1,14 @@
 #pragma once
 
-#include "SMReaders/Data/Uuid.hpp"
+#include "Utils/Uuid.hpp"
+#include "Utils/Json.hpp"
+
+enum class TextureDataType
+{
+	SubMeshList,
+	SubMeshMap,
+	None
+};
 
 class TextureList
 {
@@ -11,17 +19,7 @@ public:
 
 	std::wstring material;
 
-	std::wstring& GetStringRef(const std::size_t& idx)
-	{
-		return ((std::wstring*)&this->dif)[idx];
-	}
-};
-
-enum class TextureDataType
-{
-	SubMeshList,
-	SubMeshMap,
-	None
+	std::wstring& GetStringRef(const std::size_t& idx);
 };
 
 class TextureData
@@ -29,22 +27,8 @@ class TextureData
 	std::unordered_map<std::wstring, TextureList> MaterialMap = {};
 
 public:
-	void AddEntry(const std::wstring& name, const TextureList& tex_list)
-	{
-		if (MaterialMap.find(name) != MaterialMap.end())
-			return;
-
-		MaterialMap.insert(std::make_pair(name, tex_list));
-	}
-
-	bool GetEntry(const std::wstring& name, TextureList& list_ref) const
-	{
-		if (MaterialMap.find(name) == MaterialMap.end())
-			return false;
-
-		list_ref = MaterialMap.at(name);
-		return true;
-	}
+	void AddEntry(const std::wstring& name, const TextureList& tex_list);
+	bool GetEntry(const std::wstring& name, TextureList& list_ref) const;
 };
 
 class AssetData
@@ -54,4 +38,22 @@ public:
 	std::unordered_map<std::string, int> DefaultColors;
 	TextureData Textures;
 	std::wstring Mesh;
+
+	AssetData() = default;
+	AssetData(const AssetData&) = delete;
+	AssetData(AssetData&&) = delete;
+};
+
+class DatabaseLoader
+{
+	static bool LoadRenderableData(const nlohmann::json& jRenderable, TextureData& tData, std::wstring& mesh);
+	static bool LoadRenderable(const nlohmann::json& jAsset, TextureData& tData, std::wstring& mesh);
+	static void LoadDefaultColors(const nlohmann::json& jAsset, AssetData* data);
+	static void LoadFile(const std::wstring& path);
+	static void ScanFolder(const std::wstring& folder);
+	static void LoadGameDatabase();
+	static void LoadModDatabase();
+
+public:
+	static void LoadDatabase();
 };

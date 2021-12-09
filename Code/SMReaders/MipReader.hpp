@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SMReaders/Data/Memory.hpp"
-#include "SMReaders/ByteImpl.hpp"
+#include "Utils/Memory.hpp"
+#include "Utils/ByteImpl.hpp"
 
 #include "Tile/CellHeader.hpp"
 #include "Tile/TilePart.hpp"
@@ -22,24 +22,6 @@ public:
 	static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& reader)
 	{
 		return MipReader::Read(header, 0, reader);
-	}
-
-	static std::string GetHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength)
-	{
-		std::string output_string;
-		int a = 1;
-
-		for (std::size_t i = 0; i < std::min(bytes.size(), (std::size_t)maxLength); i++)
-		{
-			std::stringstream sstream;
-			sstream << std::setfill('0') << std::setw(sizeof(Byte) * 2) << std::hex << (int)bytes[i];
-
-			output_string.append(sstream.str());
-
-			if ((a++) % lineLength == 0) output_string.append("\n\t\t");
-		}
-
-		return output_string;
 	}
 
 	static std::vector<Byte> Read(CellHeader* header, const int& mipOrLevel, MemoryWrapper& reader)

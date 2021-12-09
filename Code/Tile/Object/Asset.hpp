@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SMReaders/Data/Uuid.hpp"
+#include "Utils/Uuid.hpp"
 #include "Tile/Object/TileEntity.hpp"
 
 #include <unordered_map>

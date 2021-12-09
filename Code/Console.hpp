@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _DEBUG
-#include <Windows.h>
+#include "Utils/WinInclude.hpp"
 #include <string>
 #include <vector>
 
@@ -81,29 +81,8 @@ class Console
 	}
 
 public:
-
-	static inline bool Create(const wchar_t* title)
-	{
-		if (Console::ConHandle != NULL) return false;
-
-		BOOL is_created = AllocConsole();
-		if (!is_created) return false;
-
-		SetConsoleOutputCP(CP_UTF8);
-		SetConsoleTitleW(title);
-
-		Console::ConHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-		return true;
-	}
-
-	static inline void Destroy()
-	{
-		if (Console::ConHandle == NULL) return;
-
-		FreeConsole();
-		Console::ConHandle = NULL;
-	}
+	static bool Create(const wchar_t* title);
+	static void Destroy();
 
 	static __ConsoleOutputHandler Out;
 };
@@ -137,8 +116,8 @@ public:
 };
 
 #define CreateDebugConsole(ConName) Console::Create(ConName)
-#define DebugOutL(...) Console::Out(__VA_ARGS__, "\n")
-#define DebugErrorL(...) Console::Out(ConCol::RED_INT, __VA_ARGS__, "\n")
+#define DebugOutL(...) Console::Out(__VA_ARGS__, ConCol::WHITE, "\n")
+#define DebugErrorL(...) Console::Out(ConCol::RED_INT, __VA_ARGS__, ConCol::WHITE, "\n")
 #else
 #define CreateDebugConsole(ConName) ((void*)0)
 #define DebugOutL(...) ((void*)0)

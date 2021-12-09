@@ -1,12 +1,19 @@
-#define NOMINMAX
-#include <Windows.h>
+#include "Utils/WinInclude.hpp"
 
 #include "Console.hpp"
 #include "SMReaders/TileReader.hpp"
+#include "ObjectDatabase/DatabaseConfig.hpp"
+#include "ObjectDatabase/ObjectDatabase.hpp"
+
+#include <locale>
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	std::setlocale(LC_CTYPE, "en_US.UTF-8");
 	CreateDebugConsole(L"World Converter Debug Console");
+
+	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
+	DatabaseLoader::LoadDatabase();
 
 	Tile* test = TileReader::ReadTile(L"./Tests/SiloDistrict_512_01.tile");
 

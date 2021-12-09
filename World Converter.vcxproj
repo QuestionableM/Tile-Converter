@@ -95,6 +95,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -107,6 +108,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -119,6 +121,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -131,6 +134,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -139,16 +143,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
+    <ClCompile Include="Code\Utils\Json.cpp" />
+    <ClCompile Include="Code\Utils\String.cpp" />
     <ClCompile Include="Code\Main.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\KeywordReplacer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
-    <ClInclude Include="Code\SMReaders\ByteImpl.hpp" />
+    <ClInclude Include="Code\Utils\ByteImpl.hpp" />
     <ClInclude Include="Code\SMReaders\Data\FileStream.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Json.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Memory.hpp" />
+    <ClInclude Include="Code\Utils\Json.hpp" />
+    <ClInclude Include="Code\Utils\Memory.hpp" />
+    <ClInclude Include="Code\Utils\String.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Uuid.hpp" />
     <ClInclude Include="Code\Tile\Object\Asset.hpp" />
     <ClInclude Include="Code\Tile\Object\TileEntity.hpp" />
@@ -164,6 +177,8 @@
     <ClInclude Include="Code\Tile\TileImpl.hpp" />
     <ClInclude Include="Code\Tile\TilePart.hpp" />
     <ClInclude Include="Code\SMReaders\TileReader.hpp" />
+    <ClInclude Include="Code\Utils\Uuid.hpp" />
+    <ClInclude Include="Code\Utils\WinInclude.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

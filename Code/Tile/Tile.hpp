@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SMReaders/ByteImpl.hpp"
+#include "Utils/ByteImpl.hpp"
 #include "Tile/TilePart.hpp"
 
 #include <vector>

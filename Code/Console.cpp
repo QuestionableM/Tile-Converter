@@ -45,4 +45,27 @@ void Console::Output(const ConCol& obj)
 	SetConsoleTextAttribute(Console::ConHandle, static_cast<DWORD>(obj));
 }
 
+bool Console::Create(const wchar_t* title)
+{
+	if (Console::ConHandle != NULL) return false;
+
+	BOOL is_created = AllocConsole();
+	if (!is_created) return false;
+
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleTitleW(title);
+
+	Console::ConHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	return true;
+}
+
+void Console::Destroy()
+{
+	if (Console::ConHandle == NULL) return;
+
+	FreeConsole();
+	Console::ConHandle = NULL;
+}
+
 #endif

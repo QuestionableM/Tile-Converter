@@ -1,26 +1,19 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
-#include "SMReaders/Data/Json.hpp"
+#include "Utils/Json.hpp"
 
 class DatabaseConfig
 {
-	static std::wstring SMPath;
-	static std::unordered_map<std::wstring, std::wstring> KeyReplacements;
-	static std::vector<std::wstring> AssetListFiles;
+public:
+	static std::wstring GamePath;
+	static std::vector<std::wstring> AssetListFolders;
+	static std::vector<std::wstring> ModFolders;
 
-	void ReadConfig(const std::wstring& path)
-	{
-		nlohmann::json cfgData = JsonReader::LoadParseJson(path);
-		if (!cfgData.is_object()) return;
+private:
+	static void ReadUserSettings(const nlohmann::json& config_json);
+	static void ReadProgramSettings(const nlohmann::json& config_json);
 
-		SMPath.clear();
-		KeyReplacements.clear();
-		AssetListFiles.clear();
-	}
+public:
+	static void ReadConfig(const std::wstring& path);
 };
-
-std::wstring DatabaseConfig::SMPath = L"";
-std::unordered_map<std::wstring, std::wstring> DatabaseConfig::KeyReplacements = {};
-std::vector<std::wstring> DatabaseConfig::AssetListFiles = {};

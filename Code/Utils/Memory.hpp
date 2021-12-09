@@ -1,10 +1,7 @@
 #pragma once
 
-#include <algorithm>
 #include <vector>
-
-#include "Console.hpp"
-#include "SMReaders/ByteImpl.hpp"
+#include "Utils/ByteImpl.hpp"
 
 class MemoryWrapper
 {
