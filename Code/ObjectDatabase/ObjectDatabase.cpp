@@ -32,6 +32,81 @@ bool TextureData::GetEntry(const std::wstring& name, TextureList& list_ref) cons
 	return true;
 }
 
+TextureList DatabaseLoader::LoadTextureList(const nlohmann::json& texList)
+{
+	TextureList new_list;
+
+	const int arr_sz = (int)texList.size();
+	const int list_sz = (arr_sz > 3 ? 3 : arr_sz);
+
+	for (int a = 0; a < list_sz; a++)
+	{
+		const auto& cur_item = texList.at(a);
+
+		if (cur_item.is_string())
+		{
+			std::wstring& wstr_path = new_list.GetStringRef(a);
+
+			wstr_path = String::ToWide(cur_item.get<std::string>());
+			KeywordReplacer::ReplaceKeyR(wstr_path);
+		}
+	}
+
+	return new_list;
+}
+
+void DatabaseLoader::AddSubMesh(const nlohmann::json& subMesh, TextureData& tData, const std::wstring& idx)
+{
+	const auto& sTexList = JsonReader::Get(subMesh, "textureList");
+	if (!sTexList.is_array()) return;
+
+	TextureList new_tList = DatabaseLoader::LoadTextureList(sTexList);
+
+	const auto& sTexName = JsonReader::Get(subMesh, "material");
+	if (sTexName.is_string())
+		new_tList.material = String::ToWide(sTexName.get<std::string>());
+
+	tData.AddEntry(idx, new_tList);
+}
+
+bool DatabaseLoader::LoadTextureData(const nlohmann::json& jLodList, TextureData& tData)
+{
+	const auto& jSubMeshList = JsonReader::Get(jLodList, "subMeshList");
+	if (jSubMeshList.is_array())
+	{
+		std::size_t _idx = 0;
+		
+		for (const auto& subMeshItem : jSubMeshList)
+		{
+			if (!subMeshItem.is_object()) continue;
+
+			const auto& sIdx = JsonReader::Get(subMeshItem, "idx");
+			std::size_t cur_idx = (sIdx.is_number() ? sIdx.get<std::size_t>() : _idx);
+
+			DatabaseLoader::AddSubMesh(subMeshItem, tData, std::to_wstring(cur_idx));
+			_idx++;
+		}
+
+		return true;
+	}
+
+	const auto& jSubMeshMap = JsonReader::Get(jLodList, "subMeshMap");
+	if (jSubMeshMap.is_object())
+	{
+		for (const auto& subMeshItem : jSubMeshMap.items())
+		{
+			if (!subMeshItem.value().is_object()) continue;
+
+			std::wstring subMeshName = String::ToWide(subMeshItem.key());
+			DatabaseLoader::AddSubMesh(subMeshItem.value(), tData, subMeshName);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 bool DatabaseLoader::LoadRenderableData(const nlohmann::json& jRenderable, TextureData& tData, std::wstring& mesh)
 {
 	const auto& aLodList = JsonReader::Get(jRenderable, "lodList");
@@ -40,7 +115,8 @@ bool DatabaseLoader::LoadRenderableData(const nlohmann::json& jRenderable, Textu
 	const auto& aLodList0 = JsonReader::Get(aLodList, 0);
 	if (!aLodList0.is_object()) return false;
 
-
+	if (!DatabaseLoader::LoadTextureData(aLodList0, tData))
+		return false;
 
 	const auto& aMeshPath = JsonReader::Get(aLodList0, "mesh");
 	if (!aMeshPath.is_string()) return false;
@@ -48,9 +124,7 @@ bool DatabaseLoader::LoadRenderableData(const nlohmann::json& jRenderable, Textu
 	mesh = String::ToWide(aMeshPath.get<std::string>());
 	KeywordReplacer::ReplaceKeyR(mesh);
 
-	DebugOutL("Mesh: ", mesh);
-
-	return false;
+	return true;
 }
 
 bool DatabaseLoader::LoadRenderable(const nlohmann::json& jAsset, TextureData& tData, std::wstring& mesh)
@@ -74,9 +148,12 @@ bool DatabaseLoader::LoadRenderable(const nlohmann::json& jAsset, TextureData& t
 	return false;
 }
 
-void DatabaseLoader::LoadDefaultColors(const nlohmann::json& jAsset, AssetData* data)
+void DatabaseLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, int>& def_colors)
 {
+	const auto& aDefColors = JsonReader::Get(jAsset, "defaultColors");
+	if (!aDefColors.is_object()) return;
 
+	//TODO: Add a completely separate class for colors
 }
 
 void DatabaseLoader::LoadFile(const std::wstring& path)
@@ -92,8 +169,7 @@ void DatabaseLoader::LoadFile(const std::wstring& path)
 		if (!mAsset.is_object()) continue;
 
 		const auto& aUuid = JsonReader::Get(mAsset, "uuid");
-		const auto& aDefColors = JsonReader::Get(mAsset, "defaultColors");
-		if (!aUuid.is_string() || !aDefColors.is_object()) continue;
+		if (!aUuid.is_string()) continue;
 		
 		std::wstring tMesh;
 		TextureData tData;
@@ -103,22 +179,8 @@ void DatabaseLoader::LoadFile(const std::wstring& path)
 		AssetData* new_asset = new AssetData();
 		new_asset->Uuid = aUuid.get<std::string>();
 		new_asset->Mesh = tMesh;
-		//DatabaseLoader::LoadDefaultColors();
-		/*
-		 "uuid": "a32235cb-ea6f-46cf-82fe-df704a096d9e",
-            "name": "env_building_pipe01",
-            "col": "$SURVIVAL_DATA/Terrain/Collision/Building/env_building_pipe01_col.obj",
-            "defaultColors": {
-                "plastic": "2b2b2b",
-                "shinymetal2": "9197ad",
-                "shinymetal": "5a5a5a"
-            },
-            "physics": {
-                "mass": 1000,
-                "material": "Metal"
-            },
-            "renderable": "$SURVIVAL_DATA/Terrain/Renderable/Building/env_building_pipe01.rend"   
-		*/
+		DatabaseLoader::LoadDefaultColors(mAsset, new_asset->DefaultColors);
+		new_asset->Textures = tData;
 	}
 }
 

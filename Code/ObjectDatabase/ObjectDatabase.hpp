@@ -46,9 +46,12 @@ public:
 
 class DatabaseLoader
 {
+	static TextureList LoadTextureList(const nlohmann::json& texList);
+	static void AddSubMesh(const nlohmann::json& subMesh, TextureData& tData, const std::wstring& idx);
+	static bool LoadTextureData(const nlohmann::json& jLodList, TextureData& tData);
 	static bool LoadRenderableData(const nlohmann::json& jRenderable, TextureData& tData, std::wstring& mesh);
 	static bool LoadRenderable(const nlohmann::json& jAsset, TextureData& tData, std::wstring& mesh);
-	static void LoadDefaultColors(const nlohmann::json& jAsset, AssetData* data);
+	static void LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, int>& def_colors);
 	static void LoadFile(const std::wstring& path);
 	static void ScanFolder(const std::wstring& folder);
 	static void LoadGameDatabase();
