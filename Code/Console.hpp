@@ -138,7 +138,9 @@ public:
 
 #define CreateDebugConsole(ConName) Console::Create(ConName)
 #define DebugOutL(...) Console::Out(__VA_ARGS__, "\n")
+#define DebugErrorL(...) Console::Out(ConCol::RED_INT, __VA_ARGS__, "\n")
 #else
 #define CreateDebugConsole(ConName) ((void*)0)
 #define DebugOutL(...) ((void*)0)
+#define DebugErrorL(...) ((void*)0)
 #endif
