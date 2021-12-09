@@ -94,7 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -105,7 +105,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -117,7 +117,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -129,7 +129,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -143,8 +143,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
     <ClInclude Include="Code\SMReaders\ByteImpl.hpp" />
     <ClInclude Include="Code\SMReaders\Data\FileStream.hpp" />
+    <ClInclude Include="Code\SMReaders\Data\Json.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Memory.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Uuid.hpp" />
     <ClInclude Include="Code\Tile\Object\Asset.hpp" />
