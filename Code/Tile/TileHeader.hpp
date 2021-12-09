@@ -1,10 +1,10 @@
 #pragma once
 
-#include "SMReaders/Tile/CellHeader.hpp"
 #include "SMReaders/Data/FileStream.hpp"
 #include "SMReaders/Data/Memory.hpp"
-
 #include "SMReaders/ByteImpl.hpp"
+
+#include "Tile/CellHeader.hpp"
 
 class TileHeader
 {

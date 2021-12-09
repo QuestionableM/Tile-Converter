@@ -2,13 +2,13 @@
 #include <Windows.h>
 
 #include "Console.hpp"
-#include "SMReaders/Tile/TileReader.hpp"
+#include "SMReaders/TileReader.hpp"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	CreateDebugConsole(L"World Converter Debug Console");
 
-	Tile* test = TileReader::ReadTile(L"./Tests/FOREST256_01.tile");
+	Tile* test = TileReader::ReadTile(L"./Tests/SiloDistrict_512_01.tile");
 
 	std::ofstream output_model("./model_output.obj");
 	if (output_model.is_open())

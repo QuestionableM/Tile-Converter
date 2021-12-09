@@ -1,10 +1,10 @@
 #pragma once
 
+#include "SMReaders/ByteImpl.hpp"
+#include "Tile/Object/Asset.hpp"
+
 #include <vector>
 #include <assert.h>
-
-#include "SMReaders/ByteImpl.hpp"
-#include "SMReaders/Object/Asset.hpp"
 
 class Tile;
 

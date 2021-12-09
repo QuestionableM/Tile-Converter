@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SMReaders/Tile/CellHeader.hpp"
-#include "SMReaders/Tile/TilePart.hpp"
+#include "Tile/CellHeader.hpp"
+#include "Tile/TilePart.hpp"
 
 #include "lz4/lz4.h"
 #include "SMReaders/Data/Uuid.hpp"

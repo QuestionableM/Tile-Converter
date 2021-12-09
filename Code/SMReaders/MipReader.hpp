@@ -1,9 +1,11 @@
 #pragma once
 
 #include "SMReaders/Data/Memory.hpp"
-#include "SMReaders/Tile/CellHeader.hpp"
-#include "SMReaders/Tile/TilePart.hpp"
 #include "SMReaders/ByteImpl.hpp"
+
+#include "Tile/CellHeader.hpp"
+#include "Tile/TilePart.hpp"
+
 #include "lz4/lz4.h"
 
 #include <sstream>

@@ -41,43 +41,43 @@
     <ClInclude Include="Code\SMReaders\Tile\Impl\AssetImpl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\CellHeader.hpp">
+    <ClInclude Include="Code\Tile\CellHeader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\TileHeader.hpp">
+    <ClInclude Include="Code\Tile\TileHeader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\TileReader.hpp">
+    <ClInclude Include="Code\SMReaders\TileReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\Tile.hpp">
+    <ClInclude Include="Code\Tile\Tile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\TilePart.hpp">
+    <ClInclude Include="Code\Tile\TilePart.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\TileImpl.hpp">
+    <ClInclude Include="Code\Tile\TileImpl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\MipReader.hpp">
+    <ClInclude Include="Code\SMReaders\MipReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\SMReaders\ByteImpl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\ClutterReader.hpp">
+    <ClInclude Include="Code\SMReaders\ClutterReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Tile\AssetListReader.hpp">
+    <ClInclude Include="Code\SMReaders\AssetListReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Object\Asset.hpp">
+    <ClInclude Include="Code\Tile\Object\Asset.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\SMReaders\Data\Uuid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\SMReaders\Object\TileEntity.hpp">
+    <ClInclude Include="Code\Tile\Object\TileEntity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

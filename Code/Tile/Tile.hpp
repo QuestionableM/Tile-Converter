@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
-#include "SMReaders/Tile/TilePart.hpp"
 #include "SMReaders/ByteImpl.hpp"
+#include "Tile/TilePart.hpp"
+
+#include <vector>
 
 class Tile
 {

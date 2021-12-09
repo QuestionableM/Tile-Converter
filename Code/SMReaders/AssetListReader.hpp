@@ -1,9 +1,9 @@
 #pragma once
 
-#include "SMReaders/Tile/CellHeader.hpp"
-#include "SMReaders/Tile/TilePart.hpp"
-#include "SMReaders/Tile/TileImpl.hpp"
-#include "SMReaders/Object/Asset.hpp"
+#include "Tile/CellHeader.hpp"
+#include "Tile/TilePart.hpp"
+#include "Tile/TileImpl.hpp"
+#include "Tile/Object/Asset.hpp"
 
 #include "lz4/lz4.h"
 
@@ -100,7 +100,7 @@ public:
 					DebugOutL("Material ", j, ": ", str_data);
 
 					index += bVar4;
-					//asset.materials.put(str, memory.Int(index, true));
+					asset->AddMaterial(str_data, memory.Object<unsigned int>(index));
 					index += 4;
 				}
 			}
@@ -108,6 +108,7 @@ public:
 			asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
 			asset->SetRotation({ f_quat[0], f_quat[1], f_quat[2], f_quat[3] });
 			asset->SetSize({ f_size[0], f_size[1], f_size[2] });
+			asset->SetUuid(uuid);
 
 			part->AddAsset(asset, asset_idx);
 		}

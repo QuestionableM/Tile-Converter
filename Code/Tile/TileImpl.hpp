@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SMReaders/Tile/Tile.hpp"
+#include "Tile/Tile.hpp"
 #include <assert.h>
 
 class TileImpl : public Tile

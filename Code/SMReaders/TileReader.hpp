@@ -1,13 +1,13 @@
 #pragma once
 
 #include <string>
-#include "SMReaders/Tile/CellHeader.hpp"
-#include "SMReaders/Tile/TileHeader.hpp"
-#include "SMReaders/Tile/TileImpl.hpp"
+#include "Tile/CellHeader.hpp"
+#include "Tile/TileHeader.hpp"
+#include "Tile/TileImpl.hpp"
 
-#include "SMReaders/Tile/MipReader.hpp"
-#include "SMReaders/Tile/ClutterReader.hpp"
-#include "SMReaders/Tile/AssetListReader.hpp"
+#include "SMReaders/MipReader.hpp"
+#include "SMReaders/ClutterReader.hpp"
+#include "SMReaders/AssetListReader.hpp"
 
 #include <sstream>
 #include <iomanip>
