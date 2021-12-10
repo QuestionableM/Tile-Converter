@@ -148,12 +148,20 @@ bool DatabaseLoader::LoadRenderable(const nlohmann::json& jAsset, TextureData& t
 	return false;
 }
 
-void DatabaseLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, int>& def_colors)
+void DatabaseLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, Color>& def_colors)
 {
 	const auto& aDefColors = JsonReader::Get(jAsset, "defaultColors");
 	if (!aDefColors.is_object()) return;
 
-	//TODO: Add a completely separate class for colors
+	for (const auto& def_color : aDefColors.items())
+	{
+		if (!def_color.value().is_string()) continue;
+
+		const std::string key_str = def_color.key();
+		const Color key_color(def_color.value().get<std::string>());
+
+		def_colors.insert(std::make_pair(key_str, key_color));
+	}
 }
 
 void DatabaseLoader::LoadFile(const std::wstring& path)

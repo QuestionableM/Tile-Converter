@@ -2,6 +2,7 @@
 
 #include "Utils/Uuid.hpp"
 #include "Utils/Json.hpp"
+#include "Utils/Color.hpp"
 
 enum class TextureDataType
 {
@@ -35,7 +36,7 @@ class AssetData
 {
 public:
 	SMUuid Uuid;
-	std::unordered_map<std::string, int> DefaultColors;
+	std::unordered_map<std::string, Color> DefaultColors;
 	TextureData Textures;
 	std::wstring Mesh;
 
@@ -51,7 +52,7 @@ class DatabaseLoader
 	static bool LoadTextureData(const nlohmann::json& jLodList, TextureData& tData);
 	static bool LoadRenderableData(const nlohmann::json& jRenderable, TextureData& tData, std::wstring& mesh);
 	static bool LoadRenderable(const nlohmann::json& jAsset, TextureData& tData, std::wstring& mesh);
-	static void LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, int>& def_colors);
+	static void LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, Color>& def_colors);
 	static void LoadFile(const std::wstring& path);
 	static void ScanFolder(const std::wstring& folder);
 	static void LoadGameDatabase();

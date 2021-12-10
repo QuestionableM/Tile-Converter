@@ -100,7 +100,8 @@ public:
 					DebugOutL("Material ", j, ": ", str_data);
 
 					index += bVar4;
-					asset->AddMaterial(str_data, memory.Object<unsigned int>(index));
+					Color color_data(memory.Object<unsigned int>(index));
+					asset->AddMaterial(str_data, color_data);
 					index += 4;
 				}
 			}

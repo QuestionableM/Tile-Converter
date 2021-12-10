@@ -42,7 +42,7 @@ void String::ReplaceAllR(std::wstring& str, const wchar_t& to_replace, const wch
 		str[cIdx] = replacer;
 }
 
-std::string String::BytesTyHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength)
+std::string String::BytesToHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength)
 {
 	std::string output_string;
 	int a = 1;

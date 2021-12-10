@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
+    <ClCompile Include="Code\Utils\Color.cpp" />
     <ClCompile Include="Code\Utils\Json.cpp" />
     <ClCompile Include="Code\Utils\String.cpp" />
     <ClCompile Include="Code\Main.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Code\SMReaders\Data\FileStream.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Json.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Memory.hpp" />
+    <ClInclude Include="Code\Utils\Color.hpp" />
     <ClInclude Include="Code\Utils\Json.hpp" />
     <ClInclude Include="Code\Utils\Memory.hpp" />
     <ClInclude Include="Code\Utils\String.hpp" />

@@ -15,5 +15,5 @@ namespace String
 
 	void ReplaceAllR(std::wstring& str, const wchar_t& to_replace, const wchar_t& replacer);
 
-	std::string BytesTyHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength);
+	std::string BytesToHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength);
 }

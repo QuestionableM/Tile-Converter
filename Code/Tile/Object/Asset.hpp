@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utils/Uuid.hpp"
+#include "Utils/Color.hpp"
 #include "Tile/Object/TileEntity.hpp"
 
 #include <unordered_map>
@@ -8,7 +9,7 @@
 class Asset : public TileEntity
 {
 	SMUuid uuid;
-	std::unordered_map<std::string, int> mColors;
+	std::unordered_map<std::string, Color> mColors;
 				/*material name,   color*/
 
 public:
@@ -26,7 +27,7 @@ public:
 		this->uuid = uuid;
 	}
 
-	void AddMaterial(const std::string& mat_name, const int& color)
+	void AddMaterial(const std::string& mat_name, const Color& color)
 	{
 		if (mColors.find(mat_name) != mColors.end())
 			return;
@@ -34,7 +35,7 @@ public:
 		mColors.insert(std::make_pair(mat_name, color));
 	}
 
-	std::unordered_map<std::string, int> GetMaterials()
+	std::unordered_map<std::string, Color> GetMaterials()
 	{
 		return this->mColors;
 	}
