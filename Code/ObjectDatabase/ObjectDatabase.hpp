@@ -19,6 +19,7 @@ public:
 	std::wstring nor;
 
 	std::wstring material;
+	std::wstring def_color_idx;
 
 	std::wstring& GetStringRef(const std::size_t& idx);
 };
@@ -47,6 +48,8 @@ public:
 
 class DatabaseLoader
 {
+	static std::unordered_map<SMUuid, AssetData*> Assets;
+
 	static TextureList LoadTextureList(const nlohmann::json& texList);
 	static void AddSubMesh(const nlohmann::json& subMesh, TextureData& tData, const std::wstring& idx);
 	static bool LoadTextureData(const nlohmann::json& jLodList, TextureData& tData);
@@ -59,5 +62,7 @@ class DatabaseLoader
 	static void LoadModDatabase();
 
 public:
+	static AssetData* GetAsset(const SMUuid& uuid);
+
 	static void LoadDatabase();
 };

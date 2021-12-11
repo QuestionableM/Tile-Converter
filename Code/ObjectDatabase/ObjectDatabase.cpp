@@ -32,6 +32,8 @@ bool TextureData::GetEntry(const std::wstring& name, TextureList& list_ref) cons
 	return true;
 }
 
+std::unordered_map<SMUuid, AssetData*> DatabaseLoader::Assets = {};
+
 TextureList DatabaseLoader::LoadTextureList(const nlohmann::json& texList)
 {
 	TextureList new_list;
@@ -61,6 +63,14 @@ void DatabaseLoader::AddSubMesh(const nlohmann::json& subMesh, TextureData& tDat
 	if (!sTexList.is_array()) return;
 
 	TextureList new_tList = DatabaseLoader::LoadTextureList(sTexList);
+
+	const auto& sCustomProp = JsonReader::Get(subMesh, "custom");
+	if (sCustomProp.is_object())
+	{
+		const auto& def_color_idx = JsonReader::Get(sCustomProp, "color");
+		if (def_color_idx.is_string())
+			new_tList.def_color_idx = String::ToWide(def_color_idx.get<std::string>());
+	}
 
 	const auto& sTexName = JsonReader::Get(subMesh, "material");
 	if (sTexName.is_string())
@@ -157,8 +167,12 @@ void DatabaseLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unorde
 	{
 		if (!def_color.value().is_string()) continue;
 
+		std::string color_val = def_color.value().get<std::string>();
+		if (color_val.size() < 6)
+			color_val = "000000";
+
 		const std::string key_str = def_color.key();
-		const Color key_color(def_color.value().get<std::string>());
+		const Color key_color(color_val);
 
 		def_colors.insert(std::make_pair(key_str, key_color));
 	}
@@ -168,6 +182,8 @@ void DatabaseLoader::LoadFile(const std::wstring& path)
 {
 	nlohmann::json file_json = JsonReader::LoadParseJson(path);
 	if (!file_json.is_object()) return;
+
+	DebugOutL("Loading: ", path);
 
 	const auto& assetList = JsonReader::Get(file_json, "assetListRenderable");
 	if (!assetList.is_array()) return;
@@ -189,25 +205,29 @@ void DatabaseLoader::LoadFile(const std::wstring& path)
 		new_asset->Mesh = tMesh;
 		DatabaseLoader::LoadDefaultColors(mAsset, new_asset->DefaultColors);
 		new_asset->Textures = tData;
+
+		DatabaseLoader::Assets.insert(std::make_pair(new_asset->Uuid, new_asset));
 	}
 }
 
 void DatabaseLoader::ScanFolder(const std::wstring& folder)
 {
-	try
+	std::error_code rError;
+	fs::recursive_directory_iterator rDirIter(folder, fs::directory_options::skip_permission_denied, rError);
+	for (const auto& dir : rDirIter)
 	{
-		fs::recursive_directory_iterator rDirIter(folder, fs::directory_options::skip_permission_denied);
-		for (const auto& dir : rDirIter)
+		if (rError)
 		{
-			if (!dir.is_regular_file()) continue;
-
-			const fs::path& dPath = dir.path();
-
-			if (dPath.has_extension() && dPath.extension() == ".json")
-				DatabaseLoader::LoadFile(dPath.wstring());
+			DebugErrorL("Couldn't read: ", dir.path().wstring());
+			continue;
 		}
+		if (!dir.is_regular_file()) continue;
+
+		const fs::path& dPath = dir.path();
+
+		if (dPath.has_extension() && dPath.extension() == ".json")
+			DatabaseLoader::LoadFile(dPath.wstring());
 	}
-	catch (...) {}
 }
 
 void DatabaseLoader::LoadGameDatabase()
@@ -219,6 +239,14 @@ void DatabaseLoader::LoadGameDatabase()
 void DatabaseLoader::LoadModDatabase()
 {
 
+}
+
+AssetData* DatabaseLoader::GetAsset(const SMUuid& uuid)
+{
+	if (DatabaseLoader::Assets.find(uuid) != DatabaseLoader::Assets.end())
+		return DatabaseLoader::Assets.at(uuid);
+
+	return nullptr;
 }
 
 void DatabaseLoader::LoadDatabase()

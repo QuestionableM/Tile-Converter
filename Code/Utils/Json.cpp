@@ -22,10 +22,15 @@ nlohmann::json JsonReader::LoadParseJson(const std::wstring& path)
 
 			return nlohmann::json::parse(_RawJson, nullptr, true, true);
 		}
+#ifdef _DEBUG
+		catch (nlohmann::json::parse_error& p_err)
+		{
+			DebugErrorL("Couldn't load the specified file: ", path, "\nError: ", p_err.what());
+		}
+#else
 		catch (...) {}
+#endif
 	}
-
-	DebugErrorL("Couldn't load the specified file: ", path);
 
 	return EmptyObject;
 }

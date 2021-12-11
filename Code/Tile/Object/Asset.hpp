@@ -3,19 +3,27 @@
 #include "Utils/Uuid.hpp"
 #include "Utils/Color.hpp"
 #include "Tile/Object/TileEntity.hpp"
+#include "ObjectDatabase/ModelStorage.hpp"
 
 #include <unordered_map>
 
 class Asset : public TileEntity
 {
 	SMUuid uuid;
-	std::unordered_map<std::string, Color> mColors;
-				/*material name,   color*/
+	Model* pModel;
+	std::unordered_map<std::string /*material*/, Color> mColors;
+
+	friend class AssetListReader;
 
 public:
 	Asset() = default;
 	Asset(const Asset&) = delete;
 	Asset(Asset&&) = delete;
+
+	Model* GetModel() const
+	{
+		return pModel;
+	}
 
 	SMUuid GetUuid() const
 	{

@@ -1,41 +1,42 @@
 #pragma once
 
-#include <array>
+#include <glm.hpp>
+#include <gtc/quaternion.hpp>
 
 class TileEntity
 {
-	std::array<float, 3> position;
-	std::array<float, 4> rotation;
-	std::array<float, 3> size;
+	glm::vec3 position;
+	glm::quat rotation;
+	glm::vec3 size;
 
 public:
 
-	std::array<float, 3> GetPosition() const
+	glm::vec3 GetPosition() const
 	{
 		return position;
 	}
 
-	std::array<float, 4> GetRotation() const
+	glm::quat GetRotation() const
 	{
 		return rotation;
 	}
 
-	std::array<float, 3> GetSize() const
+	glm::vec3 GetSize() const
 	{
 		return size;
 	}
 
-	void SetPosition(const std::array<float, 3>& pos)
+	void SetPosition(const glm::vec3& pos)
 	{
 		this->position = pos;
 	}
 
-	void SetRotation(const std::array<float, 4>& rot)
+	void SetRotation(const glm::quat& rot)
 	{
 		this->rotation = rot;
 	}
 
-	void SetSize(const std::array<float, 3>& size)
+	void SetSize(const glm::vec3& size)
 	{
 		this->size = size;
 	}

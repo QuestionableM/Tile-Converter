@@ -3,7 +3,7 @@
 #include <string>
 #include "Tile/CellHeader.hpp"
 #include "Tile/TileHeader.hpp"
-#include "Tile/TileImpl.hpp"
+#include "Tile/Tile.hpp"
 
 #include "SMReaders/MipReader.hpp"
 #include "SMReaders/ClutterReader.hpp"
@@ -92,7 +92,7 @@ public:
 		const int tileXSize = header->Width;
 		const int tileYSize = header->Height;
 
-		TileImpl* tile = new TileImpl(tileXSize, tileYSize);
+		Tile* tile = new Tile(tileXSize, tileYSize);
 		tile->SetVersion(header->Version);
 		tile->SetTileType(header->Type);
 		tile->SetCreatorId(header->CreatorId);

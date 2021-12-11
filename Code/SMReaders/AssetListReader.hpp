@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Tile/CellHeader.hpp"
-#include "Tile/TilePart.hpp"
-#include "Tile/TileImpl.hpp"
+#include "Tile/Tile.hpp"
 #include "Tile/Object/Asset.hpp"
+#include "ObjectDatabase/ObjectDatabase.hpp"
 
 #include "lz4/lz4.h"
 
@@ -17,10 +17,9 @@ public:
 			const int assetListCompressedSize = header->assetListCompressedSize[a];
 			const int assetListSize = header->assetListSize[a];
 
-			DebugOutL("Asset[", a, "]: ", assetListSize, " / ", assetListCompressedSize);
-
 			if (header->assetListCount[a] != 0)
 			{
+				DebugOutL("Asset[", a, "]: ", header->assetListCount[a]);
 				const int assetListIndex = header->assetListIndex[a];
 
 				std::vector<Byte> compressed = reader.Objects<Byte>(assetListIndex, assetListCompressedSize);
@@ -31,7 +30,7 @@ public:
 				int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), assetListSize);
 				assert(debugSize == assetListCompressedSize);
 
-				debugSize = AssetListReader::Read(bytes, a, header->assetListCount[a], ((TileImpl*)part->GetParent())->GetVersion(), part);
+				debugSize = AssetListReader::Read(bytes, a, header->assetListCount[a], part->GetParent()->GetVersion(), part);
 				assert(debugSize == assetListSize);
 			}
 		}
@@ -80,13 +79,7 @@ public:
 				index += 0x10;
 			}
 
-			DebugOutL("Asset uuid: ", uuid.ToString());
-			DebugOutL("Asset Position: ", f_pos);
-			DebugOutL("Asset Rotation: ", f_quat);
-			DebugOutL("Asset Size: ", f_size);
-
 			int bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
-			
 			if (bVar4 != 0)
 			{
 				int length = bVar4;
@@ -97,7 +90,6 @@ public:
 					std::vector<char> str_vec = memory.Objects<char>(index, bVar4);
 
 					std::string str_data(str_vec.begin(), str_vec.end());
-					DebugOutL("Material ", j, ": ", str_data);
 
 					index += bVar4;
 					Color color_data(memory.Object<unsigned int>(index));
@@ -111,7 +103,23 @@ public:
 			asset->SetSize({ f_size[0], f_size[1], f_size[2] });
 			asset->SetUuid(uuid);
 
-			part->AddAsset(asset, asset_idx);
+			AssetData* asset_data = DatabaseLoader::GetAsset(uuid);
+			if (asset_data != nullptr)
+			{
+				//DebugOutL("Asset uuid: ", asset_data->Uuid.ToString());
+				//DebugOutL("Asset Position: ", f_pos);
+				//DebugOutL("Asset Rotation: ", f_quat);
+				//DebugOutL("Asset Size: ", f_size);
+
+				asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
+
+				part->AddAsset(asset, asset_idx);
+			}
+			else
+			{
+				DebugErrorL("Couldn't find an asset with the specified UUID: ", uuid.ToString());
+				delete asset;
+			}
 		}
 
 		return index;

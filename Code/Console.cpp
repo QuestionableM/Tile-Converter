@@ -1,5 +1,6 @@
-#ifdef _DEBUG
 #include "Console.hpp"
+
+#ifdef WC_ENABLE_DEBUG_CONSOLE
 
 #define CONSOLE_NUMBER_OUTPUT_DEFINITION(type) void Console::Output(const type obj) { Console::Output(std::to_string(obj)); }
 

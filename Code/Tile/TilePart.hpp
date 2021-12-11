@@ -2,9 +2,7 @@
 
 #include "Utils/ByteImpl.hpp"
 #include "Tile/Object/Asset.hpp"
-
-#include <vector>
-#include <assert.h>
+#include "Tile/WriterOffset.hpp"
 
 class Tile;
 
@@ -32,46 +30,14 @@ public:
 
 
 public:
-	TilePart(Tile* parent)
-	{
-		this->Parent = parent;
+	TilePart(Tile* parent);
 
-		VertexColor.resize(33 * 33);
-		VertexHeight.resize(33 * 33);
-		Ground.resize(65 * 65);
-		Clutter.resize(128 * 128);
+	void SetVertexColor(const std::vector<int>& vert_array);
+	void SetVertexHeight(const std::vector<float>& height_array);
+	void SetGroundMaterials(const std::vector<long long>& material_array);
+	void SetClutter(const std::vector<Byte>& clutter_array);
 
-		Assets.resize(4);
-		//Harvestables.reserve(4);
-	}
-
-	void SetVertexColor(const std::vector<int>& vert_array)
-	{
-		this->VertexColor = vert_array;
-	}
-
-	void SetVertexHeight(const std::vector<float>& height_array)
-	{
-		this->VertexHeight = height_array;
-	}
-
-	void SetGroundMaterials(const std::vector<long long>& material_array)
-	{
-		this->Ground = material_array;
-	}
-
-	void SetClutter(const std::vector<Byte>& clutter_array)
-	{
-		this->Clutter = clutter_array;
-	}
-
-	void AddAsset(Asset* asset, const int& index)
-	{
-		assert(asset != nullptr);
-		assert(0 <= index && index <= 3);
-
-		Assets[index].push_back(asset);
-	}
+	void AddAsset(Asset* asset, const int& index);
 
 	//void AddHarvestable(Harvestable* harvestable, const int& index)
 	//{
@@ -109,8 +75,7 @@ public:
 	//	Decals.push_back(decal);
 	//}
 
-	Tile* GetParent()
-	{
-		return this->Parent;
-	}
+	Tile* GetParent();
+
+	void WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, const int& xPos, const int& zPos);
 };

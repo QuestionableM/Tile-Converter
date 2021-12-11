@@ -7,44 +7,34 @@ class SMUuid
 {
 	uuids::uuid uuid_data;
 
+	friend bool operator==(const SMUuid& lhs, const SMUuid& rhs) noexcept;
 public:
 	SMUuid() = default;
+	SMUuid(const std::vector<long long>& longs);
+	SMUuid(const std::string& str_uuid);
 
-	SMUuid(const std::vector<long long>& longs)
-	{
-		std::vector<std::uint8_t> uuid_bytes(8 * 2);
+	void operator=(const std::vector<long long>& longs);
+	void operator=(const std::string& str_uuid);
 
-		std::memcpy(uuid_bytes.data(), longs.data(), 8 * 2);
-
-		this->uuid_data = uuids::uuid(uuid_bytes);
-	}
-
-	SMUuid(const std::string& str_uuid)
-	{
-		this->uuid_data = uuids::uuid::from_string(str_uuid);
-	}
-
-	void operator()(const std::vector<long long>& longs)
-	{
-		std::vector<std::uint8_t> uuid_bytes(8 * 2);
-
-		std::memcpy(uuid_bytes.data(), longs.data(), 8 * 2);
-
-		this->uuid_data = uuids::uuid(uuid_bytes);
-	}
-
-	void operator()(const std::string& str_uuid)
-	{
-		this->uuid_data = uuids::uuid::from_string(str_uuid);
-	}
-
-	std::string ToString() const
-	{
-		return uuids::to_string(this->uuid_data);
-	}
-
-	std::wstring ToWstring() const
-	{
-		return uuids::to_wstring(this->uuid_data);
-	}
+	std::string ToString() const;
+	std::wstring ToWstring() const;
 };
+
+bool operator==(const SMUuid& lhs, const SMUuid& rhs) noexcept;
+bool operator!=(const SMUuid& lhs, const SMUuid& rhs) noexcept;
+
+namespace std
+{
+	template<>
+	struct hash<SMUuid>
+	{
+		using argument_type = SMUuid;
+		using result_type = std::size_t;
+
+		result_type operator()(argument_type const& uuid) const
+		{
+			std::hash<std::string> hasher;
+			return static_cast<result_type>(hasher(uuid.ToString()));
+		}
+	};
+}

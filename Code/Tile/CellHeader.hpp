@@ -95,15 +95,6 @@ public:
 		this->harvestableListIndex = mMemory.Objects<int>(0xf4, 4);
 		this->harvestableListCompressedSize = mMemory.Objects<int>(0x104, 4);
 		this->harvestableListSize = mMemory.Objects<int>(0x114, 4);
-
-		DebugOutL("MipIndex: ", this->mipIndex);
-		DebugOutL("MipCompressedSize: ", this->mipCompressedSize);
-		DebugOutL("MipSize: ", this->mipSize);
-
-		DebugOutL("Asset list count: ", this->assetListCount);
-		DebugOutL("Asset list index: ", this->assetListIndex);
-		DebugOutL("Asset list compressed size: ", this->assetListCompressedSize);
-		DebugOutL("Asset list size: ", this->assetListSize);
 	}
 
 	CellHeader(const std::vector<Byte>& memory)

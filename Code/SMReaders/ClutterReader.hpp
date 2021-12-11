@@ -23,7 +23,6 @@ public:
 		bytes.resize(header->clutterSize);
 
 		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->clutterSize);
-		DebugOutL("DebugSize: ", debugSize, ", CompressedSize: ", header->clutterCompressedSize);
 		assert(debugSize == header->clutterCompressedSize);
 
 		return bytes;
@@ -37,7 +36,6 @@ public:
 		if (first_byte != 0)
 		{
 			int length = (int)first_byte & 0xff;
-			DebugOutL("Clutter Length: ", length);
 			int offset = 2;
 
 			for (int i = 0; i < length; i++)
@@ -56,7 +54,6 @@ public:
 				}
 
 				SMUuid clutter_uuid(memory.Objects<long long>(offset, 2));
-				DebugOutL("Clutter Uuid: ", clutter_uuid.ToString());
 
 				int iVar8 = 0;
 				/*
