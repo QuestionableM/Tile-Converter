@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/Mountian.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Mountain Circle Line.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
 	while (true) {};

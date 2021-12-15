@@ -165,57 +165,19 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 	const float half_width = (float)(this->Parent->GetWidth() * tile_size) / 2.0f;
 	const float half_height = (float)(this->Parent->GetHeight() * tile_size) / 2.0f;
 
-	const float half_width2 = half_width / 2.0f;
-	const float half_height2 = half_height / 2.0f;
-
-	float rot_offset = glm::pi<float>() / 2.0f;
-
 	for (std::size_t vec_idx = 0; vec_idx < this->Assets.size(); vec_idx++)
 	{
 		const std::vector<Asset*>& mAssetVec = this->Assets[vec_idx];
 
-		float rotation_angle = 0.0f;
+		//const glm::mat4 rotation_offset = glm::rotate(glm::radians(rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		switch (vec_idx)
-		{
-		case 0:
-			rotation_angle = 90.0f;
-			break;
-		case 1:
-			rotation_angle = 0.0f;
-			break;
-		case 2:
-			rotation_angle = 0.0f;
-			//rotation_angle = 180.0f;
-			break;
-		case 3:
-			rotation_angle = 0.0f;
-			break;
-		}
-
-		/*
-		Matrix4f tileMatrix = new Matrix4f()
-    .translateLocal(part_offset_x * 64, 0, part_offset_z * 64);
-
-// The modelMatrix used is calculated
-Matrix4f modelMatrix = tileMatrix.mul(getModelMatrix( asset ));
-		*/
-
-		glm::mat4 rotation_offset = glm::rotate(glm::radians(rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glm::mat4 axis_rotation(1.0f);
-		axis_rotation = glm::translate(axis_rotation, glm::vec3(half_width, 0.0f, half_height));
-		axis_rotation *= rotation_offset;
-		axis_rotation = glm::translate(axis_rotation, glm::vec3(0.0f, 0.0f, 0.0f));
+	//	glm::mat4 axis_rotation(1.0f);
+		//axis_rotation = glm::translate(axis_rotation, glm::vec3(half_width, 0.0f, half_height));
+		//axis_rotation *= rotation_offset;
+		//axis_rotation = glm::translate(axis_rotation, glm::vec3(-half_width, 0.0f, -half_height));
 
 
 		model << "o AssetGroup_" << vec_idx << "\n";
-		/*
-			0b01 - width
-			0b10 - height
-		*/
-
-		glm::vec3 asset_offset(0.0f);
 
 		for (Asset* cAsset : mAssetVec)
 		{
@@ -223,18 +185,22 @@ Matrix4f modelMatrix = tileMatrix.mul(getModelMatrix( asset ));
 
 			const glm::vec3 cAssetPosOld = cAsset->GetPosition();
 
-			const glm::vec3 cAssetPos = axis_rotation * glm::vec4(glm::vec3(cAssetPosOld.x, cAssetPosOld.z, cAssetPosOld.y) + tile_offset, 1.0f);
-			const glm::quat cAssetRot = cAsset->GetRotation();
+			const glm::vec3 cAssetPos = glm::vec3(cAssetPosOld.x, cAssetPosOld.z, cAssetPosOld.y) + tile_offset;
+			//const glm::vec3 cAssetPos = glm::vec4(glm::vec3(cAssetPosOld.x, cAssetPosOld.z, cAssetPosOld.y) + tile_offset, 1.0f);
+			const glm::quat oAssetRot = cAsset->GetRotation();
+
+			//sm rotation xyzw
+			//glm rotation wxyz
+			const glm::quat cAssetRot(oAssetRot.w, oAssetRot.x, oAssetRot.y, oAssetRot.z);
 
 			glm::mat4 model_mat(1.0f);
-			model_mat *= glm::toMat4(cAssetRot);
-			model_mat *= glm::rotate(glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
-			model_mat *= rotation_offset;
+			model_mat *= (glm::toMat4(cAssetRot) * glm::rotate(glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 			model_mat *= glm::scale(cAsset->GetSize());
 
 			for (const glm::vec3& vertex : pModel->vertices)
 			{
-				const glm::vec3 pRotated = model_mat * glm::vec4(vertex, 1.0f);
+				//const glm::vec3 pRotated = model_mat * glm::vec4(vertex, 1.0f);
+				const glm::vec3 pRotated = glm::vec4(vertex, 1.0f) * model_mat;
 				glm::vec3 pVertPos = pRotated + cAssetPos;
 
 				std::string output_str;
