@@ -113,13 +113,15 @@ public:
 
 				asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
 
-				part->AddAsset(asset, asset_idx);
+				if (asset->pModel != nullptr)
+				{
+					part->AddAsset(asset, asset_idx);
+					continue;
+				}
 			}
-			else
-			{
-				DebugErrorL("Couldn't find an asset with the specified UUID: ", uuid.ToString());
-				delete asset;
-			}
+
+			DebugErrorL("Couldn't find an asset with the specified UUID: ", uuid.ToString());
+			delete asset;
 		}
 
 		return index;

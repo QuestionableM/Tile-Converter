@@ -216,12 +216,7 @@ void DatabaseLoader::ScanFolder(const std::wstring& folder)
 	fs::recursive_directory_iterator rDirIter(folder, fs::directory_options::skip_permission_denied, rError);
 	for (const auto& dir : rDirIter)
 	{
-		if (rError)
-		{
-			DebugErrorL("Couldn't read: ", dir.path().wstring());
-			continue;
-		}
-		if (!dir.is_regular_file()) continue;
+		if (rError || !dir.is_regular_file()) continue;
 
 		const fs::path& dPath = dir.path();
 
@@ -238,7 +233,41 @@ void DatabaseLoader::LoadGameDatabase()
 
 void DatabaseLoader::LoadModDatabase()
 {
+	for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
+	{
+		std::error_code rError;
+		fs::directory_iterator rDirIter(mod_dir, fs::directory_options::skip_permission_denied, rError);
 
+		for (const auto& dir : rDirIter)
+		{
+			if (rError || !dir.is_directory()) continue;
+
+			const fs::path& dPath = dir.path();
+			const std::wstring mDescPath = dPath.wstring() + L"/description.json";
+
+			if (!fs::exists(mDescPath)) continue;
+
+			nlohmann::json mDesc = JsonReader::LoadParseJson(mDescPath);
+			if (!mDesc.is_object()) continue;
+
+			const auto& mUuid = JsonReader::Get(mDesc, "localId");
+			const auto& mType = JsonReader::Get(mDesc, "type");
+			const auto& mName = JsonReader::Get(mDesc, "name");
+
+			if (!mUuid.is_string() || !(mType.is_string() && mType.get<std::string>() == "Terrain Assets") || !mName.is_string()) continue;
+
+			const std::wstring dbDirectory = dPath.wstring() + L"/Database/AssetSets";
+			if (!fs::exists(dbDirectory)) continue;
+
+			SMUuid mod_uuid = mUuid.get<std::string>();
+
+			KeywordReplacer::SetModData(mod_uuid, dPath.wstring());
+
+			DatabaseLoader::ScanFolder(dbDirectory);
+
+			DebugOutL("Mod: ", ConCol::YELLOW_INT, mName.get<std::string>(), ConCol::WHITE, ", Uuid: ", ConCol::YELLOW_INT, mUuid.get<std::string>());
+		}
+	}
 }
 
 AssetData* DatabaseLoader::GetAsset(const SMUuid& uuid)

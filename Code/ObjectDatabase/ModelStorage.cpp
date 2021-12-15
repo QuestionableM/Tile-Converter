@@ -133,13 +133,13 @@ Model* ModelStorage::LoadModel(
 	if (CachedModels.find(path) != CachedModels.end())
 		return CachedModels.at(path);
 
-	DebugOutL("[Model] Loading: ", path);
-
 	const aiScene* ModelScene = ModelStorage::LoadScene(path);
 	if (ModelScene && ModelScene->HasMeshes())
 	{
 		Model* newModel = new Model(path);
 		ModelStorage::LoadSubMeshes(ModelScene, newModel);
+
+		DebugOutL("[Model] Loaded: ", path);
 
 		CachedModels.insert(std::make_pair(path, newModel));
 		Importer.FreeScene();
