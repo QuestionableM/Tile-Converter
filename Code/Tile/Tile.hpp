@@ -251,11 +251,9 @@ public:
 				for (int x = 0; x < tWidth; x++)
 				{
 					const int index = x + y * tWidth;
-					const float& height = pHeightArray[index] * tile_size;
+					const float& height = pHeightArray[index];
 
 					output_model << "v " << (((float)x * tile_size) - half_width) << " " << height << " " << (((float)y * tile_size) - half_height) << "\n";
-					//output_model << "v " << ((float)y - half_height) << " " << height << " " << ((float)x - half_width) << "\n";
-					//output_model << "v " << (y * 2) << " " << height << " " << (x * 2) << "\n";
 				}
 			}
 
@@ -263,9 +261,9 @@ public:
 			{
 				for (int x = 0; x < tWidth - 1; x++)
 				{
-					const int h00 = (x    ) + (y    ) * tWidth + 1;
-					const int h01 = (x    ) + (y + 1) * tWidth + 1;
-					const int h10 = (x + 1) + (y    ) * tWidth + 1;
+					const int h00 = (x)+(y)*tWidth + 1;
+					const int h01 = (x)+(y + 1) * tWidth + 1;
+					const int h10 = (x + 1) + (y)*tWidth + 1;
 					const int h11 = (x + 1) + (y + 1) * tWidth + 1;
 
 					output_model << "f " << h00 << " " << h01 << " " << h10 << "\n";
@@ -273,9 +271,9 @@ public:
 				}
 			}
 
-			DebugOutL("Writing assets...");
+			output_model << "o Assets\n";
 
-			//output_model << "o Assets\n";
+			DebugOutL("Writing assets...");
 
 			for (int y = 0; y < this->Width; y++)
 			{
