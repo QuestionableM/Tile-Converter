@@ -241,7 +241,7 @@ public:
 			WriterOffsetData offset_data = { 0, 0, 0, 0 };
 			offset_data.Vertex += (tHeight * tWidth);
 
-			constexpr const float tile_size = 1.0f;
+			constexpr const float tile_size = 2.0f;
 
 			const float half_width = ((float)tWidth / 2.0f) * tile_size;
 			const float half_height = ((float)tHeight / 2.0f) * tile_size;
