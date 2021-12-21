@@ -1,7 +1,8 @@
 #pragma once
 
 #include <glm.hpp>
-#include <gtc/quaternion.hpp>
+#include <gtx/quaternion.hpp>
+#include <gtx/transform.hpp>
 
 class TileEntity
 {
@@ -24,6 +25,17 @@ public:
 	glm::vec3 GetSize() const
 	{
 		return size;
+	}
+
+	glm::mat4 GetTransformMatrix() const
+	{
+		glm::mat4 transform(1.0f);
+
+		transform *= glm::translate(this->position);
+		transform *= glm::toMat4(this->rotation);
+		transform *= glm::scale(this->size);
+
+		return transform;
 	}
 
 	void SetPosition(const glm::vec3& pos)

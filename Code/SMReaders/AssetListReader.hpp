@@ -107,7 +107,16 @@ public:
 			}
 
 			asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			asset->SetRotation({ f_quat[0], f_quat[1], f_quat[2], f_quat[3] });
+
+			//GLM order is wxyz
+			//SM order is xyzw
+			/*
+				x (0) -> w -> z
+				y (1) -> x -> w
+				z (2) -> y -> x
+				w (3) -> z -> y
+			*/
+			asset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
 			asset->SetSize({ f_size[0], f_size[1], f_size[2] });
 			asset->SetUuid(uuid);
 
