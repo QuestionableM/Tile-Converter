@@ -261,17 +261,15 @@ public:
 			{
 				for (int x = 0; x < tWidth - 1; x++)
 				{
-					const int h00 = (x)+(y)*tWidth + 1;
-					const int h01 = (x)+(y + 1) * tWidth + 1;
-					const int h10 = (x + 1) + (y)*tWidth + 1;
+					const int h00 = (x    ) + (y    ) * tWidth + 1;
+					const int h01 = (x    ) + (y + 1) * tWidth + 1;
+					const int h10 = (x + 1) + (y    ) * tWidth + 1;
 					const int h11 = (x + 1) + (y + 1) * tWidth + 1;
 
 					output_model << "f " << h00 << " " << h01 << " " << h10 << "\n";
 					output_model << "f " << h01 << " " << h11 << " " << h10 << "\n";
 				}
 			}
-
-			output_model << "o Assets\n";
 
 			DebugOutL("Writing assets...");
 

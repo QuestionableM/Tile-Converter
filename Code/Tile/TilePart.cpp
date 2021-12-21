@@ -122,9 +122,19 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 			const glm::vec3 cAssetPos = cAsset->GetPosition();
 			const glm::quat cAssetRot = cAsset->GetRotation();
 
+			//GLM order is wxyz
+			//SM order is xyzw
+			/*
+				x (0) -> w -> z
+				y (1) -> x -> w
+				z (2) -> y -> x
+				w (3) -> z -> y
+			*/
+			glm::quat oAssetRot = glm::quat(cAssetRot.z, cAssetRot.w, cAssetRot.x, cAssetRot.y);
+
 			glm::mat4 model_matrix(1.0f);
 			model_matrix *= glm::translate(cAssetPos);
-			model_matrix *= glm::toMat4(glm::quat(cAssetRot.w, cAssetRot.z, cAssetRot.y, cAssetRot.x));
+			model_matrix *= glm::toMat4(oAssetRot);
 			model_matrix *= glm::scale(cAsset->GetSize());
 
 			model_matrix = transform * model_matrix;
