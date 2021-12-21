@@ -251,9 +251,12 @@ public:
 				for (int x = 0; x < tWidth; x++)
 				{
 					const int index = x + y * tWidth;
-					const float& height = pHeightArray[index];
 
-					output_model << "v " << (((float)x * tile_size) - half_width) << " " << height << " " << (((float)y * tile_size) - half_height) << "\n";
+					const float& height = pHeightArray[index];
+					const float x_point = ((float)-x * tile_size) + half_width;
+					const float y_point = ((float)-y * tile_size) + half_height;
+
+					output_model << "v " << x_point << " " << y_point << " " << height << "\n";
 				}
 			}
 

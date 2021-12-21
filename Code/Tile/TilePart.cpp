@@ -99,17 +99,20 @@ glm::vec3 rotate_around(const glm::vec3& point, const glm::vec3& center, const g
 
 void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, const int& xPos, const int& zPos)
 {
-	const float rot_offset = 1.0f * glm::pi<float>();
+	constexpr const float rot_offset = 1.0f * glm::pi<float>();
 
-	constexpr const float tile_size = 32.0f;
-	const float half_width = ((float)this->Parent->GetWidth() * tile_size) / 2.0f;
-	const float half_height = ((float)this->Parent->GetHeight() * tile_size) / 2.0f;
+	constexpr const float tile_size = 64.0f;
+	const float tWidth  = this->Parent->GetWidth()  * tile_size;
+	const float tHeight = this->Parent->GetHeight() * tile_size;
+
+	const glm::vec3 half_point(tWidth / 2.0f, tHeight / 2.0f, 0.0f);
 
 	glm::mat4 transform(1.0f);
-	transform *= glm::translate(glm::vec3(-half_width, -half_height, 0.0f));
+	transform *= glm::translate(-half_point);
 	transform *= glm::rotate(rot_offset, glm::vec3(0.0f, 0.0f, 1.0f));
-	transform *= glm::translate(glm::vec3(half_width, half_height, 0.0f));
+	transform *= glm::translate(half_point);
 	transform *= glm::translate(glm::vec3((float)xPos * 64.0f, (float)zPos * 64.0f, 0.0f));
+	transform *= glm::translate(glm::vec3(-tWidth * 1.5f, -tHeight * 1.5f, 0.0f));
 
 	for (std::size_t vec_idx = 0; vec_idx < this->Assets.size(); vec_idx++)
 	{
@@ -119,7 +122,6 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 		{
 			Model* pModel = cAsset->GetModel();
 
-			const glm::vec3 cAssetPos = cAsset->GetPosition();
 			const glm::quat cAssetRot = cAsset->GetRotation();
 
 			//GLM order is wxyz
@@ -130,10 +132,10 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 				z (2) -> y -> x
 				w (3) -> z -> y
 			*/
-			glm::quat oAssetRot = glm::quat(cAssetRot.z, cAssetRot.w, cAssetRot.x, cAssetRot.y);
+			const glm::quat oAssetRot = glm::quat(cAssetRot.z, cAssetRot.w, cAssetRot.x, cAssetRot.y);
 
 			glm::mat4 model_matrix(1.0f);
-			model_matrix *= glm::translate(cAssetPos);
+			model_matrix *= glm::translate(cAsset->GetPosition());
 			model_matrix *= glm::toMat4(oAssetRot);
 			model_matrix *= glm::scale(cAsset->GetSize());
 
