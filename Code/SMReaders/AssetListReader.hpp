@@ -62,7 +62,6 @@ public:
 				index += 0x28;
 			}
 
-			Asset* asset = new Asset();
 			SMUuid uuid;
 
 			if (version < 4)
@@ -78,6 +77,15 @@ public:
 				uuid = memory.Objects<long long>(index, 2);
 				index += 0x10;
 			}
+
+			AssetData* asset_data = DatabaseLoader::GetAsset(uuid);
+			if (!asset_data)
+			{
+				DebugErrorL("Couldn't find an asset with the specified UUID: ", uuid.ToString());
+				continue;
+			}
+
+			Asset* asset = new Asset();
 
 			int bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
 			if (bVar4 != 0)
@@ -103,24 +111,14 @@ public:
 			asset->SetSize({ f_size[0], f_size[1], f_size[2] });
 			asset->SetUuid(uuid);
 
-			AssetData* asset_data = DatabaseLoader::GetAsset(uuid);
-			if (asset_data != nullptr)
+			asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
+			if (asset->pModel != nullptr)
 			{
-				//DebugOutL("Asset uuid: ", asset_data->Uuid.ToString());
-				//DebugOutL("Asset Position: ", f_pos);
-				//DebugOutL("Asset Rotation: ", f_quat);
-				//DebugOutL("Asset Size: ", f_size);
-
-				asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
-
-				if (asset->pModel != nullptr)
-				{
-					part->AddAsset(asset, asset_idx);
-					continue;
-				}
+				part->AddAsset(asset, asset_idx);
+				continue;
 			}
 
-			DebugErrorL("Couldn't find an asset with the specified UUID: ", uuid.ToString());
+			DebugErrorL("Couldn't load the asset model: ", asset_data->Mesh);
 			delete asset;
 		}
 
