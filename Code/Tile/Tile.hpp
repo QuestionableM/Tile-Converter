@@ -269,8 +269,8 @@ public:
 					const int h10 = (x + 1) + (y    ) * tWidth + 1;
 					const int h11 = (x + 1) + (y + 1) * tWidth + 1;
 
-					output_model << "f " << h00 << " " << h01 << " " << h10 << "\n";
-					output_model << "f " << h01 << " " << h11 << " " << h10 << "\n";
+					output_model << "f " << h00 << " " << h10 << " " << h01 << "\n";
+					output_model << "f " << h01 << " " << h10 << " " << h11 << "\n";
 				}
 			}
 
