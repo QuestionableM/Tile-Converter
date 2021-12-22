@@ -14,9 +14,49 @@ SubMeshData::SubMeshData(const int& sub_mesh_idx)
 	this->SubMeshIndex = sub_mesh_idx;
 }
 
-bool Model::IsEmpty()
+bool Model::IsEmpty() const
 {
 	return (this->subMeshData.size() <= 0 || (this->vertices.size() <= 0 && this->uvs.size() <= 0 && this->normals.size() <= 0));
+}
+
+void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file) const
+{
+	for (const glm::vec3& vertex : this->vertices)
+	{
+		const glm::vec3 pVertPos = model_mat * glm::vec4(vertex, 1.0f);
+
+		std::string output_str;
+		output_str.append("v ");
+		output_str.append(std::to_string(pVertPos.x));
+		output_str.append(" ");
+		output_str.append(std::to_string(pVertPos.y));
+		output_str.append(" ");
+		output_str.append(std::to_string(pVertPos.z));
+		output_str.append("\n");
+
+		file.write(output_str.c_str(), output_str.size());
+	}
+
+	for (const SubMeshData* pSubMesh : this->subMeshData)
+	{
+		for (std::size_t a = 0; a < pSubMesh->DataIdx.size(); a++)
+		{
+			std::string _f_str = "f";
+
+			for (const std::vector<long long>& d_idx : pSubMesh->DataIdx[a])
+			{
+				_f_str.append(" ");
+				_f_str.append(std::to_string(d_idx[0] + offset.Vertex + 1));
+			}
+
+			_f_str.append("\n");
+			file.write(_f_str.c_str(), _f_str.size());
+		}
+	}
+
+	offset.Vertex += this->vertices.size();
+	offset.Uv += this->uvs.size();
+	offset.Normal += this->normals.size();
 }
 
 Model::Model(const std::wstring& mesh_path)

@@ -7,6 +7,9 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <fstream>
+
+#include "Tile/WriterOffset.hpp"
 
 #include <glm.hpp>
 
@@ -31,7 +34,9 @@ struct Model
 
 	std::wstring meshPath;
 
-	bool IsEmpty();
+	bool IsEmpty() const;
+	void WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file) const;
+
 	Model(const std::wstring& mesh_path);
 	~Model();
 };

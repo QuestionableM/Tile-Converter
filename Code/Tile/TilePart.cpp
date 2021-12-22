@@ -116,50 +116,12 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 
 	for (std::size_t vec_idx = 0; vec_idx < this->Assets.size(); vec_idx++)
 	{
-		const std::vector<Asset*>& mAssetVec = this->Assets[vec_idx];
-
-		for (Asset* cAsset : mAssetVec)
+		for (Asset*& cAsset : this->Assets[vec_idx])
 		{
-			Model* pModel = cAsset->GetModel();
-
+			const Model* pModel = cAsset->GetModel();
 			const glm::mat4 model_matrix = transform * cAsset->GetTransformMatrix();
 
-			for (const glm::vec3& vertex : pModel->vertices)
-			{
-				const glm::vec3 pVertPos = model_matrix * glm::vec4(vertex, 1.0f);
-
-				std::string output_str;
-				output_str.append("v ");
-				output_str.append(std::to_string(pVertPos.x));
-				output_str.append(" ");
-				output_str.append(std::to_string(pVertPos.y));
-				output_str.append(" ");
-				output_str.append(std::to_string(pVertPos.z));
-				output_str.append("\n");
-
-				model.write(output_str.c_str(), output_str.size());
-			}
-
-			for (SubMeshData*& pSubMesh : pModel->subMeshData)
-			{
-				for (std::size_t a = 0; a < pSubMesh->DataIdx.size(); a++)
-				{
-					std::string _f_str = "f";
-
-					for (const std::vector<long long>& d_idx : pSubMesh->DataIdx[a])
-					{
-						_f_str.append(" ");
-						_f_str.append(std::to_string(d_idx[0] + mOffsetData.Vertex + 1));
-					}
-
-					_f_str.append("\n");
-					model.write(_f_str.c_str(), _f_str.size());
-				}
-			}
-
-			mOffsetData.Vertex += pModel->vertices.size();
-			mOffsetData.Uv += pModel->uvs.size();
-			mOffsetData.Normal += pModel->normals.size();
+			pModel->WriteToFile(model_matrix, mOffsetData, model);
 		}
 	}
 }
