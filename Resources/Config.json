@@ -11,7 +11,8 @@
 		"ScrapAssetDatabase": [
 			"$CHALLENGE_DATA/Terrain/Database/AssetSets",
 			"$SURVIVAL_DATA/Terrain/Database/AssetSets",
-			"$GAME_DATA/Terrain/Database/AssetSets"
+			"$GAME_DATA/Terrain/Database/AssetSets",
+			"$SURVIVAL_DATA/Harvestables/Database/HarvestableSets"
 		]
     },
     "UserSettings": {

@@ -48,6 +48,15 @@
     <ClCompile Include="Code\Tile\TilePart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp">
@@ -141,6 +150,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\ProgramConfig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

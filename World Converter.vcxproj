@@ -143,7 +143,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ModelStorage.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
     <ClCompile Include="Code\Tile\TilePart.cpp" />
     <ClCompile Include="Code\Utils\Color.cpp" />
@@ -157,10 +160,14 @@
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ModelStorage.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
     <ClInclude Include="Code\ProgramConfig.hpp" />
+    <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />
     <ClInclude Include="Code\Utils\ByteImpl.hpp" />
     <ClInclude Include="Code\SMReaders\Data\FileStream.hpp" />

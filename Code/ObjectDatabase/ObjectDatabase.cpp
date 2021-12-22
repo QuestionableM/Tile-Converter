@@ -6,33 +6,19 @@
 #include "Utils/String.hpp"
 #include "Console.hpp"
 
+#include "ObjectDatabase/DatabaseLoaders/AssetListLoader.hpp"
+#include "ObjectDatabase/DatabaseLoaders/HarvestableListLoader.hpp"
+
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
-std::wstring& TextureList::GetStringRef(const std::size_t& idx)
-{
-	return ((std::wstring*)&this->dif)[idx];
-}
-
-void TextureData::AddEntry(const std::wstring& name, const TextureList& tex_list)
-{
-	if (MaterialMap.find(name) != MaterialMap.end())
-		return;
-
-	MaterialMap.insert(std::make_pair(name, tex_list));
-}
-
-bool TextureData::GetEntry(const std::wstring& name, TextureList& list_ref) const
-{
-	if (MaterialMap.find(name) == MaterialMap.end())
-		return false;
-
-	list_ref = MaterialMap.at(name);
-	return true;
-}
-
 std::unordered_map<SMUuid, AssetData*> DatabaseLoader::Assets = {};
+const std::unordered_map<std::string, void (*)(const nlohmann::json&)> DatabaseLoader::FuncPointers =
+{
+	{ "assetListRenderable", AssetListLoader::Load		 },
+	{ "harvestableList",     HarvestableListLoader::Load }
+};
 
 TextureList DatabaseLoader::LoadTextureList(const nlohmann::json& texList)
 {
@@ -158,26 +144,6 @@ bool DatabaseLoader::LoadRenderable(const nlohmann::json& jAsset, TextureData& t
 	return false;
 }
 
-void DatabaseLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, Color>& def_colors)
-{
-	const auto& aDefColors = JsonReader::Get(jAsset, "defaultColors");
-	if (!aDefColors.is_object()) return;
-
-	for (const auto& def_color : aDefColors.items())
-	{
-		if (!def_color.value().is_string()) continue;
-
-		std::string color_val = def_color.value().get<std::string>();
-		if (color_val.size() < 6)
-			color_val = "000000";
-
-		const std::string key_str = def_color.key();
-		const Color key_color(color_val);
-
-		def_colors.insert(std::make_pair(key_str, key_color));
-	}
-}
-
 void DatabaseLoader::LoadFile(const std::wstring& path)
 {
 	nlohmann::json file_json = JsonReader::LoadParseJson(path);
@@ -185,28 +151,12 @@ void DatabaseLoader::LoadFile(const std::wstring& path)
 
 	DebugOutL("Loading: ", path);
 
-	const auto& assetList = JsonReader::Get(file_json, "assetListRenderable");
-	if (!assetList.is_array()) return;
-
-	for (const auto& mAsset : assetList)
+	for (const auto& fKey : file_json.items())
 	{
-		if (!mAsset.is_object()) continue;
+		const std::string key_str = fKey.key();
 
-		const auto& aUuid = JsonReader::Get(mAsset, "uuid");
-		if (!aUuid.is_string()) continue;
-		
-		std::wstring tMesh;
-		TextureData tData;
-		if (!DatabaseLoader::LoadRenderable(mAsset, tData, tMesh))
-			continue;
-
-		AssetData* new_asset = new AssetData();
-		new_asset->Uuid = aUuid.get<std::string>();
-		new_asset->Mesh = tMesh;
-		DatabaseLoader::LoadDefaultColors(mAsset, new_asset->DefaultColors);
-		new_asset->Textures = tData;
-
-		DatabaseLoader::Assets.insert(std::make_pair(new_asset->Uuid, new_asset));
+		if (FuncPointers.find(key_str) != FuncPointers.end())
+			FuncPointers.at(key_str)(fKey.value());
 	}
 }
 

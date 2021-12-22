@@ -8,6 +8,7 @@
 #include "SMReaders/MipReader.hpp"
 #include "SMReaders/ClutterReader.hpp"
 #include "SMReaders/AssetListReader.hpp"
+#include "SMReaders/HarvestableListReader.hpp"
 
 #include <sstream>
 #include <iomanip>
@@ -113,33 +114,16 @@ public:
 					}
 
 					AssetListReader::Read(h, reader, part);
+					//NodeReader - not needed
+					//ScriptReader - not needed
+					//PrefabReader - in the works
+					//BlueprintListReader - in the works
+					//DecalReader - in the works
+					HarvestableListReader::Read(h, reader, part);
 				}
 			}
 		}
 
 		return tile;
-		/*
-		if (tileYSize > 0) {
-			for (int y = 0; y < tileYSize; y++) {
-				for (int x = 0; x < tileXSize; x++) {
-					CellHeader h = header.getHeader(x, y);
-					TilePart part = tile.getPart(x, y);
-
-					if (header.type == 0) {
-						mip_reader.read(h, reader, part);
-						clutter_reader.read(h, reader, part);
-					}
-
-					assetList_reader.read(h, reader, part);
-					node_reader.read(h, reader, part);
-					script_reader.read(h, reader, part);
-					prefab_reader.read(h, reader, part);
-					blueprintList_reader.read(h, reader, part);
-					decal_reader.read(h, reader, part);
-					harvestableList_reader.read(h, reader, part);
-				}
-			}
-		}
-		*/
 	}
 };
