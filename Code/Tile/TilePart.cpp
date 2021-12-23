@@ -1,6 +1,7 @@
 #include "TilePart.hpp"
 
 #include "Tile/Tile.hpp"
+#include "Utils/String.hpp"
 
 #include <gtx/quaternion.hpp>
 #include <gtx/transform.hpp>
@@ -15,7 +16,7 @@ TilePart::TilePart(Tile* parent)
 	Clutter.resize(128 * 128);
 
 	Assets.resize(4);
-	//Harvestables.reserve(4);
+	Harvestables.resize(4);
 }
 
 void TilePart::SetVertexColor(const std::vector<int>& vert_array)
@@ -46,13 +47,13 @@ void TilePart::AddAsset(Asset* asset, const int& index)
 	Assets[index].push_back(asset);
 }
 
-//void AddHarvestable(Harvestable* harvestable, const int& index)
-//{
-//	assert(harvestable == nullptr);
-//	assert(index < 0 || index > 3);
+void TilePart::AddHarvestable(Harvestable* harvestable, const int& index)
+{
+	assert(harvestable != nullptr);
+	assert(0 <= index && index <= 3);
 
-//	Harvestables[index].push_back(harvestable);
-//}
+	Harvestables[index].push_back(harvestable);
+}
 
 //void AddNode(Node* node)
 //{
@@ -87,16 +88,6 @@ Tile* TilePart::GetParent()
 	return this->Parent;
 }
 
-glm::vec3 rotate_around(const glm::vec3& point, const glm::vec3& center, const glm::mat4& rot_mat)
-{
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), center);
-	glm::mat4 invTranslate = glm::inverse(translate);
-
-	glm::mat4 transform = translate * rot_mat * invTranslate;
-
-	return transform * glm::vec4(point, 1.0f);
-}
-
 void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, const int& xPos, const int& zPos)
 {
 	constexpr const float rot_offset = 1.0f * glm::pi<float>();
@@ -121,7 +112,15 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 			const Model* pModel = cAsset->GetModel();
 			const glm::mat4 model_matrix = transform * cAsset->GetTransformMatrix();
 
-			pModel->WriteToFile(model_matrix, mOffsetData, model);
+			pModel->WriteToFile(model_matrix, mOffsetData, model, cAsset);
+		}
+
+		for (Harvestable*& cHarvestable : this->Harvestables[vec_idx])
+		{
+			const Model* pModel = cHarvestable->GetModel();
+			const glm::mat4 model_matrix = transform * cHarvestable->GetTransformMatrix();
+
+			pModel->WriteToFile(model_matrix, mOffsetData, model, cHarvestable);
 		}
 	}
 }

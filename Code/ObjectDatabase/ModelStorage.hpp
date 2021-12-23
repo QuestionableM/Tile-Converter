@@ -35,7 +35,7 @@ struct Model
 	std::wstring meshPath;
 
 	bool IsEmpty() const;
-	void WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file) const;
+	void WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const class TileEntity* pEntity) const;
 
 	Model(const std::wstring& mesh_path);
 	~Model();

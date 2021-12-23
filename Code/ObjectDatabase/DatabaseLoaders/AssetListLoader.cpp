@@ -1,9 +1,11 @@
 #include "AssetListLoader.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
 
+#include "Utils/String.hpp"
+
 #include "Console.hpp"
 
-void AssetListLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::string, Color>& def_colors)
+void AssetListLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::wstring, Color>& def_colors)
 {
 	const auto& aDefColors = JsonReader::Get(jAsset, "defaultColors");
 	if (!aDefColors.is_object()) return;
@@ -16,10 +18,9 @@ void AssetListLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unord
 		if (color_val.size() < 6)
 			color_val = "000000";
 
-		const std::string key_str = def_color.key();
-		const Color key_color(color_val);
+		const std::wstring key_str = String::ToWide(def_color.key());
 
-		def_colors.insert(std::make_pair(key_str, key_color));
+		def_colors.insert(std::make_pair(key_str, color_val));
 	}
 }
 

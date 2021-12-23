@@ -4,11 +4,17 @@
 #include <gtx/quaternion.hpp>
 #include <gtx/transform.hpp>
 
+#include "Utils/Uuid.hpp"
+#include "ObjectDatabase/ModelStorage.hpp"
+
 class TileEntity
 {
+protected:
+
 	glm::vec3 position;
 	glm::quat rotation;
 	glm::vec3 size;
+	SMUuid uuid;
 
 public:
 
@@ -27,6 +33,11 @@ public:
 		return size;
 	}
 
+	SMUuid GetUuid() const
+	{
+		return uuid;
+	}
+
 	glm::mat4 GetTransformMatrix() const
 	{
 		glm::mat4 transform(1.0f);
@@ -37,6 +48,9 @@ public:
 
 		return transform;
 	}
+
+	virtual std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const = 0;
+
 
 	void SetPosition(const glm::vec3& pos)
 	{
@@ -51,5 +65,10 @@ public:
 	void SetSize(const glm::vec3& size)
 	{
 		this->size = size;
+	}
+
+	void SetUuid(const SMUuid& uuid)
+	{
+		this->uuid = uuid;
 	}
 };

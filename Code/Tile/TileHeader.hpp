@@ -37,7 +37,6 @@ public:
 			CellHeader* part = new CellHeader(bytes_temp);
 			part->Read();
 
-			DebugOutL("Adding a cell header: ", a);
 			CellHeaders[a] = part;
 		}
 	}
@@ -53,7 +52,7 @@ public:
 
 		if (tile_key != "TILE")
 		{
-			DebugOutL("Invalid Tile Key");
+			DebugOutL("Invalid File");
 			return nullptr;
 		}
 

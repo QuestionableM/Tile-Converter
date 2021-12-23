@@ -24,6 +24,9 @@ public:
 		return MipReader::Read(header, 0, reader);
 	}
 
+#pragma warning(push)
+#pragma warning(disable : 4996)
+
 	static std::vector<Byte> Read(CellHeader* header, const int& mipOrLevel, MemoryWrapper& reader)
 	{
 		DebugOutL("MipIndex: ", header->mipIndex[mipOrLevel], ", MipCompressedSize: ", header->mipCompressedSize[mipOrLevel]);
@@ -37,6 +40,8 @@ public:
 
 		return decompressed_bytes;
 	}
+
+#pragma warning(pop)
 
 	static void Read(const std::vector<Byte>& bytes, TilePart* part)
 	{

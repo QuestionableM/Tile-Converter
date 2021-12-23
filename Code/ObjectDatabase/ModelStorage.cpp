@@ -3,6 +3,7 @@
 #include "Console.hpp"
 #include "Utils/String.hpp"
 
+#include "Tile/Object/TileEntity.hpp"
 
 bool SubMeshData::IsEmpty()
 {
@@ -19,7 +20,7 @@ bool Model::IsEmpty() const
 	return (this->subMeshData.size() <= 0 || (this->vertices.size() <= 0 && this->uvs.size() <= 0 && this->normals.size() <= 0));
 }
 
-void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file) const
+void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity) const
 {
 	for (const glm::vec3& vertex : this->vertices)
 	{
@@ -37,8 +38,13 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 		file.write(output_str.c_str(), output_str.size());
 	}
 
-	for (const SubMeshData* pSubMesh : this->subMeshData)
+	for (std::size_t mIdx = 0; mIdx < this->subMeshData.size(); mIdx++)
 	{
+		const SubMeshData* pSubMesh = this->subMeshData[mIdx];
+
+		const std::string mtl_name = "usemtl " + pEntity->GetMtlName(pSubMesh->MaterialName, mIdx) + "\n";
+		file.write(mtl_name.c_str(), mtl_name.size());
+
 		for (std::size_t a = 0; a < pSubMesh->DataIdx.size(); a++)
 		{
 			std::string _f_str = "f";
@@ -55,7 +61,7 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 	}
 
 	offset.Vertex += this->vertices.size();
-	offset.Uv += this->uvs.size();
+	offset.Uv	  += this->uvs.size();
 	offset.Normal += this->normals.size();
 }
 

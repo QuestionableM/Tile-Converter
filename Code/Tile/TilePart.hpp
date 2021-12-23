@@ -2,6 +2,7 @@
 
 #include "Utils/ByteImpl.hpp"
 #include "Tile/Object/Asset.hpp"
+#include "Tile/Object/Harvestable.hpp"
 #include "Tile/WriterOffset.hpp"
 
 class Tile;
@@ -19,7 +20,7 @@ public:
 	// Clutter
 	std::vector<Byte> Clutter;
 
-	//std::vector<std::vector<Harvestable*>> Harvestables; IMPLEMENT LATER
+	std::vector<std::vector<Harvestable*>> Harvestables;
 	std::vector<std::vector<Asset*>> Assets;
 
 	//std::vector<Node*> Nodes; IMPLEMENT LATER
@@ -38,42 +39,7 @@ public:
 	void SetClutter(const std::vector<Byte>& clutter_array);
 
 	void AddAsset(Asset* asset, const int& index);
-
-	//void AddHarvestable(Harvestable* harvestable, const int& index)
-	//{
-	//	assert(harvestable == nullptr);
-	//	assert(index < 0 || index > 3);
-
-	//	Harvestables[index].push_back(harvestable);
-	//}
-
-	//void AddNode(Node* node)
-	//{
-	//	assert(node == nullptr);
-
-	//	Nodes.push_back(node);
-	//}
-
-	//void AddPrefab(Prefab* prefab)
-	//{
-	//	assert(prefab == nullptr);
-
-	//	Prefabs.push_back(prefab);
-	//}
-
-	//void AddBlueprint(Blueprint* blueprint)
-	//{
-	//	assert(blueprint == nullptr);
-
-	//	Blueprints.push_back(blueprint);
-	//}
-
-	//void AddDecal(Decal* decal)
-	//{
-	//	assert(decal == nullptr);
-
-	//	Decals.push_back(decal);
-	//}
+	void AddHarvestable(Harvestable* harvestable, const int& index);
 
 	Tile* GetParent();
 

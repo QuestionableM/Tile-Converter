@@ -5,11 +5,17 @@
 #include "Tile/Object/Asset.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
 
+#include "Utils/String.hpp"
+
 #include "lz4/lz4.h"
 
 class AssetListReader
 {
 public:
+
+#pragma warning(push)
+#pragma warning(disable : 4996)
+
 	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
 	{
 		for (int a = 0; a < 4; a++)
@@ -35,6 +41,8 @@ public:
 			}
 		}
 	}
+
+#pragma warning(pop)
 
 	static int Read(const std::vector<Byte>& bytes, const int& asset_idx, const int& len, const int& version, TilePart* part)
 	{
@@ -63,6 +71,7 @@ public:
 			}
 
 			SMUuid uuid;
+			Asset* asset = new Asset();
 
 			if (version < 4)
 			{
@@ -78,15 +87,6 @@ public:
 				index += 0x10;
 			}
 
-			AssetData* asset_data = DatabaseLoader::GetAsset(uuid);
-			if (!asset_data)
-			{
-				DebugErrorL("Couldn't find an asset with the specified UUID: ", uuid.ToString());
-				continue;
-			}
-
-			Asset* asset = new Asset();
-
 			int bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
 			if (bVar4 != 0)
 			{
@@ -100,34 +100,28 @@ public:
 					std::string str_data(str_vec.begin(), str_vec.end());
 
 					index += bVar4;
-					Color color_data(memory.Object<unsigned int>(index));
-					asset->AddMaterial(str_data, color_data);
+					asset->AddMaterial(String::ToWide(str_data), memory.Object<unsigned int>(index));
 					index += 4;
 				}
 			}
 
-			asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-
-			//GLM order is wxyz
-			//SM order is xyzw
-			/*
-				x (0) -> w -> z
-				y (1) -> x -> w
-				z (2) -> y -> x
-				w (3) -> z -> y
-			*/
-			asset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			asset->SetSize({ f_size[0], f_size[1], f_size[2] });
-			asset->SetUuid(uuid);
-
-			asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
-			if (asset->pModel != nullptr)
+			AssetData* asset_data = DatabaseLoader::GetAsset(uuid);
+			if (asset_data != nullptr)
 			{
-				part->AddAsset(asset, asset_idx);
-				continue;
+				asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+				asset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+				asset->SetSize({ f_size[0], f_size[1], f_size[2] });
+				asset->SetUuid(uuid);
+				asset->pParent = asset_data;
+
+				asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
+				if (asset->pModel != nullptr)
+				{
+					part->AddAsset(asset, asset_idx);
+					continue;
+				}
 			}
 
-			DebugErrorL("Couldn't load the asset model: ", asset_data->Mesh);
 			delete asset;
 		}
 

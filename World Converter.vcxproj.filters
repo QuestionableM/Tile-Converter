@@ -164,5 +164,8 @@
     <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Tile\Object\Harvestable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

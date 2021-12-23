@@ -28,21 +28,39 @@ public:
 class TextureData
 {
 	std::unordered_map<std::wstring, TextureList> MaterialMap = {};
+	TextureDataType type = TextureDataType::None;
 
 public:
 	void AddEntry(const std::wstring& name, const TextureList& tex_list);
 	bool GetEntry(const std::wstring& name, TextureList& list_ref) const;
+
+	TextureDataType Type() const;
+
+	TextureData() = default;
+	TextureData(const TextureDataType& type);
 };
 
 class AssetData
 {
 public:
 	SMUuid Uuid;
-	std::unordered_map<std::string, Color> DefaultColors;
+	std::unordered_map<std::wstring, Color> DefaultColors;
 	TextureData Textures;
 	std::wstring Mesh;
 
 	AssetData() = default;
 	AssetData(const AssetData&) = delete;
 	AssetData(AssetData&&) = delete;
+};
+
+class HarvestableData
+{
+public:
+	SMUuid Uuid;
+	TextureData Textures;
+	std::wstring Mesh;
+
+	HarvestableData() = default;
+	HarvestableData(const HarvestableData&) = delete;
+	HarvestableData(HarvestableData&) = delete;
 };

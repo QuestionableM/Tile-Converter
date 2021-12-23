@@ -21,3 +21,13 @@ bool TextureData::GetEntry(const std::wstring& name, TextureList& list_ref) cons
 	list_ref = MaterialMap.at(name);
 	return true;
 }
+
+TextureDataType TextureData::Type() const
+{
+	return this->type;
+}
+
+TextureData::TextureData(const TextureDataType& type)
+{
+	this->type = type;
+}

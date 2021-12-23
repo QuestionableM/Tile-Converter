@@ -168,6 +168,7 @@
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
     <ClInclude Include="Code\ProgramConfig.hpp" />
     <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp" />
+    <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />
     <ClInclude Include="Code\Utils\ByteImpl.hpp" />
     <ClInclude Include="Code\SMReaders\Data\FileStream.hpp" />

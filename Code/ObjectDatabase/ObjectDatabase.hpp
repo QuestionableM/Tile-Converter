@@ -6,8 +6,10 @@
 class DatabaseLoader
 {
 	friend class AssetListLoader;
+	friend class HarvestableListLoader;
 
 	static std::unordered_map<SMUuid, AssetData*> Assets;
+	static std::unordered_map<SMUuid, HarvestableData*> Harvestables;
 	static const std::unordered_map<std::string, void (*)(const nlohmann::json&)> FuncPointers;
 
 	static TextureList LoadTextureList(const nlohmann::json& texList);
@@ -23,6 +25,7 @@ class DatabaseLoader
 
 public:
 	static AssetData* GetAsset(const SMUuid& uuid);
+	static HarvestableData* GetHarvestable(const SMUuid& uuid);
 
 	static void LoadDatabase();
 };

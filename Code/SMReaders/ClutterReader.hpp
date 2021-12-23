@@ -14,6 +14,9 @@ public:
 		ClutterReader::Read(ClutterReader::Read(header, memory), part);
 	}
 
+#pragma warning(push)
+#pragma warning(disable : 4996)
+
 	static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& memory)
 	{
 		DebugOutL("Clutter: ", header->clutterCompressedSize, " ", header->clutterSize);
@@ -27,6 +30,8 @@ public:
 
 		return bytes;
 	}
+
+#pragma warning(pop)
 
 	static void Read(const std::vector<Byte>& bytes, TilePart* part)
 	{

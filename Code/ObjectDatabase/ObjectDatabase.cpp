@@ -14,6 +14,8 @@
 namespace fs = std::filesystem;
 
 std::unordered_map<SMUuid, AssetData*> DatabaseLoader::Assets = {};
+std::unordered_map<SMUuid, HarvestableData*> DatabaseLoader::Harvestables = {};
+
 const std::unordered_map<std::string, void (*)(const nlohmann::json&)> DatabaseLoader::FuncPointers =
 {
 	{ "assetListRenderable", AssetListLoader::Load		 },
@@ -71,6 +73,7 @@ bool DatabaseLoader::LoadTextureData(const nlohmann::json& jLodList, TextureData
 	if (jSubMeshList.is_array())
 	{
 		std::size_t _idx = 0;
+		tData = TextureData(TextureDataType::SubMeshList);
 		
 		for (const auto& subMeshItem : jSubMeshList)
 		{
@@ -89,6 +92,8 @@ bool DatabaseLoader::LoadTextureData(const nlohmann::json& jLodList, TextureData
 	const auto& jSubMeshMap = JsonReader::Get(jLodList, "subMeshMap");
 	if (jSubMeshMap.is_object())
 	{
+		tData = TextureData(TextureDataType::SubMeshMap);
+
 		for (const auto& subMeshItem : jSubMeshMap.items())
 		{
 			if (!subMeshItem.value().is_object()) continue;
@@ -222,8 +227,16 @@ void DatabaseLoader::LoadModDatabase()
 
 AssetData* DatabaseLoader::GetAsset(const SMUuid& uuid)
 {
-	if (DatabaseLoader::Assets.find(uuid) != DatabaseLoader::Assets.end())
-		return DatabaseLoader::Assets.at(uuid);
+	if (Assets.find(uuid) != Assets.end())
+		return Assets.at(uuid);
+
+	return nullptr;
+}
+
+HarvestableData* DatabaseLoader::GetHarvestable(const SMUuid& uuid)
+{
+	if (Harvestables.find(uuid) != Harvestables.end())
+		return Harvestables.at(uuid);
 
 	return nullptr;
 }
