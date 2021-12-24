@@ -11,6 +11,7 @@ class Asset : public TileEntity
 {
 	friend class TilePart;
 	friend class AssetListReader;
+	friend class Tile;
 
 	struct Model* pModel;
 	class AssetData* pParent;

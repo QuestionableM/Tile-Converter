@@ -36,5 +36,6 @@ public:
 	std::vector<long long> GetGround() const;
 	TilePart* GetPart(const int& x, const int& y) const;
 
-	void WriteToFile(const std::wstring& path);
+	void WriteToFile(const std::wstring& path)  const;
+	void WriteMtlFile(const std::wstring& path) const;
 };

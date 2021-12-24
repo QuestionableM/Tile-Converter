@@ -38,6 +38,36 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 		file.write(output_str.c_str(), output_str.size());
 	}
 
+	for (const glm::vec2& uv : this->uvs)
+	{
+		std::string output_str;
+		output_str.append("vt ");
+		output_str.append(std::to_string(uv.x));
+		output_str.append(" ");
+		output_str.append(std::to_string(uv.y));
+		output_str.append("\n");
+
+		file.write(output_str.c_str(), output_str.size());
+	}
+	
+	//implement normals here
+	/*
+	bool has_uv = (d_idx[1] > -1) && ConvertSettings::ExportUvs;
+				bool has_normal = (d_idx[2] > -1) && ConvertSettings::ExportNormals;
+
+				String::Combine(_f_str, " ", d_idx[0] + oData.Vertex + 1);
+
+				if (!has_uv && !has_normal) continue;
+
+				_f_str.append("/");
+
+				if (has_uv)
+					_f_str.append(std::to_string(d_idx[1] + oData.Texture + 1));
+
+				if (has_normal)
+					String::Combine(_f_str, "/", d_idx[2] + oData.Normal + 1);
+	*/
+
 	for (std::size_t mIdx = 0; mIdx < this->subMeshData.size(); mIdx++)
 	{
 		const SubMeshData* pSubMesh = this->subMeshData[mIdx];
@@ -53,6 +83,14 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 			{
 				_f_str.append(" ");
 				_f_str.append(std::to_string(d_idx[0] + offset.Vertex + 1));
+
+				const bool has_uv = (d_idx[1] > -1);
+
+				if (!has_uv) continue;
+
+				_f_str.append("/");
+
+				if (has_uv) _f_str.append(std::to_string(d_idx[1] + offset.Uv + 1));
 			}
 
 			_f_str.append("\n");

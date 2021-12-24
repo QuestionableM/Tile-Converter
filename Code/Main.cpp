@@ -19,8 +19,9 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/Asset Rotation Test.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/The Trenches.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
+	output_tile->WriteMtlFile(L"./OutputTile.mtl");
 
 	while (true) {};
 

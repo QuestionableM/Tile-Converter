@@ -8,9 +8,11 @@
 class Harvestable : public TileEntity
 {
 	friend class HarvestableListReader;
+	friend class Tile;
 
 	Color color;
 	Model* pModel;
+	class HarvestableData* pParent;
 
 public:
 	Harvestable() = default;

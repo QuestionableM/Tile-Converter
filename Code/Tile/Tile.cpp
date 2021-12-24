@@ -1,6 +1,8 @@
 #include "Tile.hpp"
 
 #include "Console.hpp"
+#include "Utils/String.hpp"
+#include "ObjectDatabase/ObjectData.hpp"
 
 Tile::Tile(const int& width, const int& height)
 {
@@ -209,7 +211,7 @@ TilePart* Tile::GetPart(const int& x, const int& y) const
 	return this->Tiles[(std::size_t)(x + y * this->Width)];
 }
 
-void Tile::WriteToFile(const std::wstring& path)
+void Tile::WriteToFile(const std::wstring& path) const
 {
 	std::ofstream output_model(path);
 	if (output_model.is_open())
@@ -273,4 +275,100 @@ void Tile::WriteToFile(const std::wstring& path)
 	}
 
 	DebugOutL("Finished!");
+}
+
+struct ObjectTexData
+{
+	TextureList Textures;
+	Color TexColor;
+};
+
+void Tile::WriteMtlFile(const std::wstring& path) const
+{
+	std::ofstream oMtl(path);
+	if (!oMtl.is_open()) return;
+
+	std::unordered_map<std::string, ObjectTexData> tData = {};
+
+	for (int y = 0; y < this->Width; y++)
+	{
+		for (int x = 0; x < this->Height; x++)
+		{
+			const TilePart* tPart = this->GetPart(x, y);
+
+			for (int z = 0; z < 4; z++)
+			{
+				for (const Asset* cAsset : tPart->Assets[z])
+				{
+					const Model* pModel = cAsset->GetModel();
+
+					for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
+					{
+						const SubMeshData* pSubMesh = pModel->subMeshData[a];
+						const std::wstring tex_name = (cAsset->pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->MaterialName);
+
+						ObjectTexData oTexData;
+						if (cAsset->pParent->Textures.GetEntry(tex_name, oTexData.Textures))
+						{
+							oTexData.TexColor = cAsset->GetColor(oTexData.Textures.def_color_idx);
+
+							const std::string mtl_name = cAsset->uuid.ToString() + " " + oTexData.TexColor.StringHex() + " " + std::to_string(a + 1);
+
+							if (tData.find(mtl_name) != tData.end())
+								continue;
+
+							tData.insert(std::make_pair(mtl_name, oTexData));
+						}
+					}
+				}
+
+				for (const Harvestable* cHarvestable : tPart->Harvestables[z])
+				{
+					const Model* pModel = cHarvestable->GetModel();
+
+					for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
+					{
+						const std::string mtl_name = cHarvestable->uuid.ToString() + " " + cHarvestable->GetColor().StringHex() + " " + std::to_string(a + 1);
+
+						if (tData.find(mtl_name) != tData.end())
+							continue;
+
+						const SubMeshData* pSubMesh = pModel->subMeshData[a];
+						const std::wstring tex_name = (cHarvestable->pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->MaterialName);
+
+						ObjectTexData oTexData;
+						if (cHarvestable->pParent->Textures.GetEntry(tex_name, oTexData.Textures))
+						{
+							oTexData.TexColor = cHarvestable->GetColor();
+
+							tData.insert(std::make_pair(mtl_name, oTexData));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (const auto& tDatum : tData)
+	{
+		std::string output_str = "newmtl " + tDatum.first;
+		output_str.append("\nNs 324");
+		output_str.append("\nKa 1 1 1\nKd ");
+		output_str.append(tDatum.second.TexColor.StringNormalized());
+		output_str.append("\nKs 0.5 0.5 0.5");
+		output_str.append("\nKe 0 0 0");
+		output_str.append("\nNi 1.45");
+		output_str.append("\nd 1");
+		output_str.append("\nillum 2");
+
+		const TextureList& tList = tDatum.second.Textures;
+
+		if (!tList.nor.empty()) output_str.append("\nmap_Bump " + String::ToUtf8(tList.nor));
+		if (!tList.dif.empty()) output_str.append("\nmap_Kd " + String::ToUtf8(tList.dif));
+		if (!tList.asg.empty()) output_str.append("\nmap_Ks " + String::ToUtf8(tList.asg));
+
+		output_str.append("\n\n");
+
+		oMtl.write(output_str.c_str(), output_str.size());
+	}
 }

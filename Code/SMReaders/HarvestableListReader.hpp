@@ -59,7 +59,7 @@ public:
 
 			index += 0x3c;
 
-			const HarvestableData* hvs_data = DatabaseLoader::GetHarvestable(uuid);
+			HarvestableData* hvs_data = DatabaseLoader::GetHarvestable(uuid);
 			if (!hvs_data)
 			{
 				DebugErrorL("Couln't find any harvestables with the specfieid id: ", uuid.ToString());
@@ -77,6 +77,7 @@ public:
 			new_hvs->SetUuid(uuid);
 			new_hvs->SetColor(color);
 			new_hvs->pModel = hvs_model;
+			new_hvs->pParent = hvs_data;
 
 			part->AddHarvestable(new_hvs, hvs_index);
 		}
