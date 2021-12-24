@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Tile/Object/TileEntity.hpp"
-#include "ObjectDatabase/ObjectData.hpp"
+
+#include "Utils/Color.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
 class Harvestable : public TileEntity
@@ -16,23 +17,9 @@ public:
 	Harvestable(const Harvestable&) = delete;
 	Harvestable(Harvestable&) = delete;
 
-	Model* GetModel() const
-	{
-		return this->pModel;
-	}
+	void SetColor(const Color& color);
 
-	void SetColor(const Color& color)
-	{
-		this->color = color;
-	}
-
-	Color GetColor() const
-	{
-		return this->color;
-	}
-
-	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override
-	{
-		return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);
-	}
+	Model* GetModel() const;
+	Color GetColor() const;
+	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 };

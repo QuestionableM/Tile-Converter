@@ -66,6 +66,9 @@ public:
 				continue;
 			}
 
+			Model* hvs_model = ModelStorage::LoadModel(hvs_data->Mesh, true, true);
+			if (!hvs_model) continue;
+
 			Harvestable* new_hvs = new Harvestable();
 			
 			new_hvs->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
@@ -73,15 +76,9 @@ public:
 			new_hvs->SetSize({ f_size[0], f_size[1], f_size[2] });
 			new_hvs->SetUuid(uuid);
 			new_hvs->SetColor(color);
+			new_hvs->pModel = hvs_model;
 
-			new_hvs->pModel = ModelStorage::LoadModel(hvs_data->Mesh, true, true);
-			if (new_hvs->pModel != nullptr)
-			{
-				part->AddHarvestable(new_hvs, hvs_index);
-				continue;
-			}
-			
-			delete new_hvs;
+			part->AddHarvestable(new_hvs, hvs_index);
 		}
 
 		return index;

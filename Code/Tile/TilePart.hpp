@@ -28,8 +28,6 @@ public:
 	//std::vector<Blueprint*> Blueprints; IMPLEMENT LATER
 	//std::vector<Decal*> Decals; IMPLEMENT LATER
 
-
-
 public:
 	TilePart(Tile* parent);
 

@@ -148,6 +148,15 @@
     <ClCompile Include="Code\ObjectDatabase\ModelStorage.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
+    <ClCompile Include="Code\Tile\Object\Asset.cpp" />
+    <ClCompile Include="Code\Tile\Object\Harvestable.cpp" />
+    <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
+    <ClCompile Include="Code\Tile\Tile.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="Code\Tile\TilePart.cpp" />
     <ClCompile Include="Code\Utils\Color.cpp" />
     <ClCompile Include="Code\Utils\Json.cpp" />

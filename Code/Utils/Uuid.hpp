@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Utils/WinInclude.hpp"
 #include <uuid/uuid.h>
 #include <string>
 
