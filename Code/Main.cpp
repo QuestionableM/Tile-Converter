@@ -7,7 +7,11 @@
 
 #include <locale>
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int WINAPI WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd)
 {
 	std::setlocale(LC_CTYPE, "en_US.UTF-8");
 	CreateDebugConsole(L"World Converter Debug Console");
@@ -15,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/Hideout_512_01.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Asset Rotation Test.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
 	while (true) {};
