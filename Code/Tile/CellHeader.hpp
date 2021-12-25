@@ -56,7 +56,7 @@ public:
 
 	void Read()
 	{
-		MemoryWrapper mMemory(mBytes.data());
+		MemoryWrapper mMemory(mBytes);
 
 		this->mipIndex = mMemory.Objects<int>(0x0, 6);
 		this->mipCompressedSize = mMemory.Objects<int>(0x18, 6);

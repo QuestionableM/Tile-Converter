@@ -46,7 +46,7 @@ public:
 
 	static int Read(const std::vector<Byte>& bytes, const int& asset_idx, const int& len, const int& version, TilePart* part)
 	{
-		MemoryWrapper memory((Byte*)bytes.data());
+		MemoryWrapper memory(bytes);
 
 		int index = 0;
 		for (int a = 0; a < len; a++)

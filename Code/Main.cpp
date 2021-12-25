@@ -19,7 +19,7 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/The Trenches.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Hideout_512_01.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 	output_tile->WriteMtlFile(L"./OutputTile.mtl");
 

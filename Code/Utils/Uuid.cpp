@@ -9,6 +9,21 @@ SMUuid::SMUuid(const std::vector<long long>& longs)
 	this->uuid_data = uuids::uuid(uuid_bytes);
 }
 
+SMUuid::SMUuid(const long long& first, const long long& second, const bool& big_endian)
+{
+	std::vector<long long> long_data = { first, second };
+
+	std::vector<std::uint8_t> uuid_bytes(8 * 2);
+	std::memcpy(uuid_bytes.data(), long_data.data(), 8 * 2);
+
+	if (big_endian)
+	{
+		std::reverse(uuid_bytes.begin(), uuid_bytes.end());
+	}
+
+	this->uuid_data = uuids::uuid(uuid_bytes);
+}
+
 SMUuid::SMUuid(const std::string& str_uuid)
 {
 	this->uuid_data = uuids::uuid::from_string(str_uuid);

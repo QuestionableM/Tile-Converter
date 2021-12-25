@@ -12,6 +12,7 @@ class Asset : public TileEntity
 	friend class TilePart;
 	friend class AssetListReader;
 	friend class Tile;
+	friend class PrefabFileReader;
 
 	struct Model* pModel;
 	class AssetData* pParent;

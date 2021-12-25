@@ -223,13 +223,13 @@ Model* ModelStorage::LoadModel(
 		Model* newModel = new Model(path);
 		ModelStorage::LoadSubMeshes(ModelScene, newModel);
 
-		DebugOutL("[Model] Loaded: ", path);
-
 		CachedModels.insert(std::make_pair(path, newModel));
 		Importer.FreeScene();
 
 		return newModel;
 	}
+
+	DebugErrorL("[Model] Couldn't load: ", path);
 
 	Importer.FreeScene();
 	return nullptr;

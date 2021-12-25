@@ -47,7 +47,7 @@ public:
 	{
 		const int wh_mul = 0x21 * 0x21;
 
-		MemoryWrapper memory((Byte*)bytes.data());
+		MemoryWrapper memory(bytes);
 
 		std::vector<float> height;
 		std::vector<int> color;

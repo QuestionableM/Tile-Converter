@@ -45,7 +45,7 @@ public:
 	{
 		TileHeader* new_tile = new TileHeader();
 		new_tile->tile_bytes = bytes;
-		MemoryWrapper mMemory = (Byte*)bytes.data();
+		MemoryWrapper mMemory = bytes;
 	
 		std::vector<char> tile_keyword = mMemory.NextObjects<char>(4);
 		std::string tile_key(tile_keyword.begin(), tile_keyword.end());

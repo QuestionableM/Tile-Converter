@@ -12,6 +12,7 @@ class SMUuid
 public:
 	SMUuid() = default;
 	SMUuid(const std::vector<long long>& longs);
+	SMUuid(const long long& first, const long long& second, const bool& big_endian = false);
 	SMUuid(const std::string& str_uuid);
 
 	void operator=(const std::vector<long long>& longs);

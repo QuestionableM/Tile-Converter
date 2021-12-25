@@ -3,6 +3,7 @@
 #include "Utils/ByteImpl.hpp"
 #include "Tile/Object/Asset.hpp"
 #include "Tile/Object/Harvestable.hpp"
+#include "Tile/Object/Prefab.h"
 #include "Tile/WriterOffset.hpp"
 
 class Tile;
@@ -22,9 +23,9 @@ public:
 
 	std::vector<std::vector<Harvestable*>> Harvestables;
 	std::vector<std::vector<Asset*>> Assets;
+	std::vector<Prefab*> Prefabs;
 
 	//std::vector<Node*> Nodes; IMPLEMENT LATER
-	//std::vector<Prefab*> Prefabs; IMPLEMENT LATER
 	//std::vector<Blueprint*> Blueprints; IMPLEMENT LATER
 	//std::vector<Decal*> Decals; IMPLEMENT LATER
 
@@ -38,6 +39,7 @@ public:
 
 	void AddAsset(Asset* asset, const int& index);
 	void AddHarvestable(Harvestable* harvestable, const int& index);
+	void AddPrefab(Prefab* prefab);
 
 	Tile* GetParent();
 

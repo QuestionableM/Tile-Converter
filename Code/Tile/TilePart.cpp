@@ -55,33 +55,12 @@ void TilePart::AddHarvestable(Harvestable* harvestable, const int& index)
 	Harvestables[index].push_back(harvestable);
 }
 
-//void AddNode(Node* node)
-//{
-//	assert(node == nullptr);
+void TilePart::AddPrefab(Prefab* prefab)
+{
+	assert(prefab != nullptr);
 
-//	Nodes.push_back(node);
-//}
-
-//void AddPrefab(Prefab* prefab)
-//{
-//	assert(prefab == nullptr);
-
-//	Prefabs.push_back(prefab);
-//}
-
-//void AddBlueprint(Blueprint* blueprint)
-//{
-//	assert(blueprint == nullptr);
-
-//	Blueprints.push_back(blueprint);
-//}
-
-//void AddDecal(Decal* decal)
-//{
-//	assert(decal == nullptr);
-
-//	Decals.push_back(decal);
-//}
+	Prefabs.push_back(prefab);
+}
 
 Tile* TilePart::GetParent()
 {
@@ -122,5 +101,8 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 
 			pModel->WriteToFile(model_matrix, mOffsetData, model, cHarvestable);
 		}
+
+		for (Prefab* cPrefab : this->Prefabs)
+			cPrefab->WriteToFile(model, transform, mOffsetData);
 	}
 }

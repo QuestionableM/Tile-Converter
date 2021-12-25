@@ -9,59 +9,21 @@
 #include "SMReaders/ClutterReader.hpp"
 #include "SMReaders/AssetListReader.hpp"
 #include "SMReaders/HarvestableListReader.hpp"
+#include "SMReaders/PrefabReader.hpp"
 
-#include <sstream>
-#include <iomanip>
-#include <fstream>
+#include "Utils/File.hpp"
+#include "Utils/String.hpp"
 
 class TileReader
 {
-	static std::vector<Byte> ReadBytes(const std::wstring& path)
-	{
-		std::ifstream input_file(path, std::ios::binary);
-		std::vector<Byte> file_bytes = {};
-
-		if (input_file.is_open())
-		{
-			input_file.seekg(0, std::ios::end);
-			const std::size_t file_size = (std::size_t)input_file.tellg();
-			input_file.seekg(0, std::ios::beg);
-
-			file_bytes.resize(file_size);
-			input_file.read((char*)file_bytes.data(), file_size);
-
-			input_file.close();
-		}
-
-		return file_bytes;
-	}
-
 	TileReader() = default;
 
 public:
 	static Tile* ReadTile(const std::wstring& path)
 	{
-		std::vector<Byte> file_bytes = TileReader::ReadBytes(path);
+		std::vector<Byte> file_bytes = File::ReadFileBytes(path);
 
 		return TileReader::ReadTile(file_bytes);
-	}
-
-	static std::string GetHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength)
-	{
-		std::string output_string;
-		int a = 1;
-
-		for (std::size_t i = 0; i < std::min(bytes.size(), (std::size_t)maxLength); i++)
-		{
-			std::stringstream sstream;
-			sstream << std::setfill('0') << std::setw(sizeof(Byte) * 2) << std::hex << (int)bytes[i];
-
-			output_string.append(sstream.str());
-
-			if ((a++) % lineLength == 0) output_string.append("\n\t\t");
-		}
-
-		return output_string;
 	}
 
 	static Tile* ReadTile(const std::vector<Byte>& tile_data)
@@ -85,10 +47,10 @@ public:
 
 			std::vector<Byte> bytes = header->GetHeader(x, y)->Data();
 			DebugOutL("\tBLOB(", x, ", ", y, "):");
-			DebugOutL("\t\t", GetHexString(bytes, header->CellHeadersSize, 32));
+			DebugOutL("\t\t", String::BytesToHexString(bytes, header->CellHeadersSize, 32));
 		}
 
-		MemoryWrapper reader((Byte*)header->TileData().data());
+		MemoryWrapper reader(header->TileData());
 
 		const int tileXSize = header->Width;
 		const int tileYSize = header->Height;
@@ -116,7 +78,7 @@ public:
 					AssetListReader::Read(h, reader, part);
 					//NodeReader - not needed
 					//ScriptReader - not needed
-					//PrefabReader - in the works
+					PrefabReader::Read(h, reader, part);
 					//BlueprintListReader - in the works
 					//DecalReader - in the works
 					HarvestableListReader::Read(h, reader, part);

@@ -35,7 +35,7 @@ public:
 
 	static void Read(const std::vector<Byte>& bytes, TilePart* part)
 	{
-		MemoryWrapper memory((Byte*)bytes.data());
+		MemoryWrapper memory(bytes);
 
 		Byte first_byte = memory.NextObject<Byte>();
 		if (first_byte != 0)

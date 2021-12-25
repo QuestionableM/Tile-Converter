@@ -150,6 +150,7 @@
     <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
     <ClCompile Include="Code\Tile\Object\Asset.cpp" />
     <ClCompile Include="Code\Tile\Object\Harvestable.cpp" />
+    <ClCompile Include="Code\Tile\Object\Prefab.cpp" />
     <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
     <ClCompile Include="Code\Tile\Tile.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
@@ -159,6 +160,7 @@
     </ClCompile>
     <ClCompile Include="Code\Tile\TilePart.cpp" />
     <ClCompile Include="Code\Utils\Color.cpp" />
+    <ClCompile Include="Code\Utils\File.cpp" />
     <ClCompile Include="Code\Utils\Json.cpp" />
     <ClCompile Include="Code\Utils\String.cpp" />
     <ClCompile Include="Code\Main.cpp" />
@@ -177,13 +179,19 @@
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
     <ClInclude Include="Code\ProgramConfig.hpp" />
     <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp" />
+    <ClInclude Include="Code\SMReaders\PrefabFileReader.hpp" />
+    <ClInclude Include="Code\SMReaders\PrefabHeader.hpp" />
+    <ClInclude Include="Code\SMReaders\PrefabReader.hpp" />
     <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
+    <ClInclude Include="Code\Tile\Object\Prefab.h" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />
+    <ClInclude Include="Code\Utils\BitStream.hpp" />
     <ClInclude Include="Code\Utils\ByteImpl.hpp" />
     <ClInclude Include="Code\SMReaders\Data\FileStream.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Json.hpp" />
     <ClInclude Include="Code\SMReaders\Data\Memory.hpp" />
     <ClInclude Include="Code\Utils\Color.hpp" />
+    <ClInclude Include="Code\Utils\File.hpp" />
     <ClInclude Include="Code\Utils\Json.hpp" />
     <ClInclude Include="Code\Utils\Memory.hpp" />
     <ClInclude Include="Code\Utils\String.hpp" />
