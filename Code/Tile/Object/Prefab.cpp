@@ -3,16 +3,6 @@
 #include "Tile/Object/Asset.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
-Prefab::Prefab(const bool& loaded)
-{
-	this->loaded = loaded;
-}
-
-bool Prefab::IsLoaded() const
-{
-	return this->loaded;
-}
-
 std::wstring Prefab::GetPath() const
 {
 	return this->path;
@@ -58,7 +48,7 @@ std::string Prefab::GetMtlName(const std::wstring& mat_name, const std::size_t& 
 	return "PREFAB_NOT_IMPLEMENTED";
 }
 
-void Prefab::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset)
+void Prefab::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset) const
 {
 	const glm::mat4 prefab_matrix = transform_mat * this->GetTransformMatrix();
 
@@ -69,4 +59,16 @@ void Prefab::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, Wr
 
 		pModel->WriteToFile(model_matrix, mOffset, file, cAsset);
 	}
+
+	for (const Prefab* cPrefab : this->Prefabs)
+		cPrefab->WriteToFile(file, transform_mat, mOffset);
+}
+
+void Prefab::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
+{
+	for (const Asset* cAsset : this->Assets)
+		cAsset->FillTextureMap(tex_map);
+
+	for (const Prefab* cPrefab : this->Prefabs)
+		cPrefab->FillTextureMap(tex_map);
 }

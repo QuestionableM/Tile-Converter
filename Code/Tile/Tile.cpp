@@ -277,12 +277,6 @@ void Tile::WriteToFile(const std::wstring& path) const
 	DebugOutL("Finished!");
 }
 
-struct ObjectTexData
-{
-	TextureList Textures;
-	Color TexColor;
-};
-
 void Tile::WriteMtlFile(const std::wstring& path) const
 {
 	std::ofstream oMtl(path);
@@ -290,63 +284,19 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 
 	std::unordered_map<std::string, ObjectTexData> tData = {};
 
-	for (int y = 0; y < this->Width; y++)
+	for (const TilePart* tPart : this->Tiles)
 	{
-		for (int x = 0; x < this->Height; x++)
+		for (int a = 0; a < 4; a++)
 		{
-			const TilePart* tPart = this->GetPart(x, y);
+			for (const Asset* cAsset : tPart->Assets[a])
+				cAsset->FillTextureMap(tData);
 
-			for (int z = 0; z < 4; z++)
-			{
-				for (const Asset* cAsset : tPart->Assets[z])
-				{
-					const Model* pModel = cAsset->GetModel();
-
-					for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
-					{
-						const SubMeshData* pSubMesh = pModel->subMeshData[a];
-						const std::wstring tex_name = (cAsset->pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->MaterialName);
-
-						ObjectTexData oTexData;
-						if (cAsset->pParent->Textures.GetEntry(tex_name, oTexData.Textures))
-						{
-							oTexData.TexColor = cAsset->GetColor(oTexData.Textures.def_color_idx);
-
-							const std::string mtl_name = cAsset->uuid.ToString() + " " + oTexData.TexColor.StringHex() + " " + std::to_string(a + 1);
-
-							if (tData.find(mtl_name) != tData.end())
-								continue;
-
-							tData.insert(std::make_pair(mtl_name, oTexData));
-						}
-					}
-				}
-
-				for (const Harvestable* cHarvestable : tPart->Harvestables[z])
-				{
-					const Model* pModel = cHarvestable->GetModel();
-
-					for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
-					{
-						const std::string mtl_name = cHarvestable->uuid.ToString() + " " + cHarvestable->GetColor().StringHex() + " " + std::to_string(a + 1);
-
-						if (tData.find(mtl_name) != tData.end())
-							continue;
-
-						const SubMeshData* pSubMesh = pModel->subMeshData[a];
-						const std::wstring tex_name = (cHarvestable->pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->MaterialName);
-
-						ObjectTexData oTexData;
-						if (cHarvestable->pParent->Textures.GetEntry(tex_name, oTexData.Textures))
-						{
-							oTexData.TexColor = cHarvestable->GetColor();
-
-							tData.insert(std::make_pair(mtl_name, oTexData));
-						}
-					}
-				}
-			}
+			for (const Harvestable* cHarvestable : tPart->Harvestables[a])
+				cHarvestable->FillTextureMap(tData);
 		}
+
+		for (const Prefab* cPrefab : tPart->Prefabs)
+			cPrefab->FillTextureMap(tData);
 	}
 
 	for (const auto& tDatum : tData)

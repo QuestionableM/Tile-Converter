@@ -16,15 +16,9 @@ class Prefab : public TileEntity
 	//std::vector<Node*> Nodes;
 	std::vector<Asset*> Assets;
 
-	std::vector<std::string> BlueprintPaths;
-	std::vector<std::string> PrefabPaths;
-
-	bool loaded;
-
 public:
-	Prefab(const bool& loaded = false);
+	Prefab() = default;
 
-	bool IsLoaded() const;
 	std::wstring GetPath() const;
 	std::wstring GetFlag() const;
 	//std::vector<Blueprint*> GetBlueprints() const;
@@ -39,5 +33,7 @@ public:
 	void AddAsset(Asset* asset);
 
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
-	void WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset);
+	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
+
+	void WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset) const;
 };
