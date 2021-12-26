@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Tile/Object/Prefab.h"
+#include "Tile/Object/Blueprint.hpp"
 #include "SMReaders/PrefabHeader.hpp"
 
 #include "Utils/File.hpp"
 #include "Utils/Memory.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
+#include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/KeywordReplacer.hpp"
 
 #include <algorithm>
 
@@ -41,10 +44,10 @@ public:
 			return nullptr;
 		}
 
-		Prefab* prefab = new Prefab(true);
+		Prefab* prefab = new Prefab();
 		
 		const int version = reader.NextObject<int>(true);
-		DebugOutL("Version: ", version);
+		DebugOutL("Prefab Version: ", version);
 
 		BitStream stream(reader);
 
@@ -86,28 +89,52 @@ public:
 
 	static void ReadBlueprints(BitStream& stream, Prefab* prefab, const int& count)
 	{
+		static const std::string bp_secret = "?JB:";
+
 		for (int a = 0; a < count; a++)
 		{
 			int string_length = stream.ReadInt();
-			std::string value = stream.ReadString(string_length);
+			const std::string value = stream.ReadString(string_length);
 
 			std::vector<float> f_pos = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
 			std::vector<float> f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
 
-			/*
-			BlueprintImpl blueprint = new BlueprintImpl(value.startsWith("?JB:"));
-			blueprint.setPosition(f_pos);
-			blueprint.setRotation(f_quat);
-			blueprint.setValue(value);
-			*/
-
 			stream.ReadInt();
 
-			DebugOutL("Blueprint Value: ", value);
-			DebugOutL("Blueprint Position: ", f_pos);
-			DebugOutL("Blueprint Rotation: ", f_quat);
+			const std::size_t bp_index = value.find(bp_secret);
+			if (bp_index != std::string::npos)
+			{
+				const std::string bp_string = value.substr(bp_index + bp_secret.size());
 
-			//prefab.addBlueprint(blueprint);
+				Blueprint* blueprint = Blueprint::FromJsonString(bp_string);
+				if (!blueprint) continue;
+
+				DebugOutL("Blueprint Position: ", f_pos);
+				DebugOutL("Blueprint Rotation: ", f_quat);
+				DebugOutL("Blueprint Value: ", bp_string);
+
+				blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+				blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+				
+				prefab->AddBlueprint(blueprint);
+			}
+			else
+			{
+				const std::wstring bp_wide_val = String::ToWide(value);
+				const std::wstring bp_path = KeywordReplacer::ReplaceKey(bp_wide_val);
+
+				Blueprint* blueprint = Blueprint::FromFile(bp_path);
+				if (!blueprint) continue;
+
+				DebugOutL("Blueprint Position: ", f_pos);
+				DebugOutL("Blueprint Rotation: ", f_quat);
+				DebugOutL("Blueprint Path: ", bp_path);
+
+				blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+				blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+
+				prefab->AddBlueprint(blueprint);
+			}
 		}
 	}
 
@@ -224,7 +251,7 @@ public:
 				}
 			}
 
-			AssetData* mData = DatabaseLoader::GetAsset(uuid);
+			AssetData* mData = Mod::GetGlobalAsset(uuid);
 			if (mData != nullptr)
 			{
 				asset->pModel = ModelStorage::LoadModel(mData->Mesh, true, true);
@@ -235,11 +262,6 @@ public:
 					asset->SetSize({ f_size[0], f_size[1], f_size[2] });
 					asset->SetUuid(uuid);
 					asset->pParent = mData;
-
-					DebugOutL("Asset Uuid: ", uuid.ToString());
-					DebugOutL("Asset Position: ", f_pos);
-					DebugOutL("Asset Rotation: ", f_quat);
-					DebugOutL("Asset Size: ", f_size);
 
 					prefab->AddAsset(asset);
 

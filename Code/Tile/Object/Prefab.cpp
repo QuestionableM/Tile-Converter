@@ -1,6 +1,7 @@
 #include "Prefab.h"
 
 #include "Tile/Object/Asset.hpp"
+#include "Tile/Object/Blueprint.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
 std::wstring Prefab::GetPath() const
@@ -33,6 +34,11 @@ void Prefab::SetFlag(const std::wstring& flag)
 	this->flag = flag;
 }
 
+void Prefab::AddBlueprint(Blueprint* blueprint)
+{
+	this->Blueprints.push_back(blueprint);
+}
+
 void Prefab::AddPrefab(Prefab* prefab)
 {
 	this->Prefabs.push_back(prefab);
@@ -61,13 +67,16 @@ void Prefab::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, Wr
 	}
 
 	for (const Prefab* cPrefab : this->Prefabs)
-		cPrefab->WriteToFile(file, transform_mat, mOffset);
+		cPrefab->WriteToFile(file, prefab_matrix, mOffset);
 }
 
 void Prefab::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
 	for (const Asset* cAsset : this->Assets)
 		cAsset->FillTextureMap(tex_map);
+
+	for (const Blueprint* cBlueprint : this->Blueprints)
+		cBlueprint->FillTextureMap(tex_map);
 
 	for (const Prefab* cPrefab : this->Prefabs)
 		cPrefab->FillTextureMap(tex_map);

@@ -1,7 +1,8 @@
 #include "AssetListLoader.hpp"
-#include "ObjectDatabase/ObjectDatabase.hpp"
+#include "ObjectDatabase/Mod/DefaultLoader.hpp"
 
 #include "Utils/String.hpp"
+#include "ObjectDatabase/Mod/Mod.hpp"
 
 #include "Console.hpp"
 
@@ -24,7 +25,7 @@ void AssetListLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unord
 	}
 }
 
-void AssetListLoader::Load(const nlohmann::json& fAssets)
+void AssetListLoader::Load(const nlohmann::json& fAssets, Mod* mod)
 {
 	if (!fAssets.is_array()) return;
 	DebugOutL("Loading AssetList...");
@@ -36,17 +37,28 @@ void AssetListLoader::Load(const nlohmann::json& fAssets)
 		const auto& aUuid = JsonReader::Get(mAsset, "uuid");
 		if (!aUuid.is_string()) continue;
 
+		SMUuid asset_uuid = aUuid.get<std::string>();
+		if (Mod::AssetStorage.find(asset_uuid) != Mod::AssetStorage.end())
+		{
+			DebugWarningL("Asset with the same uuid already exists! (", asset_uuid.ToString(), ")");
+			continue;
+		}
+
 		std::wstring tMesh;
 		TextureData tData;
-		if (!DatabaseLoader::LoadRenderable(mAsset, tData, tMesh))
+		if (!DefaultLoader::LoadRenderable(mAsset, tData, tMesh))
 			continue;
 
 		AssetData* new_asset = new AssetData();
-		new_asset->Uuid = aUuid.get<std::string>();
+		new_asset->Uuid = asset_uuid;
 		new_asset->Mesh = tMesh;
 		AssetListLoader::LoadDefaultColors(mAsset, new_asset->DefaultColors);
 		new_asset->Textures = tData;
+		new_asset->pMod = mod;
 
-		DatabaseLoader::Assets.insert(std::make_pair(new_asset->Uuid, new_asset));
+		const auto new_pair = std::make_pair(new_asset->Uuid, new_asset);
+
+		mod->Assets.insert(new_pair);
+		Mod::AssetStorage.insert(new_pair);
 	}
 }

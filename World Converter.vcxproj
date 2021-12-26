@@ -143,12 +143,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
-    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.cpp" />
-    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\AssetListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\BlockListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\Mod.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ModelStorage.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\PartListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
     <ClCompile Include="Code\Tile\Object\Asset.cpp" />
+    <ClCompile Include="Code\Tile\Object\Blueprint.cpp" />
     <ClCompile Include="Code\Tile\Object\Harvestable.cpp" />
     <ClCompile Include="Code\Tile\Object\Prefab.cpp" />
     <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
@@ -171,10 +176,14 @@
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
-    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.hpp" />
-    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\BlockListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\Mod.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ModelStorage.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\PartListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
     <ClInclude Include="Code\ProgramConfig.hpp" />
@@ -182,6 +191,7 @@
     <ClInclude Include="Code\SMReaders\PrefabFileReader.hpp" />
     <ClInclude Include="Code\SMReaders\PrefabHeader.hpp" />
     <ClInclude Include="Code\SMReaders\PrefabReader.hpp" />
+    <ClInclude Include="Code\Tile\Object\Blueprint.hpp" />
     <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
     <ClInclude Include="Code\Tile\Object\Prefab.h" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />

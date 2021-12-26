@@ -1,16 +1,24 @@
 #include "Color.hpp"
 
 #include "Utils/String.hpp"
-#include "Console.hpp"
 
 #include <sstream>
 #include <iomanip>
 
 void Color::SetColorInternal(const std::string& color)
 {
-	bytes[0] = (Byte)std::stoi(color.substr(0, 2), nullptr, 16);
-	bytes[1] = (Byte)std::stoi(color.substr(2, 2), nullptr, 16);
-	bytes[2] = (Byte)std::stoi(color.substr(4, 2), nullptr, 16);
+	std::string color_copy = color;
+
+	const std::size_t hash_offset = color.find("#");
+	if (hash_offset != std::string::npos)
+		color_copy = color_copy.substr(hash_offset + 1);
+
+	if (color_copy.size() < 6)
+		color_copy = "000000";
+
+	bytes[0] = (Byte)std::stoi(color_copy.substr(0, 2), nullptr, 16);
+	bytes[1] = (Byte)std::stoi(color_copy.substr(2, 2), nullptr, 16);
+	bytes[2] = (Byte)std::stoi(color_copy.substr(4, 2), nullptr, 16);
 }
 
 Color::Color(const std::string& color)

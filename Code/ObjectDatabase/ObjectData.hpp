@@ -40,12 +40,15 @@ public:
 	TextureData(const TextureDataType& type);
 };
 
+class Mod;
+
 class AssetData
 {
 public:
 	SMUuid Uuid;
 	std::unordered_map<std::wstring, Color> DefaultColors;
 	TextureData Textures;
+	Mod* pMod;
 	std::wstring Mesh;
 
 	AssetData() = default;
@@ -58,9 +61,38 @@ class HarvestableData
 public:
 	SMUuid Uuid;
 	TextureData Textures;
+	Mod* pMod;
 	std::wstring Mesh;
 
 	HarvestableData() = default;
 	HarvestableData(const HarvestableData&) = delete;
 	HarvestableData(HarvestableData&) = delete;
+};
+
+class BlockData
+{
+public:
+	SMUuid Uuid;
+	TextureList Textures;
+	Mod* pMod;
+	Color DefaultColor;
+	int Tiling;
+
+	BlockData() = default;
+	BlockData(const BlockData&) = delete;
+	BlockData(BlockData&) = delete;
+};
+
+class PartData
+{
+public:
+	SMUuid Uuid;
+	TextureData Textures;
+	Color DefaultColor;
+	std::wstring Mesh;
+	Mod* pMod;
+
+	PartData() = default;
+	PartData(const PartData&) = delete;
+	PartData(PartData&) = delete;
 };

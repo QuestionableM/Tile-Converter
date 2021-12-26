@@ -1,36 +1,49 @@
 #include "Json.hpp"
 
-#include <fstream>
-#include <sstream>
-
+#include "Utils/File.hpp"
 #include "Console.hpp"
 
 const nlohmann::json JsonReader::EmptyObject = nlohmann::json();
 
+nlohmann::json JsonReader::ParseJsonStringInternal(const std::string& json_str)
+{
+	return nlohmann::json::parse(json_str);
+}
+
+nlohmann::json JsonReader::ParseJsonString(const std::string& json_str)
+{
+	try
+	{
+		return nlohmann::json::parse(json_str, nullptr, true, true);
+	}
+#ifdef _DEBUG
+	catch (nlohmann::json::parse_error& p_err)
+	{
+		DebugErrorL("Couldn't load the specified json string: ", json_str, "\nError: ", p_err.what());
+	}
+#else
+	catch (...) {}
+#endif
+
+	return EmptyObject;
+}
+
 nlohmann::json JsonReader::LoadParseJson(const std::wstring& path)
 {
-	std::ifstream input_file(path);
-	if (input_file.is_open())
+	const std::string file_data = File::ReadToString(path);
+
+	try
 	{
-		try
-		{
-			std::string _RawJson;
-
-			std::stringstream sstream;
-			sstream << input_file.rdbuf();
-			_RawJson = sstream.str();
-
-			return nlohmann::json::parse(_RawJson, nullptr, true, true);
-		}
-#ifdef _DEBUG
-		catch (nlohmann::json::parse_error& p_err)
-		{
-			DebugErrorL("Couldn't load the specified file: ", path, "\nError: ", p_err.what());
-		}
-#else
-		catch (...) {}
-#endif
+		return nlohmann::json::parse(file_data, nullptr, true, true);
 	}
+#ifdef _DEBUG
+	catch (nlohmann::json::parse_error& p_err)
+	{
+		DebugErrorL("Couldn't load the specified json file: ", path, "\nError: ", p_err.what());
+	}
+#else
+	catch (...) {}
+#endif
 
 	return EmptyObject;
 }

@@ -18,6 +18,8 @@ public:
 	void operator=(const std::vector<long long>& longs);
 	void operator=(const std::string& str_uuid);
 
+	static SMUuid Null();
+
 	std::string ToString() const;
 	std::wstring ToWstring() const;
 };

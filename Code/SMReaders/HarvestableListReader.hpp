@@ -4,6 +4,7 @@
 #include "Utils/Memory.hpp"
 #include "Tile/TilePart.hpp"
 #include "Tile/Tile.hpp"
+#include "ObjectDatabase/Mod/Mod.hpp"
 
 #include "Tile/Object/Harvestable.hpp"
 
@@ -59,7 +60,7 @@ public:
 
 			index += 0x3c;
 
-			HarvestableData* hvs_data = DatabaseLoader::GetHarvestable(uuid);
+			HarvestableData* hvs_data = Mod::GetGlobalHarvestbale(uuid);
 			if (!hvs_data)
 			{
 				DebugErrorL("Couln't find any harvestables with the specfieid id: ", uuid.ToString());

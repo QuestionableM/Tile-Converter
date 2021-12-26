@@ -48,13 +48,13 @@
     <ClCompile Include="Code\Tile\TilePart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Mod\AssetListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\Tile\Object\TileEntity.cpp">
@@ -73,6 +73,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\Utils\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Tile\Object\Blueprint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\Mod\Mod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\Mod\PartListLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\Mod\BlockListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,13 +188,13 @@
     <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\AssetListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\DatabaseLoaders\HarvestableListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Tile\Object\Harvestable.hpp">
@@ -201,6 +216,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Utils\File.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Tile\Object\Blueprint.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\Mod\Mod.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\Mod\PartListLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\Mod\BlockListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

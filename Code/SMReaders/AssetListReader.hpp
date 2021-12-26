@@ -4,6 +4,7 @@
 #include "Tile/Tile.hpp"
 #include "Tile/Object/Asset.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
+#include "ObjectDatabase/Mod/Mod.hpp"
 
 #include "Utils/String.hpp"
 
@@ -105,7 +106,7 @@ public:
 				}
 			}
 
-			AssetData* asset_data = DatabaseLoader::GetAsset(uuid);
+			AssetData* asset_data = Mod::GetGlobalAsset(uuid);
 			if (asset_data != nullptr)
 			{
 				asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });

@@ -655,8 +655,13 @@ namespace uuids
       {
 #ifdef _WIN32
 
+#pragma warning(push)
+#pragma warning(disable : 6031)
+
          GUID newId;
          ::CoCreateGuid(&newId);
+
+#pragma warning(pop)
 
          std::array<uint8_t, 16> bytes =
          { {

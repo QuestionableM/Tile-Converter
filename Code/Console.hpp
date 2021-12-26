@@ -119,9 +119,11 @@ public:
 
 #define CreateDebugConsole(ConName) Console::Create(ConName)
 #define DebugOutL(...) Console::Out(__VA_ARGS__, ConCol::WHITE, "\n")
-#define DebugErrorL(...) Console::Out(ConCol::RED_INT, __VA_ARGS__, ConCol::WHITE, "\n")
+#define DebugErrorL(...) Console::Out(ConCol::RED_INT, "ERROR: ", __VA_ARGS__, ConCol::WHITE, "\n")
+#define DebugWarningL(...) Console::Out(ConCol::YELLOW_INT, "WARNING: ", __VA_ARGS__, ConCol::WHITE, "\n")
 #else
 #define CreateDebugConsole(ConName) ((void*)0)
 #define DebugOutL(...) ((void*)0)
 #define DebugErrorL(...) ((void*)0)
+#define DebugWarningL(...) ((void*)0)
 #endif

@@ -43,6 +43,11 @@ void SMUuid::operator=(const std::string& str_uuid)
 	this->uuid_data = uuids::uuid::from_string(str_uuid);
 }
 
+SMUuid SMUuid::Null()
+{
+	return SMUuid();
+}
+
 std::string SMUuid::ToString() const
 {
 	return uuids::to_string(this->uuid_data);
