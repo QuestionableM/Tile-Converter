@@ -58,13 +58,16 @@ void Prefab::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, Wr
 {
 	const glm::mat4 prefab_matrix = transform_mat * this->GetTransformMatrix();
 
-	for (const Asset* cAsset : this->Assets)
-	{
-		const Model* pModel = cAsset->GetModel();
-		const glm::mat4 model_matrix = prefab_matrix * cAsset->GetTransformMatrix();
+	//for (const Asset* cAsset : this->Assets)
+	//{
+	//	const Model* pModel = cAsset->GetModel();
+	//	const glm::mat4 model_matrix = prefab_matrix * cAsset->GetTransformMatrix();
 
-		pModel->WriteToFile(model_matrix, mOffset, file, cAsset);
-	}
+	//	pModel->WriteToFile(model_matrix, mOffset, file, cAsset);
+	//}
+
+	for (const Blueprint* cBlueprint : this->Blueprints)
+		cBlueprint->WriteToFile(file, prefab_matrix, mOffset);
 
 	for (const Prefab* cPrefab : this->Prefabs)
 		cPrefab->WriteToFile(file, prefab_matrix, mOffset);

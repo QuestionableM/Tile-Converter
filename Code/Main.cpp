@@ -4,6 +4,7 @@
 #include "SMReaders/TileReader.hpp"
 #include "ObjectDatabase/DatabaseConfig.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
+#include "ObjectDatabase/Mod/ObjectRotations.hpp"
 
 #include <locale>
 
@@ -16,14 +17,31 @@ int WINAPI WinMain(
 	std::setlocale(LC_CTYPE, "en_US.UTF-8");
 	CreateDebugConsole(L"World Converter Debug Console");
 
+	Rotations::InitializeRotations();
+
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/Kiosk_64_01.tile");
-	output_tile->WriteToFile(L"./OutputTile.obj");
-	output_tile->WriteMtlFile(L"./OutputTile.mtl");
+	Blueprint* new_blueprint = Blueprint::FromFile(L"./Tests/Car.json");
+	if (new_blueprint != nullptr)
+	{
+		new_blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
 
-	while (true) {};
+		std::ofstream output_bp("./OutputBlueprint.obj");
+		if (output_bp.is_open())
+		{
+			WriterOffsetData new_offset = { 0, 0, 0, 0 };
+
+			new_blueprint->WriteToFile(output_bp, glm::mat4(1.0f), new_offset);
+
+			output_bp.close();
+		}
+	}
+	//Tile* output_tile = TileReader::ReadTile(L"./Tests/Kiosk_64_01.tile");
+	//output_tile->WriteToFile(L"./OutputTile.obj");
+	//output_tile->WriteMtlFile(L"./OutputTile.mtl");
+
+	//while (true) {};
 
 	return 0;
 }

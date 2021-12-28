@@ -1,7 +1,14 @@
 #include "Blueprint.hpp"
 
+#include "Tile/Object/Block.hpp"
+#include "Tile/Object/Part.hpp"
+
+#include "ObjectDatabase/Mod/ObjectRotations.hpp"
+#include "ObjectDatabase/Mod/Mod.hpp"
 #include "Utils/File.hpp"
 #include "Console.hpp"
+
+#include <gtx/quaternion.hpp>
 
 Blueprint* Blueprint::FromFile(const std::wstring& path)
 {
@@ -28,6 +35,168 @@ Blueprint* Blueprint::FromJsonString(const std::string& json_str)
 	return nBlueprint;
 }
 
+void GetPartPosAndBounds(
+	glm::vec3& pos,
+	glm::vec3& bounds,
+	const int& xAxis,
+	const int& zAxis,
+	const bool& isJoint
+) {
+	int _XAxisAbs = glm::abs(xAxis);
+	int _ZAxisAbs = glm::abs(zAxis);
+
+	switch (_XAxisAbs) {
+	case 3:
+		switch (_ZAxisAbs) {
+		case 1:
+			bounds = glm::vec3(bounds.z, bounds.y, bounds.x);
+			break;
+		case 2:
+			bounds = glm::vec3(bounds.y, bounds.z, bounds.x);
+			break;
+		}
+		break;
+	case 2:
+		switch (_ZAxisAbs)
+		{
+		case 1:
+			bounds = glm::vec3(bounds.z, bounds.x, bounds.y);
+			break;
+		case 3:
+			bounds = glm::vec3(bounds.y, bounds.x, bounds.z);
+			break;
+		}
+		break;
+	case 1:
+		if (_ZAxisAbs == 2)
+			bounds = glm::vec3(bounds.x, bounds.z, bounds.y);
+		break;
+	}
+
+	if (!isJoint) {
+		if (xAxis == -1 || zAxis == -1 || (xAxis == 2 && zAxis == 3) || (xAxis == 3 && zAxis == -2) || (xAxis == -2 && zAxis == -3) || (xAxis == -3 && zAxis == 2))
+			pos.x -= bounds.x;
+		if (xAxis == -2 || zAxis == -2 || (xAxis == -1 && zAxis == 3) || (xAxis == -3 && zAxis == -1) || (xAxis == 1 && zAxis == -3) || (xAxis == 3 && zAxis == 1))
+			pos.y -= bounds.y;
+		if (xAxis == -3 || zAxis == -3 || (xAxis == -2 && zAxis == 1) || (xAxis == -1 && zAxis == -2) || (xAxis == 1 && zAxis == 2) || (xAxis == 2 && zAxis == -1))
+			pos.z -= bounds.z;
+	}
+	else {
+		if (!(zAxis > 0 || !(bounds.x != 1 || bounds.y != 1 || bounds.z != 1))) {
+			switch (zAxis) {
+			case -1:
+				pos.x -= bounds.x - 1;
+				break;
+			case -2:
+				pos.y -= bounds.y - 1;
+				break;
+			case -3:
+				pos.z -= bounds.z - 1;
+				break;
+			}
+		}
+	}
+}
+
+//written by Brent Batch in C# and translated by Questionable Mark into C++
+glm::mat4 GetPartRotationMatrix(glm::vec3& bounds, const int& xAxis, const int& zAxis)
+{
+	bool _XPos = (xAxis > 0);
+	bool _ZPos = (zAxis > 0);
+	int _AbsX = glm::abs(xAxis);
+	int _AbsZ = glm::abs(zAxis);
+
+	glm::mat4 _XRotation(1.0f);
+	glm::mat4 _ZRotation(1.0f);
+
+	switch (_AbsX)
+	{
+	case 1:
+		if (!_XPos) _XRotation = glm::rotate(_XRotation, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		switch (_AbsZ)
+		{
+		case 2:
+			_ZRotation = glm::rotate(_ZRotation, glm::radians(-90.0f), glm::vec3(_ZPos ? -1.0f : 1.0f, 0.0f, 0.0f));
+			break;
+		case 3:
+			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			break;
+		}
+		break;
+	case 2:
+		_XRotation = glm::rotate(_XRotation, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, _XPos ? 1.0f : -1.0f));
+		switch (_AbsZ)
+		{
+		case 1:
+			_ZRotation = glm::rotate(_ZRotation, glm::radians(-90.0f), glm::vec3(0.0f, _ZPos ? 1.0f : -1.0f, 0.0f));
+			break;
+		case 3:
+			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(-180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			break;
+		}
+		break;
+	case 3:
+		_XRotation = glm::rotate(_XRotation, glm::radians(90.0f/*-90.0f*/), glm::vec3(0.0f, _XPos ? -1.0f : 1.0f, 0.0f));
+		switch (_AbsZ)
+		{
+		case 1:
+			if (_ZPos == _XPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f/*180.0f*/), glm::vec3(0.0f, 0.0f, 1.0f));
+			break;
+		case 2:
+			_ZRotation = glm::rotate(_ZRotation, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, (_ZPos == _XPos) ? -1.0f : 1.0f));
+			break;
+		}
+		break;
+	}
+	/*switch (_AbsX)
+	{
+	case 1:
+		if (!_XPos) _XRotation = glm::rotate(_XRotation, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		switch (_AbsZ)
+		{
+		case 2:
+			_ZRotation = glm::rotate(_ZRotation, glm::radians(90.0f), glm::vec3(_ZPos ? -1.0f : 1.0f, 0.0f, 0.0f));
+			break;
+		case 3:
+			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			break;
+		}
+		break;
+	case 2:
+		_XRotation = glm::rotate(_XRotation, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, _XPos ? 1.0f : -1.0f));
+		switch (_AbsZ)
+		{
+		case 1:
+			_ZRotation = glm::rotate(_ZRotation, glm::radians(90.0f), glm::vec3(0.0f, _ZPos ? 1.0f : -1.0f, 0.0f));
+			break;
+		case 3:
+			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			break;
+		}
+		break;
+	case 3:
+		_XRotation = glm::rotate(_XRotation, glm::radians(90.0f), glm::vec3(0.0f, _XPos ? -1.0f : 1.0f, 0.0f));
+		switch (_AbsZ)
+		{
+		case 1:
+			if (_ZPos == _XPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			break;
+		case 2:
+			_ZRotation = glm::rotate(_ZRotation, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, (_ZPos == _XPos) ? -1.0f : 1.0f));
+			break;
+		}
+		break;
+	}*/
+
+	/*
+	_TranslatedPos = glm::vec4(_TranslatedPos, 1.0f) * _XRotation;
+	_TranslatedPos = glm::vec4(_TranslatedPos, 1.0f) * _ZRotation;
+	_TranslatedPos += bounds / 2.0f;
+	*/
+
+	return _XRotation * _ZRotation;
+}
+
 std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return "BLUEPRINT_MTL_NAME_NOT_NEEDED";
@@ -36,6 +205,19 @@ std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_
 void Blueprint::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
 	//Implement later
+}
+
+void Blueprint::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset) const
+{
+	const glm::mat4 blueprint_matrix = transform_mat * this->GetTransformMatrix();
+
+	for (const Part* pPart : this->Parts)
+	{
+		const Model* pModel = pPart->GetModel();
+		const glm::mat4 model_matrix = blueprint_matrix * pPart->GetTransformMatrix();
+
+		pModel->WriteToFile(model_matrix, mOffset, file, pPart);
+	}
 }
 
 glm::vec3 Blueprint::JsonToVector(const nlohmann::json& vec_json)
@@ -98,10 +280,44 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 					continue;
 
 				DebugOutL("Bounds: ", obj_bounds.x, ", ", obj_bounds.y, ", ", obj_bounds.z);
+				BlockData* b_data = Mod::GetGlobalBlock(obj_uuid);
+				if (!b_data)
+				{
+					DebugErrorL("Couldn't find a block with the specified uuid: ", obj_uuid.ToString());
+					continue;
+				}
 			}
 			else
 			{
+				PartData* p_data = Mod::GetGlobalPart(obj_uuid);
+				if (!p_data)
+				{
+					DebugErrorL("Couldn't find a part with the specified uuid: ", obj_uuid.ToString());
+					continue;
+				}
 
+				Model* pModel = ModelStorage::LoadModel(p_data->Mesh, true, true);
+				if (!pModel) continue;
+
+				Part* new_part = new Part();
+				new_part->uuid = obj_uuid;
+				new_part->color = obj_color;
+				new_part->pModel = pModel;
+				new_part->pParent = p_data;
+				new_part->xAxis = xAxisInt;
+				new_part->zAxis = zAxisInt;
+
+				//glm::vec3 part_position = sPositionVec;
+				//glm::vec3 part_bounds = p_data->Bounds;
+
+				//GetPartPosAndBounds(part_position, part_bounds, xAxisInt, zAxisInt, false);
+
+				//glm::mat4 part_rotation = GetPartRotationMatrix(part_bounds, xAxisInt, zAxisInt);
+
+				new_part->SetPosition(sPositionVec);
+				//new_part->SetRotation(glm::toQuat(part_rotation));
+
+				this->Parts.push_back(new_part);
 			}
 
 			DebugOutL("");

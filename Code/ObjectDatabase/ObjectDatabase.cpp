@@ -10,6 +10,8 @@ namespace fs = std::filesystem;
 
 void DatabaseLoader::LoadGameDatabase()
 {
+	DebugOutL(ConCol::BLUE, "Loading game data...");
+
 	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid::Null(), ModType::GameData);
 
 	for (const std::wstring& db_dir : DatabaseConfig::AssetListFolders)
@@ -20,6 +22,8 @@ void DatabaseLoader::LoadGameDatabase()
 
 void DatabaseLoader::LoadModDatabase()
 {
+	DebugOutL(ConCol::GREEN, "Loading mod data...");
+
 	for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
 	{
 		std::error_code rError;
@@ -41,4 +45,6 @@ void DatabaseLoader::LoadDatabase()
 {
 	DatabaseLoader::LoadGameDatabase();
 	DatabaseLoader::LoadModDatabase();
+
+	DebugOutL(ConCol::GREEN_INT, "Finished! (Blocks: ", Mod::BlockStorage.size(), ", Parts: ", Mod::PartStorage.size(), ", Harvestables: ", Mod::HarvestableStorage.size(), ", Assets: ", Mod::AssetStorage.size(), ")");
 }

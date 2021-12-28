@@ -12,7 +12,10 @@
 			"$CHALLENGE_DATA/Terrain/Database/AssetSets",
 			"$SURVIVAL_DATA/Terrain/Database/AssetSets",
 			"$GAME_DATA/Terrain/Database/AssetSets",
-			"$SURVIVAL_DATA/Harvestables/Database/HarvestableSets"
+			"$SURVIVAL_DATA/Harvestables/Database/HarvestableSets",
+			"$CHALLENGE_DATA/Objects/Database/ShapeSets",
+			"$GAME_DATA/Objects/Database/ShapeSets",
+			"$SURVIVAL_DATA/Objects/Database/ShapeSets"
 		]
     },
     "UserSettings": {

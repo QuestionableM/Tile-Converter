@@ -4,6 +4,7 @@
 #include "Tile/Object/Asset.hpp"
 #include "Tile/Object/Harvestable.hpp"
 #include "Tile/Object/Prefab.h"
+#include "Tile/Object/Blueprint.hpp"
 #include "Tile/WriterOffset.hpp"
 
 class Tile;
@@ -24,10 +25,7 @@ public:
 	std::vector<std::vector<Harvestable*>> Harvestables;
 	std::vector<std::vector<Asset*>> Assets;
 	std::vector<Prefab*> Prefabs;
-
-	//std::vector<Node*> Nodes; IMPLEMENT LATER
-	//std::vector<Blueprint*> Blueprints; IMPLEMENT LATER
-	//std::vector<Decal*> Decals; IMPLEMENT LATER
+	std::vector<Blueprint*> Blueprints;
 
 public:
 	TilePart(Tile* parent);
@@ -40,6 +38,7 @@ public:
 	void AddAsset(Asset* asset, const int& index);
 	void AddHarvestable(Harvestable* harvestable, const int& index);
 	void AddPrefab(Prefab* prefab);
+	void AddBlueprint(Blueprint* blueprint);
 
 	Tile* GetParent();
 

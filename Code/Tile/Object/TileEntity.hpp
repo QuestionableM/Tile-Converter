@@ -19,17 +19,19 @@ struct ObjectTexData
 class TileEntity
 {
 protected:
-	glm::vec3 position;
-	glm::quat rotation;
-	glm::vec3 size;
+	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::quat rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f);
 	SMUuid uuid;
 
 public:
+	virtual ~TileEntity() = default;
+
 	glm::vec3 GetPosition() const;
 	glm::quat GetRotation() const;
 	glm::vec3 GetSize() const;
 	SMUuid GetUuid() const;
-	glm::mat4 GetTransformMatrix() const;
+	virtual glm::mat4 GetTransformMatrix() const;
 
 	virtual std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const = 0;
 	virtual void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const = 0;

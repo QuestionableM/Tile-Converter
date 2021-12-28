@@ -18,6 +18,7 @@ class Prefab : public TileEntity
 
 public:
 	Prefab() = default;
+	~Prefab() = default;
 
 	std::wstring GetPath() const;
 	std::wstring GetFlag() const;

@@ -224,7 +224,7 @@ void Tile::WriteToFile(const std::wstring& path) const
 		const int tHeight = this->GetHeight() * 32 + 1;
 
 		WriterOffsetData offset_data = { 0, 0, 0, 0 };
-		offset_data.Vertex += (tHeight * tWidth);
+		offset_data.Vertex += (std::size_t)(tHeight * tWidth);
 
 		constexpr const float tile_size = 2.0f;
 
@@ -294,6 +294,9 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 			for (const Harvestable* cHarvestable : tPart->Harvestables[a])
 				cHarvestable->FillTextureMap(tData);
 		}
+
+		for (const Blueprint* cBlueprint : tPart->Blueprints)
+			cBlueprint->FillTextureMap(tData);
 
 		for (const Prefab* cPrefab : tPart->Prefabs)
 			cPrefab->FillTextureMap(tData);

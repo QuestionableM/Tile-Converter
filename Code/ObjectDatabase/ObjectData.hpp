@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "Utils/Uuid.hpp"
 #include "Utils/Color.hpp"
+#include <glm.hpp>
 
 enum class TextureDataType
 {
@@ -89,6 +90,7 @@ public:
 	SMUuid Uuid;
 	TextureData Textures;
 	Color DefaultColor;
+	glm::vec3 Bounds;
 	std::wstring Mesh;
 	Mod* pMod;
 

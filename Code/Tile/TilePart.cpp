@@ -62,6 +62,13 @@ void TilePart::AddPrefab(Prefab* prefab)
 	Prefabs.push_back(prefab);
 }
 
+void TilePart::AddBlueprint(Blueprint* blueprint)
+{
+	assert(blueprint != nullptr);
+	
+	Blueprints.push_back(blueprint);
+}
+
 Tile* TilePart::GetParent()
 {
 	return this->Parent;
@@ -102,7 +109,10 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 			pModel->WriteToFile(model_matrix, mOffsetData, model, cHarvestable);
 		}
 
-		for (Prefab* cPrefab : this->Prefabs)
+		for (Blueprint*& cBlueprint : this->Blueprints)
+			cBlueprint->WriteToFile(model, transform, mOffsetData);
+
+		for (Prefab*& cPrefab : this->Prefabs)
 			cPrefab->WriteToFile(model, transform, mOffsetData);
 	}
 }

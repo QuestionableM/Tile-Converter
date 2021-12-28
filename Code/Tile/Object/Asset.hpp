@@ -22,6 +22,7 @@ public:
 	Asset() = default;
 	Asset(const Asset&) = delete;
 	Asset(Asset&&) = delete;
+	~Asset() = default;
 
 	Model* GetModel() const;
 	Color GetColor(const std::wstring& color) const;

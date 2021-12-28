@@ -89,14 +89,13 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 		if (!DefaultLoader::LoadRenderable(fPart, tex_data, mesh_path))
 			continue;
 
-		const glm::vec3 pBounds = PartListLoader::LoadPartCollision(fPart);
-
 		PartData* new_part = new PartData();
 		new_part->Mesh = mesh_path;
 		new_part->Textures = tex_data;
 		new_part->Uuid = part_uuid;
 		new_part->pMod = mod;
 		new_part->DefaultColor = pColor.get<std::string>();
+		new_part->Bounds = PartListLoader::LoadPartCollision(fPart);
 
 		const auto new_pair = std::make_pair(new_part->Uuid, new_part);
 
