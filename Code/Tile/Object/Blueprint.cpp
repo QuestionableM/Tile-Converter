@@ -130,7 +130,25 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 					continue;
 				}
 
-				//IMPLEMENT LATER
+				BlockData* block_data = Mod::GetGlobalBlock(obj_uuid);
+				if (!block_data)
+				{
+					DebugErrorL("Couldn't find a block with the specified uuid: ", obj_uuid.ToString());
+					continue;
+				}
+
+				Block* new_block = new Block();
+				new_block->uuid = obj_uuid;
+				new_block->color = obj_color;
+				new_block->Bounds = obj_bounds;
+				new_block->pParent = block_data;
+				new_block->xAxis = xAxisInt;
+				new_block->zAxis = zAxisInt;
+
+				new_block->SetPosition(sPositionVec);
+				new_block->SetSize(obj_bounds);
+
+				this->Blocks.push_back(new_block);
 			}
 			else
 			{

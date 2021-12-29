@@ -37,12 +37,11 @@ void Part::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_ma
 glm::mat4 Part::GetTransformMatrix() const
 {
 	const glm::mat4 axis_rotation = Rotations::GetRotationMatrix(this->xAxis, this->zAxis);
-	const glm::vec3 bVec = pParent->Bounds;
 
 	glm::mat4 model_matrix(1.0f);
 	model_matrix *= glm::translate(this->position);
 	model_matrix *= axis_rotation;
-	model_matrix *= glm::translate(bVec / 2.0f);
+	model_matrix *= glm::translate(pParent->Bounds / 2.0f);
 
 	return model_matrix;
 }
