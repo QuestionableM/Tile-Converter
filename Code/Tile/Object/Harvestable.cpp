@@ -5,13 +5,6 @@ void Harvestable::SetColor(const Color& color)
 	this->color = color;
 }
 
-
-
-Model* Harvestable::GetModel() const
-{
-	return this->pModel;
-}
-
 Color Harvestable::GetColor() const
 {
 	return this->color;

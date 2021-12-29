@@ -3,6 +3,7 @@
 #include "Tile/Object/TileEntity.hpp"
 #include "Tile/Object/Block.hpp"
 #include "Tile/Object/Part.hpp"
+#include "Tile/Object/Joint.hpp"
 #include "Utils/Json.hpp"
 
 class Blueprint : public TileEntity
@@ -13,11 +14,12 @@ public:
 
 	std::vector<Block*> Blocks = {};
 	std::vector<Part*> Parts = {};
+	std::vector<Joint*> Joints = {};
 
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
 
-	void WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset) const;
+	void WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const override;
 
 	~Blueprint() = default;
 

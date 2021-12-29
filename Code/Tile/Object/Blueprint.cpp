@@ -1,8 +1,5 @@
 #include "Blueprint.hpp"
 
-#include "Tile/Object/Block.hpp"
-#include "Tile/Object/Part.hpp"
-
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
 #include "Utils/File.hpp"
@@ -35,168 +32,6 @@ Blueprint* Blueprint::FromJsonString(const std::string& json_str)
 	return nBlueprint;
 }
 
-void GetPartPosAndBounds(
-	glm::vec3& pos,
-	glm::vec3& bounds,
-	const int& xAxis,
-	const int& zAxis,
-	const bool& isJoint
-) {
-	int _XAxisAbs = glm::abs(xAxis);
-	int _ZAxisAbs = glm::abs(zAxis);
-
-	switch (_XAxisAbs) {
-	case 3:
-		switch (_ZAxisAbs) {
-		case 1:
-			bounds = glm::vec3(bounds.z, bounds.y, bounds.x);
-			break;
-		case 2:
-			bounds = glm::vec3(bounds.y, bounds.z, bounds.x);
-			break;
-		}
-		break;
-	case 2:
-		switch (_ZAxisAbs)
-		{
-		case 1:
-			bounds = glm::vec3(bounds.z, bounds.x, bounds.y);
-			break;
-		case 3:
-			bounds = glm::vec3(bounds.y, bounds.x, bounds.z);
-			break;
-		}
-		break;
-	case 1:
-		if (_ZAxisAbs == 2)
-			bounds = glm::vec3(bounds.x, bounds.z, bounds.y);
-		break;
-	}
-
-	if (!isJoint) {
-		if (xAxis == -1 || zAxis == -1 || (xAxis == 2 && zAxis == 3) || (xAxis == 3 && zAxis == -2) || (xAxis == -2 && zAxis == -3) || (xAxis == -3 && zAxis == 2))
-			pos.x -= bounds.x;
-		if (xAxis == -2 || zAxis == -2 || (xAxis == -1 && zAxis == 3) || (xAxis == -3 && zAxis == -1) || (xAxis == 1 && zAxis == -3) || (xAxis == 3 && zAxis == 1))
-			pos.y -= bounds.y;
-		if (xAxis == -3 || zAxis == -3 || (xAxis == -2 && zAxis == 1) || (xAxis == -1 && zAxis == -2) || (xAxis == 1 && zAxis == 2) || (xAxis == 2 && zAxis == -1))
-			pos.z -= bounds.z;
-	}
-	else {
-		if (!(zAxis > 0 || !(bounds.x != 1 || bounds.y != 1 || bounds.z != 1))) {
-			switch (zAxis) {
-			case -1:
-				pos.x -= bounds.x - 1;
-				break;
-			case -2:
-				pos.y -= bounds.y - 1;
-				break;
-			case -3:
-				pos.z -= bounds.z - 1;
-				break;
-			}
-		}
-	}
-}
-
-//written by Brent Batch in C# and translated by Questionable Mark into C++
-glm::mat4 GetPartRotationMatrix(glm::vec3& bounds, const int& xAxis, const int& zAxis)
-{
-	bool _XPos = (xAxis > 0);
-	bool _ZPos = (zAxis > 0);
-	int _AbsX = glm::abs(xAxis);
-	int _AbsZ = glm::abs(zAxis);
-
-	glm::mat4 _XRotation(1.0f);
-	glm::mat4 _ZRotation(1.0f);
-
-	switch (_AbsX)
-	{
-	case 1:
-		if (!_XPos) _XRotation = glm::rotate(_XRotation, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		switch (_AbsZ)
-		{
-		case 2:
-			_ZRotation = glm::rotate(_ZRotation, glm::radians(-90.0f), glm::vec3(_ZPos ? -1.0f : 1.0f, 0.0f, 0.0f));
-			break;
-		case 3:
-			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			break;
-		}
-		break;
-	case 2:
-		_XRotation = glm::rotate(_XRotation, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, _XPos ? 1.0f : -1.0f));
-		switch (_AbsZ)
-		{
-		case 1:
-			_ZRotation = glm::rotate(_ZRotation, glm::radians(-90.0f), glm::vec3(0.0f, _ZPos ? 1.0f : -1.0f, 0.0f));
-			break;
-		case 3:
-			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(-180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			break;
-		}
-		break;
-	case 3:
-		_XRotation = glm::rotate(_XRotation, glm::radians(90.0f/*-90.0f*/), glm::vec3(0.0f, _XPos ? -1.0f : 1.0f, 0.0f));
-		switch (_AbsZ)
-		{
-		case 1:
-			if (_ZPos == _XPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f/*180.0f*/), glm::vec3(0.0f, 0.0f, 1.0f));
-			break;
-		case 2:
-			_ZRotation = glm::rotate(_ZRotation, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, (_ZPos == _XPos) ? -1.0f : 1.0f));
-			break;
-		}
-		break;
-	}
-	/*switch (_AbsX)
-	{
-	case 1:
-		if (!_XPos) _XRotation = glm::rotate(_XRotation, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		switch (_AbsZ)
-		{
-		case 2:
-			_ZRotation = glm::rotate(_ZRotation, glm::radians(90.0f), glm::vec3(_ZPos ? -1.0f : 1.0f, 0.0f, 0.0f));
-			break;
-		case 3:
-			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			break;
-		}
-		break;
-	case 2:
-		_XRotation = glm::rotate(_XRotation, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, _XPos ? 1.0f : -1.0f));
-		switch (_AbsZ)
-		{
-		case 1:
-			_ZRotation = glm::rotate(_ZRotation, glm::radians(90.0f), glm::vec3(0.0f, _ZPos ? 1.0f : -1.0f, 0.0f));
-			break;
-		case 3:
-			if (!_ZPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			break;
-		}
-		break;
-	case 3:
-		_XRotation = glm::rotate(_XRotation, glm::radians(90.0f), glm::vec3(0.0f, _XPos ? -1.0f : 1.0f, 0.0f));
-		switch (_AbsZ)
-		{
-		case 1:
-			if (_ZPos == _XPos) _ZRotation = glm::rotate(_ZRotation, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-			break;
-		case 2:
-			_ZRotation = glm::rotate(_ZRotation, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, (_ZPos == _XPos) ? -1.0f : 1.0f));
-			break;
-		}
-		break;
-	}*/
-
-	/*
-	_TranslatedPos = glm::vec4(_TranslatedPos, 1.0f) * _XRotation;
-	_TranslatedPos = glm::vec4(_TranslatedPos, 1.0f) * _ZRotation;
-	_TranslatedPos += bounds / 2.0f;
-	*/
-
-	return _XRotation * _ZRotation;
-}
-
 std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return "BLUEPRINT_MTL_NAME_NOT_NEEDED";
@@ -204,20 +39,28 @@ std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_
 
 void Blueprint::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	//Implement later
-}
-
-void Blueprint::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset) const
-{
-	const glm::mat4 blueprint_matrix = transform_mat * this->GetTransformMatrix();
+	for (const Block* pBlock : this->Blocks)
+		pBlock->FillTextureMap(tex_map);
 
 	for (const Part* pPart : this->Parts)
-	{
-		const Model* pModel = pPart->GetModel();
-		const glm::mat4 model_matrix = blueprint_matrix * pPart->GetTransformMatrix();
+		pPart->FillTextureMap(tex_map);
 
-		pModel->WriteToFile(model_matrix, mOffset, file, pPart);
-	}
+	for (const Joint* pJoint : this->Joints)
+		pJoint->FillTextureMap(tex_map);
+}
+
+void Blueprint::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const
+{
+	const glm::mat4 blueprint_matrix = transform_matrix * this->GetTransformMatrix();
+
+	for (const Block* pBlock : this->Blocks)
+		pBlock->WriteObjectToFile(file, mOffset, blueprint_matrix);
+
+	for (const Part* pPart : this->Parts)
+		pPart->WriteObjectToFile(file, mOffset, blueprint_matrix);
+
+	for (const Joint* pJoint : this->Joints)
+		pJoint->WriteObjectToFile(file, mOffset, blueprint_matrix);
 }
 
 glm::vec3 Blueprint::JsonToVector(const nlohmann::json& vec_json)
@@ -286,6 +129,8 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 					DebugErrorL("Couldn't find a block with the specified uuid: ", obj_uuid.ToString());
 					continue;
 				}
+
+				//IMPLEMENT LATER
 			}
 			else
 			{
@@ -307,85 +152,37 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 				new_part->xAxis = xAxisInt;
 				new_part->zAxis = zAxisInt;
 
-				//glm::vec3 part_position = sPositionVec;
-				//glm::vec3 part_bounds = p_data->Bounds;
-
-				//GetPartPosAndBounds(part_position, part_bounds, xAxisInt, zAxisInt, false);
-
-				//glm::mat4 part_rotation = GetPartRotationMatrix(part_bounds, xAxisInt, zAxisInt);
-
 				new_part->SetPosition(sPositionVec);
-				//new_part->SetRotation(glm::toQuat(part_rotation));
 
 				this->Parts.push_back(new_part);
 			}
 
 			DebugOutL("");
 			/*
-			const auto& _ShapeId = Json::Get(_Child, "shapeId");
-				const auto& _Pos	 = Json::Get(_Child, "pos");
-				const auto& _XAxis	 = Json::Get(_Child, "xaxis");
-				const auto& _ZAxis	 = Json::Get(_Child, "zaxis");
-				const auto& _Bounds  = Json::Get(_Child, "bounds");
-				const auto& _Color	 = Json::Get(_Child, "color");
+			if (_Bounds.is_object())
+			{
+				const auto& _BoundX = Json::Get(_Bounds, "x");
+				const auto& _BoundY = Json::Get(_Bounds, "y");
+				const auto& _BoundZ = Json::Get(_Bounds, "z");
 
-				if (!(_ShapeId.is_string() && _Pos.is_object() && _XAxis.is_number() && _ZAxis.is_number())) continue;
-				const auto& _PosX = Json::Get(_Pos, "x");
-				const auto& _PosY = Json::Get(_Pos, "y");
-				const auto& _PosZ = Json::Get(_Pos, "z");
+				if (!(_BoundX.is_number() && _BoundY.is_number() && _BoundZ.is_number())) continue;
+				glm::vec3 _BoundsVec(_BoundX.get<float>(), _BoundY.get<float>(), _BoundZ.get<float>());
 
-				if (!(_PosX.is_number() && _PosY.is_number() && _PosZ.is_number())) continue;
-				glm::vec3 _PosVec(_PosX.get<float>(), _PosY.get<float>(), _PosZ.get<float>());
+				const SMBC::BlockData* _BlockD = Mod::GetBlock(uuid_obj);
+				if (!_BlockD) continue;
 
-				SMBC::Uuid uuid_obj(_ShapeId.get<std::string>());
-				std::string color_str = (_Color.is_string() ? _Color.get<std::string>() : "000000");
+				SMBC::Block* _Block = new SMBC::Block();
+				_Block->blkPtr	    = (SMBC::BlockData*)_BlockD;
+				_Block->Bounds	    = _BoundsVec;
+				_Block->Color	    = color_str;
+				_Block->Position    = _PosVec;
+				_Block->Uuid	    = _BlockD->Uuid;
+				_Block->xAxis	    = _XAxis.get<int>();
+				_Block->zAxis	    = _ZAxis.get<int>();
+				_Block->ObjectIndex	= this->objectIndexValue;
 
-				if (_Bounds.is_object())
-				{
-					const auto& _BoundX = Json::Get(_Bounds, "x");
-					const auto& _BoundY = Json::Get(_Bounds, "y");
-					const auto& _BoundZ = Json::Get(_Bounds, "z");
-
-					if (!(_BoundX.is_number() && _BoundY.is_number() && _BoundZ.is_number())) continue;
-					glm::vec3 _BoundsVec(_BoundX.get<float>(), _BoundY.get<float>(), _BoundZ.get<float>());
-
-					const SMBC::BlockData* _BlockD = Mod::GetBlock(uuid_obj);
-					if (!_BlockD) continue;
-
-					SMBC::Block* _Block = new SMBC::Block();
-					_Block->blkPtr	    = (SMBC::BlockData*)_BlockD;
-					_Block->Bounds	    = _BoundsVec;
-					_Block->Color	    = color_str;
-					_Block->Position    = _PosVec;
-					_Block->Uuid	    = _BlockD->Uuid;
-					_Block->xAxis	    = _XAxis.get<int>();
-					_Block->zAxis	    = _ZAxis.get<int>();
-					_Block->ObjectIndex	= this->objectIndexValue;
-
-					this->CollectionBindFunction(*this, _Block, false, body_index);
-				}
-				else
-				{
-					const SMBC::PartData* part_data = SMBC::Mod::GetPart(uuid_obj);
-					if (!part_data) continue;
-
-					SMBC::Part* _Part  = new SMBC::Part();
-					_Part->objPtr	   = (SMBC::PartData*)part_data;
-					_Part->Uuid		   = _Part->objPtr->Uuid;
-					_Part->Color	   = color_str;
-					_Part->Bounds	   = _Part->objPtr->Bounds;
-					_Part->Position    = _PosVec;
-					_Part->xAxis	   = _XAxis.get<int>();
-					_Part->zAxis	   = _ZAxis.get<int>();
-					_Part->ObjectIndex = this->objectIndexValue;
-
-					BPFunction::GetPartPosAndBounds(_Part->Position, _Part->Bounds, _Part->xAxis, _Part->zAxis, false);
-
-					this->CollectionBindFunction(*this, _Part, false, body_index);
-				}
-
-				this->objectIndexValue++;
-				ConvData::ProgressValue++;
+				this->CollectionBindFunction(*this, _Block, false, body_index);
+			}
 			*/
 		}
 	}
@@ -396,5 +193,45 @@ void Blueprint::LoadJoints(const nlohmann::json& pJson)
 	const auto& pJoints = JsonReader::Get(pJson, "joints");
 	if (!pJoints.is_array()) return;
 
-	DebugOutL("Joints: ", pJoints.type_name());
+	for (const auto& pJoint : pJoints)
+	{
+		const auto& xAxis = JsonReader::Get(pJoint, "xaxisA");
+		const auto& zAxis = JsonReader::Get(pJoint, "zaxisA");
+		const auto& jUuid = JsonReader::Get(pJoint, "shapeId");
+		const auto& jColor = JsonReader::Get(pJoint, "color");
+		//const auto& jChildA = JsonReader::Get(pJoint, "childA"); might implement later
+		const auto& jPosition = JsonReader::Get(pJoint, "posA");
+
+		if (!jUuid.is_string() || !jColor.is_string()) continue;
+
+		const int xAxisInt = (xAxis.is_number() ? xAxis.get<int>() : 1);
+		const int zAxisInt = (zAxis.is_number() ? zAxis.get<int>() : 3);
+
+		const glm::vec3 jPositionVec = Blueprint::JsonToVector(jPosition);
+
+		SMUuid joint_uuid = jUuid.get<std::string>();
+		Color joint_color = jColor.get<std::string>();
+
+		PartData* joint_data = Mod::GetGlobalPart(joint_uuid);
+		if (!joint_data)
+		{
+			DebugErrorL("Couldn't find a joint with the specified uuid: ", joint_uuid.ToString());
+			continue;
+		}
+
+		Model* pModel = ModelStorage::LoadModel(joint_data->Mesh, true, true);
+		if (!pModel) continue;
+
+		Joint* new_joint = new Joint();
+		new_joint->uuid = joint_uuid;
+		new_joint->color = joint_color;
+		new_joint->xAxis = xAxisInt;
+		new_joint->zAxis = zAxisInt;
+		new_joint->pParent = joint_data;
+		new_joint->pModel = pModel;
+
+		new_joint->SetPosition(jPositionVec);
+
+		this->Joints.push_back(new_joint);
+	}
 }

@@ -1,5 +1,7 @@
 #include "TileEntity.hpp"
 
+#include "ObjectDatabase/ModelStorage.hpp"
+
 glm::vec3 TileEntity::GetPosition() const
 {
 	return position;
@@ -20,6 +22,11 @@ SMUuid TileEntity::GetUuid() const
 	return uuid;
 }
 
+Model* TileEntity::GetModel() const
+{
+	return pModel;
+}
+
 glm::mat4 TileEntity::GetTransformMatrix() const
 {
 	glm::mat4 transform(1.0f);
@@ -29,6 +36,14 @@ glm::mat4 TileEntity::GetTransformMatrix() const
 	transform *= glm::scale(this->size);
 
 	return transform;
+}
+
+
+void TileEntity::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const
+{
+	const glm::mat4 model_matrix = transform_matrix * this->GetTransformMatrix();
+
+	pModel->WriteToFile(model_matrix, mOffset, file, this);
 }
 
 
@@ -50,4 +65,9 @@ void TileEntity::SetSize(const glm::vec3& size)
 void TileEntity::SetUuid(const SMUuid& uuid)
 {
 	this->uuid = uuid;
+}
+
+void TileEntity::SetModel(Model* model)
+{
+	this->pModel = model;
 }

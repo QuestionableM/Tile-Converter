@@ -157,6 +157,7 @@
     <ClCompile Include="Code\Tile\Object\Block.cpp" />
     <ClCompile Include="Code\Tile\Object\Blueprint.cpp" />
     <ClCompile Include="Code\Tile\Object\Harvestable.cpp" />
+    <ClCompile Include="Code\Tile\Object\Joint.cpp" />
     <ClCompile Include="Code\Tile\Object\Part.cpp" />
     <ClCompile Include="Code\Tile\Object\Prefab.cpp" />
     <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Code\Tile\Object\Block.hpp" />
     <ClInclude Include="Code\Tile\Object\Blueprint.hpp" />
     <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
+    <ClInclude Include="Code\Tile\Object\Joint.hpp" />
     <ClInclude Include="Code\Tile\Object\Part.hpp" />
     <ClInclude Include="Code\Tile\Object\Prefab.h" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />

@@ -10,7 +10,6 @@ class Part : public TileEntity
 	friend class Blueprint;
 
 	Color color;
-	Model* pModel;
 	PartData* pParent;
 	int xAxis;
 	int zAxis;
@@ -21,7 +20,6 @@ public:
 	Part(Part&) = delete;
 	~Part() = default;
 
-	Model* GetModel() const;
 	Color GetColor() const;
 
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;

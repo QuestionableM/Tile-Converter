@@ -14,7 +14,6 @@ class Asset : public TileEntity
 	friend class Tile;
 	friend class PrefabFileReader;
 
-	struct Model* pModel;
 	class AssetData* pParent;
 	std::unordered_map<std::wstring /*material*/, Color> mColors;
 
@@ -24,7 +23,6 @@ public:
 	Asset(Asset&&) = delete;
 	~Asset() = default;
 
-	Model* GetModel() const;
 	Color GetColor(const std::wstring& color) const;
 	std::unordered_map<std::wstring, Color> GetMaterials() const;
 

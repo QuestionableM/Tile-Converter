@@ -1,18 +1,20 @@
-#include "Part.hpp"
-#include "Console.hpp"
-#include "ObjectDatabase/Mod/ObjectRotations.hpp"
+#include "Joint.hpp"
 
-Color Part::GetColor() const
+#include "ObjectDatabase/ObjectData.hpp"
+#include "ObjectDatabase/Mod/ObjectRotations.hpp"
+#include "Console.hpp"
+
+Color Joint::GetColor() const
 {
 	return this->color;
 }
 
-std::string Part::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
+std::string Joint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);
 }
 
-void Part::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
+void Joint::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
 	for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
 	{
@@ -34,15 +36,15 @@ void Part::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_ma
 	}
 }
 
-glm::mat4 Part::GetTransformMatrix() const
+glm::mat4 Joint::GetTransformMatrix() const
 {
-	const glm::mat4 axis_rotation = Rotations::GetRotationMatrix(this->xAxis, this->zAxis);
-	const glm::vec3 bVec = pParent->Bounds;
+	const glm::mat4 joint_rotation = Rotations::GetRotationMatrix(this->xAxis, this->zAxis);
+	const glm::vec3 pos_offset = Rotations::GetOffsetPosition(this->xAxis, this->zAxis);
 
 	glm::mat4 model_matrix(1.0f);
-	model_matrix *= glm::translate(this->position);
-	model_matrix *= axis_rotation;
-	model_matrix *= glm::translate(bVec / 2.0f);
+	model_matrix *= glm::translate(this->position + pos_offset);
+	model_matrix *= joint_rotation;
+	model_matrix *= glm::translate(pParent->Bounds / 2.0f);
 
 	return model_matrix;
 }

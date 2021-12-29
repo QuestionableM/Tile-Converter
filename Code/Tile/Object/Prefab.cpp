@@ -54,23 +54,18 @@ std::string Prefab::GetMtlName(const std::wstring& mat_name, const std::size_t& 
 	return "PREFAB_NOT_IMPLEMENTED";
 }
 
-void Prefab::WriteToFile(std::ofstream& file, const glm::mat4& transform_mat, WriterOffsetData& mOffset) const
+void Prefab::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const
 {
-	const glm::mat4 prefab_matrix = transform_mat * this->GetTransformMatrix();
+	const glm::mat4 prefab_matrix = transform_matrix * this->GetTransformMatrix();
 
-	//for (const Asset* cAsset : this->Assets)
-	//{
-	//	const Model* pModel = cAsset->GetModel();
-	//	const glm::mat4 model_matrix = prefab_matrix * cAsset->GetTransformMatrix();
-
-	//	pModel->WriteToFile(model_matrix, mOffset, file, cAsset);
-	//}
+	for (const Asset* cAsset : this->Assets)
+		cAsset->WriteObjectToFile(file, mOffset, prefab_matrix);
 
 	for (const Blueprint* cBlueprint : this->Blueprints)
-		cBlueprint->WriteToFile(file, prefab_matrix, mOffset);
+		cBlueprint->WriteObjectToFile(file, mOffset, prefab_matrix);
 
 	for (const Prefab* cPrefab : this->Prefabs)
-		cPrefab->WriteToFile(file, prefab_matrix, mOffset);
+		cPrefab->WriteObjectToFile(file, mOffset, prefab_matrix);
 }
 
 void Prefab::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const

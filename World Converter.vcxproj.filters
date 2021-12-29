@@ -99,6 +99,9 @@
     <ClCompile Include="Code\ObjectDatabase\Mod\ObjectRotations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Tile\Object\Joint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp">
@@ -249,6 +252,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\Mod\ObjectRotations.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Tile\Object\Joint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

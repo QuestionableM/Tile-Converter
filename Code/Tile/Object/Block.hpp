@@ -1,6 +1,9 @@
 #pragma once
 
-class Block
+#include "Tile/Object/TileEntity.hpp"
+
+class Block : public TileEntity
 {
 public:
+
 };

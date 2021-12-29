@@ -3,11 +3,6 @@
 #include "ObjectDatabase/ObjectData.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
-Model* Asset::GetModel() const
-{
-	return pModel;
-}
-
 Color Asset::GetColor(const std::wstring& color) const
 {
 	if (mColors.find(color) != mColors.end())

@@ -93,26 +93,16 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 
 	for (std::size_t vec_idx = 0; vec_idx < this->Assets.size(); vec_idx++)
 	{
-		for (Asset*& cAsset : this->Assets[vec_idx])
-		{
-			const Model* pModel = cAsset->GetModel();
-			const glm::mat4 model_matrix = transform * cAsset->GetTransformMatrix();
+		for (const Asset* cAsset : this->Assets[vec_idx])
+			cAsset->WriteObjectToFile(model, mOffsetData, transform);
 
-			pModel->WriteToFile(model_matrix, mOffsetData, model, cAsset);
-		}
-
-		for (Harvestable*& cHarvestable : this->Harvestables[vec_idx])
-		{
-			const Model* pModel = cHarvestable->GetModel();
-			const glm::mat4 model_matrix = transform * cHarvestable->GetTransformMatrix();
-
-			pModel->WriteToFile(model_matrix, mOffsetData, model, cHarvestable);
-		}
-
-		for (Blueprint*& cBlueprint : this->Blueprints)
-			cBlueprint->WriteToFile(model, transform, mOffsetData);
-
-		for (Prefab*& cPrefab : this->Prefabs)
-			cPrefab->WriteToFile(model, transform, mOffsetData);
+		for (const Harvestable* cHarvestable : this->Harvestables[vec_idx])
+			cHarvestable->WriteObjectToFile(model, mOffsetData, transform);
 	}
+
+	for (const Blueprint* cBlueprint : this->Blueprints)
+		cBlueprint->WriteObjectToFile(model, mOffsetData, transform);
+
+	for (const Prefab* cPrefab : this->Prefabs)
+		cPrefab->WriteObjectToFile(model, mOffsetData, transform);
 }

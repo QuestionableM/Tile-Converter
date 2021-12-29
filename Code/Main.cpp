@@ -22,7 +22,7 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Blueprint* new_blueprint = Blueprint::FromFile(L"./Tests/Car.json");
+	/*Blueprint* new_blueprint = Blueprint::FromFile(L"./Tests/Car.json");
 	if (new_blueprint != nullptr)
 	{
 		new_blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
@@ -32,16 +32,16 @@ int WINAPI WinMain(
 		{
 			WriterOffsetData new_offset = { 0, 0, 0, 0 };
 
-			new_blueprint->WriteToFile(output_bp, glm::mat4(1.0f), new_offset);
+			new_blueprint->WriteObjectToFile(output_bp, new_offset, glm::mat4(1.0f));
 
 			output_bp.close();
 		}
-	}
-	//Tile* output_tile = TileReader::ReadTile(L"./Tests/Kiosk_64_01.tile");
-	//output_tile->WriteToFile(L"./OutputTile.obj");
-	//output_tile->WriteMtlFile(L"./OutputTile.mtl");
+	}*/
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Kiosk_64_01.tile");
+	output_tile->WriteToFile(L"./OutputTile.obj");
+	output_tile->WriteMtlFile(L"./OutputTile.mtl");
 
-	//while (true) {};
+	while (true) {};
 
 	return 0;
 }
