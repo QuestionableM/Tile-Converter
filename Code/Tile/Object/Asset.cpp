@@ -19,6 +19,11 @@ std::unordered_map<std::wstring, Color> Asset::GetMaterials() const
 	return this->mColors;
 }
 
+EntityType Asset::Type() const
+{
+	return EntityType::Asset;
+}
+
 std::string Asset::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	const std::wstring mName = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(mIdx) : mat_name);

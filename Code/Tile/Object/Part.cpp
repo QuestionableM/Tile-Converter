@@ -7,6 +7,11 @@ Color Part::GetColor() const
 	return this->color;
 }
 
+EntityType Part::Type() const
+{
+	return EntityType::Part;
+}
+
 std::string Part::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);

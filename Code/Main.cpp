@@ -37,9 +37,8 @@ int WINAPI WinMain(
 			output_bp.close();
 		}
 	}*/
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/Kiosk_64_01.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/SurvivalStartArea_CrashedTower_01.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
-	output_tile->WriteMtlFile(L"./OutputTile.mtl");
 
 	while (true) {};
 

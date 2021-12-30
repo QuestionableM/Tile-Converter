@@ -9,6 +9,11 @@ Color Joint::GetColor() const
 	return this->color;
 }
 
+EntityType Joint::Type() const
+{
+	return EntityType::Joint;
+}
+
 std::string Joint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);

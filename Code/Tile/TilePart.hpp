@@ -22,10 +22,11 @@ public:
 	// Clutter
 	std::vector<Byte> Clutter;
 
-	std::vector<std::vector<Harvestable*>> Harvestables;
-	std::vector<std::vector<Asset*>> Assets;
-	std::vector<Prefab*> Prefabs;
-	std::vector<Blueprint*> Blueprints;
+	/*
+		the 1st vector contains: harvestables, assets, prefabs and blueprints
+		the 2nd-4th vectors contain: assets and harvestables
+	*/
+	std::array<std::vector<TileEntity*>, 4> Objects = {};
 
 public:
 	TilePart(Tile* parent);
@@ -35,10 +36,7 @@ public:
 	void SetGroundMaterials(const std::vector<long long>& material_array);
 	void SetClutter(const std::vector<Byte>& clutter_array);
 
-	void AddAsset(Asset* asset, const int& index);
-	void AddHarvestable(Harvestable* harvestable, const int& index);
-	void AddPrefab(Prefab* prefab);
-	void AddBlueprint(Blueprint* blueprint);
+	void AddObject(TileEntity* object, const int& index = 0);
 
 	Tile* GetParent();
 

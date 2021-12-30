@@ -3,6 +3,11 @@
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
+EntityType Block::Type() const
+{
+	return EntityType::Block;
+}
+
 std::string Block::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);

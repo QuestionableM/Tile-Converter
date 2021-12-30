@@ -14,9 +14,6 @@ TilePart::TilePart(Tile* parent)
 	VertexHeight.resize(33 * 33);
 	Ground.resize(65 * 65);
 	Clutter.resize(128 * 128);
-
-	Assets.resize(4);
-	Harvestables.resize(4);
 }
 
 void TilePart::SetVertexColor(const std::vector<int>& vert_array)
@@ -39,34 +36,14 @@ void TilePart::SetClutter(const std::vector<Byte>& clutter_array)
 	this->Clutter = clutter_array;
 }
 
-void TilePart::AddAsset(Asset* asset, const int& index)
+void TilePart::AddObject(TileEntity* object, const int& index)
 {
-	assert(asset != nullptr);
+	assert(object != nullptr);
 	assert(0 <= index && index <= 3);
+	assert(object->Type() == EntityType::Asset || object->Type() == EntityType::Harvestable || object->Type() == EntityType::Blueprint || object->Type() == EntityType::Prefab);
+	assert((index > 0 && object->Type() == EntityType::Asset || object->Type() == EntityType::Harvestable) || index == 0);
 
-	Assets[index].push_back(asset);
-}
-
-void TilePart::AddHarvestable(Harvestable* harvestable, const int& index)
-{
-	assert(harvestable != nullptr);
-	assert(0 <= index && index <= 3);
-
-	Harvestables[index].push_back(harvestable);
-}
-
-void TilePart::AddPrefab(Prefab* prefab)
-{
-	assert(prefab != nullptr);
-
-	Prefabs.push_back(prefab);
-}
-
-void TilePart::AddBlueprint(Blueprint* blueprint)
-{
-	assert(blueprint != nullptr);
-	
-	Blueprints.push_back(blueprint);
+	this->Objects[index].push_back(object);
 }
 
 Tile* TilePart::GetParent()
@@ -91,18 +68,9 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 	transform *= glm::translate(glm::vec3((float)xPos * 64.0f, (float)zPos * 64.0f, 0.0f));
 	transform *= glm::translate(glm::vec3(-tWidth * 1.5f, -tHeight * 1.5f, 0.0f));
 
-	for (std::size_t vec_idx = 0; vec_idx < this->Assets.size(); vec_idx++)
+	for (std::size_t vec_idx = 0; vec_idx < this->Objects.size(); vec_idx++)
 	{
-		for (const Asset* cAsset : this->Assets[vec_idx])
-			cAsset->WriteObjectToFile(model, mOffsetData, transform);
-
-		for (const Harvestable* cHarvestable : this->Harvestables[vec_idx])
-			cHarvestable->WriteObjectToFile(model, mOffsetData, transform);
+		for (const TileEntity* cObject : this->Objects[vec_idx])
+			cObject->WriteObjectToFile(model, mOffsetData, transform);
 	}
-
-	for (const Blueprint* cBlueprint : this->Blueprints)
-		cBlueprint->WriteObjectToFile(model, mOffsetData, transform);
-
-	for (const Prefab* cPrefab : this->Prefabs)
-		cPrefab->WriteObjectToFile(model, mOffsetData, transform);
 }

@@ -80,7 +80,7 @@ public:
 			new_hvs->pModel = hvs_model;
 			new_hvs->pParent = hvs_data;
 
-			part->AddHarvestable(new_hvs, hvs_index);
+			part->AddObject(new_hvs, hvs_index);
 		}
 
 		return index;

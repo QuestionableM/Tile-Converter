@@ -8,7 +8,6 @@
 #include "Utils/Memory.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
-#include "ObjectDatabase/KeywordReplacer.hpp"
 
 #include <algorithm>
 
@@ -89,8 +88,6 @@ public:
 
 	static void ReadBlueprints(BitStream& stream, Prefab* prefab, const int& count)
 	{
-		static const std::string bp_secret = "?JB:";
-
 		for (int a = 0; a < count; a++)
 		{
 			int string_length = stream.ReadInt();
@@ -101,42 +98,14 @@ public:
 
 			stream.ReadInt();
 
-			const std::size_t bp_index = value.find(bp_secret);
-			if (bp_index != std::string::npos)
-			{
-				const std::string bp_string = value.substr(bp_index + bp_secret.size());
+			Blueprint* blueprint = Blueprint::LoadAutomatic(value);
+			if (!blueprint) continue;
 
-				Blueprint* blueprint = Blueprint::FromJsonString(bp_string);
-				if (!blueprint) continue;
+			blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+			blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+			blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
 
-				DebugOutL("Blueprint Position: ", f_pos);
-				DebugOutL("Blueprint Rotation: ", f_quat);
-				DebugOutL("Blueprint Value: ", bp_string);
-
-				blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-				blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-				blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
-				
-				prefab->AddBlueprint(blueprint);
-			}
-			else
-			{
-				const std::wstring bp_wide_val = String::ToWide(value);
-				const std::wstring bp_path = KeywordReplacer::ReplaceKey(bp_wide_val);
-
-				Blueprint* blueprint = Blueprint::FromFile(bp_path);
-				if (!blueprint) continue;
-
-				DebugOutL("Blueprint Position: ", f_pos);
-				DebugOutL("Blueprint Rotation: ", f_quat);
-				DebugOutL("Blueprint Path: ", bp_path);
-
-				blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-				blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-				blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
-
-				prefab->AddBlueprint(blueprint);
-			}
+			prefab->AddObject(blueprint);
 		}
 	}
 
@@ -175,7 +144,7 @@ public:
 			rec_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
 			rec_prefab->SetPath(pref_path);
 
-			prefab->AddPrefab(rec_prefab);
+			prefab->AddObject(rec_prefab);
 		}
 	}
 
@@ -265,7 +234,7 @@ public:
 					asset->SetUuid(uuid);
 					asset->pParent = mData;
 
-					prefab->AddAsset(asset);
+					prefab->AddObject(asset);
 
 					continue;
 				}

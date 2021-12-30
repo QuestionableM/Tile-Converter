@@ -9,16 +9,18 @@
 class Blueprint : public TileEntity
 {
 public:
+	static Blueprint* LoadAutomatic(const std::string& str);
 	static Blueprint* FromFile(const std::wstring& path);
 	static Blueprint* FromJsonString(const std::string& json_str);
 
-	std::vector<Block*> Blocks = {};
-	std::vector<Part*> Parts = {};
-	std::vector<Joint*> Joints = {};
+	//This vector contains blocks, parts and joints
+	std::vector<TileEntity*> Objects = {};
 
+	void AddObject(TileEntity* object);
+
+	EntityType Type() const override;
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
-
 	void WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const override;
 
 	~Blueprint() = default;

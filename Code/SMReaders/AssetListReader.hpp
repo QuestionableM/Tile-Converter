@@ -118,7 +118,7 @@ public:
 				asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
 				if (asset->pModel != nullptr)
 				{
-					part->AddAsset(asset, asset_idx);
+					part->AddObject(asset, asset_idx);
 					continue;
 				}
 			}

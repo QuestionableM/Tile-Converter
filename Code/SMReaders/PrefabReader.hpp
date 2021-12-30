@@ -86,7 +86,7 @@ public:
 			new_prefab->SetPath(pref_path);
 			new_prefab->SetFlag(String::ToWide(std::string(flag.begin(), flag.end())));
 
-			part->AddPrefab(new_prefab);
+			part->AddObject(new_prefab);
 		}
 
 		return index;

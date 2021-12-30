@@ -1,11 +1,41 @@
 #include "Blueprint.hpp"
 
+#include "ObjectDatabase/KeywordReplacer.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "Utils/String.hpp"
 #include "Utils/File.hpp"
 #include "Console.hpp"
 
 #include <gtx/quaternion.hpp>
+
+static const std::string bp_secret = "?JB:";
+
+Blueprint* Blueprint::LoadAutomatic(const std::string& str)
+{
+	DebugOutL(ConCol::PINK_INT, "BlueprintString: ", str);
+
+	const std::size_t secret_idx = str.find(bp_secret);
+	if (secret_idx != std::string::npos)
+	{
+		const std::string bp_str = str.substr(secret_idx + bp_secret.size());
+
+		DebugOutL(ConCol::GREEN_INT, "LoadingBlueprintJsonString: ", bp_str);
+
+		return Blueprint::FromJsonString(bp_str);
+	}
+	else
+	{
+		const std::wstring wide_str = String::ToWide(str);
+		const std::wstring bp_path = KeywordReplacer::ReplaceKey(wide_str);
+
+		DebugOutL(ConCol::BLUE_INT, "LoadingBlueprintPath: ", bp_path);
+
+		return Blueprint::FromFile(bp_path);
+	}
+
+	return nullptr;
+}
 
 Blueprint* Blueprint::FromFile(const std::wstring& path)
 {
@@ -32,6 +62,18 @@ Blueprint* Blueprint::FromJsonString(const std::string& json_str)
 	return nBlueprint;
 }
 
+void Blueprint::AddObject(TileEntity* object)
+{
+	assert(object->Type() == EntityType::Block || object->Type() == EntityType::Part || object->Type() == EntityType::Joint);
+
+	this->Objects.push_back(object);
+}
+
+EntityType Blueprint::Type() const
+{
+	return EntityType::Blueprint;
+}
+
 std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return "BLUEPRINT_MTL_NAME_NOT_NEEDED";
@@ -39,28 +81,16 @@ std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_
 
 void Blueprint::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	for (const Block* pBlock : this->Blocks)
-		pBlock->FillTextureMap(tex_map);
-
-	for (const Part* pPart : this->Parts)
-		pPart->FillTextureMap(tex_map);
-
-	for (const Joint* pJoint : this->Joints)
-		pJoint->FillTextureMap(tex_map);
+	for (const TileEntity* pObject : this->Objects)
+		pObject->FillTextureMap(tex_map);
 }
 
 void Blueprint::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const
 {
 	const glm::mat4 blueprint_matrix = transform_matrix * this->GetTransformMatrix();
 
-	for (const Block* pBlock : this->Blocks)
-		pBlock->WriteObjectToFile(file, mOffset, blueprint_matrix);
-
-	for (const Part* pPart : this->Parts)
-		pPart->WriteObjectToFile(file, mOffset, blueprint_matrix);
-
-	for (const Joint* pJoint : this->Joints)
-		pJoint->WriteObjectToFile(file, mOffset, blueprint_matrix);
+	for (const TileEntity* pObject : this->Objects)
+		pObject->WriteObjectToFile(file, mOffset, blueprint_matrix);
 }
 
 glm::vec3 Blueprint::JsonToVector(const nlohmann::json& vec_json)
@@ -109,12 +139,6 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 			SMUuid obj_uuid = sUuid.get<std::string>();
 			Color obj_color = sColor.get<std::string>();
 
-			DebugOutL("Uuid: ", obj_uuid.ToString());
-			DebugOutL("Color: ", obj_color.StringHex());
-			DebugOutL("xAxis: ", xAxisInt);
-			DebugOutL("zAxis: ", zAxisInt);
-			DebugOutL("Position: ", sPositionVec.x, ", ", sPositionVec.y, ", ", sPositionVec.z);
-
 			if (sBounds.is_object())
 			{
 				const glm::vec3 obj_bounds = Blueprint::JsonToVector(sBounds);
@@ -122,7 +146,6 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 				if (!(obj_bounds.x > 0.0f && obj_bounds.y > 0.0f && obj_bounds.z > 0.0f))
 					continue;
 
-				DebugOutL("Bounds: ", obj_bounds.x, ", ", obj_bounds.y, ", ", obj_bounds.z);
 				BlockData* b_data = Mod::GetGlobalBlock(obj_uuid);
 				if (!b_data)
 				{
@@ -148,7 +171,7 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 				new_block->SetPosition(sPositionVec);
 				new_block->SetSize(obj_bounds);
 
-				this->Blocks.push_back(new_block);
+				this->AddObject(new_block);
 			}
 			else
 			{
@@ -172,36 +195,8 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 
 				new_part->SetPosition(sPositionVec);
 
-				this->Parts.push_back(new_part);
+				this->AddObject(new_part);
 			}
-
-			DebugOutL("");
-			/*
-			if (_Bounds.is_object())
-			{
-				const auto& _BoundX = Json::Get(_Bounds, "x");
-				const auto& _BoundY = Json::Get(_Bounds, "y");
-				const auto& _BoundZ = Json::Get(_Bounds, "z");
-
-				if (!(_BoundX.is_number() && _BoundY.is_number() && _BoundZ.is_number())) continue;
-				glm::vec3 _BoundsVec(_BoundX.get<float>(), _BoundY.get<float>(), _BoundZ.get<float>());
-
-				const SMBC::BlockData* _BlockD = Mod::GetBlock(uuid_obj);
-				if (!_BlockD) continue;
-
-				SMBC::Block* _Block = new SMBC::Block();
-				_Block->blkPtr	    = (SMBC::BlockData*)_BlockD;
-				_Block->Bounds	    = _BoundsVec;
-				_Block->Color	    = color_str;
-				_Block->Position    = _PosVec;
-				_Block->Uuid	    = _BlockD->Uuid;
-				_Block->xAxis	    = _XAxis.get<int>();
-				_Block->zAxis	    = _ZAxis.get<int>();
-				_Block->ObjectIndex	= this->objectIndexValue;
-
-				this->CollectionBindFunction(*this, _Block, false, body_index);
-			}
-			*/
 		}
 	}
 }
@@ -250,6 +245,6 @@ void Blueprint::LoadJoints(const nlohmann::json& pJson)
 
 		new_joint->SetPosition(jPositionVec);
 
-		this->Joints.push_back(new_joint);
+		this->AddObject(new_joint);
 	}
 }

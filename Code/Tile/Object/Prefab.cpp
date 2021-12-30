@@ -14,14 +14,9 @@ std::wstring Prefab::GetFlag() const
 	return this->flag;
 }
 
-std::vector<Prefab*> Prefab::GetPrefabs() const
+std::vector<TileEntity*> Prefab::GetObjects() const
 {
-	return this->Prefabs;
-}
-
-std::vector<Asset*> Prefab::GetAssets() const
-{
-	return this->Assets;
+	return this->Objects;
 }
 
 void Prefab::SetPath(const std::wstring& path)
@@ -34,19 +29,18 @@ void Prefab::SetFlag(const std::wstring& flag)
 	this->flag = flag;
 }
 
-void Prefab::AddBlueprint(Blueprint* blueprint)
+
+void Prefab::AddObject(TileEntity* object)
 {
-	this->Blueprints.push_back(blueprint);
+	assert(object->Type() == EntityType::Harvestable || object->Type() == EntityType::Asset || object->Type() == EntityType::Blueprint);
+
+	this->Objects.push_back(object);
 }
 
-void Prefab::AddPrefab(Prefab* prefab)
-{
-	this->Prefabs.push_back(prefab);
-}
 
-void Prefab::AddAsset(Asset* asset)
+EntityType Prefab::Type() const
 {
-	this->Assets.push_back(asset);
+	return EntityType::Prefab;
 }
 
 std::string Prefab::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
@@ -58,24 +52,12 @@ void Prefab::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, c
 {
 	const glm::mat4 prefab_matrix = transform_matrix * this->GetTransformMatrix();
 
-	for (const Asset* cAsset : this->Assets)
-		cAsset->WriteObjectToFile(file, mOffset, prefab_matrix);
-
-	for (const Blueprint* cBlueprint : this->Blueprints)
-		cBlueprint->WriteObjectToFile(file, mOffset, prefab_matrix);
-
-	for (const Prefab* cPrefab : this->Prefabs)
-		cPrefab->WriteObjectToFile(file, mOffset, prefab_matrix);
+	for (const TileEntity* cObject : this->Objects)
+		cObject->WriteObjectToFile(file, mOffset, prefab_matrix);
 }
 
 void Prefab::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	for (const Asset* cAsset : this->Assets)
-		cAsset->FillTextureMap(tex_map);
-
-	for (const Blueprint* cBlueprint : this->Blueprints)
-		cBlueprint->FillTextureMap(tex_map);
-
-	for (const Prefab* cPrefab : this->Prefabs)
-		cPrefab->FillTextureMap(tex_map);
+	for (const TileEntity* cObject : this->Objects)
+		cObject->FillTextureMap(tex_map);
 }

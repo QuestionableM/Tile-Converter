@@ -192,6 +192,7 @@
     <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
     <ClInclude Include="Code\ProgramConfig.hpp" />
+    <ClInclude Include="Code\SMReaders\BlueprintListReader.hpp" />
     <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp" />
     <ClInclude Include="Code\SMReaders\PrefabFileReader.hpp" />
     <ClInclude Include="Code\SMReaders\PrefabHeader.hpp" />

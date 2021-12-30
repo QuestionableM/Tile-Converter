@@ -4,6 +4,9 @@
 #include "Utils/String.hpp"
 #include "ObjectDatabase/ObjectData.hpp"
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 Tile::Tile(const int& width, const int& height)
 {
 	this->Width = width;
@@ -216,6 +219,19 @@ void Tile::WriteToFile(const std::wstring& path) const
 	std::ofstream output_model(path);
 	if (output_model.is_open())
 	{
+		fs::path mPath = path;
+
+		const bool is_mtl_valid = (mPath.has_stem() && mPath.has_parent_path());
+		std::wstring mtl_path;
+
+		if (is_mtl_valid)
+		{
+			mtl_path = mPath.parent_path().wstring() + L"/" + mPath.stem().wstring() + L".mtl";
+
+			const std::string mtl_name = "mtllib " + mPath.stem().string() + ".mtl\n";
+			output_model.write(mtl_name.c_str(), mtl_name.size());
+		}
+
 		DebugOutL("Writing terrain...");
 
 		const std::vector<float> pHeightArray = this->GetVertexHeight();
@@ -272,6 +288,9 @@ void Tile::WriteToFile(const std::wstring& path) const
 		}
 
 		output_model.close();
+
+		if (!mtl_path.empty())
+			this->WriteMtlFile(mtl_path);
 	}
 
 	DebugOutL("Finished!");
@@ -282,24 +301,17 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 	std::ofstream oMtl(path);
 	if (!oMtl.is_open()) return;
 
+	DebugOutL("Writing an mtl file...");
+
 	std::unordered_map<std::string, ObjectTexData> tData = {};
 
 	for (const TilePart* tPart : this->Tiles)
 	{
-		for (int a = 0; a < 4; a++)
+		for (std::size_t a = 0; a < tPart->Objects.size(); a++)
 		{
-			for (const Asset* cAsset : tPart->Assets[a])
-				cAsset->FillTextureMap(tData);
-
-			for (const Harvestable* cHarvestable : tPart->Harvestables[a])
-				cHarvestable->FillTextureMap(tData);
+			for (const TileEntity* cObject : tPart->Objects[a])
+				cObject->FillTextureMap(tData);
 		}
-
-		for (const Blueprint* cBlueprint : tPart->Blueprints)
-			cBlueprint->FillTextureMap(tData);
-
-		for (const Prefab* cPrefab : tPart->Prefabs)
-			cPrefab->FillTextureMap(tData);
 	}
 
 	for (const auto& tDatum : tData)

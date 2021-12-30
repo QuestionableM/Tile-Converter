@@ -22,6 +22,7 @@ public:
 	void SetColor(const Color& color);
 	Color GetColor() const;
 
+	EntityType Type() const;
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
 };

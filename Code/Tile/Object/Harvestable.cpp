@@ -10,6 +10,11 @@ Color Harvestable::GetColor() const
 	return this->color;
 }
 
+EntityType Harvestable::Type() const
+{
+	return EntityType::Harvestable;
+}
+
 std::string Harvestable::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);
@@ -17,8 +22,6 @@ std::string Harvestable::GetMtlName(const std::wstring& mat_name, const std::siz
 
 void Harvestable::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	const Model* pModel = this->GetModel();
-
 	for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
 	{
 		const std::string mtl_name = this->uuid.ToString() + " " + this->color.StringHex() + " " + std::to_string(a + 1);

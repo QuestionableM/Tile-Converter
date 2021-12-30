@@ -10,6 +10,7 @@
 #include "SMReaders/AssetListReader.hpp"
 #include "SMReaders/HarvestableListReader.hpp"
 #include "SMReaders/PrefabReader.hpp"
+#include "SMReaders/BlueprintListReader.hpp"
 
 #include "Utils/File.hpp"
 #include "Utils/String.hpp"
@@ -79,7 +80,7 @@ public:
 					//NodeReader - not needed
 					//ScriptReader - not needed
 					PrefabReader::Read(h, reader, part);
-					//BlueprintListReader - in the works
+					BlueprintListReader::Read(h, reader, part);
 					//DecalReader - in the works
 					HarvestableListReader::Read(h, reader, part);
 				}

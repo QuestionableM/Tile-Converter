@@ -257,5 +257,8 @@
     <ClInclude Include="Code\Tile\Object\Joint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\SMReaders\BlueprintListReader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
