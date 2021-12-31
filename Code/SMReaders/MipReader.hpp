@@ -45,7 +45,7 @@ public:
 
 	static void Read(const std::vector<Byte>& bytes, TilePart* part)
 	{
-		const int wh_mul = 0x21 * 0x21;
+		const std::size_t wh_mul = 0x21 * 0x21;
 
 		MemoryWrapper memory(bytes);
 
@@ -55,9 +55,9 @@ public:
 		height.resize(wh_mul);
 		color.resize(wh_mul);
 
-		for (int a = 0; a < wh_mul; a++)
+		for (std::size_t a = 0; a < wh_mul; a++)
 		{
-			const int mOffset = a * 8;
+			const std::size_t mOffset = a * 8;
 
 			height[a] = memory.Object<float>(mOffset);
 			color[a] = memory.Object<int>(mOffset + 4);

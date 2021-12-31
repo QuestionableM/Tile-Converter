@@ -40,25 +40,27 @@ public:
 		Byte first_byte = memory.NextObject<Byte>();
 		if (first_byte != 0)
 		{
-			int length = (int)first_byte & 0xff;
-			int offset = 2;
+			std::size_t length = (std::size_t)((int)first_byte & 0xff);
+			std::size_t offset = 2;
 
-			for (int i = 0; i < length; i++)
+			for (std::size_t i = 0; i < length; i++)
 			{
 				int uVar7 = 0;
-				for (int j = 0; j < 0x10; j++)
-				{
-					int read = (int)memory.Object<Byte>(offset + j);
 
-					int a = (uVar7 ^ read);
-					int b = 0x9e3779b9;
-					int c = (uVar7 >> 6);
-					int d = (uVar7 >> 2);
+				for (std::size_t j = 0; j < 0x10; j++)
+				{
+					const int read = (int)memory.Object<char>(offset + j);
+
+					const int a = (uVar7 ^ read);
+					const int b = 0x9e3779b9;
+					const int c = (uVar7 << 6);
+					const int d = (uVar7 >> 2);
 
 					uVar7 = a + b + c + d;
 				}
 
 				SMUuid clutter_uuid(memory.Objects<long long>(offset, 2));
+				DebugOutL(ConCol::YELLOW_INT, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
 
 				int iVar8 = 0;
 				/*
@@ -78,16 +80,11 @@ public:
 		std::vector<Byte> next_data = {};
 		next_data.resize(128 * 128);
 
-		{
-			std::size_t offset = memory.Index();
+		std::size_t offset = memory.Index();
 
-			for (int a = 0; a < 0x4000; a++)
-			{
-				Byte read = memory.Object<Byte>(1 + a + offset);
-				next_data[a] = read;
-			}
+		for (std::size_t a = 0; a < 0x4000; a++)
+			next_data[a] = memory.Object<Byte>(1 + a + offset);
 
-			part->SetClutter(next_data);
-		}
+		part->SetClutter(next_data);
 	}
 };
