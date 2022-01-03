@@ -15,7 +15,20 @@ void DatabaseLoader::LoadGameDatabase()
 	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid::Null(), ModType::GameData);
 
 	for (const std::wstring& db_dir : DatabaseConfig::AssetListFolders)
-		vanilla_items->ScanFolder(db_dir);
+	{
+		std::error_code rError;
+
+		if (fs::is_regular_file(db_dir, rError))
+		{
+			if (rError) continue;
+
+			vanilla_items->LoadFile(db_dir);
+		}
+		else
+		{
+			vanilla_items->ScanFolder(db_dir);
+		}
+	}
 
 	Mod::ModStorage.insert(std::make_pair(vanilla_items->Uuid, vanilla_items));
 }

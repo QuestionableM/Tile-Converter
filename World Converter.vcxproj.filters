@@ -102,6 +102,12 @@
     <ClCompile Include="Code\Tile\Object\Joint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Tile\Object\TileClutter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp">
@@ -258,6 +264,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\SMReaders\BlueprintListReader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Tile\Object\TileClutter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjectDatabase\Mod\ClutterListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -145,6 +145,7 @@
     <ClCompile Include="Code\Console.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\AssetListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\BlockListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\Mod.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Code\Tile\Object\Joint.cpp" />
     <ClCompile Include="Code\Tile\Object\Part.cpp" />
     <ClCompile Include="Code\Tile\Object\Prefab.cpp" />
+    <ClCompile Include="Code\Tile\Object\TileClutter.cpp" />
     <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
     <ClCompile Include="Code\Tile\Tile.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
@@ -182,6 +184,7 @@
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\BlockListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\ClutterListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />
@@ -203,6 +206,7 @@
     <ClInclude Include="Code\Tile\Object\Joint.hpp" />
     <ClInclude Include="Code\Tile\Object\Part.hpp" />
     <ClInclude Include="Code\Tile\Object\Prefab.h" />
+    <ClInclude Include="Code\Tile\Object\TileClutter.h" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />
     <ClInclude Include="Code\Utils\BitStream.hpp" />
     <ClInclude Include="Code\Utils\ByteImpl.hpp" />

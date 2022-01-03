@@ -21,6 +21,7 @@ class Mod
 	friend class HarvestableListLoader;
 	friend class PartListLoader;
 	friend class BlockListLoader;
+	friend class ClutterListLoader;
 
 	static std::unordered_map<SMUuid, Mod*> ModStorage;
 
@@ -29,12 +30,16 @@ class Mod
 	static std::unordered_map<SMUuid, AssetData*> AssetStorage;
 	static std::unordered_map<SMUuid, HarvestableData*> HarvestableStorage;
 
+	static std::unordered_map<SMUuid, ClutterData*> ClutterStorage;
+	static std::vector<ClutterData*> ClutterVector;
+
 	static const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> DataLoaders;
 
 	std::unordered_map<SMUuid, BlockData*> Blocks = {};
 	std::unordered_map<SMUuid, PartData*> Parts   = {};
 	std::unordered_map<SMUuid, AssetData*> Assets = {};
 	std::unordered_map<SMUuid, HarvestableData*> Harvestables = {};
+	std::unordered_map<SMUuid, ClutterData*> Clutter = {};
 
 	SMUuid Uuid;
 	std::wstring Name;
@@ -53,6 +58,8 @@ public:
 	static PartData* GetGlobalPart(const SMUuid& uuid);
 	static AssetData* GetGlobalAsset(const SMUuid& uuid);
 	static HarvestableData* GetGlobalHarvestbale(const SMUuid& uuid);
+	static ClutterData* GetGlobalClutter(const SMUuid& uuid);
+	static ClutterData* GetGlobalClutterById(const std::size_t& idx);
 
 	std::wstring GetDatabaseDirectory() const;
 
@@ -60,6 +67,7 @@ public:
 	PartData* GetPart(const SMUuid& uuid) const;
 	AssetData* GetAsset(const SMUuid& uuid) const;
 	HarvestableData* GetHarvestable(const SMUuid& uuid) const;
+	ClutterData* GetClutter(const SMUuid& uuid) const;
 
 private:
 	

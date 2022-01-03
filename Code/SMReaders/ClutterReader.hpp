@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ObjectDatabase/Mod/Mod.hpp"
+
 #include "Tile/CellHeader.hpp"
 #include "Tile/TilePart.hpp"
 #include "Utils/Uuid.hpp"
@@ -43,6 +45,7 @@ public:
 			std::size_t length = (std::size_t)((int)first_byte & 0xff);
 			std::size_t offset = 2;
 
+			part->ClutterData.resize(length);
 			for (std::size_t i = 0; i < length; i++)
 			{
 				int uVar7 = 0;
@@ -62,8 +65,16 @@ public:
 				SMUuid clutter_uuid(memory.Objects<long long>(offset, 2));
 				DebugOutL(ConCol::YELLOW_INT, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
 
-				int iVar8 = 0;
+				//ClutterData* pClutterData = Mod::GetGlobalClutter(clutter_uuid);
+				//if (!pClutterData)
+				//{
+				//	DebugErrorL("Couldn't find clutter with the specified uuid: ", clutter_uuid.ToString());
+				//}
+
+				//part->ClutterData.push_back(pClutterData);
+
 				/*
+				int iVar8 = 0;
 				if(iVar8 != 1) {
 					//Log("TerrainGrass", "false && \"Uuid dosen't exist in the clutter manager, defaulting to 0.\"", 149);
 				} else {
@@ -77,13 +88,40 @@ public:
 			memory.Set(offset);
 		}
 
-		std::vector<Byte> next_data = {};
+		std::vector<SignedByte> next_data = {};
 		next_data.resize(128 * 128);
 
-		std::size_t offset = memory.Index();
+		std::size_t offset = memory.Index() - 2;
 
 		for (std::size_t a = 0; a < 0x4000; a++)
-			next_data[a] = memory.Object<Byte>(1 + a + offset);
+			next_data[a] = memory.Object<SignedByte>(1 + a + offset);
+
+		const std::size_t clutter_size = part->ClutterData.size();
+
+		part->ClutterMap.resize(128 * 128);
+		for (std::size_t a = 0; a < 0x4000; a++)
+		{
+			const SignedByte& cur_byte = next_data[a];
+			if (cur_byte < 0) continue;
+
+			ClutterData* clData = Mod::GetGlobalClutterById(cur_byte);
+			if (clData != nullptr)
+			{
+				Model* pModel = ModelStorage::LoadModel(clData->Mesh, true, true);
+				if (pModel != nullptr)
+				{
+					TileClutter* new_clutter = new TileClutter();
+					new_clutter->pParent = clData;
+					new_clutter->pModel = pModel;
+					new_clutter->SetUuid(clData->Uuid);
+
+					part->ClutterMap[a] = new_clutter;
+					continue;
+				}
+			}
+
+			part->ClutterMap[a] = nullptr;
+		}
 
 		part->SetClutter(next_data);
 	}

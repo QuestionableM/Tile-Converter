@@ -98,3 +98,19 @@ public:
 	PartData(const PartData&) = delete;
 	PartData(PartData&) = delete;
 };
+
+class ClutterData
+{
+public:
+	SMUuid Uuid;
+	TextureList Textures;
+	std::wstring Mesh;
+	float Height;
+	float ScaleVariance;
+	bool GroundNormal;
+	Mod* pMod;
+
+	ClutterData() = default;
+	ClutterData(const ClutterData&) = delete;
+	ClutterData(ClutterData&) = delete;
+};

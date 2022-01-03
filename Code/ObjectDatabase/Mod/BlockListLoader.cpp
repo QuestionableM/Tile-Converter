@@ -32,6 +32,8 @@ void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 
 	for (const auto& fBlock : fBlocks)
 	{
+		if (!fBlock.is_object()) continue;
+
 		const auto& bUuid = JsonReader::Get(fBlock, "uuid");
 		const auto& bTiling = JsonReader::Get(fBlock, "tiling");
 		const auto& bColor = JsonReader::Get(fBlock, "color");

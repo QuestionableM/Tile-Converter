@@ -23,6 +23,7 @@ enum class EntityType
 {
 	Harvestable,
 	Blueprint,
+	Clutter,
 	Prefab,
 	Asset,
 	Block,

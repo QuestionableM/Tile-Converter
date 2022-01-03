@@ -7,6 +7,7 @@
 #include "ObjectDatabase/Mod/HarvestableListLoader.hpp"
 #include "ObjectDatabase/Mod/PartListLoader.hpp"
 #include "ObjectDatabase/Mod/BlockListLoader.hpp"
+#include "ObjectDatabase/Mod/ClutterListLoader.hpp"
 #include "ObjectDatabase/KeywordReplacer.hpp"
 
 #include "Console.hpp"
@@ -20,13 +21,16 @@ std::unordered_map<SMUuid, BlockData*> Mod::BlockStorage = {};
 std::unordered_map<SMUuid, PartData*>  Mod::PartStorage  = {};
 std::unordered_map<SMUuid, AssetData*> Mod::AssetStorage = {};
 std::unordered_map<SMUuid, HarvestableData*> Mod::HarvestableStorage = {};
+std::unordered_map<SMUuid, ClutterData*> Mod::ClutterStorage = {};
+std::vector<ClutterData*> Mod::ClutterVector = {};
 
 const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> Mod::DataLoaders =
 {
 	{ "assetListRenderable", AssetListLoader::Load       },
 	{ "harvestableList",     HarvestableListLoader::Load },
 	{ "partList",			 PartListLoader::Load		 },
-	{ "blockList",			 BlockListLoader::Load		 }
+	{ "blockList",			 BlockListLoader::Load		 },
+	{ "clutterList",		 ClutterListLoader::Load     }
 };
 
 Mod::Mod(const std::wstring& name, const std::wstring& dir, const SMUuid& uuid, const ModType& type)
@@ -114,6 +118,14 @@ HarvestableData* Mod::GetGlobalHarvestbale(const SMUuid& uuid)
 	return nullptr;
 }
 
+ClutterData* Mod::GetGlobalClutter(const SMUuid& uuid)
+{
+	if (ClutterStorage.find(uuid) != ClutterStorage.end())
+		return ClutterStorage.at(uuid);
+
+	return nullptr;
+}
+
 std::wstring Mod::GetDatabaseDirectory() const
 {
 	switch (this->Type)
@@ -155,6 +167,25 @@ HarvestableData* Mod::GetHarvestable(const SMUuid& uuid) const
 		return this->Harvestables.at(uuid);
 
 	return nullptr;
+}
+
+ClutterData* Mod::GetClutter(const SMUuid& uuid) const
+{
+	if (this->Clutter.find(uuid) != this->Clutter.end())
+		return this->Clutter.at(uuid);
+
+	return nullptr;
+}
+
+ClutterData* Mod::GetGlobalClutterById(const std::size_t& idx)
+{
+	if (Mod::ClutterVector.size() <= idx)
+	{
+		DebugErrorL("The clutter index is out of bounds! (Size: ", Mod::ClutterVector.size(), ", Index: ", idx, ")");
+		return nullptr;
+	}
+
+	return Mod::ClutterVector[idx];
 }
 
 void Mod::LoadFile(const std::wstring& path)

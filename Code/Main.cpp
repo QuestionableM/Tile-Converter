@@ -37,7 +37,7 @@ int WINAPI WinMain(
 			output_bp.close();
 		}
 	}*/
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/SurvivalStartArea_CrashedTower_01.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Ruin_Meadow_128_01.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
 	while (true) {};

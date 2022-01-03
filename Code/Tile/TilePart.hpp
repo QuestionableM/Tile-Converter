@@ -5,6 +5,7 @@
 #include "Tile/Object/Harvestable.hpp"
 #include "Tile/Object/Prefab.h"
 #include "Tile/Object/Blueprint.hpp"
+#include "Tile/Object/TileClutter.h"
 #include "Tile/WriterOffset.hpp"
 
 class Tile;
@@ -20,7 +21,9 @@ public:
 	std::vector<long long> Ground;
 
 	// Clutter
-	std::vector<Byte> Clutter;
+	std::vector<ClutterData*> ClutterData;
+	std::vector<SignedByte> Clutter;
+	std::vector<TileClutter*> ClutterMap;
 
 	/*
 		the 1st vector contains: harvestables, assets, prefabs and blueprints
@@ -34,7 +37,7 @@ public:
 	void SetVertexColor(const std::vector<int>& vert_array);
 	void SetVertexHeight(const std::vector<float>& height_array);
 	void SetGroundMaterials(const std::vector<long long>& material_array);
-	void SetClutter(const std::vector<Byte>& clutter_array);
+	void SetClutter(const std::vector<SignedByte>& clutter_array);
 
 	void AddObject(TileEntity* object, const int& index = 0);
 

@@ -32,7 +32,7 @@ public:
 
 	std::vector<float> GetVertexHeight() const;
 	std::vector<int> GetVertexColor() const;
-	std::vector<Byte> GetClutter() const;
+	std::vector<TileClutter*> GetClutter() const;
 	std::vector<long long> GetGround() const;
 	TilePart* GetPart(const int& x, const int& y) const;
 

@@ -41,8 +41,6 @@ std::string Asset::GetMtlName(const std::wstring& mat_name, const std::size_t& m
 
 void Asset::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	const Model* pModel = this->GetModel();
-
 	for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
 	{
 		const SubMeshData* pSubMesh = pModel->subMeshData[a];

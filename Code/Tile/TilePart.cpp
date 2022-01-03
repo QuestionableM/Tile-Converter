@@ -31,7 +31,7 @@ void TilePart::SetGroundMaterials(const std::vector<long long>& material_array)
 	this->Ground = material_array;
 }
 
-void TilePart::SetClutter(const std::vector<Byte>& clutter_array)
+void TilePart::SetClutter(const std::vector<SignedByte>& clutter_array)
 {
 	this->Clutter = clutter_array;
 }

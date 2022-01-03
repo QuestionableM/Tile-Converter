@@ -15,7 +15,10 @@
 			"$SURVIVAL_DATA/Harvestables/Database/HarvestableSets",
 			"$CHALLENGE_DATA/Objects/Database/ShapeSets",
 			"$GAME_DATA/Objects/Database/ShapeSets",
-			"$SURVIVAL_DATA/Objects/Database/ShapeSets"
+			"$SURVIVAL_DATA/Objects/Database/ShapeSets",
+
+			"$GAME_DATA/Terrain/Database/clutter.json",
+			"$SURVIVAL_DATA/Terrain/Database/clutter.json"
 		]
     },
     "UserSettings": {
