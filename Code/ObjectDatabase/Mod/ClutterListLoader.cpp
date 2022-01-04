@@ -9,14 +9,14 @@ bool ClutterListLoader::LoadTextureData(const nlohmann::json& fClutter, TextureL
 {
 	const auto& clDif = JsonReader::Get(fClutter, "texture");
 	const auto& clMaterial = JsonReader::Get(fClutter, "material");
-	if (!clDif.is_string() || !clMaterial.is_string()) return false;
+	if (!clDif.is_string()) return false;
 
 	const auto& clMesh = JsonReader::Get(fClutter, "mesh");
 	if (!clMesh.is_string()) return false;
 	
 	const std::wstring clDifWide = String::ToWide(clDif.get<std::string>());
 	tList.dif = KeywordReplacer::ReplaceKey(clDifWide);
-	tList.material = String::ToWide(clMaterial.get<std::string>());
+	tList.material = (clMaterial.is_string() ? String::ToWide(clMaterial.get<std::string>()) : L"GroundClutter");
 
 	const std::wstring mPathWide = String::ToWide(clMesh.get<std::string>());
 	mesh = KeywordReplacer::ReplaceKey(mPathWide);
@@ -57,7 +57,10 @@ void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 		TextureList tList;
 		std::wstring clMesh;
 		if (!ClutterListLoader::LoadTextureData(cl_item, tList, clMesh))
+		{
+			DebugErrorL("Couldn't load the texture data for: ", clutter_uuid.ToString());
 			continue;
+		}
 
 		ClutterData* new_clutter = new ClutterData();
 		new_clutter->Uuid = clutter_uuid;
@@ -66,15 +69,6 @@ void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 		new_clutter->pMod = mod;
 
 		ClutterListLoader::LoadClutterData(cl_item, new_clutter);
-
-		DebugOutL("ClutterUuid: ", clutter_uuid.ToString());
-		DebugOutL("ClutterMesh: ", clMesh);
-		DebugOutL("ClutterDif: ", tList.dif);
-		DebugOutL("ClutterMaterial: ", tList.material);
-		DebugOutL("ClutterHeight: ", new_clutter->Height);
-		DebugOutL("ClutterScaleVariance: ", new_clutter->ScaleVariance);
-		DebugOutL("ClutterGroundNormal: ", new_clutter->GroundNormal);
-		DebugOutL(" ");
 
 		const auto new_pair = std::make_pair(new_clutter->Uuid, new_clutter);
 
