@@ -6,6 +6,7 @@
 #include "ObjectDatabase/ObjectData.hpp"
 
 #include <gtc/matrix_transform.hpp>
+#include <PerlinNoise/PerlinNoise.hpp>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -350,6 +351,12 @@ void Tile::WriteToFile(const std::wstring& path) const
 			const int gridSizeX = this->Width * 32;
 			const int gridSizeY = this->Height * 32;
 
+			//initialize perlin noise
+			const siv::PerlinNoise rotation_noise(1337u);
+			const siv::PerlinNoise scale_noise(1488u);
+
+			const float rotation_max = glm::pi<float>() * 2.0f;
+
 			for (std::size_t y = 0; y < clWidth; y++)
 			{
 				std::string clutter_row;
@@ -377,9 +384,12 @@ void Tile::WriteToFile(const std::wstring& path) const
 
 					tClutterPos.z = blerp(c00, c10, c01, c11, gx - gxi, gy - gyi);
 
+					const float rot_angle = (float)rotation_noise.octave2D_11((double)x * 15.0, (double)y * 17.14, 4) * rotation_max;
+					const float rand_scale = (float)scale_noise.octave2D_11((double)x * 54.4f, (double)y * 24.54, 8) * tClutter->pParent->ScaleVariance;
+
 					tClutter->SetPosition(tClutterPos);
-					tClutter->SetRotation(glm::quat());
-					tClutter->SetSize(glm::vec3(0.25f));
+					tClutter->SetRotation(glm::rotate(glm::quat(), rot_angle, glm::vec3(0.0f, 0.0f, 1.0f)));
+					tClutter->SetSize(glm::vec3(0.25f - (rand_scale * 0.25f)));
 
 					tClutter->WriteObjectToFile(output_model, offset_data, glm::mat4(1.0f));
 				}

@@ -5,6 +5,7 @@
 class TileClutter : public TileEntity
 {
 	friend class ClutterReader;
+	friend class Tile;
 
 	class ClutterData* pParent;
 public:
