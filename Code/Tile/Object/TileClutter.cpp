@@ -19,7 +19,7 @@ void TileClutter::FillTextureMap(std::unordered_map<std::string, ObjectTexData>&
 
 	ObjectTexData oTexData;
 	oTexData.Textures = pParent->Textures;
-	oTexData.TexColor = 0x00ff00;
+	oTexData.TexColor = 0x00ff00; //Make a proper color implementation later
 
 	tex_map.insert(std::make_pair(mtl_name, oTexData));
 }

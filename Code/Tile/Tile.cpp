@@ -228,20 +228,166 @@ float blerp(const float& c00, const float& c10, const float& c01, const float& c
 	return lerp(lerp(c00, c10, tx), lerp(c01, c11, tx), ty);
 }
 
-float GetHeightPoint(const std::vector<float>& vec, const std::size_t& vec_width, const float& x, const float& y)
+float GetHeightPoint(
+	const std::vector<float>& vec,
+	const std::size_t& vec_width,
+	const std::size_t& vec_height,
+	const std::size_t& gridSzX,
+	const std::size_t& gridSzY,
+	const float& x,
+	const float& y
+)
 {
-	const int x_int = int(x);
-	const int y_int = int(y);
+	const float gx = x / float(vec_height) * gridSzX;
+	const float gy = y / float(vec_width) * gridSzY;
 
-	const float c00 = vec[(x_int    ) + (y_int    ) * vec_width];
-	const float c10 = vec[(x_int + 1) + (y_int    ) * vec_width];
-	const float c01 = vec[(x_int    ) + (y_int + 1) * vec_width];
-	const float c11 = vec[(x_int + 1) + (y_int + 1) * vec_width];
+	const int gxi = int(gx);
+	const int gyi = int(gy);
 
-	const float x_inter = x - (float)x_int;
-	const float y_inter = y - (float)y_int;
+	const float& c00 = vec[(gxi)+(gyi) * (gridSzX + 1)];
+	const float& c10 = vec[(gxi + 1) + (gyi) * (gridSzX + 1)];
+	const float& c01 = vec[(gxi)+(gyi + 1) * (gridSzX + 1)];
+	const float& c11 = vec[(gxi + 1) + (gyi + 1) * (gridSzX + 1)];
 
-	return blerp(c00, c10, c01, c11, x_inter, y_inter);
+	return blerp(c00, c10, c01, c11, gx - gxi, gy - gyi);
+}
+
+char GetHeightCharacter(const float& height)
+{
+	if (height <= 0.0f) return '0';
+
+	if (height > 0.0f && height < 0.1f)
+		return '1';
+	else if (height >= 0.1f && height < 0.2f)
+		return '2';
+	else if (height >= 0.2f && height < 0.3f)
+		return '3';
+	else if (height >= 0.3f && height < 0.4f)
+		return '4';
+	else if (height >= 0.4f && height < 0.5f)
+		return '5';
+	else if (height >= 0.5f && height < 0.6f)
+		return '6';
+	else if (height >= 0.6f && height < 0.7f)
+		return '7';
+	else if (height >= 0.7f && height < 0.8f)
+		return '8';
+
+	return '9';
+}
+
+void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const
+{
+	DebugOutL("Writing terrain...");
+
+	const int tWidth = this->GetWidth() * 32 + 1;
+	const int tHeight = this->GetHeight() * 32 + 1;
+
+	mOffset.Vertex += (std::size_t)(tHeight * tWidth);
+
+	constexpr const float tile_size = 2.0f;
+
+	const float half_width = ((float)tWidth / 2.0f) * tile_size;
+	const float half_height = ((float)tHeight / 2.0f) * tile_size;
+
+	for (int y = 0; y < tHeight; y++)
+	{
+		std::string height_row;
+		height_row.resize(tWidth);
+
+		for (int x = 0; x < tWidth; x++)
+		{
+			const float& height = height_map[x + y * tWidth];
+
+			height_row[x] = GetHeightCharacter(height);
+
+			const float x_point = ((float)-x * tile_size) + half_width;
+			const float y_point = ((float)-y * tile_size) + half_height;
+
+			model << "v " << x_point << " " << y_point << " " << height << "\n";
+		}
+
+		DebugOutL(height_row);
+	}
+
+	for (int y = 0; y < tHeight - 1; y++)
+	{
+		for (int x = 0; x < tWidth - 1; x++)
+		{
+			const int h00 = (x    ) + (y    ) * tWidth + 1;
+			const int h01 = (x    ) + (y + 1) * tWidth + 1;
+			const int h10 = (x + 1) + (y    ) * tWidth + 1;
+			const int h11 = (x + 1) + (y + 1) * tWidth + 1;
+
+			model << "f " << h00 << " " << h10 << " " << h01 << "\n";
+			model << "f " << h01 << " " << h10 << " " << h11 << "\n";
+		}
+	}
+}
+
+void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const
+{
+	DebugOutL("Writing clutter...");
+
+	std::vector<TileClutter*> tile_clutter = this->GetClutter();
+
+	const std::size_t clWidth = (std::size_t)this->Width * 128;
+	const std::size_t clHeight = (std::size_t)this->Height * 128;
+
+	const int gridSizeX = this->Width * 32;
+	const int gridSizeY = this->Height * 32;
+
+	const float tWidth = (float)(gridSizeX + 1);
+	const float tHeight = (float)(gridSizeY + 1);
+
+	//initialize perlin noise
+	const siv::PerlinNoise rotation_noise(1337u);
+	const siv::PerlinNoise scale_noise(1488u);
+
+	for (std::size_t y = 0; y < clWidth; y++)
+	{
+		std::string clutter_row;
+		clutter_row.resize(clHeight);
+
+		for (std::size_t x = 0; x < clHeight; x++)
+		{
+			TileClutter* tClutter = tile_clutter[x + y * clWidth];
+			clutter_row[x] = (tClutter != nullptr) ? 'x' : '0';
+
+			if (!tClutter) continue;
+
+			glm::vec3 tClutterPos;
+			tClutterPos.x = -((float)x * 0.5f) + tWidth;
+			tClutterPos.y = -((float)y * 0.5f) + tHeight;
+			tClutterPos.z = GetHeightPoint(height_map, clWidth, clHeight, gridSizeX, gridSizeY, (float)x, (float)y);
+
+			const float rot_angle = (float)rotation_noise.octave2D_11((double)x * 15.0, (double)y * 17.14, 4) * glm::two_pi<float>();
+			const float rand_scale = (float)scale_noise.octave2D_11((double)x * 54.4f, (double)y * 24.54, 8) * tClutter->pParent->ScaleVariance;
+
+			tClutter->SetPosition(tClutterPos);
+			tClutter->SetRotation(glm::rotate(glm::quat(), rot_angle, glm::vec3(0.0f, 0.0f, 1.0f)));
+			tClutter->SetSize(glm::vec3(0.25f - (rand_scale * 0.25f)));
+
+			tClutter->WriteObjectToFile(model, mOffset, glm::mat4(1.0f));
+		}
+
+		DebugOutL(clutter_row);
+	}
+}
+
+void Tile::WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const
+{
+	DebugOutL("Writing assets...");
+
+	for (int y = 0; y < this->Width; y++)
+	{
+		for (int x = 0; x < this->Height; x++)
+		{
+			TilePart* tPart = this->GetPart(x, y);
+
+			tPart->WriteToFile(model, mOffset, x, y);
+		}
+	}
 }
 
 void Tile::WriteToFile(const std::wstring& path) const
@@ -262,153 +408,12 @@ void Tile::WriteToFile(const std::wstring& path) const
 			output_model.write(mtl_name.c_str(), mtl_name.size());
 		}
 
-		DebugOutL("Writing terrain...");
-
+		WriterOffsetData offset_data = { 0, 0, 0, 0 };
 		const std::vector<float> pHeightArray = this->GetVertexHeight();
 
-		const int tWidth = this->GetWidth() * 32 + 1;
-		const int tHeight = this->GetHeight() * 32 + 1;
-
-		WriterOffsetData offset_data = { 0, 0, 0, 0 };
-		offset_data.Vertex += (std::size_t)(tHeight * tWidth);
-
-		constexpr const float tile_size = 2.0f;
-
-		const float half_width = ((float)tWidth / 2.0f) * tile_size;
-		const float half_height = ((float)tHeight / 2.0f) * tile_size;
-
-		for (int y = 0; y < tHeight; y++)
-		{
-			std::string height_row;
-			height_row.resize(tWidth);
-
-			for (int x = 0; x < tWidth; x++)
-			{
-				const float& height = pHeightArray[x + y * tWidth];
-
-				if (height > 0.0f)
-				{
-					if (height > 0.0f && height < 0.1f)
-						height_row[x] = '1';
-					else if (height >= 0.1f && height < 0.2f)
-						height_row[x] = '2';
-					else if (height >= 0.2f && height < 0.3f)
-						height_row[x] = '3';
-					else if (height >= 0.3f && height < 0.4f)
-						height_row[x] = '4';
-					else if (height >= 0.4f && height < 0.5f)
-						height_row[x] = '5';
-					else if (height >= 0.5f && height < 0.6f)
-						height_row[x] = '6';
-					else if (height >= 0.6f && height < 0.7f)
-						height_row[x] = '7';
-					else if (height >= 0.7f && height < 0.8f)
-						height_row[x] = '8';
-					else
-						height_row[x] = '9';
-				}
-				else
-				{
-					height_row[x] = '0';
-				}
-
-				const float x_point = ((float)-x * tile_size) + half_width;
-				const float y_point = ((float)-y * tile_size) + half_height;
-
-				output_model << "v " << x_point << " " << y_point << " " << height << "\n";
-			}
-
-			DebugOutL(height_row);
-		}
-
-		for (int y = 0; y < tHeight - 1; y++)
-		{
-			for (int x = 0; x < tWidth - 1; x++)
-			{
-				const int h00 = (x    ) + (y    ) * tWidth + 1;
-				const int h01 = (x    ) + (y + 1) * tWidth + 1;
-				const int h10 = (x + 1) + (y    ) * tWidth + 1;
-				const int h11 = (x + 1) + (y + 1) * tWidth + 1;
-
-				output_model << "f " << h00 << " " << h10 << " " << h01 << "\n";
-				output_model << "f " << h01 << " " << h10 << " " << h11 << "\n";
-			}
-		}
-
-		{
-			DebugOutL("Writing clutter...");
-
-			std::vector<TileClutter*> tile_clutter = this->GetClutter();
-
-			const std::size_t clWidth  = (std::size_t)this->Width  * 128;
-			const std::size_t clHeight = (std::size_t)this->Height * 128;
-
-			const float clHalfWidth = (float)clWidth * 0.5f;
-			const float clHalfHeight = (float)clHeight * 0.5f;
-
-			const std::size_t height_width = (std::size_t)this->Width * 32;
-
-			const int gridSizeX = this->Width * 32;
-			const int gridSizeY = this->Height * 32;
-
-			//initialize perlin noise
-			const siv::PerlinNoise rotation_noise(1337u);
-			const siv::PerlinNoise scale_noise(1488u);
-
-			const float rotation_max = glm::pi<float>() * 2.0f;
-
-			for (std::size_t y = 0; y < clWidth; y++)
-			{
-				std::string clutter_row;
-				clutter_row.resize(clHeight);
-
-				for (std::size_t x = 0; x < clHeight; x++)
-				{
-					TileClutter* tClutter = tile_clutter[x + y * clWidth];
-					clutter_row[x] = (tClutter != nullptr) ? 'x' : '0';
-
-					if (!tClutter) continue;
-
-					glm::vec3 tClutterPos(-((float)x * 0.5f) + half_width, -((float)y * 0.5f) + half_height, 0.0f);
-
-					const float gx = x / float(clHeight) * gridSizeX;
-					const float gy = y / float(clWidth)  * gridSizeY;
-
-					const int gxi = int(gx);
-					const int gyi = int(gy);
-
-					const float& c00 = pHeightArray[(gxi    ) + (gyi    ) * (gridSizeX + 1)];
-					const float& c10 = pHeightArray[(gxi + 1) + (gyi    ) * (gridSizeX + 1)];
-					const float& c01 = pHeightArray[(gxi    ) + (gyi + 1) * (gridSizeX + 1)];
-					const float& c11 = pHeightArray[(gxi + 1) + (gyi + 1) * (gridSizeX + 1)];
-
-					tClutterPos.z = blerp(c00, c10, c01, c11, gx - gxi, gy - gyi);
-
-					const float rot_angle = (float)rotation_noise.octave2D_11((double)x * 15.0, (double)y * 17.14, 4) * rotation_max;
-					const float rand_scale = (float)scale_noise.octave2D_11((double)x * 54.4f, (double)y * 24.54, 8) * tClutter->pParent->ScaleVariance;
-
-					tClutter->SetPosition(tClutterPos);
-					tClutter->SetRotation(glm::rotate(glm::quat(), rot_angle, glm::vec3(0.0f, 0.0f, 1.0f)));
-					tClutter->SetSize(glm::vec3(0.25f - (rand_scale * 0.25f)));
-
-					tClutter->WriteObjectToFile(output_model, offset_data, glm::mat4(1.0f));
-				}
-
-				DebugOutL(clutter_row);
-			}
-		}
-
-		DebugOutL("Writing assets...");
-
-		for (int y = 0; y < this->Width; y++)
-		{
-			for (int x = 0; x < this->Height; x++)
-			{
-				TilePart* tPart = this->GetPart(x, y);
-
-				tPart->WriteToFile(output_model, offset_data, x, y);
-			}
-		}
+		this->WriteTerrain(output_model, offset_data, pHeightArray);
+		this->WriteClutter(output_model, offset_data, pHeightArray);
+		this->WriteAssets (output_model, offset_data);
 
 		output_model.close();
 
