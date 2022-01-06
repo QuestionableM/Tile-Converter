@@ -3,6 +3,14 @@
 #include "ObjectDatabase/ObjectData.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
+Asset::Asset(AssetData* pParent, Model* pModel, const std::unordered_map<std::wstring, Color>& color_map)
+{
+	this->pParent = pParent;
+	this->uuid = pParent->Uuid;
+	this->pModel = pModel;
+	this->mColors = color_map;
+}
+
 Color Asset::GetColor(const std::wstring& color) const
 {
 	if (mColors.find(color) != mColors.end())
@@ -59,12 +67,4 @@ void Asset::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_m
 			tex_map.insert(std::make_pair(mtl_name, oTexData));
 		}
 	}
-}
-
-void Asset::AddMaterial(const std::wstring& mat_name, const Color& color)
-{
-	if (mColors.find(mat_name) != mColors.end())
-		return;
-
-	mColors.insert(std::make_pair(mat_name, color));
 }

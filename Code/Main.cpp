@@ -22,22 +22,7 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	/*Blueprint* new_blueprint = Blueprint::FromFile(L"./Tests/Car.json");
-	if (new_blueprint != nullptr)
-	{
-		new_blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
-
-		std::ofstream output_bp("./OutputBlueprint.obj");
-		if (output_bp.is_open())
-		{
-			WriterOffsetData new_offset = { 0, 0, 0, 0 };
-
-			new_blueprint->WriteObjectToFile(output_bp, new_offset, glm::mat4(1.0f));
-
-			output_bp.close();
-		}
-	}*/
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/MaterialTest.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Kiosk_64_01.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
 	while (true) {};

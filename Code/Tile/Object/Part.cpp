@@ -2,6 +2,16 @@
 #include "Console.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 
+Part::Part(PartData* pParent, Model* pModel, const Color& color, const int& xAxis, const int& zAxis)
+{
+	this->pParent = pParent;
+	this->uuid = pParent->Uuid;
+	this->pModel = pModel;
+	this->color = color;
+	this->xAxis = xAxis;
+	this->zAxis = zAxis;
+}
+
 Color Part::GetColor() const
 {
 	return this->color;

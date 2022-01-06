@@ -72,7 +72,6 @@ public:
 			}
 
 			SMUuid uuid;
-			Asset* asset = new Asset();
 
 			if (version < 4)
 			{
@@ -88,6 +87,8 @@ public:
 				index += 0x10;
 			}
 
+			std::unordered_map<std::wstring, Color> color_map;
+
 			int bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
 			if (bVar4 != 0)
 			{
@@ -98,32 +99,28 @@ public:
 					bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
 					std::vector<char> str_vec = memory.Objects<char>(index, bVar4);
 
-					std::string str_data(str_vec.begin(), str_vec.end());
-
+					const std::wstring wstr_data = String::ToWide(std::string(str_vec.begin(), str_vec.end()));
 					index += bVar4;
-					asset->AddMaterial(String::ToWide(str_data), memory.Object<unsigned int>(index));
+					const unsigned int color = memory.Object<unsigned int>(index);
 					index += 4;
+
+					if (color_map.find(wstr_data) == color_map.end())
+						color_map.insert(std::make_pair(wstr_data, color));
 				}
 			}
 
 			AssetData* asset_data = Mod::GetGlobalAsset(uuid);
-			if (asset_data != nullptr)
-			{
-				asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-				asset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-				asset->SetSize({ f_size[0], f_size[1], f_size[2] });
-				asset->SetUuid(uuid);
-				asset->pParent = asset_data;
+			if (!asset_data) continue;
 
-				asset->pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
-				if (asset->pModel != nullptr)
-				{
-					part->AddObject(asset, asset_idx);
-					continue;
-				}
-			}
+			Model* pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
+			if (!pModel) continue;
 
-			delete asset;
+			Asset* nAsset = new Asset(asset_data, pModel, color_map);
+			nAsset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+			nAsset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+			nAsset->SetSize({ f_size[0], f_size[1], f_size[2] });
+
+			part->AddObject(nAsset, asset_idx);
 		}
 
 		return index;

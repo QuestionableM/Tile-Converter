@@ -1,5 +1,17 @@
 #include "TileClutter.h"
 
+TileClutter::TileClutter(ClutterData* pParent, Model* pModel)
+{
+	this->pParent = pParent;
+	this->uuid = pParent->Uuid;
+	this->pModel = pModel;
+}
+
+const float& TileClutter::ScaleVariance() const
+{
+	return pParent->ScaleVariance;
+}
+
 EntityType TileClutter::Type() const
 {
 	return EntityType::Clutter;

@@ -18,7 +18,7 @@ class PrefabFileReader
 	PrefabFileReader() = default;
 
 public:
-	static Prefab* Read(const std::wstring& path)
+	static Prefab* Read(const std::wstring& path, const std::wstring& flag)
 	{
 		std::vector<Byte> bytes = File::ReadFileBytes(path);
 
@@ -28,10 +28,10 @@ public:
 			return nullptr;
 		}
 
-		return PrefabFileReader::Read(bytes);
+		return PrefabFileReader::Read(bytes, path, flag);
 	}
 
-	static Prefab* Read(const std::vector<Byte>& bytes)
+	static Prefab* Read(const std::vector<Byte>& bytes, const std::wstring& ppath, const std::wstring& pflag)
 	{
 		MemoryWrapper reader(bytes);
 
@@ -43,7 +43,7 @@ public:
 			return nullptr;
 		}
 
-		Prefab* prefab = new Prefab();
+		Prefab* prefab = new Prefab(ppath, pflag);
 		
 		const int version = reader.NextObject<int>(true);
 		DebugOutL("Prefab Version: ", version);
@@ -103,7 +103,6 @@ public:
 
 			blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
 			blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
 
 			prefab->AddObject(blueprint);
 		}
@@ -113,10 +112,10 @@ public:
 	{
 		for (int a = 0; a < count; a++)
 		{
-			int string_length = stream.ReadInt();
-			std::wstring pref_path = String::ToWide(stream.ReadString(string_length));
+			const int string_length = stream.ReadInt();
+			const std::wstring pref_path = String::ToWide(stream.ReadString(string_length));
 
-			DebugOutL("Prefab: ", pref_path);
+			DebugOutL(ConCol::PINK_INT, "Recursive Prefab Path: ", pref_path);
 			std::vector<float> f_pos = {};
 			std::vector<float> f_quat = {};
 			std::vector<float> f_size = { 1.0f, 1.0f, 1.0f };
@@ -136,13 +135,12 @@ public:
 			stream.ReadInt();
 			stream.ReadInt();
 
-			Prefab* rec_prefab = PrefabFileReader::Read(pref_path);
+			Prefab* rec_prefab = PrefabFileReader::Read(pref_path, L"");
 			if (!rec_prefab) continue;
 
 			rec_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
 			rec_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
 			rec_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
-			rec_prefab->SetPath(pref_path);
 
 			prefab->AddObject(rec_prefab);
 		}
@@ -210,37 +208,35 @@ public:
 			SMUuid uuid = stream.ReadUuid();
 			int materialCount = stream.ReadByte();
 
-			Asset* asset = new Asset();
+			std::unordered_map<std::wstring, Color> color_map;
 
 			if (materialCount != 0)
 			{
 				for (int b = 0; b < materialCount; b++)
 				{
-					int length = stream.ReadByte();
-					std::string str = stream.ReadString(length);
-					asset->AddMaterial(String::ToWide(str), stream.ReadInt());
+					const int length = stream.ReadByte();
+					const std::string str = stream.ReadString(length);
+
+					const std::wstring wstr = String::ToWide(str);
+					const unsigned int color = stream.ReadInt();
+
+					if (color_map.find(wstr) == color_map.end())
+						color_map.insert(std::make_pair(wstr, color));
 				}
 			}
 
-			AssetData* mData = Mod::GetGlobalAsset(uuid);
-			if (mData != nullptr)
-			{
-				asset->pModel = ModelStorage::LoadModel(mData->Mesh, true, true);
-				if (asset->pModel != nullptr)
-				{
-					asset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-					asset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-					asset->SetSize({ f_size[0], f_size[1], f_size[2] });
-					asset->SetUuid(uuid);
-					asset->pParent = mData;
+			AssetData* asset_data = Mod::GetGlobalAsset(uuid);
+			if (!asset_data) continue;
 
-					prefab->AddObject(asset);
+			Model* pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
+			if (!pModel) continue;
 
-					continue;
-				}
-			}
+			Asset* nAsset = new Asset(asset_data, pModel, color_map);
+			nAsset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+			nAsset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+			nAsset->SetSize({ f_size[0], f_size[1], f_size[2] });
 
-			delete asset;
+			prefab->AddObject(nAsset);
 		}
 	}
 

@@ -9,12 +9,15 @@
 
 #include <gtx/quaternion.hpp>
 
+Blueprint::Blueprint()
+{
+	this->size = glm::vec3(0.25f);
+}
+
 static const std::string bp_secret = "?JB:";
 
 Blueprint* Blueprint::LoadAutomatic(const std::string& str)
 {
-	DebugOutL(ConCol::PINK_INT, "BlueprintString: ", str);
-
 	const std::size_t secret_idx = str.find(bp_secret);
 	if (secret_idx != std::string::npos)
 	{
@@ -146,28 +149,10 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 				if (!(obj_bounds.x > 0.0f && obj_bounds.y > 0.0f && obj_bounds.z > 0.0f))
 					continue;
 
-				BlockData* b_data = Mod::GetGlobalBlock(obj_uuid);
-				if (!b_data)
-				{
-					DebugErrorL("Couldn't find a block with the specified uuid: ", obj_uuid.ToString());
-					continue;
-				}
-
 				BlockData* block_data = Mod::GetGlobalBlock(obj_uuid);
-				if (!block_data)
-				{
-					DebugErrorL("Couldn't find a block with the specified uuid: ", obj_uuid.ToString());
-					continue;
-				}
+				if (!block_data) continue;
 
-				Block* new_block = new Block();
-				new_block->uuid = obj_uuid;
-				new_block->color = obj_color;
-				new_block->Bounds = obj_bounds;
-				new_block->pParent = block_data;
-				new_block->xAxis = xAxisInt;
-				new_block->zAxis = zAxisInt;
-
+				Block* new_block = new Block(block_data, obj_bounds, obj_color, xAxisInt, zAxisInt);
 				new_block->SetPosition(sPositionVec);
 				new_block->SetSize(obj_bounds);
 
@@ -176,23 +161,12 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 			else
 			{
 				PartData* p_data = Mod::GetGlobalPart(obj_uuid);
-				if (!p_data)
-				{
-					DebugErrorL("Couldn't find a part with the specified uuid: ", obj_uuid.ToString());
-					continue;
-				}
+				if (!p_data) continue;
 
 				Model* pModel = ModelStorage::LoadModel(p_data->Mesh, true, true);
 				if (!pModel) continue;
 
-				Part* new_part = new Part();
-				new_part->uuid = obj_uuid;
-				new_part->color = obj_color;
-				new_part->pModel = pModel;
-				new_part->pParent = p_data;
-				new_part->xAxis = xAxisInt;
-				new_part->zAxis = zAxisInt;
-
+				Part* new_part = new Part(p_data, pModel, obj_color, xAxisInt, zAxisInt);
 				new_part->SetPosition(sPositionVec);
 
 				this->AddObject(new_part);
@@ -226,23 +200,12 @@ void Blueprint::LoadJoints(const nlohmann::json& pJson)
 		Color joint_color = jColor.get<std::string>();
 
 		PartData* joint_data = Mod::GetGlobalPart(joint_uuid);
-		if (!joint_data)
-		{
-			DebugErrorL("Couldn't find a joint with the specified uuid: ", joint_uuid.ToString());
-			continue;
-		}
+		if (!joint_data) continue;
 
 		Model* pModel = ModelStorage::LoadModel(joint_data->Mesh, true, true);
 		if (!pModel) continue;
 
-		Joint* new_joint = new Joint();
-		new_joint->uuid = joint_uuid;
-		new_joint->color = joint_color;
-		new_joint->xAxis = xAxisInt;
-		new_joint->zAxis = zAxisInt;
-		new_joint->pParent = joint_data;
-		new_joint->pModel = pModel;
-
+		Joint* new_joint = new Joint(joint_data, pModel, joint_color, xAxisInt, zAxisInt);
 		new_joint->SetPosition(jPositionVec);
 
 		this->AddObject(new_joint);

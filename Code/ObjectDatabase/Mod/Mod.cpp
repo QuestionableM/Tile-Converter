@@ -91,6 +91,7 @@ BlockData* Mod::GetGlobalBlock(const SMUuid& uuid)
 	if (BlockStorage.find(uuid) != BlockStorage.end())
 		return BlockStorage.at(uuid);
 
+	DebugErrorL("Couldn't find a block with the specified uuid: ", uuid.ToString());
 	return nullptr;
 }
 
@@ -99,6 +100,7 @@ PartData* Mod::GetGlobalPart(const SMUuid& uuid)
 	if (PartStorage.find(uuid) != PartStorage.end())
 		return PartStorage.at(uuid);
 
+	DebugErrorL("Couldn't find a part with the specified uuid: ", uuid.ToString());
 	return nullptr;
 }
 
@@ -107,6 +109,7 @@ AssetData* Mod::GetGlobalAsset(const SMUuid& uuid)
 	if (AssetStorage.find(uuid) != AssetStorage.end())
 		return AssetStorage.at(uuid);
 
+	DebugErrorL("Couldn't find an asset with the specified uuid: ", uuid.ToString());
 	return nullptr;
 }
 
@@ -115,6 +118,7 @@ HarvestableData* Mod::GetGlobalHarvestbale(const SMUuid& uuid)
 	if (HarvestableStorage.find(uuid) != HarvestableStorage.end())
 		return HarvestableStorage.at(uuid);
 
+	DebugErrorL("Couldn't find a harvestable with the specified uuid: ", uuid.ToString());
 	return nullptr;
 }
 
@@ -123,6 +127,7 @@ ClutterData* Mod::GetGlobalClutter(const SMUuid& uuid)
 	if (ClutterStorage.find(uuid) != ClutterStorage.end())
 		return ClutterStorage.at(uuid);
 
+	DebugErrorL("Couldn't find clutter with the specified uuid: ", uuid.ToString());
 	return nullptr;
 }
 

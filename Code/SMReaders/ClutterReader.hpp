@@ -94,22 +94,12 @@ public:
 			if (cur_byte < 0) continue;
 
 			ClutterData* clData = Mod::GetGlobalClutterById(cur_byte);
-			if (clData != nullptr)
-			{
-				Model* pModel = ModelStorage::LoadModel(clData->Mesh, true, true);
-				if (pModel != nullptr)
-				{
-					TileClutter* new_clutter = new TileClutter();
-					new_clutter->pParent = clData;
-					new_clutter->pModel = pModel;
-					new_clutter->SetUuid(clData->Uuid);
+			if (!clData) continue;
 
-					part->ClutterMap[a] = new_clutter;
-					continue;
-				}
-			}
+			Model* pModel = ModelStorage::LoadModel(clData->Mesh, true, true);
+			if (!pModel) continue;
 
-			part->ClutterMap[a] = nullptr;
+			part->ClutterMap[a] = new TileClutter(clData, pModel);
 		}
 
 		part->SetClutter(next_data);

@@ -8,6 +8,8 @@
 
 class Blueprint : public TileEntity
 {
+	Blueprint();
+
 public:
 	static Blueprint* LoadAutomatic(const std::string& str);
 	static Blueprint* FromFile(const std::wstring& path);

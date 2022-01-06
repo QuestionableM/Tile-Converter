@@ -4,6 +4,12 @@
 #include "Tile/Object/Blueprint.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
+Prefab::Prefab(const std::wstring& path, const std::wstring& flag)
+{
+	this->path = path;
+	this->flag = flag;
+}
+
 std::wstring Prefab::GetPath() const
 {
 	return this->path;
@@ -18,17 +24,6 @@ std::vector<TileEntity*> Prefab::GetObjects() const
 {
 	return this->Objects;
 }
-
-void Prefab::SetPath(const std::wstring& path)
-{
-	this->path = path;
-}
-
-void Prefab::SetFlag(const std::wstring& flag)
-{
-	this->flag = flag;
-}
-
 
 void Prefab::AddObject(TileEntity* object)
 {

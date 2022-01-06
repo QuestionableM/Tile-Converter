@@ -74,7 +74,6 @@ public:
 
 			new_blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
 			new_blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			new_blueprint->SetSize({ 0.25f, 0.25f, 0.25f });
 
 			part->AddObject(new_blueprint);
 		}

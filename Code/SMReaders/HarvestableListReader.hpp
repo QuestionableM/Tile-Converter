@@ -61,26 +61,17 @@ public:
 			index += 0x3c;
 
 			HarvestableData* hvs_data = Mod::GetGlobalHarvestbale(uuid);
-			if (!hvs_data)
-			{
-				DebugErrorL("Couln't find any harvestables with the specfieid id: ", uuid.ToString());
-				continue;
-			}
+			if (!hvs_data) continue;
 
 			Model* hvs_model = ModelStorage::LoadModel(hvs_data->Mesh, true, true);
 			if (!hvs_model) continue;
 
-			Harvestable* new_hvs = new Harvestable();
-			
-			new_hvs->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			new_hvs->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			new_hvs->SetSize({ f_size[0], f_size[1], f_size[2] });
-			new_hvs->SetUuid(uuid);
-			new_hvs->SetColor(color);
-			new_hvs->pModel = hvs_model;
-			new_hvs->pParent = hvs_data;
+			Harvestable* nHvs = new Harvestable(hvs_data, hvs_model, color);
+			nHvs->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+			nHvs->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+			nHvs->SetSize({ f_size[0], f_size[1], f_size[2] });
 
-			part->AddObject(new_hvs, hvs_index);
+			part->AddObject(nHvs, hvs_index);
 		}
 
 		return index;

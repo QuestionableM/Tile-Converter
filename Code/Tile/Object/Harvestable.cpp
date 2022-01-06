@@ -1,7 +1,10 @@
 #include "Harvestable.hpp"
 
-void Harvestable::SetColor(const Color& color)
+Harvestable::Harvestable(HarvestableData* pParent, Model* pModel, const Color& color)
 {
+	this->pParent = pParent;
+	this->uuid = pParent->Uuid;
+	this->pModel = pModel;
 	this->color = color;
 }
 

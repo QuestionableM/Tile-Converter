@@ -4,15 +4,15 @@
 
 class TileClutter : public TileEntity
 {
-	friend class ClutterReader;
-	friend class Tile;
-
 	class ClutterData* pParent;
+
 public:
-	TileClutter() = default;
+	TileClutter(ClutterData* pParent, Model* pModel);
 	TileClutter(TileClutter&) = delete;
 	TileClutter(const TileClutter&) = delete;
 	~TileClutter() = default;
+
+	const float& ScaleVariance() const;
 
 	EntityType Type() const override;
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;

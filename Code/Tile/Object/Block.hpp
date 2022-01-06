@@ -4,8 +4,6 @@
 
 class Block : public TileEntity
 {
-	friend class Blueprint;
-
 	Color color;
 	BlockData* pParent;
 	glm::vec3 Bounds;
@@ -13,7 +11,7 @@ class Block : public TileEntity
 	int zAxis;
 
 public:
-	Block() = default;
+	Block(BlockData* pParent, const glm::vec3& bounds, const Color& color, const int& xAxis, const int& zAxis);
 	Block(const Block&) = delete;
 	Block(Block&) = delete;
 	~Block() = default;

@@ -15,15 +15,14 @@ class Prefab : public TileEntity
 	std::vector<TileEntity*> Objects = {};
 
 public:
-	Prefab() = default;
+	Prefab(const std::wstring& path, const std::wstring& flag = L"");
+	Prefab(Prefab&) = delete;
+	Prefab(const Prefab&) = delete;
 	~Prefab() = default;
 
 	std::wstring GetPath() const;
 	std::wstring GetFlag() const;
 	std::vector<TileEntity*> GetObjects() const;
-
-	void SetPath(const std::wstring& path);
-	void SetFlag(const std::wstring& flag);
 
 	void AddObject(TileEntity* object);
 

@@ -3,6 +3,16 @@
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
+Block::Block(BlockData* pParent, const glm::vec3& bounds, const Color& color, const int& xAxis, const int& zAxis)
+{
+	this->pParent = pParent;
+	this->uuid = pParent->Uuid;
+	this->Bounds = bounds;
+	this->color = color;
+	this->xAxis = xAxis;
+	this->zAxis = zAxis;
+}
+
 EntityType Block::Type() const
 {
 	return EntityType::Block;

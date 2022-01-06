@@ -7,15 +7,13 @@
 
 class Part : public TileEntity
 {
-	friend class Blueprint;
-
 	Color color;
 	PartData* pParent;
 	int xAxis;
 	int zAxis;
 
 public:
-	Part() = default;
+	Part(PartData* pParent, Model* pModel, const Color& color, const int& xAxis, const int& zAxis);
 	Part(const Part&) = delete;
 	Part(Part&) = delete;
 	~Part() = default;

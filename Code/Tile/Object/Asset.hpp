@@ -9,16 +9,11 @@
 
 class Asset : public TileEntity
 {
-	friend class TilePart;
-	friend class AssetListReader;
-	friend class Tile;
-	friend class PrefabFileReader;
-
 	class AssetData* pParent;
 	std::unordered_map<std::wstring /*material*/, Color> mColors;
 
 public:
-	Asset() = default;
+	Asset(AssetData* pParent, Model* pModel, const std::unordered_map<std::wstring, Color>& color_map);
 	Asset(const Asset&) = delete;
 	Asset(Asset&&) = delete;
 	~Asset() = default;
@@ -29,6 +24,4 @@ public:
 	EntityType Type() const override;
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
-
-	void AddMaterial(const std::wstring& mat_name, const Color& color);
 };

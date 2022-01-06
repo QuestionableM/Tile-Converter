@@ -7,15 +7,13 @@
 
 class Joint : public TileEntity
 {
-	friend class Blueprint;
-
 	Color color;
 	PartData* pParent;
 	int xAxis;
 	int zAxis;
 
 public:
-	Joint() = default;
+	Joint(PartData* pParent, Model* pModel, const Color& color, const int& xAxis, const int& zAxis);
 	Joint(const Joint&) = delete;
 	Joint(Joint&) = delete;
 	~Joint() = default;

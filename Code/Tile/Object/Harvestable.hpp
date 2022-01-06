@@ -7,19 +7,15 @@
 
 class Harvestable : public TileEntity
 {
-	friend class HarvestableListReader;
-	friend class Tile;
-
 	Color color;
 	class HarvestableData* pParent;
 
 public:
-	Harvestable() = default;
+	Harvestable(HarvestableData* pParent, Model* pModel, const Color& color);
 	Harvestable(const Harvestable&) = delete;
 	Harvestable(Harvestable&) = delete;
 	~Harvestable() = default;
 
-	void SetColor(const Color& color);
 	Color GetColor() const;
 
 	EntityType Type() const;

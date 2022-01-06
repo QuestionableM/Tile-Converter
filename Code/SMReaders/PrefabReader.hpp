@@ -75,16 +75,15 @@ public:
 
 			const std::wstring wide_path = String::ToWide(std::string(path.begin(), path.end()));
 			const std::wstring pref_path = KeywordReplacer::ReplaceKey(wide_path);
+			const std::wstring pref_flag = String::ToWide(std::string(flag.begin(), flag.end()));
 			DebugOutL("Prefab Path: ", pref_path);
 
-			Prefab* new_prefab = PrefabFileReader::Read(pref_path);
+			Prefab* new_prefab = PrefabFileReader::Read(pref_path, pref_flag);
 			if (!new_prefab) continue;
 
 			new_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
 			new_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
 			new_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
-			new_prefab->SetPath(pref_path);
-			new_prefab->SetFlag(String::ToWide(std::string(flag.begin(), flag.end())));
 
 			part->AddObject(new_prefab);
 		}
