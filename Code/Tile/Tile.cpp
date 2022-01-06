@@ -289,8 +289,8 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 	constexpr const float tile_size = 2.0f;
 
-	const float half_width = ((float)tWidth / 2.0f) * tile_size;
-	const float half_height = ((float)tHeight / 2.0f) * tile_size;
+	const float hWidth = (float)this->Width * 32.0f;
+	const float hHeight = (float)this->Height * 32.0f;
 
 	for (int y = 0; y < tHeight; y++)
 	{
@@ -303,8 +303,8 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 			height_row[x] = GetHeightCharacter(height);
 
-			const float x_point = ((float)-x * tile_size) + half_width;
-			const float y_point = ((float)-y * tile_size) + half_height;
+			const float x_point = ((float)-x * tile_size) + hWidth;
+			const float y_point = ((float)-y * tile_size) + hHeight;
 
 			model << "v " << x_point << " " << y_point << " " << height << "\n";
 		}
@@ -353,8 +353,8 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 	const int gridSizeX = this->Width  * 32;
 	const int gridSizeY = this->Height * 32;
 
-	const float tWidth  = (float)(gridSizeX + 1);
-	const float tHeight = (float)(gridSizeY + 1);
+	const float tWidth  = (float)gridSizeX;
+	const float tHeight = (float)gridSizeY;
 
 	//initialize perlin noise
 	const siv::PerlinNoise rotation_noise(1337u);
