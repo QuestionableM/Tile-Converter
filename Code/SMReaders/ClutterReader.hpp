@@ -39,7 +39,7 @@ public:
 	{
 		MemoryWrapper memory(bytes);
 
-		Byte first_byte = memory.NextObject<Byte>();
+		Byte first_byte = memory.Object<Byte>(0);
 		if (first_byte != 0)
 		{
 			std::size_t length = (std::size_t)((int)first_byte & 0xff);
@@ -64,14 +64,6 @@ public:
 				SMUuid clutter_uuid(memory.Objects<long long>(offset, 2));
 				DebugOutL(ConCol::YELLOW_INT, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
 
-				//ClutterData* pClutterData = Mod::GetGlobalClutter(clutter_uuid);
-				//if (!pClutterData)
-				//{
-				//	DebugErrorL("Couldn't find clutter with the specified uuid: ", clutter_uuid.ToString());
-				//}
-
-				//part->ClutterData.push_back(pClutterData);
-
 				/*
 				int iVar8 = 0;
 				if(iVar8 != 1) {
@@ -84,21 +76,21 @@ public:
 				offset += 0x11;
 			}
 
-			memory.Set(offset);
+			memory.Set(offset - 2);
 		}
+
 
 		std::vector<SignedByte> next_data = {};
 		next_data.resize(128 * 128);
 
-		std::size_t offset = memory.Index() - 2;
-
-		for (std::size_t a = 0; a < 0x4000; a++)
-			next_data[a] = memory.Object<SignedByte>(1 + a + offset);
+		std::size_t offset = memory.Index();
 
 		part->ClutterMap.resize(128 * 128);
 		for (std::size_t a = 0; a < 0x4000; a++)
 		{
-			const SignedByte& cur_byte = next_data[a];
+			const SignedByte cur_byte = memory.Object<SignedByte>(1 + a + offset);
+			next_data[a] = cur_byte;
+
 			if (cur_byte < 0) continue;
 
 			ClutterData* clData = Mod::GetGlobalClutterById(cur_byte);
