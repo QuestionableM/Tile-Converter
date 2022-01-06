@@ -359,6 +359,8 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 	//initialize perlin noise
 	const siv::PerlinNoise rotation_noise(1337u);
 	const siv::PerlinNoise scale_noise(1488u);
+	const siv::PerlinNoise x_noise(6842u);
+	const siv::PerlinNoise y_noise(1813u);
 
 	for (std::size_t y = 0; y < clWidth; y++)
 	{
@@ -372,10 +374,16 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 			if (!tClutter) continue;
 
+			const float x_offset = (float)x_noise.octave2D_11((double)x * 91.42f, (double)y * 83.24f, 4) * 0.5f;
+			const float y_offset = (float)y_noise.octave2D_11((double)x * 73.91f, (double)y * 98.46f, 4) * 0.5f;
+
+			const float xPosClamp = std::clamp<float>((float)x + x_offset, 0.0f, (float)clWidth);
+			const float yPosClamp = std::clamp<float>((float)y + y_offset, 0.0f, (float)clHeight);
+
 			glm::vec3 tClutterPos;
-			tClutterPos.x = -((float)x * 0.5f) + tWidth;
-			tClutterPos.y = -((float)y * 0.5f) + tHeight;
-			tClutterPos.z = GetHeightPoint(height_map, clWidth, clHeight, gridSizeX, gridSizeY, (float)x, (float)y);
+			tClutterPos.x = -((float)x * 0.5f) + tWidth + x_offset;
+			tClutterPos.y = -((float)y * 0.5f) + tHeight + y_offset;
+			tClutterPos.z = GetHeightPoint(height_map, clWidth, clHeight, gridSizeX, gridSizeY, xPosClamp, yPosClamp);
 
 			const float rot_angle = (float)rotation_noise.octave2D_11((double)x * 15.0, (double)y * 17.14, 4) * glm::two_pi<float>();
 			const float rand_scale = (float)scale_noise.octave2D_11((double)x * 54.4f, (double)y * 24.54, 8) * tClutter->ScaleVariance();
