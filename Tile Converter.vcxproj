@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}</ProjectGuid>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>TileConverter</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)$(Configuration)\</OutDir>
+    <IntDir>Junk\$(Platform)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)$(Configuration)\</OutDir>
+    <IntDir>Junk\$(Platform)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)$(Configuration)\</OutDir>
+    <IntDir>Junk\$(Platform)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Bin\$(Platform)$(Configuration)\</OutDir>
+    <IntDir>Junk\$(Platform)$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>assimp64.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x64;$(SolutionDir)Dependencies\lz4\Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>assimp32.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x86;$(SolutionDir)Dependencies\lz4\Lib\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>assimp32.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x86;$(SolutionDir)Dependencies\lz4\Lib\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>assimp64.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x64;$(SolutionDir)Dependencies\lz4\Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\Console.cpp" />
+    <ClCompile Include="Code\Main.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\KeywordReplacer.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\ModelStorage.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\AssetListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\BlockListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\Mod.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\ObjectRotations.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\PartListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
+    <ClCompile Include="Code\Tile\Object\Asset.cpp" />
+    <ClCompile Include="Code\Tile\Object\Block.cpp" />
+    <ClCompile Include="Code\Tile\Object\Blueprint.cpp" />
+    <ClCompile Include="Code\Tile\Object\Harvestable.cpp" />
+    <ClCompile Include="Code\Tile\Object\Joint.cpp" />
+    <ClCompile Include="Code\Tile\Object\Part.cpp" />
+    <ClCompile Include="Code\Tile\Object\Prefab.cpp" />
+    <ClCompile Include="Code\Tile\Object\TileClutter.cpp" />
+    <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
+    <ClCompile Include="Code\Tile\Tile.cpp" />
+    <ClCompile Include="Code\Tile\TilePart.cpp" />
+    <ClCompile Include="Code\Utils\Color.cpp" />
+    <ClCompile Include="Code\Utils\File.cpp" />
+    <ClCompile Include="Code\Utils\Json.cpp" />
+    <ClCompile Include="Code\Utils\String.cpp" />
+    <ClCompile Include="Code\Utils\Uuid.cpp" />
+    <ClCompile Include="Dependencies\lodepng\lodepng\lodepng.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\Console.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\ModelStorage.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\BlockListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\ClutterListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\Mod.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\ObjectRotations.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\PartListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
+    <ClInclude Include="Code\ProgramConfig.hpp" />
+    <ClInclude Include="Code\SMReaders\AssetListReader.hpp" />
+    <ClInclude Include="Code\SMReaders\BlueprintListReader.hpp" />
+    <ClInclude Include="Code\SMReaders\ClutterReader.hpp" />
+    <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp" />
+    <ClInclude Include="Code\SMReaders\MipReader.hpp" />
+    <ClInclude Include="Code\SMReaders\PrefabFileReader.hpp" />
+    <ClInclude Include="Code\SMReaders\PrefabHeader.hpp" />
+    <ClInclude Include="Code\SMReaders\PrefabReader.hpp" />
+    <ClInclude Include="Code\SMReaders\TileReader.hpp" />
+    <ClInclude Include="Code\Tile\CellHeader.hpp" />
+    <ClInclude Include="Code\Tile\Object\Asset.hpp" />
+    <ClInclude Include="Code\Tile\Object\Block.hpp" />
+    <ClInclude Include="Code\Tile\Object\Blueprint.hpp" />
+    <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
+    <ClInclude Include="Code\Tile\Object\Joint.hpp" />
+    <ClInclude Include="Code\Tile\Object\Part.hpp" />
+    <ClInclude Include="Code\Tile\Object\Prefab.h" />
+    <ClInclude Include="Code\Tile\Object\TileClutter.h" />
+    <ClInclude Include="Code\Tile\Object\TileEntity.hpp" />
+    <ClInclude Include="Code\Tile\Tile.hpp" />
+    <ClInclude Include="Code\Tile\TileHeader.hpp" />
+    <ClInclude Include="Code\Tile\TilePart.hpp" />
+    <ClInclude Include="Code\Tile\WriterOffset.hpp" />
+    <ClInclude Include="Code\Utils\BitStream.hpp" />
+    <ClInclude Include="Code\Utils\ByteImpl.hpp" />
+    <ClInclude Include="Code\Utils\Color.hpp" />
+    <ClInclude Include="Code\Utils\File.hpp" />
+    <ClInclude Include="Code\Utils\Json.hpp" />
+    <ClInclude Include="Code\Utils\Memory.hpp" />
+    <ClInclude Include="Code\Utils\String.hpp" />
+    <ClInclude Include="Code\Utils\Uuid.hpp" />
+    <ClInclude Include="Code\Utils\WinInclude.hpp" />
+    <ClInclude Include="Dependencies\lodepng\lodepng\lodepng.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
