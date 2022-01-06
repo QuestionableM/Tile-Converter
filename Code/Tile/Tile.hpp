@@ -41,6 +41,7 @@ private:
 	void WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const;
 	void WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const;
 	void WriteMaterials() const;
+	void WriteColorMap() const;
 
 public:
 	void WriteToFile(const std::wstring& path)  const;

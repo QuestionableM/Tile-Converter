@@ -281,11 +281,11 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 {
 	DebugOutL("Writing terrain...");
 
-	const int tWidth = this->GetWidth() * 32 + 1;
-	const int tHeight = this->GetHeight() * 32 + 1;
+	const int tWidth  = this->Width  * 32 + 1;
+	const int tHeight = this->Height * 32 + 1;
 
 	mOffset.Vertex += (std::size_t)(tHeight * tWidth);
-	mOffset.Uv += (std::size_t)(tHeight * tWidth);
+	mOffset.Uv     += (std::size_t)(tHeight * tWidth);
 
 	constexpr const float tile_size = 2.0f;
 
@@ -347,13 +347,13 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 	std::vector<TileClutter*> tile_clutter = this->GetClutter();
 
-	const std::size_t clWidth = (std::size_t)this->Width * 128;
+	const std::size_t clWidth  = (std::size_t)this->Width  * 128;
 	const std::size_t clHeight = (std::size_t)this->Height * 128;
 
-	const int gridSizeX = this->Width * 32;
+	const int gridSizeX = this->Width  * 32;
 	const int gridSizeY = this->Height * 32;
 
-	const float tWidth = (float)(gridSizeX + 1);
+	const float tWidth  = (float)(gridSizeX + 1);
 	const float tHeight = (float)(gridSizeY + 1);
 
 	//initialize perlin noise
@@ -406,13 +406,32 @@ void Tile::WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const
 	}
 }
 
+void WritePngImage(const std::vector<Byte>& img_data, const std::string& output_name, const unsigned& width, const unsigned& height)
+{
+	std::vector<Byte> img_data_png;
+	lodepng::State state;
+
+	unsigned int error = lodepng::encode(img_data_png, img_data, width, height, state);
+	if (!error)
+	{
+		if (lodepng::save_file(img_data_png, output_name))
+		{
+			DebugErrorL("Couldn't save image: ", output_name);
+		}
+	}
+	else
+	{
+		DebugErrorL("Couldn't encode image: ", output_name);
+	}
+}
+
 void Tile::WriteMaterials() const
 {
 	DebugOutL("Writing materials...");
 
 	const std::vector<long long> ground_data = this->GetGround();
 
-	const std::size_t gnd_width = (std::size_t)this->Width * 64 + 1;
+	const std::size_t gnd_width  = (std::size_t)this->Width  * 64 + 1;
 	const std::size_t gnd_height = (std::size_t)this->Height * 64 + 1;
 
 	for (std::size_t mat_id = 0; mat_id < 2; mat_id++)
@@ -424,8 +443,7 @@ void Tile::WriteMaterials() const
 		{
 			for (std::size_t x = 0; x < gnd_height; x++)
 			{
-				const std::size_t cur_idx = x + y * gnd_width;
-				const long long& cur_data = ground_data[cur_idx];
+				const long long& cur_data = ground_data[x + y * gnd_width];
 
 				const long cur_chunk = (long)(cur_data >> (32 * mat_id));
 
@@ -436,27 +454,37 @@ void Tile::WriteMaterials() const
 			}
 		}
 
-		std::vector<Byte> mat_map_png;
-		lodepng::State state;
+		const std::string out_name = "./MaterialMap" + std::to_string(mat_id) + ".png";
+		WritePngImage(material_map, out_name, (unsigned)gnd_width, (unsigned)gnd_height);
+	}
+}
 
-		const std::string output_name = "./MaterialMap" + std::to_string(mat_id + 1) + ".png";
+void Tile::WriteColorMap() const
+{
+	DebugOutL("Writing color map...");
 
-		unsigned int error = lodepng::encode(mat_map_png, material_map, (unsigned int)gnd_width, (unsigned int)gnd_height, state);
-		if (!error)
+	std::vector<int> vert_colors = this->GetVertexColor();
+
+	const std::size_t col_width  = (std::size_t)this->Width  * 32 + 1;
+	const std::size_t col_height = (std::size_t)this->Height * 32 + 1;
+
+	std::vector<Byte> color_map;
+	color_map.resize(col_width * col_height * 4);
+
+	for (std::size_t y = 0; y < col_height; y++)
+	{
+		for (std::size_t x = 0; x < col_width; x++)
 		{
-			DebugOutL("Saving: ", output_name);
+			const int& cur_data = vert_colors[x + y * col_width];
 
-			error = lodepng::save_file(mat_map_png, output_name);
-			if (error)
-			{
-				DebugErrorL("Couldn't save the material map: ", output_name);
-			}
-		}
-		else
-		{
-			DebugErrorL("Couldn't write the material map: ", output_name);
+			color_map[4 * col_width * y + 4 * x + 0] = (Byte)cur_data;
+			color_map[4 * col_width * y + 4 * x + 1] = (Byte)(cur_data >> 8);
+			color_map[4 * col_width * y + 4 * x + 2] = (Byte)(cur_data >> 16);
+			color_map[4 * col_width * y + 4 * x + 3] = 255;
 		}
 	}
+
+	WritePngImage(color_map, "./ColorMap.png", (unsigned)col_width, (unsigned)col_height);
 }
 
 void Tile::WriteToFile(const std::wstring& path) const
@@ -484,8 +512,7 @@ void Tile::WriteToFile(const std::wstring& path) const
 		this->WriteClutter(output_model, offset_data, pHeightArray);
 		this->WriteAssets (output_model, offset_data);
 		this->WriteMaterials();
-
-
+		this->WriteColorMap();
 
 		output_model.close();
 

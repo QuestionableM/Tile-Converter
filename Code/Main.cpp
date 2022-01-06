@@ -37,7 +37,7 @@ int WINAPI WinMain(
 			output_bp.close();
 		}
 	}*/
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/MaterialTest.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/Clutter Test2.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
 	while (true) {};
