@@ -108,6 +108,9 @@
     <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\lodepng\lodepng\lodepng.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp">

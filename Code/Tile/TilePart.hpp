@@ -21,7 +21,6 @@ public:
 	std::vector<long long> Ground;
 
 	// Clutter
-	std::vector<ClutterData*> ClutterData;
 	std::vector<SignedByte> Clutter;
 	std::vector<TileClutter*> ClutterMap;
 

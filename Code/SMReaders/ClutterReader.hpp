@@ -45,7 +45,6 @@ public:
 			std::size_t length = (std::size_t)((int)first_byte & 0xff);
 			std::size_t offset = 2;
 
-			part->ClutterData.resize(length);
 			for (std::size_t i = 0; i < length; i++)
 			{
 				int uVar7 = 0;
@@ -95,8 +94,6 @@ public:
 
 		for (std::size_t a = 0; a < 0x4000; a++)
 			next_data[a] = memory.Object<SignedByte>(1 + a + offset);
-
-		const std::size_t clutter_size = part->ClutterData.size();
 
 		part->ClutterMap.resize(128 * 128);
 		for (std::size_t a = 0; a < 0x4000; a++)

@@ -7,6 +7,7 @@
 
 #include <gtc/matrix_transform.hpp>
 #include <PerlinNoise/PerlinNoise.hpp>
+#include <lodepng/lodepng.h>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -244,9 +245,9 @@ float GetHeightPoint(
 	const int gxi = int(gx);
 	const int gyi = int(gy);
 
-	const float& c00 = vec[(gxi)+(gyi) * (gridSzX + 1)];
-	const float& c10 = vec[(gxi + 1) + (gyi) * (gridSzX + 1)];
-	const float& c01 = vec[(gxi)+(gyi + 1) * (gridSzX + 1)];
+	const float& c00 = vec[(gxi    ) + (gyi    ) * (gridSzX + 1)];
+	const float& c10 = vec[(gxi + 1) + (gyi    ) * (gridSzX + 1)];
+	const float& c01 = vec[(gxi    ) + (gyi + 1) * (gridSzX + 1)];
 	const float& c11 = vec[(gxi + 1) + (gyi + 1) * (gridSzX + 1)];
 
 	return blerp(c00, c10, c01, c11, gx - gxi, gy - gyi);
@@ -284,6 +285,7 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 	const int tHeight = this->GetHeight() * 32 + 1;
 
 	mOffset.Vertex += (std::size_t)(tHeight * tWidth);
+	mOffset.Uv += (std::size_t)(tHeight * tWidth);
 
 	constexpr const float tile_size = 2.0f;
 
@@ -310,6 +312,20 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 		DebugOutL(height_row);
 	}
 
+	const float uvWidth = (float)(tWidth - 1);
+	const float uvHeight = (float)(tHeight - 1);
+
+	for (int y = 0; y < tHeight; y++)
+	{
+		for (int x = 0; x < tWidth; x++)
+		{
+			const float u = (float)x / uvWidth;
+			const float v = uvHeight - (float)y / uvHeight;
+
+			model << "vt " << u << " " << v << "\n";
+		}
+	}
+
 	for (int y = 0; y < tHeight - 1; y++)
 	{
 		for (int x = 0; x < tWidth - 1; x++)
@@ -319,8 +335,8 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 			const int h10 = (x + 1) + (y    ) * tWidth + 1;
 			const int h11 = (x + 1) + (y + 1) * tWidth + 1;
 
-			model << "f " << h00 << " " << h10 << " " << h01 << "\n";
-			model << "f " << h01 << " " << h10 << " " << h11 << "\n";
+			model << "f " << h00 << "/" << h00 << " " << h10 << "/" << h10 << " " << h01 << "/" << h01 << "\n";
+			model << "f " << h01 << "/" << h01 << " " << h10 << "/" << h10 << " " << h11 << "/" << h11 << "\n";
 		}
 	}
 }
@@ -390,6 +406,59 @@ void Tile::WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const
 	}
 }
 
+void Tile::WriteMaterials() const
+{
+	DebugOutL("Writing materials...");
+
+	const std::vector<long long> ground_data = this->GetGround();
+
+	const std::size_t gnd_width = (std::size_t)this->Width * 64 + 1;
+	const std::size_t gnd_height = (std::size_t)this->Height * 64 + 1;
+
+	for (std::size_t mat_id = 0; mat_id < 2; mat_id++)
+	{
+		std::vector<Byte> material_map;
+		material_map.resize(gnd_width * gnd_height * 4);
+
+		for (std::size_t y = 0; y < gnd_width; y++)
+		{
+			for (std::size_t x = 0; x < gnd_height; x++)
+			{
+				const std::size_t cur_idx = x + y * gnd_width;
+				const long long& cur_data = ground_data[cur_idx];
+
+				const long cur_chunk = (long)(cur_data >> (32 * mat_id));
+
+				material_map[4 * gnd_width * y + 4 * x + 0] = (Byte)(cur_chunk >> 0);
+				material_map[4 * gnd_width * y + 4 * x + 1] = (Byte)(cur_chunk >> 8);
+				material_map[4 * gnd_width * y + 4 * x + 2] = (Byte)(cur_chunk >> 16);
+				material_map[4 * gnd_width * y + 4 * x + 3] = (Byte)(cur_chunk >> 24);
+			}
+		}
+
+		std::vector<Byte> mat_map_png;
+		lodepng::State state;
+
+		const std::string output_name = "./MaterialMap" + std::to_string(mat_id + 1) + ".png";
+
+		unsigned int error = lodepng::encode(mat_map_png, material_map, (unsigned int)gnd_width, (unsigned int)gnd_height, state);
+		if (!error)
+		{
+			DebugOutL("Saving: ", output_name);
+
+			error = lodepng::save_file(mat_map_png, output_name);
+			if (error)
+			{
+				DebugErrorL("Couldn't save the material map: ", output_name);
+			}
+		}
+		else
+		{
+			DebugErrorL("Couldn't write the material map: ", output_name);
+		}
+	}
+}
+
 void Tile::WriteToFile(const std::wstring& path) const
 {
 	std::ofstream output_model(path);
@@ -414,6 +483,9 @@ void Tile::WriteToFile(const std::wstring& path) const
 		this->WriteTerrain(output_model, offset_data, pHeightArray);
 		this->WriteClutter(output_model, offset_data, pHeightArray);
 		this->WriteAssets (output_model, offset_data);
+		this->WriteMaterials();
+
+
 
 		output_model.close();
 
