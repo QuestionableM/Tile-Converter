@@ -22,7 +22,7 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/Clutter Test2.tile");
+	Tile* output_tile = TileReader::ReadTile(L"./Tests/MechanicStation_128_01.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
 	while (true) {};

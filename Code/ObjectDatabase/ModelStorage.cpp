@@ -20,6 +20,8 @@ bool Model::IsEmpty() const
 	return (this->subMeshData.size() <= 0 || (this->vertices.size() <= 0 && this->uvs.size() <= 0 && this->normals.size() <= 0));
 }
 
+#include <gtx/matrix_decompose.hpp>
+
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity) const
 {
 	for (const glm::vec3& vertex : this->vertices)
@@ -36,10 +38,17 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 		file.write(output_str.c_str(), output_str.size());
 	}
-	
+
+	const glm::mat4 rot_matrix(
+		model_mat[0],
+		model_mat[1],
+		model_mat[2],
+		glm::highp_vec4(0.0f, 0.0f, 0.0f, 1.0f)
+	);
+
 	for (const glm::vec3& normal : this->normals)
 	{
-		const glm::vec3 pNormal = glm::vec4(normal, 1.0f) * model_mat;
+		const glm::vec3 pNormal = rot_matrix * glm::vec4(normal, 1.0f);
 		const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
 
 		file.write(output_str.c_str(), output_str.size());

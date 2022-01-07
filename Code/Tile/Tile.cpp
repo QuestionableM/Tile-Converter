@@ -334,6 +334,7 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 	SubMeshData* pSubMesh = new SubMeshData(0);
 
+	//generate normals
 	pSubMesh->DataIdx.reserve(tWidth * tHeight);
 	for (std::size_t y = 0; y < tHeight - 1; y++)
 	{
@@ -370,6 +371,7 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 		}
 	}
 
+	//make normals smooth
 	for (std::size_t y = 0; y < tHeight - 1; y++)
 	{
 		for (std::size_t x = 0; x < tWidth - 1; x++)
