@@ -24,7 +24,7 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	TileConverter::ConvertToModel(L"./Tests/MechanicStation_128_01.tile");
+	TileConverter::ConvertToModel(L"./Tests/Color Map Test.tile");
 
 	while (true) {};
 

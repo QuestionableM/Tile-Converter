@@ -129,7 +129,7 @@ std::vector<float> Tile::GetVertexHeight() const
 			const std::vector<float>& pVertHeights = part->VertexHeight;
 			int idx = x * 32 + y * 32 * h;
 
-			for (int a = 0; a < 32; a++)
+			for (int a = 0; a < 33; a++)
 			{
 				std::memcpy(float_array.data() + (idx + a * w), pVertHeights.data() + (a * 33), 33 * sizeof(float));
 			}
@@ -156,7 +156,7 @@ std::vector<int> Tile::GetVertexColor() const
 			const std::vector<int>& pVertColor = part->VertexColor;
 			int idx = x * 32 + y * 32 * h;
 
-			for (int a = 0; a < 32; a++)
+			for (int a = 0; a < 33; a++)
 			{
 				std::memcpy(vert_colors.data() + (idx + a * w), pVertColor.data() + (a * 33), 33 * sizeof(int));
 			}
