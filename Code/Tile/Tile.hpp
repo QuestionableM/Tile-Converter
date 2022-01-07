@@ -15,6 +15,7 @@ class Tile
 
 public:
 	Tile(const int& width, const int& height);
+	~Tile();
 
 	int GetWidth() const;
 	int GetHeight() const;

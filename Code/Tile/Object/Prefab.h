@@ -18,7 +18,7 @@ public:
 	Prefab(const std::wstring& path, const std::wstring& flag = L"");
 	Prefab(Prefab&) = delete;
 	Prefab(const Prefab&) = delete;
-	~Prefab() = default;
+	~Prefab();
 
 	std::wstring GetPath() const;
 	std::wstring GetFlag() const;

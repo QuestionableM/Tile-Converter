@@ -10,6 +10,12 @@ Prefab::Prefab(const std::wstring& path, const std::wstring& flag)
 	this->flag = flag;
 }
 
+Prefab::~Prefab()
+{
+	for (TileEntity*& pObject : this->Objects)
+		delete pObject;
+}
+
 std::wstring Prefab::GetPath() const
 {
 	return this->path;

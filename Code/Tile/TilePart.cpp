@@ -16,6 +16,22 @@ TilePart::TilePart(Tile* parent)
 	Clutter.resize(128 * 128);
 }
 
+TilePart::~TilePart()
+{
+	for (TileClutter*& pClutter : this->ClutterMap)
+	{
+		if (!pClutter) continue;
+
+		delete pClutter;
+	}
+
+	for (std::size_t a = 0; a < this->Objects.size(); a++)
+	{
+		for (TileEntity*& pEntity : this->Objects[a])
+			delete pEntity;
+	}
+}
+
 void TilePart::SetVertexColor(const std::vector<int>& vert_array)
 {
 	this->VertexColor = vert_array;

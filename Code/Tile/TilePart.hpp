@@ -32,6 +32,7 @@ public:
 
 public:
 	TilePart(Tile* parent);
+	~TilePart();
 
 	void SetVertexColor(const std::vector<int>& vert_array);
 	void SetVertexHeight(const std::vector<float>& height_array);

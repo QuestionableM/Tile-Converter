@@ -25,7 +25,7 @@ public:
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
 	void WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const override;
 
-	~Blueprint() = default;
+	~Blueprint();
 
 private:
 	static glm::vec3 JsonToVector(const nlohmann::json& vec_json);

@@ -22,6 +22,12 @@ Tile::Tile(const int& width, const int& height)
 		this->Tiles[a] = new TilePart(this);
 }
 
+Tile::~Tile()
+{
+	for (TilePart*& pPart : this->Tiles)
+		delete pPart;
+}
+
 int Tile::GetWidth() const
 {
 	return this->Width;
@@ -334,6 +340,8 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 	SubMeshData* pSubMesh = new SubMeshData(0);
 
+	DebugOutL("Generating normals...");
+
 	//generate normals
 	pSubMesh->DataIdx.reserve(tWidth * tHeight);
 	for (std::size_t y = 0; y < tHeight - 1; y++)
@@ -371,6 +379,8 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 		}
 	}
 
+	DebugOutL("Smoothing normals...");
+
 	//make normals smooth
 	for (std::size_t y = 0; y < tHeight - 1; y++)
 	{
@@ -398,8 +408,9 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 	DebugOutL("Writing terrain...");
 
 	Model* terrain = this->GenerateTerrainMesh(height_map);
-
 	terrain->WriteToFile(glm::mat4(1.0f), mOffset, model, nullptr);
+
+	delete terrain;
 }
 
 void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const

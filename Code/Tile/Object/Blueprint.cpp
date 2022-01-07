@@ -96,6 +96,12 @@ void Blueprint::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset
 		pObject->WriteObjectToFile(file, mOffset, blueprint_matrix);
 }
 
+Blueprint::~Blueprint()
+{
+	for (TileEntity*& pObject : this->Objects)
+		delete pObject;
+}
+
 glm::vec3 Blueprint::JsonToVector(const nlohmann::json& vec_json)
 {
 	if (vec_json.is_object())

@@ -25,6 +25,10 @@ int WINAPI WinMain(
 	Tile* output_tile = TileReader::ReadTile(L"./Tests/MechanicStation_128_01.tile");
 	output_tile->WriteToFile(L"./OutputTile.obj");
 
+	delete output_tile;
+
+	ModelStorage::ClearStorage();
+
 	while (true) {};
 
 	return 0;
