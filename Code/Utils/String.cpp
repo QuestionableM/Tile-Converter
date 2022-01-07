@@ -59,3 +59,17 @@ std::string String::BytesToHexString(const std::vector<Byte>& bytes, const int& 
 
 	return output_string;
 }
+
+std::string String::FloatVecToString(const float* f, const std::size_t& amount, const std::string separator)
+{
+	std::string out;
+
+	for (std::size_t a = 0; a < amount; a++)
+	{
+		if (a > 0) out.append(separator);
+
+		out.append(std::to_string(f[a]));
+	}
+
+	return out;
+}

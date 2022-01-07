@@ -277,68 +277,127 @@ char GetHeightCharacter(const float& height)
 	return '9';
 }
 
-void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const
+glm::vec3 CalculateNormalVector(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
 {
-	DebugOutL("Writing terrain...");
+	//p2 is the new origin (can be changed later)
+	glm::vec3 a = p2 - p1;
+	glm::vec3 b = p3 - p1;
 
-	const int tWidth  = this->Width  * 32 + 1;
-	const int tHeight = this->Height * 32 + 1;
+	return glm::normalize(glm::cross(a, b));
+}
 
-	mOffset.Vertex += (std::size_t)(tHeight * tWidth);
-	mOffset.Uv     += (std::size_t)(tHeight * tWidth);
+Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
+{
+	DebugOutL("Generating terrain mesh...");
 
-	constexpr const float tile_size = 2.0f;
+	Model* tMesh = new Model();
+
+	const std::size_t tWidth = this->Width * 32 + 1;
+	const std::size_t tHeight = this->Height * 32 + 1;
 
 	const float hWidth = (float)this->Width * 32.0f;
 	const float hHeight = (float)this->Height * 32.0f;
 
-	for (int y = 0; y < tHeight; y++)
-	{
-		std::string height_row;
-		height_row.resize(tWidth);
+	std::vector<std::size_t> normal_div = {};
 
-		for (int x = 0; x < tWidth; x++)
+	tMesh->vertices.reserve(tWidth * tHeight);
+	tMesh->normals.reserve(tWidth * tHeight);
+	normal_div.reserve(tWidth * tHeight);
+	for (std::size_t y = 0; y < tHeight; y++)
+	{
+		for (std::size_t x = 0; x < tWidth; x++)
 		{
 			const float& height = height_map[x + y * tWidth];
+			const float vert_x = -((float)x * 2.0f) + hWidth;
+			const float vert_y = -((float)y * 2.0f) + hHeight;
 
-			height_row[x] = GetHeightCharacter(height);
-
-			const float x_point = ((float)-x * tile_size) + hWidth;
-			const float y_point = ((float)-y * tile_size) + hHeight;
-
-			model << "v " << x_point << " " << y_point << " " << height << "\n";
+			tMesh->vertices.push_back(glm::vec3(vert_x, vert_y, height));
+			tMesh->normals.push_back(glm::vec3(0.0f));
+			normal_div.push_back(1);
 		}
-
-		DebugOutL(height_row);
 	}
 
 	const float uvWidth = (float)(tWidth - 1);
 	const float uvHeight = (float)(tHeight - 1);
 
-	for (int y = 0; y < tHeight; y++)
+	tMesh->uvs.reserve(tWidth * tHeight);
+	for (std::size_t y = 0; y < tHeight; y++)
 	{
-		for (int x = 0; x < tWidth; x++)
+		for (std::size_t x = 0; x < tWidth; x++)
 		{
 			const float u = (float)x / uvWidth;
 			const float v = uvHeight - (float)y / uvHeight;
 
-			model << "vt " << u << " " << v << "\n";
+			tMesh->uvs.push_back(glm::vec2(u, v));
 		}
 	}
 
-	for (int y = 0; y < tHeight - 1; y++)
+	SubMeshData* pSubMesh = new SubMeshData(0);
+
+	pSubMesh->DataIdx.reserve(tWidth * tHeight);
+	for (std::size_t y = 0; y < tHeight - 1; y++)
 	{
-		for (int x = 0; x < tWidth - 1; x++)
+		for (std::size_t x = 0; x < tWidth - 1; x++)
 		{
-			const int h00 = (x    ) + (y    ) * tWidth + 1;
-			const int h01 = (x    ) + (y + 1) * tWidth + 1;
-			const int h10 = (x + 1) + (y    ) * tWidth + 1;
-			const int h11 = (x + 1) + (y + 1) * tWidth + 1;
+			const std::size_t h00 = (x    ) + (y    ) * tWidth;
+			const std::size_t h01 = (x    ) + (y + 1) * tWidth;
+			const std::size_t h10 = (x + 1) + (y    ) * tWidth;
+			const std::size_t h11 = (x + 1) + (y + 1) * tWidth;
 
-			model << "f " << h00 << "/" << h00 << " " << h10 << "/" << h10 << " " << h01 << "/" << h01 << "\n";
-			model << "f " << h01 << "/" << h01 << " " << h10 << "/" << h10 << " " << h11 << "/" << h11 << "\n";
+			const glm::vec3& p1 = tMesh->vertices[h00];
+			const glm::vec3& p2 = tMesh->vertices[h01];
+			const glm::vec3& p3 = tMesh->vertices[h10];
+			const glm::vec3& p4 = tMesh->vertices[h11];
+
+			const glm::vec3 t1_norm = CalculateNormalVector(p1, p3, p2); //first_triangle
+			const glm::vec3 t2_norm = CalculateNormalVector(p2, p3, p4); //second_triangle
+
+			tMesh->normals[h00] += t1_norm;
+			tMesh->normals[h01] += (t1_norm + t2_norm);
+			tMesh->normals[h10] += (t1_norm + t2_norm);
+			tMesh->normals[h11] += t2_norm;
+
+			normal_div[h00] += 1;
+			normal_div[h01] += 2;
+			normal_div[h10] += 2;
+			normal_div[h11] += 1;
+
+			std::vector<VertexData> pVertData1 = { { h00, h00, h00 }, { h10, h10, h10 }, { h01, h01, h01 } };
+			std::vector<VertexData> pVertData2 = { { h01, h01, h01 }, { h10, h10, h10 }, { h11, h11, h11 } };
+
+			pSubMesh->DataIdx.push_back(pVertData1);
+			pSubMesh->DataIdx.push_back(pVertData2);
 		}
 	}
+
+	for (std::size_t y = 0; y < tHeight - 1; y++)
+	{
+		for (std::size_t x = 0; x < tWidth - 1; x++)
+		{
+			const std::size_t h00 = (x    ) + (y    ) * tWidth;
+			const std::size_t h01 = (x    ) + (y + 1) * tWidth;
+			const std::size_t h10 = (x + 1) + (y    ) * tWidth;
+			const std::size_t h11 = (x + 1) + (y + 1) * tWidth;
+
+			tMesh->normals[h00] = glm::normalize(tMesh->normals[h00] / (float)normal_div[h00]);
+			tMesh->normals[h01] = glm::normalize(tMesh->normals[h01] / (float)normal_div[h01]);
+			tMesh->normals[h10] = glm::normalize(tMesh->normals[h10] / (float)normal_div[h10]);
+			tMesh->normals[h11] = glm::normalize(tMesh->normals[h11] / (float)normal_div[h11]);
+		}
+	}
+
+	tMesh->subMeshData.push_back(pSubMesh);
+
+	return tMesh;
+}
+
+void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const
+{
+	DebugOutL("Writing terrain...");
+
+	Model* terrain = this->GenerateTerrainMesh(height_map);
+
+	terrain->WriteToFile(glm::mat4(1.0f), mOffset, model, nullptr);
 }
 
 void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const

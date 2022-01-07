@@ -25,72 +25,54 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 	for (const glm::vec3& vertex : this->vertices)
 	{
 		const glm::vec3 pVertPos = model_mat * glm::vec4(vertex, 1.0f);
-
-		std::string output_str;
-		output_str.append("v ");
-		output_str.append(std::to_string(pVertPos.x));
-		output_str.append(" ");
-		output_str.append(std::to_string(pVertPos.y));
-		output_str.append(" ");
-		output_str.append(std::to_string(pVertPos.z));
-		output_str.append("\n");
+		const std::string output_str = "v " + String::FloatVecToString(&pVertPos.x, 3) + "\n";
 
 		file.write(output_str.c_str(), output_str.size());
 	}
 
 	for (const glm::vec2& uv : this->uvs)
 	{
-		std::string output_str;
-		output_str.append("vt ");
-		output_str.append(std::to_string(uv.x));
-		output_str.append(" ");
-		output_str.append(std::to_string(uv.y));
-		output_str.append("\n");
+		const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
 
 		file.write(output_str.c_str(), output_str.size());
 	}
 	
-	//implement normals here
-	/*
-	bool has_uv = (d_idx[1] > -1) && ConvertSettings::ExportUvs;
-				bool has_normal = (d_idx[2] > -1) && ConvertSettings::ExportNormals;
+	for (const glm::vec3& normal : this->normals)
+	{
+		const glm::vec3 pNormal = glm::vec4(normal, 1.0f) * model_mat;
+		const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
 
-				String::Combine(_f_str, " ", d_idx[0] + oData.Vertex + 1);
-
-				if (!has_uv && !has_normal) continue;
-
-				_f_str.append("/");
-
-				if (has_uv)
-					_f_str.append(std::to_string(d_idx[1] + oData.Texture + 1));
-
-				if (has_normal)
-					String::Combine(_f_str, "/", d_idx[2] + oData.Normal + 1);
-	*/
+		file.write(output_str.c_str(), output_str.size());
+	}
 
 	for (std::size_t mIdx = 0; mIdx < this->subMeshData.size(); mIdx++)
 	{
 		const SubMeshData* pSubMesh = this->subMeshData[mIdx];
 
-		const std::string mtl_name = "usemtl " + pEntity->GetMtlName(pSubMesh->MaterialName, mIdx) + "\n";
-		file.write(mtl_name.c_str(), mtl_name.size());
+		if (pEntity != nullptr)
+		{
+			const std::string mtl_name = "usemtl " + pEntity->GetMtlName(pSubMesh->MaterialName, mIdx) + "\n";
+			file.write(mtl_name.c_str(), mtl_name.size());
+		}
 
 		for (std::size_t a = 0; a < pSubMesh->DataIdx.size(); a++)
 		{
 			std::string _f_str = "f";
 
-			for (const std::vector<long long>& d_idx : pSubMesh->DataIdx[a])
+			for (const VertexData& d_idx : pSubMesh->DataIdx[a])
 			{
 				_f_str.append(" ");
-				_f_str.append(std::to_string(d_idx[0] + offset.Vertex + 1));
+				_f_str.append(std::to_string(d_idx.pVert + offset.Vertex + 1));
 
-				const bool has_uv = (d_idx[1] > -1);
+				const bool has_uv     = (d_idx.pUv   > -1);
+				const bool has_normal = (d_idx.pNorm > -1);
 
-				if (!has_uv) continue;
+				if (!has_uv && !has_normal) continue;
 
 				_f_str.append("/");
 
-				if (has_uv) _f_str.append(std::to_string(d_idx[1] + offset.Uv + 1));
+				if (has_uv)     _f_str.append(      std::to_string(d_idx.pUv   + offset.Uv     + 1));
+				if (has_normal) _f_str.append("/" + std::to_string(d_idx.pNorm + offset.Normal + 1));
 			}
 
 			_f_str.append("\n");
@@ -175,18 +157,19 @@ void ModelStorage::LoadIndices(const aiMesh*& mesh, Model*& model, SubMeshData*&
 	for (unsigned int a = 0; a < mesh->mNumFaces; a++)
 	{
 		const aiFace& cFace = mesh->mFaces[a];
-		std::vector<std::vector<long long>> d_idx;
+		std::vector<VertexData> d_idx;
 
 		d_idx.reserve(cFace.mNumIndices);
 		for (unsigned int b = 0; b < cFace.mNumIndices; b++)
 		{
 			long long ind_idx = (long long)cFace.mIndices[b];
 
-			d_idx.push_back({
-				ind_idx + mVertOffset,
-				(has_uvs ? (ind_idx + mUvOffset) : -1),
-				(has_normals ? (ind_idx + mNormalOffset) : -1)
-				});
+			VertexData nVert = {};
+			nVert.pVert = ind_idx + mVertOffset;
+			nVert.pUv = has_uvs ? (ind_idx + mUvOffset) : -1;
+			nVert.pNorm = has_normals ? (ind_idx + mNormalOffset) : -1;
+
+			d_idx.push_back(nVert);
 		}
 
 		sub_mesh->DataIdx.push_back(d_idx);
