@@ -9,4 +9,5 @@ namespace File
 	std::vector<Byte> ReadFileBytes(const std::wstring& path);
 	std::string ReadToString(const std::wstring& path);
 	bool Exists(const std::wstring& path);
+	bool CreateDirectorySafe(const std::wstring& path);
 }

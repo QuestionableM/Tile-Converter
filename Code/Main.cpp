@@ -6,6 +6,8 @@
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 
+#include "Tile/TileConverter.hpp"
+
 #include <locale>
 
 int WINAPI WinMain(
@@ -22,12 +24,7 @@ int WINAPI WinMain(
 	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 	DatabaseLoader::LoadDatabase();
 
-	Tile* output_tile = TileReader::ReadTile(L"./Tests/MechanicStation_128_01.tile");
-	output_tile->WriteToFile(L"./OutputTile.obj");
-
-	delete output_tile;
-
-	ModelStorage::ClearStorage();
+	TileConverter::ConvertToModel(L"./Tests/MechanicStation_128_01.tile");
 
 	while (true) {};
 

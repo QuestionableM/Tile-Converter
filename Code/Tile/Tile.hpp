@@ -42,10 +42,10 @@ private:
 	void WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const;
 	void WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const;
 	void WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const;
-	void WriteMaterials() const;
-	void WriteColorMap() const;
+	void WriteMaterials(const std::wstring& dir) const;
+	void WriteColorMap(const std::wstring& dir) const;
 
 public:
-	void WriteToFile(const std::wstring& path)  const;
+	void WriteToFile(const std::wstring& dir_path, const std::wstring& file_name) const;
 	void WriteMtlFile(const std::wstring& path) const;
 };

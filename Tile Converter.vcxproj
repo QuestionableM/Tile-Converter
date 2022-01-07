@@ -166,6 +166,7 @@
     <ClCompile Include="Code\Tile\Object\Prefab.cpp" />
     <ClCompile Include="Code\Tile\Object\TileClutter.cpp" />
     <ClCompile Include="Code\Tile\Object\TileEntity.cpp" />
+    <ClCompile Include="Code\Tile\TileConverter.cpp" />
     <ClCompile Include="Code\Tile\Tile.cpp" />
     <ClCompile Include="Code\Tile\TilePart.cpp" />
     <ClCompile Include="Code\Utils\Color.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Code\Tile\Object\TileClutter.h" />
     <ClInclude Include="Code\Tile\Object\TileEntity.hpp" />
     <ClInclude Include="Code\Tile\Tile.hpp" />
+    <ClInclude Include="Code\Tile\TileConverter.hpp" />
     <ClInclude Include="Code\Tile\TileHeader.hpp" />
     <ClInclude Include="Code\Tile\TilePart.hpp" />
     <ClInclude Include="Code\Tile\WriterOffset.hpp" />

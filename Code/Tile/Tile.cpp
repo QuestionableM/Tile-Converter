@@ -486,7 +486,7 @@ void Tile::WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const
 	}
 }
 
-void WritePngImage(const std::vector<Byte>& img_data, const std::string& output_name, const unsigned& width, const unsigned& height)
+void WritePngImage(const std::vector<Byte>& img_data, const std::wstring& output_name, const unsigned& width, const unsigned& height)
 {
 	std::vector<Byte> img_data_png;
 	lodepng::State state;
@@ -494,7 +494,7 @@ void WritePngImage(const std::vector<Byte>& img_data, const std::string& output_
 	unsigned int error = lodepng::encode(img_data_png, img_data, width, height, state);
 	if (!error)
 	{
-		if (lodepng::save_file(img_data_png, output_name))
+		if (lodepng::save_file(img_data_png, String::ToUtf8(output_name)))
 		{
 			DebugErrorL("Couldn't save image: ", output_name);
 		}
@@ -505,7 +505,7 @@ void WritePngImage(const std::vector<Byte>& img_data, const std::string& output_
 	}
 }
 
-void Tile::WriteMaterials() const
+void Tile::WriteMaterials(const std::wstring& dir) const
 {
 	DebugOutL("Writing materials...");
 
@@ -534,12 +534,12 @@ void Tile::WriteMaterials() const
 			}
 		}
 
-		const std::string out_name = "./MaterialMap" + std::to_string(mat_id) + ".png";
+		const std::wstring out_name = dir + L"MaterialMap" + std::to_wstring(mat_id) + L".png";
 		WritePngImage(material_map, out_name, (unsigned)gnd_width, (unsigned)gnd_height);
 	}
 }
 
-void Tile::WriteColorMap() const
+void Tile::WriteColorMap(const std::wstring& dir) const
 {
 	DebugOutL("Writing color map...");
 
@@ -564,26 +564,23 @@ void Tile::WriteColorMap() const
 		}
 	}
 
-	WritePngImage(color_map, "./ColorMap.png", (unsigned)col_width, (unsigned)col_height);
+	const std::wstring color_map_path = dir + L"ColorMap.png";
+	WritePngImage(color_map, color_map_path, (unsigned)col_width, (unsigned)col_height);
 }
 
-void Tile::WriteToFile(const std::wstring& path) const
+void Tile::WriteToFile(const std::wstring& dir_path, const std::wstring& file_name) const
 {
-	std::ofstream output_model(path);
+	const std::wstring output_path = dir_path + file_name + L".obj";
+	DebugOutL("OutputPath: ", output_path);
+
+	std::ofstream output_model(output_path);
 	if (output_model.is_open())
 	{
-		fs::path mPath = path;
+		const std::wstring mtl_name = file_name + L".mtl";
+		const std::wstring mtl_path = dir_path + mtl_name;
 
-		const bool is_mtl_valid = (mPath.has_stem() && mPath.has_parent_path());
-		std::wstring mtl_path;
-
-		if (is_mtl_valid)
-		{
-			mtl_path = mPath.parent_path().wstring() + L"/" + mPath.stem().wstring() + L".mtl";
-
-			const std::string mtl_name = "mtllib " + mPath.stem().string() + ".mtl\n";
-			output_model.write(mtl_name.c_str(), mtl_name.size());
-		}
+		const std::string mtl_header = "mtllib " + String::ToUtf8(mtl_name) + "\n";
+		output_model.write(mtl_header.c_str(), mtl_header.size());
 
 		WriterOffsetData offset_data = { 0, 0, 0, 0 };
 		const std::vector<float> pHeightArray = this->GetVertexHeight();
@@ -591,13 +588,13 @@ void Tile::WriteToFile(const std::wstring& path) const
 		this->WriteTerrain(output_model, offset_data, pHeightArray);
 		this->WriteClutter(output_model, offset_data, pHeightArray);
 		this->WriteAssets (output_model, offset_data);
-		this->WriteMaterials();
-		this->WriteColorMap();
+		this->WriteMaterials(dir_path);
+		this->WriteColorMap (dir_path);
 
 		output_model.close();
 
-		if (!mtl_path.empty())
-			this->WriteMtlFile(mtl_path);
+		DebugOutL("MtlPath: ", mtl_path);
+		this->WriteMtlFile(mtl_path);
 	}
 
 	DebugOutL("Finished!");

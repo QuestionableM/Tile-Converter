@@ -52,3 +52,16 @@ bool File::Exists(const std::wstring& path)
 
 	return (!ec && exists);
 }
+
+bool File::CreateDirectorySafe(const std::wstring& path)
+{
+	std::error_code e_error;
+	bool exists = fs::exists(path, e_error);
+	bool exists_correct = (!e_error && exists);
+
+	std::error_code f_error;
+	bool file_created = fs::create_directory(path, f_error);
+	bool file_correct = (!f_error && file_created);
+
+	return (exists_correct || file_correct);
+}
