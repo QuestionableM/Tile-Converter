@@ -57,6 +57,8 @@ void DatabaseLoader::LoadModDatabase()
 
 void DatabaseLoader::LoadDatabase()
 {
+	Mod::ClearModStorage();
+
 	DatabaseLoader::LoadGameDatabase();
 	DatabaseLoader::LoadModDatabase();
 

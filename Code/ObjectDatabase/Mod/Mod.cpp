@@ -41,6 +41,39 @@ Mod::Mod(const std::wstring& name, const std::wstring& dir, const SMUuid& uuid, 
 	this->Type = type;
 }
 
+Mod::~Mod()
+{
+	for (const auto& pBlock : this->Blocks)
+		delete pBlock.second;
+
+	for (const auto& pPart : this->Parts)
+		delete pPart.second;
+
+	for (const auto& pAsset : this->Assets)
+		delete pAsset.second;
+
+	for (const auto& pHarvestable : this->Harvestables)
+		delete pHarvestable.second;
+
+	for (const auto& pClutter : this->Clutter)
+		delete pClutter.second;
+}
+
+void Mod::ClearModStorage()
+{
+	Mod::BlockStorage.clear();
+	Mod::PartStorage.clear();
+	Mod::AssetStorage.clear();
+	Mod::HarvestableStorage.clear();
+	Mod::ClutterStorage.clear();
+	Mod::ClutterVector.clear();
+
+	for (const auto& pMod : Mod::ModStorage)
+		delete pMod.second;
+
+	Mod::ModStorage.clear();
+}
+
 Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
 {
 	const std::wstring mDescPath = mod_folder + L"/description.json";

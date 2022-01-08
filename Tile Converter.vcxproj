@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
+    <ClCompile Include="Code\Gui\AboutGui.cpp" />
     <ClCompile Include="Code\Gui\MainGui.cpp" />
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp" />
@@ -179,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
+    <ClInclude Include="Code\Gui\AboutGui.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Code\Gui\MainGui.h">
       <FileType>CppForm</FileType>
     </ClInclude>

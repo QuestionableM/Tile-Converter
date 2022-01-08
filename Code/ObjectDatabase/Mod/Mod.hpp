@@ -50,8 +50,9 @@ public:
 	Mod(const std::wstring& name, const std::wstring& dir, const SMUuid& uuid, const ModType& type);
 	Mod(const Mod&) = delete;
 	Mod(Mod&&) = delete;
-	~Mod() = default;
+	~Mod();
 
+	static void ClearModStorage();
 	static Mod* LoadFromDescription(const std::wstring& mod_folder);
 
 	static BlockData* GetGlobalBlock(const SMUuid& uuid);
@@ -69,10 +70,6 @@ public:
 	HarvestableData* GetHarvestable(const SMUuid& uuid) const;
 	ClutterData* GetClutter(const SMUuid& uuid) const;
 
-private:
-	
-
-public:
 	void LoadFile(const std::wstring& path);
 	void ScanFolder(const std::wstring& folder);
 

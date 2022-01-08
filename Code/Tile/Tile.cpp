@@ -436,13 +436,10 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 	for (std::size_t y = 0; y < clWidth; y++)
 	{
-		std::string clutter_row;
-		clutter_row.resize(clHeight);
-
 		for (std::size_t x = 0; x < clHeight; x++)
 		{
 			TileClutter* tClutter = tile_clutter[x + y * clWidth];
-			clutter_row[x] = (tClutter != nullptr) ? 'x' : '0';
+			DebugOut(((tClutter != nullptr) ? "x" : "0"));
 
 			if (!tClutter) continue;
 
@@ -467,7 +464,7 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 			tClutter->WriteObjectToFile(model, mOffset, glm::mat4(1.0f));
 		}
 
-		DebugOutL(clutter_row);
+		DebugOut("\n");
 	}
 }
 

@@ -10,6 +10,8 @@ int WINAPI WinMain(
 	_In_ LPSTR lpCmdLine,
 	_In_ int nShowCmd)
 {
+	CoUninitialize();
+
 	std::setlocale(LC_CTYPE, "en_US.UTF-8");
 	CreateDebugConsole(L"World Converter Debug Console");
 
