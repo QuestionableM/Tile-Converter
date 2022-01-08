@@ -371,8 +371,13 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 			normal_div[h10] += 2;
 			normal_div[h11] += 1;
 
-			std::vector<VertexData> pVertData1 = { { h00, h00, h00 }, { h10, h10, h10 }, { h01, h01, h01 } };
-			std::vector<VertexData> pVertData2 = { { h01, h01, h01 }, { h10, h10, h10 }, { h11, h11, h11 } };
+			const long long l00 = (long long)h00;
+			const long long l01 = (long long)h01;
+			const long long l10 = (long long)h10;
+			const long long l11 = (long long)h11;
+
+			std::vector<VertexData> pVertData1 = { { l00, l00, l00 }, { l10, l10, l10 }, { l01, l01, l01 } };
+			std::vector<VertexData> pVertData2 = { { l01, l01, l01 }, { l10, l10, l10 }, { l11, l11, l11 } };
 
 			pSubMesh->DataIdx.push_back(pVertData1);
 			pSubMesh->DataIdx.push_back(pVertData2);
