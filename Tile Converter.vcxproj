@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
+    <ClCompile Include="Code\Gui\MainGui.cpp" />
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp" />
     <ClCompile Include="Code\ObjectDatabase\KeywordReplacer.cpp" />
@@ -178,6 +179,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
+    <ClInclude Include="Code\Gui\MainGui.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
     <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ModelStorage.hpp" />
@@ -226,6 +230,18 @@
     <ClInclude Include="Code\Utils\Uuid.hpp" />
     <ClInclude Include="Code\Utils\WinInclude.hpp" />
     <ClInclude Include="Dependencies\lodepng\lodepng\lodepng.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Code\Gui\MainGui.resx">
+      <DependentUpon>Code\Gui\MainGui.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

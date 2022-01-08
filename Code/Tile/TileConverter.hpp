@@ -25,7 +25,7 @@ enum class ConvertResult : unsigned short
 	Error_DirCreate     = 4  //the tile output directory could not be created
 };
 
-class TileConverter
+class TileConv
 {
 public:
 	static ConvertResult ConvertToModel(const std::wstring& tile_path);

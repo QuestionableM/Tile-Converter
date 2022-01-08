@@ -17,7 +17,7 @@ bool ConvertSettings::ExportHarvestables = false;
 
 static std::wstring TileOutputDirectory = L"./ConvertedTiles";
 
-ConvertResult TileConverter::ConvertToModel(const std::wstring& tile_path)
+ConvertResult TileConv::ConvertToModel(const std::wstring& tile_path)
 {
 	fs::directory_entry fEntry(tile_path);
 	if (!fEntry.is_regular_file()) return ConvertResult::Error_IsDirectory;
@@ -30,12 +30,14 @@ ConvertResult TileConverter::ConvertToModel(const std::wstring& tile_path)
 
 	if (!File::CreateDirectorySafe(tile_dir_path)) return ConvertResult::Error_DirCreate;
 
-	Tile* out_tile = TileReader::ReadTile(tile_path);
-	out_tile->WriteToFile(tile_dir_path + L"/", file_name);
+	{
+		Tile* out_tile = TileReader::ReadTile(tile_path);
+		out_tile->WriteToFile(tile_dir_path + L"/", file_name);
 
-	delete out_tile; //clear the tile data
+		delete out_tile; //clear the tile data
 
-	ModelStorage::ClearStorage(); // clear the cache
+		ModelStorage::ClearStorage(); // clear the cache
+	}
 
 	return ConvertResult::Success;
 }

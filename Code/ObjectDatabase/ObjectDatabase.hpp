@@ -10,4 +10,5 @@ class DatabaseLoader
 
 public:
 	static void LoadDatabase();
+	static void InitializeDatabase();
 };

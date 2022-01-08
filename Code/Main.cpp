@@ -1,12 +1,6 @@
 #include "Utils/WinInclude.hpp"
-
+#include "Gui/MainGui.h"
 #include "Console.hpp"
-#include "SMReaders/TileReader.hpp"
-#include "ObjectDatabase/DatabaseConfig.hpp"
-#include "ObjectDatabase/ObjectDatabase.hpp"
-#include "ObjectDatabase/Mod/ObjectRotations.hpp"
-
-#include "Tile/TileConverter.hpp"
 
 #include <locale>
 
@@ -19,14 +13,9 @@ int WINAPI WinMain(
 	std::setlocale(LC_CTYPE, "en_US.UTF-8");
 	CreateDebugConsole(L"World Converter Debug Console");
 
-	Rotations::InitializeRotations();
-
-	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
-	DatabaseLoader::LoadDatabase();
-
-	TileConverter::ConvertToModel(L"./Tests/Color Map Test.tile");
-
-	while (true) {};
+	TileConverter::Application::EnableVisualStyles();
+	TileConverter::Application::SetCompatibleTextRenderingDefault(false);
+	TileConverter::Application::Run(gcnew TileConverter::MainGui);
 
 	return 0;
 }

@@ -42,10 +42,10 @@ class __ConsoleOutputHandler;
 
 #define DECLARE_CONSOLE_OUTPUT(type_name) static void Output(const type_name obj)
 
-class Console
+class DebugConsole
 {
 	friend __ConsoleOutputHandler;
-	static HANDLE ConHandle;
+	static HANDLE Handle;
 
 	DECLARE_CONSOLE_OUTPUT(char*);
 	DECLARE_CONSOLE_OUTPUT(wchar_t*);
@@ -91,12 +91,12 @@ public:
 
 class __ConsoleOutputHandler
 {
-	friend Console;
+	friend DebugConsole;
 
 	template<typename Arg>
 	inline void variadic_func(const Arg& arg)
 	{
-		Console::Output(arg);
+		DebugConsole::Output(arg);
 	}
 
 	template<typename Arg, typename ...ArgList>
@@ -117,10 +117,10 @@ public:
 	~__ConsoleOutputHandler() = default;
 };
 
-#define CreateDebugConsole(ConName) Console::Create(ConName)
-#define DebugOutL(...) Console::Out(__VA_ARGS__, ConCol::WHITE, "\n")
-#define DebugErrorL(...) Console::Out(ConCol::RED_INT, "ERROR: ", __VA_ARGS__, ConCol::WHITE, "\n")
-#define DebugWarningL(...) Console::Out(ConCol::YELLOW_INT, "WARNING: ", __VA_ARGS__, ConCol::WHITE, "\n")
+#define CreateDebugConsole(ConName) DebugConsole::Create(ConName)
+#define DebugOutL(...) DebugConsole::Out(__VA_ARGS__, ConCol::WHITE, "\n")
+#define DebugErrorL(...) DebugConsole::Out(ConCol::RED_INT, "ERROR: ", __VA_ARGS__, ConCol::WHITE, "\n")
+#define DebugWarningL(...) DebugConsole::Out(ConCol::YELLOW_INT, "WARNING: ", __VA_ARGS__, ConCol::WHITE, "\n")
 #else
 #define CreateDebugConsole(ConName) ((void*)0)
 #define DebugOutL(...) ((void*)0)

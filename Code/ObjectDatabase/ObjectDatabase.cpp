@@ -1,6 +1,7 @@
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/DatabaseConfig.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/Mod/ObjectRotations.hpp"
 
 #include "Utils/Json.hpp"
 #include "Console.hpp"
@@ -60,4 +61,10 @@ void DatabaseLoader::LoadDatabase()
 	DatabaseLoader::LoadModDatabase();
 
 	DebugOutL(ConCol::GREEN_INT, "Finished! (Blocks: ", Mod::BlockStorage.size(), ", Parts: ", Mod::PartStorage.size(), ", Harvestables: ", Mod::HarvestableStorage.size(), ", Assets: ", Mod::AssetStorage.size(), ")");
+}
+
+void DatabaseLoader::InitializeDatabase()
+{
+	Rotations::InitializeRotations();
+	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
 }

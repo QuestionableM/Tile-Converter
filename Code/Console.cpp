@@ -2,29 +2,29 @@
 
 #ifdef WC_ENABLE_DEBUG_CONSOLE
 
-#define CONSOLE_NUMBER_OUTPUT_DEFINITION(type) void Console::Output(const type obj) { Console::Output(std::to_string(obj)); }
+#define CONSOLE_NUMBER_OUTPUT_DEFINITION(type) void DebugConsole::Output(const type obj) { DebugConsole::Output(std::to_string(obj)); }
 
-__ConsoleOutputHandler Console::Out = __ConsoleOutputHandler();
-HANDLE Console::ConHandle = NULL;
+__ConsoleOutputHandler DebugConsole::Out = __ConsoleOutputHandler();
+HANDLE DebugConsole::Handle = NULL;
 
-void Console::Output(const char* obj)
+void DebugConsole::Output(const char* obj)
 {
-	WriteConsoleA(Console::ConHandle, obj, (DWORD)strlen(obj), 0, 0);
+	WriteConsoleA(DebugConsole::Handle, obj, (DWORD)strlen(obj), 0, 0);
 }
 
-void Console::Output(const wchar_t* obj)
+void DebugConsole::Output(const wchar_t* obj)
 {
-	WriteConsoleW(Console::ConHandle, obj, (DWORD)wcslen(obj), 0, 0);
+	WriteConsoleW(DebugConsole::Handle, obj, (DWORD)wcslen(obj), 0, 0);
 }
 
-void Console::Output(const std::string& obj)
+void DebugConsole::Output(const std::string& obj)
 {
-	Console::Output(obj.c_str());
+	DebugConsole::Output(obj.c_str());
 }
 
-void Console::Output(const std::wstring& obj)
+void DebugConsole::Output(const std::wstring& obj)
 {
-	Console::Output(obj.c_str());
+	DebugConsole::Output(obj.c_str());
 }
 
 CONSOLE_NUMBER_OUTPUT_DEFINITION(unsigned char&)
@@ -41,14 +41,14 @@ CONSOLE_NUMBER_OUTPUT_DEFINITION(long long&)
 CONSOLE_NUMBER_OUTPUT_DEFINITION(float&)
 CONSOLE_NUMBER_OUTPUT_DEFINITION(double&)
 
-void Console::Output(const ConCol& obj)
+void DebugConsole::Output(const ConCol& obj)
 {
-	SetConsoleTextAttribute(Console::ConHandle, static_cast<DWORD>(obj));
+	SetConsoleTextAttribute(DebugConsole::Handle, static_cast<DWORD>(obj));
 }
 
-bool Console::Create(const wchar_t* title)
+bool DebugConsole::Create(const wchar_t* title)
 {
-	if (Console::ConHandle != NULL) return false;
+	if (DebugConsole::Handle != NULL) return false;
 
 	BOOL is_created = AllocConsole();
 	if (!is_created) return false;
@@ -56,17 +56,17 @@ bool Console::Create(const wchar_t* title)
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTitleW(title);
 
-	Console::ConHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	DebugConsole::Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	return true;
 }
 
-void Console::Destroy()
+void DebugConsole::Destroy()
 {
-	if (Console::ConHandle == NULL) return;
+	if (DebugConsole::Handle == NULL) return;
 
 	FreeConsole();
-	Console::ConHandle = NULL;
+	DebugConsole::Handle = NULL;
 }
 
 #endif
