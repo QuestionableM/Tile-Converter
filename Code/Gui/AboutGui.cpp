@@ -1,5 +1,7 @@
 #include "AboutGui.h"
 
+#include "Utils/WinInclude.hpp"
+
 namespace TileConverter
 {
 	AboutGui::AboutGui()
@@ -63,5 +65,16 @@ namespace TileConverter
 	void AboutGui::LibNlohmannJson_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
 		System::Diagnostics::Process::Start("https://github.com/nlohmann/json");
+	}
+
+	void AboutGui::MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
+	{
+		this->AppDesc_TB->SelectionLength = 0;
+		SendMessage(
+			static_cast<HWND>(this->AppDesc_TB->Handle.ToPointer()),
+			WM_KILLFOCUS,
+			0,
+			NULL
+		);
 	}
 }

@@ -69,6 +69,8 @@ namespace TileConverter {
 			this->AppDesc_TB->TabIndex = 0;
 			this->AppDesc_TB->TabStop = false;
 			this->AppDesc_TB->Text = L"Tile Converter allows you to convert Tiles from Scrap Mechanic into 3D models!";
+			this->AppDesc_TB->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &AboutGui::MouseKillFocus);
+			this->AppDesc_TB->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &AboutGui::MouseKillFocus);
 			// 
 			// CreatorQM_LLBL
 			// 
@@ -244,5 +246,6 @@ namespace TileConverter {
 		System::Void LibUUID_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibAssimp_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibNlohmannJson_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
 	};
 }
