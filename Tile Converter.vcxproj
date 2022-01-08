@@ -243,6 +243,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Code\Gui\AboutGui.resx">
+      <DependentUpon>Code\Gui\AboutGui.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Code\Gui\MainGui.resx">
       <DependentUpon>Code\Gui\MainGui.h</DependentUpon>
     </EmbeddedResource>

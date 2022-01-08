@@ -8,6 +8,8 @@
 #include "Tile/TileConverter.hpp"
 #include "Utils/File.hpp"
 
+#include "Gui/AboutGui.h"
+
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -128,5 +130,11 @@ namespace TileConverter
 		if (wstr_path.empty()) return;
 
 		this->TilePath_TB->Text = gcnew System::String(wstr_path.c_str());
+	}
+
+	void MainGui::TS_About_BTN_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		AboutGui^ about_gui = gcnew AboutGui();
+		about_gui->ShowDialog();
 	}
 }

@@ -126,6 +126,7 @@ namespace TileConverter {
 			this->TS_About_BTN->Name = L"TS_About_BTN";
 			this->TS_About_BTN->Size = System::Drawing::Size(52, 20);
 			this->TS_About_BTN->Text = L"About";
+			this->TS_About_BTN->Click += gcnew System::EventHandler(this, &MainGui::TS_About_BTN_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -208,5 +209,6 @@ namespace TileConverter {
 		System::Void TileConverter_BW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
 		System::Void TileConverter_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);
 		System::Void TilePathSelector_BTN_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void TS_About_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }
