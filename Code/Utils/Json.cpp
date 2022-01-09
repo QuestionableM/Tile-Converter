@@ -3,6 +3,9 @@
 #include "Utils/File.hpp"
 #include "Console.hpp"
 
+#include <fstream>
+#include <iomanip>
+
 const nlohmann::json JsonReader::EmptyObject = nlohmann::json();
 
 nlohmann::json JsonReader::ParseJsonStringInternal(const std::string& json_str)
@@ -46,6 +49,16 @@ nlohmann::json JsonReader::LoadParseJson(const std::wstring& path)
 #endif
 
 	return EmptyObject;
+}
+
+void JsonReader::WriteJson(const std::wstring& path, const nlohmann::json& pJson)
+{
+	std::ofstream out_file(path);
+	if (!out_file.is_open()) return;
+
+	out_file << std::setw(1) << std::setfill('\t') << pJson;
+
+	out_file.close();
 }
 
 const nlohmann::json& JsonReader::Get(const nlohmann::json& obj, const std::string& key)

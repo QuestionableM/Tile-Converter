@@ -6,14 +6,20 @@
 class DatabaseConfig
 {
 public:
+	constexpr static const std::wstring_view ConfigPath = L"./Resources/Config.json";
+	constexpr static const std::wstring_view RotationsPath = L"./Resources/RotationSettings.json";
+
 	static std::wstring GamePath;
 	static std::vector<std::wstring> AssetListFolders;
 	static std::vector<std::wstring> ModFolders;
 
 private:
-	static void ReadUserSettings(const nlohmann::json& config_json);
+	static bool GetSteamPaths(std::wstring& game_path, std::wstring& workshop_path);
+	static void ReadUserSettings(nlohmann::json& config_json, bool& should_write);
 	static void ReadProgramSettings(const nlohmann::json& config_json);
 
+	static nlohmann::json GetConfigJson(bool& should_write);
+
 public:
-	static void ReadConfig(const std::wstring& path);
+	static void ReadConfig();
 };

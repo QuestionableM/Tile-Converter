@@ -73,3 +73,24 @@ std::string String::FloatVecToString(const float* f, const std::size_t& amount, 
 
 	return out;
 }
+
+std::wstring String::ReadRegistryKey(const std::wstring& main_key, const std::wstring& sub_key)
+{
+	wchar_t _Data[255] = {};
+	DWORD _BufSz = 8196;
+
+	LSTATUS _Status = RegGetValueW(
+		HKEY_CURRENT_USER,
+		main_key.c_str(),
+		sub_key.c_str(),
+		RRF_RT_REG_SZ,
+		NULL,
+		(PVOID)&_Data,
+		&_BufSz
+	);
+
+	if (_Status == ERROR_SUCCESS)
+		return std::wstring(_Data);
+
+	return L"";
+}

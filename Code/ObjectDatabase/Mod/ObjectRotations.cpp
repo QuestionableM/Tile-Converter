@@ -9,7 +9,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 
-const static std::wstring RotationConfigPath = L"./Resources/RotationSettings.json";
+#include "ObjectDatabase/DatabaseConfig.hpp"
 
 namespace Rotations
 {
@@ -35,7 +35,7 @@ namespace Rotations
 
 	void LoadRotationsFromFile()
 	{
-		nlohmann::json rSettings = JsonReader::LoadParseJson(RotationConfigPath);
+		nlohmann::json rSettings = JsonReader::LoadParseJson(DatabaseConfig::RotationsPath.data());
 		if (!rSettings.is_object())
 		{
 			DebugErrorL("Couldn't read rotation configuration file!");

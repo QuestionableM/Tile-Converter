@@ -68,5 +68,5 @@ void DatabaseLoader::LoadDatabase()
 void DatabaseLoader::InitializeDatabase()
 {
 	Rotations::InitializeRotations();
-	DatabaseConfig::ReadConfig(L"./Resources/Config.json");
+	DatabaseConfig::ReadConfig();
 }
