@@ -146,60 +146,85 @@ void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
 	}
 }
 
-nlohmann::json DatabaseConfig::GetConfigJson(bool& should_write)
+nlohmann::json DatabaseConfig::GetConfigJson(bool* should_write)
 {
 	nlohmann::json cfgData = JsonReader::LoadParseJson(DatabaseConfig::ConfigPath.data());
 	if (!cfgData.is_object())
 	{
 		cfgData = nlohmann::json::object();
+	}
 
-		{
-			//ProgramSettings
-			nlohmann::json pSet = nlohmann::json::object();
+	if (!cfgData.contains("ProgramSettings"))
+	{
+		nlohmann::json pSet = nlohmann::json::object();
 
-			nlohmann::json pKeywords = nlohmann::json::object();
-			pKeywords["$CHALLENGE_DATA"] = "$GAME_FOLDER/ChallengeData";
-			pKeywords["$GAME_DATA"] = "$GAME_FOLDER/Data";
-			pKeywords["$SURVIVAL_DATA"] = "$GAME_FOLDER/Survival";
+		nlohmann::json pKeywords = nlohmann::json::object();
+		pKeywords["$CHALLENGE_DATA"] = "$GAME_FOLDER/ChallengeData";
+		pKeywords["$GAME_DATA"] = "$GAME_FOLDER/Data";
+		pKeywords["$SURVIVAL_DATA"] = "$GAME_FOLDER/Survival";
 
-			nlohmann::json pResourceUpgrades = nlohmann::json::array();
-			pResourceUpgrades.push_back("$GAME_DATA/upgrade_resources.json");
+		nlohmann::json pResourceUpgrades = nlohmann::json::array();
+		pResourceUpgrades.push_back("$GAME_DATA/upgrade_resources.json");
 
-			nlohmann::json pAssetDB = nlohmann::json::array();
-			pAssetDB.push_back("$CHALLENGE_DATA/Terrain/Database/AssetSets");
-			pAssetDB.push_back("$SURVIVAL_DATA/Terrain/Database/AssetSets");
-			pAssetDB.push_back("$GAME_DATA/Terrain/Database/AssetSets");
+		nlohmann::json pAssetDB = nlohmann::json::array();
+		pAssetDB.push_back("$CHALLENGE_DATA/Terrain/Database/AssetSets");
+		pAssetDB.push_back("$SURVIVAL_DATA/Terrain/Database/AssetSets");
+		pAssetDB.push_back("$GAME_DATA/Terrain/Database/AssetSets");
 
-			pAssetDB.push_back("$SURVIVAL_DATA/Harvestables/Database/HarvestableSets");
+		pAssetDB.push_back("$SURVIVAL_DATA/Harvestables/Database/HarvestableSets");
 
-			pAssetDB.push_back("$CHALLENGE_DATA/Objects/Database/ShapeSets");
-			pAssetDB.push_back("$GAME_DATA/Objects/Database/ShapeSets");
-			pAssetDB.push_back("$SURVIVAL_DATA/Objects/Database/ShapeSets");
+		pAssetDB.push_back("$CHALLENGE_DATA/Objects/Database/ShapeSets");
+		pAssetDB.push_back("$GAME_DATA/Objects/Database/ShapeSets");
+		pAssetDB.push_back("$SURVIVAL_DATA/Objects/Database/ShapeSets");
 
-			pAssetDB.push_back("$GAME_DATA/Terrain/Database/clutter.json");
-			pAssetDB.push_back("$SURVIVAL_DATA/Terrain/Database/clutter.json");
+		pAssetDB.push_back("$GAME_DATA/Terrain/Database/clutter.json");
+		pAssetDB.push_back("$SURVIVAL_DATA/Terrain/Database/clutter.json");
 
-			pSet["Keywords"] = pKeywords;
-			pSet["ResourceUpgradeFiles"] = pResourceUpgrades;
-			pSet["ScrapAssetDatabase"] = pAssetDB;
+		pSet["Keywords"] = pKeywords;
+		pSet["ResourceUpgradeFiles"] = pResourceUpgrades;
+		pSet["ScrapAssetDatabase"] = pAssetDB;
 
-			cfgData["ProgramSettings"] = pSet;
-		}
+		cfgData["ProgramSettings"] = pSet;
 
-		should_write = true;
+		if (should_write != nullptr)
+			*should_write = true;
 	}
 
 	return cfgData;
+}
+
+void DatabaseConfig::SaveConfig()
+{
+	nlohmann::json cfgData = DatabaseConfig::GetConfigJson();
+	
+	nlohmann::json user_settings = nlohmann::json::object();
+
+	user_settings["GamePath"] = String::ToUtf8(DatabaseConfig::GamePath);
+
+	{
+		nlohmann::json ws_mod_folders = nlohmann::json::array();
+
+		for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
+			ws_mod_folders.push_back(String::ToUtf8(mod_dir));
+
+		user_settings["WorkshopModFolders"] = ws_mod_folders;
+	}
+
+	cfgData["UserSettings"] = user_settings;
+
+	DebugOutL(ConCol::PINK_INT, "Saving a new config...");
+	JsonReader::WriteJson(DatabaseConfig::ConfigPath.data(), cfgData);
 }
 
 void DatabaseConfig::ReadConfig()
 {
 	GamePath.clear();
 	AssetListFolders.clear();
+	ModFolders.clear();
 	KeywordReplacer::Clear();
 
 	bool should_write = false;
-	nlohmann::json cfgData = DatabaseConfig::GetConfigJson(should_write);
+	nlohmann::json cfgData = DatabaseConfig::GetConfigJson(&should_write);
 
 	DatabaseConfig::ReadUserSettings(cfgData, should_write);
 	DatabaseConfig::ReadProgramSettings(cfgData);

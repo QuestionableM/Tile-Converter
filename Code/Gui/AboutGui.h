@@ -58,6 +58,7 @@ namespace TileConverter {
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->AppDesc_TB->BackColor = System::Drawing::SystemColors::MenuBar;
 			this->AppDesc_TB->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->AppDesc_TB->Cursor = System::Windows::Forms::Cursors::Arrow;
 			this->AppDesc_TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->AppDesc_TB->Location = System::Drawing::Point(12, 12);
@@ -206,7 +207,7 @@ namespace TileConverter {
 			this->Version_LBL->Name = L"Version_LBL";
 			this->Version_LBL->Size = System::Drawing::Size(86, 16);
 			this->Version_LBL->TabIndex = 11;
-			this->Version_LBL->Text = L"Version: 1.0.0";
+			this->Version_LBL->Text = L"Version: 1.0.1";
 			// 
 			// AboutGui
 			// 

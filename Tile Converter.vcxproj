@@ -145,6 +145,7 @@
     <ClCompile Include="Code\Console.cpp" />
     <ClCompile Include="Code\Gui\AboutGui.cpp" />
     <ClCompile Include="Code\Gui\MainGui.cpp" />
+    <ClCompile Include="Code\Gui\SettingsGui.cpp" />
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp" />
     <ClCompile Include="Code\ObjectDatabase\KeywordReplacer.cpp" />
@@ -184,6 +185,9 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Code\Gui\MainGui.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Code\Gui\SettingsGui.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
@@ -248,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Code\Gui\MainGui.resx">
       <DependentUpon>Code\Gui\MainGui.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Code\Gui\SettingsGui.resx">
+      <DependentUpon>Code\Gui\SettingsGui.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

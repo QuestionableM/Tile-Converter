@@ -5,10 +5,13 @@
 #include <msclr/marshal_cppstd.h>
 
 #include "ObjectDatabase/ObjectDatabase.hpp"
+#include "ObjectDatabase/DatabaseConfig.hpp"
+
 #include "Tile/TileConverter.hpp"
 #include "Utils/File.hpp"
 
 #include "Gui/AboutGui.h"
+#include "Gui/SettingsGui.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -17,6 +20,16 @@ namespace WForms = System::Windows::Forms;
 
 namespace TileConverter
 {
+	MainGui::MainGui()
+	{
+		this->InitializeComponent();
+	}
+
+	MainGui::~MainGui()
+	{
+		if (components) delete components;
+	}
+
 	void MainGui::MainGui_Load(System::Object^ sender, System::EventArgs^ e)
 	{
 		DebugOutL("MainGui has been loaded!");
@@ -30,11 +43,31 @@ namespace TileConverter
 
 		DatabaseLoader::InitializeDatabase();
 
+		if (DatabaseConfig::GamePath.empty() || !File::Exists(DatabaseConfig::GamePath))
+		{
+			WForms::DialogResult dr = WForms::MessageBox::Show(
+				"The program couldn't find a path to Scrap Mechanic.\n\nWould you like to specify the path to Scrap Mechanic by yourself?",
+				"No Game Path",
+				WForms::MessageBoxButtons::YesNo,
+				WForms::MessageBoxIcon::Question
+			);
+
+			if (dr == WForms::DialogResult::Yes)
+			{
+				this->TS_Settings_BTN_Click(nullptr, nullptr);
+				return;
+			}
+		}
+
 		this->LoadObjectDatabase();
 	}
 
 	void MainGui::LoadObjectDatabase()
 	{
+		if (this->DatabaseLoader_BW->IsBusy) return;
+
+		DebugOutL(ConCol::BLUE_INT, "Loading object database...");
+
 		this->ChangeGuiState(false, false);
 		this->DatabaseLoader_BW->RunWorkerAsync();
 	}
@@ -126,7 +159,12 @@ namespace TileConverter
 
 	void MainGui::TilePathSelector_BTN_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		const std::wstring wstr_path = File::OpenFileDialog(L"Select Tile");
+		const std::wstring wstr_path = File::OpenFileDialog(
+			L"Select Tile",
+			0,
+			L"All Files (*.*)\0*.*\0",
+			static_cast<HWND>(this->Handle.ToPointer())
+		);
 		if (wstr_path.empty()) return;
 
 		this->TilePath_TB->Text = gcnew System::String(wstr_path.c_str());
@@ -136,5 +174,18 @@ namespace TileConverter
 	{
 		AboutGui^ about_gui = gcnew AboutGui();
 		about_gui->ShowDialog();
+	}
+
+	void MainGui::TS_Settings_BTN_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		SettingsGui^ settings_gui = gcnew SettingsGui();
+		settings_gui->ShowDialog();
+
+		if (*settings_gui->update_after_close)
+		{
+			DatabaseConfig::ReadConfig();
+
+			this->LoadObjectDatabase();
+		}
 	}
 }

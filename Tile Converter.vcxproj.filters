@@ -120,6 +120,9 @@
     <ClCompile Include="Code\Gui\AboutGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Gui\SettingsGui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
@@ -273,6 +276,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Gui\AboutGui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Gui\SettingsGui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,8 +18,9 @@ private:
 	static void ReadUserSettings(nlohmann::json& config_json, bool& should_write);
 	static void ReadProgramSettings(const nlohmann::json& config_json);
 
-	static nlohmann::json GetConfigJson(bool& should_write);
+	static nlohmann::json GetConfigJson(bool* should_write = nullptr);
 
 public:
+	static void SaveConfig();
 	static void ReadConfig();
 };

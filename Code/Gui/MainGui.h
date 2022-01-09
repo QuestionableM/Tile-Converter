@@ -1,7 +1,7 @@
 #pragma once
 
-namespace TileConverter {
-
+namespace TileConverter
+{
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -9,65 +9,30 @@ namespace TileConverter {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Summary for MainGui
-	/// </summary>
 	public ref class MainGui : public System::Windows::Forms::Form
 	{
 	public:
-		MainGui(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
-		}
+		MainGui();
 
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		~MainGui()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
-	private: System::Windows::Forms::Button^ Convert_BTN;
-	protected:
-
-
-	private: System::Windows::Forms::TextBox^ TilePath_TB;
-	protected:
-
-
-
-
-	private: System::Windows::Forms::MenuStrip^ menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^ TS_About_BTN;
-
-	private: System::Windows::Forms::ToolStripMenuItem^ optionsToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ TS_ReloadDB_BTN;
-
-	private: System::Windows::Forms::ToolStripMenuItem^ TS_Settings_BTN;
-	private: System::ComponentModel::BackgroundWorker^ DatabaseLoader_BW;
-	private: System::ComponentModel::BackgroundWorker^ TileConverter_BW;
-	private: System::Windows::Forms::Button^ TilePathSelector_BTN;
-
-	private: System::ComponentModel::IContainer^ components;
+		~MainGui();
 
 	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
+		System::Windows::Forms::Button^ Convert_BTN;
+		System::Windows::Forms::TextBox^ TilePath_TB;
+		System::Windows::Forms::MenuStrip^ menuStrip1;
+		System::Windows::Forms::ToolStripMenuItem^ TS_About_BTN;
+		System::Windows::Forms::ToolStripMenuItem^ optionsToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^ TS_ReloadDB_BTN;
+		System::Windows::Forms::ToolStripMenuItem^ TS_Settings_BTN;
+		System::ComponentModel::BackgroundWorker^ DatabaseLoader_BW;
+		System::ComponentModel::BackgroundWorker^ TileConverter_BW;
+		System::Windows::Forms::Button^ TilePathSelector_BTN;
+		System::Windows::Forms::ToolStripSeparator^ toolStripSeparator1;
 
+		System::ComponentModel::IContainer^ components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		void InitializeComponent(void)
 		{
 			this->Convert_BTN = (gcnew System::Windows::Forms::Button());
@@ -80,6 +45,7 @@ namespace TileConverter {
 			this->DatabaseLoader_BW = (gcnew System::ComponentModel::BackgroundWorker());
 			this->TileConverter_BW = (gcnew System::ComponentModel::BackgroundWorker());
 			this->TilePathSelector_BTN = (gcnew System::Windows::Forms::Button());
+			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -130,9 +96,9 @@ namespace TileConverter {
 			// 
 			// optionsToolStripMenuItem
 			// 
-			this->optionsToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+			this->optionsToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
 				this->TS_ReloadDB_BTN,
-					this->TS_Settings_BTN
+					this->toolStripSeparator1, this->TS_Settings_BTN
 			});
 			this->optionsToolStripMenuItem->Name = L"optionsToolStripMenuItem";
 			this->optionsToolStripMenuItem->Size = System::Drawing::Size(61, 20);
@@ -147,10 +113,10 @@ namespace TileConverter {
 			// 
 			// TS_Settings_BTN
 			// 
-			this->TS_Settings_BTN->Enabled = false;
 			this->TS_Settings_BTN->Name = L"TS_Settings_BTN";
-			this->TS_Settings_BTN->Size = System::Drawing::Size(232, 22);
-			this->TS_Settings_BTN->Text = L"Settings (NOT IMPLEMENTED)";
+			this->TS_Settings_BTN->Size = System::Drawing::Size(199, 22);
+			this->TS_Settings_BTN->Text = L"Settings";
+			this->TS_Settings_BTN->Click += gcnew System::EventHandler(this, &MainGui::TS_Settings_BTN_Click);
 			// 
 			// DatabaseLoader_BW
 			// 
@@ -174,6 +140,11 @@ namespace TileConverter {
 			this->TilePathSelector_BTN->Text = L"...";
 			this->TilePathSelector_BTN->UseVisualStyleBackColor = true;
 			this->TilePathSelector_BTN->Click += gcnew System::EventHandler(this, &MainGui::TilePathSelector_BTN_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this->toolStripSeparator1->Name = L"toolStripSeparator1";
+			this->toolStripSeparator1->Size = System::Drawing::Size(196, 6);
 			// 
 			// MainGui
 			// 
@@ -210,5 +181,6 @@ namespace TileConverter {
 		System::Void TileConverter_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);
 		System::Void TilePathSelector_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void TS_About_BTN_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void TS_Settings_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 	};
 }

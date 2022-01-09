@@ -66,6 +66,14 @@ bool File::CreateDirectorySafe(const std::wstring& path)
 	return (exists_correct || file_correct);
 }
 
+bool File::Equivalent(const std::wstring& p1, const std::wstring& p2)
+{
+	std::error_code ec;
+	bool is_equivalent = fs::equivalent(p1, p2, ec);
+
+	return (is_equivalent && !ec);
+}
+
 std::wstring File::OpenFileDialog(
 	const std::wstring& title,
 	FILEOPENDIALOGOPTIONS options,
