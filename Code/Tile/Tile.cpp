@@ -469,8 +469,6 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 		for (std::size_t x = 0; x < clHeight; x++)
 		{
 			TileClutter* tClutter = tile_clutter[x + y * clWidth];
-			DebugOut(((tClutter != nullptr) ? "x" : "0"));
-
 			if (!tClutter) continue;
 
 			const float x_offset = (float)x_noise.octave2D_11((double)x * 91.42f, (double)y * 83.24f, 4) * 0.5f;
@@ -493,8 +491,6 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 			tClutter->WriteObjectToFile(model, mOffset, glm::mat4(1.0f));
 		}
-
-		DebugOut("\n");
 	}
 }
 
@@ -644,20 +640,7 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 	std::unordered_map<std::string, ObjectTexData> tData = {};
 
 	for (const TilePart* tPart : this->Tiles)
-	{
-		for (std::size_t a = 0; a < tPart->Objects.size(); a++)
-		{
-			for (const TileEntity* cObject : tPart->Objects[a])
-				cObject->FillTextureMap(tData);
-		}
-		
-		for (const TileClutter* cClutter : tPart->ClutterMap)
-		{
-			if (!cClutter) continue;
-
-			cClutter->FillTextureMap(tData);
-		}
-	}
+		tPart->FillTextureMap(tData);
 
 	for (const auto& tDatum : tData)
 	{

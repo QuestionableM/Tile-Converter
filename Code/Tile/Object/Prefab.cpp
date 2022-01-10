@@ -53,12 +53,12 @@ void Prefab::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, c
 {
 	const glm::mat4 prefab_matrix = transform_matrix * this->GetTransformMatrix();
 
-	for (const TileEntity* cObject : this->Objects)
-		cObject->WriteObjectToFile(file, mOffset, prefab_matrix);
+	for (const TileEntity* pEntity : this->Objects)
+		pEntity->WriteObjectToFile(file, mOffset, prefab_matrix);
 }
 
 void Prefab::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	for (const TileEntity* cObject : this->Objects)
-		cObject->FillTextureMap(tex_map);
+	for (const TileEntity* pEntity : this->Objects)
+		pEntity->FillTextureMap(tex_map);
 }

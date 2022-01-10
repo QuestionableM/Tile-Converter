@@ -84,16 +84,16 @@ std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_
 
 void Blueprint::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
-	for (const TileEntity* pObject : this->Objects)
-		pObject->FillTextureMap(tex_map);
+	for (const TileEntity* pEntity : this->Objects)
+		pEntity->FillTextureMap(tex_map);
 }
 
 void Blueprint::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const
 {
 	const glm::mat4 blueprint_matrix = transform_matrix * this->GetTransformMatrix();
 
-	for (const TileEntity* pObject : this->Objects)
-		pObject->WriteObjectToFile(file, mOffset, blueprint_matrix);
+	for (const TileEntity* pEntity : this->Objects)
+		pEntity->WriteObjectToFile(file, mOffset, blueprint_matrix);
 }
 
 Blueprint::~Blueprint()

@@ -44,4 +44,5 @@ public:
 	Tile* GetParent();
 
 	void WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, const int& xPos, const int& zPos);
+	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tData) const;
 };

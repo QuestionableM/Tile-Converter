@@ -86,7 +86,25 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 
 	for (std::size_t vec_idx = 0; vec_idx < this->Objects.size(); vec_idx++)
 	{
-		for (const TileEntity* cObject : this->Objects[vec_idx])
-			cObject->WriteObjectToFile(model, mOffsetData, transform);
+		const std::vector<TileEntity*>& entity_array = this->Objects[vec_idx];
+
+		for (std::size_t a = 0; a < entity_array.size(); a++)
+			entity_array[a]->WriteObjectToFile(model, mOffsetData, transform);
+	}
+}
+
+void TilePart::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tData) const
+{
+	for (std::size_t a = 0; a < Objects.size(); a++)
+	{
+		for (const TileEntity* pEntity : Objects[a])
+			pEntity->FillTextureMap(tData);
+
+		for (const TileClutter* pClutter : ClutterMap)
+		{
+			if (!pClutter) continue;
+
+			pClutter->FillTextureMap(tData);
+		}
 	}
 }

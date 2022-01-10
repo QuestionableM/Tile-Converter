@@ -25,8 +25,9 @@ bool Model::IsEmpty() const
 
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
-	for (const glm::vec3& vertex : this->vertices)
+	for (std::size_t a = 0; a < this->vertices.size(); a++)
 	{
+		const glm::vec3& vertex = this->vertices[a];
 		const glm::vec3 pVertPos = model_mat * glm::vec4(vertex, 1.0f);
 		const std::string output_str = "v " + String::FloatVecToString(&pVertPos.x, 3) + "\n";
 
@@ -38,8 +39,9 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 		DebugOutL("Writing uvs for: ", this->meshPath);
 		this->written_uv_index = offset.Uv;
 
-		for (const glm::vec2& uv : this->uvs)
+		for (std::size_t a = 0; a < this->uvs.size(); a++)
 		{
+			const glm::vec2& uv = this->uvs[a];
 			const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
 
 			file.write(output_str.c_str(), output_str.size());
@@ -57,8 +59,9 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 			glm::highp_vec4(0.0f, 0.0f, 0.0f, 1.0f)
 		);
 
-		for (const glm::vec3& normal : this->normals)
+		for (std::size_t a = 0; a < this->normals.size(); a++)
 		{
+			const glm::vec3& normal = this->normals[a];
 			const glm::vec3 pNormal = rot_matrix * glm::vec4(normal, 1.0f);
 			const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
 
@@ -80,8 +83,11 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 		{
 			std::string _f_str = "f";
 
-			for (const VertexData& d_idx : pSubMesh->DataIdx[a])
+			const std::vector<VertexData>& vert_vec = pSubMesh->DataIdx[a];
+			for (std::size_t b = 0; b < vert_vec.size(); b++)
 			{
+				const VertexData& d_idx = vert_vec[b];
+
 				_f_str.append(" ");
 				_f_str.append(std::to_string(d_idx.pVert + offset.Vertex + 1));
 
