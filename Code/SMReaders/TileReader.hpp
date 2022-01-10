@@ -75,10 +75,8 @@ public:
 						MipReader::Read(h, reader, part);
 						ClutterReader::Read(h, reader, part);
 					}
-
+				
 					AssetListReader::Read(h, reader, part);
-					//NodeReader - not needed
-					//ScriptReader - not needed
 					PrefabReader::Read(h, reader, part);
 					BlueprintListReader::Read(h, reader, part);
 					//DecalReader - in the works

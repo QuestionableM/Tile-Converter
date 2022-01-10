@@ -4,6 +4,7 @@
 #include "Utils/String.hpp"
 
 #include "Tile/Object/TileEntity.hpp"
+#include "Tile/TileConverter.hpp"
 
 bool SubMeshData::IsEmpty()
 {
@@ -32,33 +33,39 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 		file.write(output_str.c_str(), output_str.size());
 	}
 
-	for (const glm::vec2& uv : this->uvs)
+	if (ConvertSettings::ExportUvs)
 	{
-		const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
+		for (const glm::vec2& uv : this->uvs)
+		{
+			const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
 
-		file.write(output_str.c_str(), output_str.size());
+			file.write(output_str.c_str(), output_str.size());
+		}
 	}
 
-	const glm::mat4 rot_matrix(
-		model_mat[0],
-		model_mat[1],
-		model_mat[2],
-		glm::highp_vec4(0.0f, 0.0f, 0.0f, 1.0f)
-	);
-
-	for (const glm::vec3& normal : this->normals)
+	if (ConvertSettings::ExportNormals)
 	{
-		const glm::vec3 pNormal = rot_matrix * glm::vec4(normal, 1.0f);
-		const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
+		const glm::mat4 rot_matrix(
+			model_mat[0],
+			model_mat[1],
+			model_mat[2],
+			glm::highp_vec4(0.0f, 0.0f, 0.0f, 1.0f)
+		);
 
-		file.write(output_str.c_str(), output_str.size());
+		for (const glm::vec3& normal : this->normals)
+		{
+			const glm::vec3 pNormal = rot_matrix * glm::vec4(normal, 1.0f);
+			const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
+
+			file.write(output_str.c_str(), output_str.size());
+		}
 	}
 
 	for (std::size_t mIdx = 0; mIdx < this->subMeshData.size(); mIdx++)
 	{
 		const SubMeshData* pSubMesh = this->subMeshData[mIdx];
 
-		if (pEntity != nullptr)
+		if (pEntity != nullptr && ConvertSettings::ExportMaterials)
 		{
 			const std::string mtl_name = "usemtl " + pEntity->GetMtlName(pSubMesh->MaterialName, mIdx) + "\n";
 			file.write(mtl_name.c_str(), mtl_name.size());
@@ -73,8 +80,8 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 				_f_str.append(" ");
 				_f_str.append(std::to_string(d_idx.pVert + offset.Vertex + 1));
 
-				const bool has_uv     = (d_idx.pUv   > -1);
-				const bool has_normal = (d_idx.pNorm > -1);
+				const bool has_uv     = (ConvertSettings::ExportUvs     && d_idx.pUv   > -1);
+				const bool has_normal = (ConvertSettings::ExportNormals && d_idx.pNorm > -1);
 
 				if (!has_uv && !has_normal) continue;
 
@@ -125,8 +132,8 @@ const aiScene* ModelStorage::LoadScene(const std::wstring& path)
 
 void ModelStorage::LoadVertices(const aiMesh*& mesh, Model*& model)
 {
-	const bool has_uvs = mesh->HasTextureCoords(0);
-	const bool has_normals = mesh->HasNormals();
+	const bool has_uvs     = (ConvertSettings::ExportUvs     && mesh->HasTextureCoords(0));
+	const bool has_normals = (ConvertSettings::ExportNormals && mesh->HasNormals());
 
 	if (has_uvs) model->uvs.reserve(mesh->mNumVertices);
 	if (has_normals) model->normals.reserve(mesh->mNumVertices);
@@ -159,8 +166,8 @@ void ModelStorage::LoadIndices(const aiMesh*& mesh, Model*& model, SubMeshData*&
 	const long long mUvOffset = model->uvs.size();
 	const long long mNormalOffset = model->normals.size();
 
-	const bool has_uvs = mesh->HasTextureCoords(0);
-	const bool has_normals = mesh->HasNormals();
+	const bool has_uvs     = (ConvertSettings::ExportUvs     && mesh->HasTextureCoords(0));
+	const bool has_normals = (ConvertSettings::ExportNormals && mesh->HasNormals());
 
 	sub_mesh->DataIdx.reserve(mesh->mNumFaces);
 	for (unsigned int a = 0; a < mesh->mNumFaces; a++)
@@ -201,11 +208,8 @@ void ModelStorage::LoadSubMeshes(const aiScene*& scene, Model*& model)
 	}
 }
 
-Model* ModelStorage::LoadModel(
-	const std::wstring& path,
-	const bool& load_uvs,
-	const bool& load_normals
-) {
+Model* ModelStorage::LoadModel(const std::wstring& path)
+{
 	if (CachedModels.find(path) != CachedModels.end())
 		return CachedModels.at(path);
 

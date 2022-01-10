@@ -17,6 +17,7 @@ public:
 
 	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
 	{
+		if (!ConvertSettings::ExportBlueprints) return;
 		if (header->blueprintListCount == 0 || header->blueprintListIndex == 0) return;
 
 		DebugOutL("BlueprintList: ", header->blueprintListSize, " / ", header->blueprintListCompressedSize);

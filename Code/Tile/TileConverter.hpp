@@ -4,9 +4,11 @@
 
 class ConvertSettings
 {
+public:
 	//model settings
 	static bool ExportUvs;
 	static bool ExportNormals;
+	static bool ExportMaterials;
 
 	//tile settings
 	static bool ExportClutter;
@@ -28,5 +30,5 @@ enum class ConvertResult : unsigned short
 class TileConv
 {
 public:
-	static ConvertResult ConvertToModel(const std::wstring& tile_path);
+	static ConvertResult ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name);
 };

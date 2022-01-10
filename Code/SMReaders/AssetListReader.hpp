@@ -12,6 +12,8 @@
 
 class AssetListReader
 {
+	AssetListReader() = default;
+
 public:
 
 #pragma warning(push)
@@ -19,6 +21,8 @@ public:
 
 	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
 	{
+		if (!ConvertSettings::ExportAssets) return;
+
 		for (int a = 0; a < 4; a++)
 		{
 			const int assetListCompressedSize = header->assetListCompressedSize[a];
@@ -112,7 +116,7 @@ public:
 			AssetData* asset_data = Mod::GetGlobalAsset(uuid);
 			if (!asset_data) continue;
 
-			Model* pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
+			Model* pModel = ModelStorage::LoadModel(asset_data->Mesh);
 			if (!pModel) continue;
 
 			Asset* nAsset = new Asset(asset_data, pModel, color_map);

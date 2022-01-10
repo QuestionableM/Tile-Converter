@@ -12,6 +12,7 @@
 
 #include "Gui/AboutGui.h"
 #include "Gui/SettingsGui.h"
+#include "Gui/ConvertSettingsGui.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -133,23 +134,65 @@ namespace TileConverter
 			return;
 		}
 
-		this->ChangeGuiState(true, true);
+		fs::path tPath = tile_path;
+		const std::wstring tile_name = tPath.has_stem() ? tPath.stem().wstring() : L"UnkonwnTile";
 
-		System::Array^ thread_data = gcnew cli::array<System::Object^>(1);
-		thread_data->SetValue(this->TilePath_TB->Text, (int)0);
+		ConvertSettingsGui^ conv_settings = gcnew ConvertSettingsGui(tile_name);
+		conv_settings->ShowDialog();
 
-		this->TileConverter_BW->RunWorkerAsync(thread_data);
+		if (conv_settings->CanConvert)
+		{
+			this->ChangeGuiState(true, true);
+
+			System::Array^ thread_data = gcnew cli::array<System::Object^>(10);
+			thread_data->SetValue(this->TilePath_TB->Text, (int)0);
+			thread_data->SetValue(conv_settings->OutputName_TB->Text, (int)1);
+
+			thread_data->SetValue(conv_settings->ExportUvs_CB->Checked, (int)2);
+			thread_data->SetValue(conv_settings->ExportNormals_CB->Checked, (int)3);
+			thread_data->SetValue(conv_settings->ExportMaterials_CB->Checked, (int)4);
+
+			thread_data->SetValue(conv_settings->ExportClutter_CB->Checked, (int)5);
+			thread_data->SetValue(conv_settings->ExportAssets_CB->Checked, (int)6);
+			thread_data->SetValue(conv_settings->ExportPrefabs_CB->Checked, (int)7);
+			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked, (int)8);
+			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, (int)9);
+
+			this->TileConverter_BW->RunWorkerAsync(thread_data);
+		}
 	}
 
 	void MainGui::TileConverter_BW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
 	{
 		System::Array^ tData = safe_cast<System::Array^>(e->Argument);
-		System::String^ bp_path = safe_cast<System::String^>(tData->GetValue((int)0));
 
-		const std::wstring bp_path_wstr = msclr::interop::marshal_as<std::wstring>(bp_path);
+		System::String^ tile_path = safe_cast<System::String^>(tData->GetValue((int)0));
+		System::String^ tile_name = safe_cast<System::String^>(tData->GetValue((int)1));
+		
+		const bool export_uvs       = safe_cast<bool>(tData->GetValue((int)2));
+		const bool export_normals   = safe_cast<bool>(tData->GetValue((int)3));
+		const bool export_materials = safe_cast<bool>(tData->GetValue((int)4));
 
-		DebugOutL("Converting: ", bp_path_wstr);
-		TileConv::ConvertToModel(bp_path_wstr);
+		const bool export_clutter      = safe_cast<bool>(tData->GetValue((int)5));
+		const bool export_assets       = safe_cast<bool>(tData->GetValue((int)6));
+		const bool export_prefabs      = safe_cast<bool>(tData->GetValue((int)7));
+		const bool export_blueprints   = safe_cast<bool>(tData->GetValue((int)8));
+		const bool export_harvestables = safe_cast<bool>(tData->GetValue((int)9));
+
+		ConvertSettings::ExportUvs       = export_uvs;
+		ConvertSettings::ExportNormals   = export_normals;
+		ConvertSettings::ExportMaterials = export_materials && export_uvs;
+
+		ConvertSettings::ExportClutter      = export_clutter;
+		ConvertSettings::ExportAssets       = export_assets;
+		ConvertSettings::ExportPrefabs      = export_prefabs;
+		ConvertSettings::ExportBlueprints   = export_blueprints;
+		ConvertSettings::ExportHarvestables = export_harvestables;
+
+		const std::wstring tile_path_wstr = msclr::interop::marshal_as<std::wstring>(tile_path);
+		const std::wstring tile_name_wstr = msclr::interop::marshal_as<std::wstring>(tile_name);
+
+		TileConv::ConvertToModel(tile_path_wstr, tile_name_wstr);
 	}
 
 	void MainGui::TileConverter_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)

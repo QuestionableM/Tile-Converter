@@ -62,7 +62,7 @@ class ModelStorage
 	static void LoadIndices(const aiMesh*& mesh, Model*& model, SubMeshData*& sub_mesh);
 	static void LoadSubMeshes(const aiScene*& scene, Model*& model);
 public:
-	static Model* LoadModel(const std::wstring& path, const bool& load_uvs, const bool& load_normals);
+	static Model* LoadModel(const std::wstring& path);
 
 	static void ClearStorage();
 };

@@ -169,7 +169,7 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 				PartData* p_data = Mod::GetGlobalPart(obj_uuid);
 				if (!p_data) continue;
 
-				Model* pModel = ModelStorage::LoadModel(p_data->Mesh, true, true);
+				Model* pModel = ModelStorage::LoadModel(p_data->Mesh);
 				if (!pModel) continue;
 
 				Part* new_part = new Part(p_data, pModel, obj_color, xAxisInt, zAxisInt);
@@ -208,7 +208,7 @@ void Blueprint::LoadJoints(const nlohmann::json& pJson)
 		PartData* joint_data = Mod::GetGlobalPart(joint_uuid);
 		if (!joint_data) continue;
 
-		Model* pModel = ModelStorage::LoadModel(joint_data->Mesh, true, true);
+		Model* pModel = ModelStorage::LoadModel(joint_data->Mesh);
 		if (!pModel) continue;
 
 		Joint* new_joint = new Joint(joint_data, pModel, joint_color, xAxisInt, zAxisInt);

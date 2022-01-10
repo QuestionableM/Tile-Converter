@@ -73,7 +73,7 @@ namespace TileConverter
 			this->Save_BTN->Enabled = false;
 			this->Save_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Save_BTN->Location = System::Drawing::Point(267, 221);
+			this->Save_BTN->Location = System::Drawing::Point(261, 222);
 			this->Save_BTN->Name = L"Save_BTN";
 			this->Save_BTN->Size = System::Drawing::Size(111, 28);
 			this->Save_BTN->TabIndex = 0;
@@ -91,7 +91,7 @@ namespace TileConverter
 			this->SettingsTabs_TC->Location = System::Drawing::Point(12, 12);
 			this->SettingsTabs_TC->Name = L"SettingsTabs_TC";
 			this->SettingsTabs_TC->SelectedIndex = 0;
-			this->SettingsTabs_TC->Size = System::Drawing::Size(366, 203);
+			this->SettingsTabs_TC->Size = System::Drawing::Size(360, 204);
 			this->SettingsTabs_TC->TabIndex = 1;
 			// 
 			// General_Tab
@@ -102,7 +102,7 @@ namespace TileConverter
 			this->General_Tab->Location = System::Drawing::Point(4, 22);
 			this->General_Tab->Name = L"General_Tab";
 			this->General_Tab->Padding = System::Windows::Forms::Padding(3);
-			this->General_Tab->Size = System::Drawing::Size(358, 177);
+			this->General_Tab->Size = System::Drawing::Size(352, 178);
 			this->General_Tab->TabIndex = 0;
 			this->General_Tab->Text = L"General";
 			this->General_Tab->UseVisualStyleBackColor = true;
@@ -123,7 +123,7 @@ namespace TileConverter
 			this->SM_BrowsePath_BTN->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->SM_BrowsePath_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->SM_BrowsePath_BTN->Location = System::Drawing::Point(314, 22);
+			this->SM_BrowsePath_BTN->Location = System::Drawing::Point(308, 22);
 			this->SM_BrowsePath_BTN->Name = L"SM_BrowsePath_BTN";
 			this->SM_BrowsePath_BTN->Size = System::Drawing::Size(38, 22);
 			this->SM_BrowsePath_BTN->TabIndex = 1;
@@ -140,7 +140,7 @@ namespace TileConverter
 			this->SM_Path_TB->Location = System::Drawing::Point(6, 22);
 			this->SM_Path_TB->MaxLength = 1024;
 			this->SM_Path_TB->Name = L"SM_Path_TB";
-			this->SM_Path_TB->Size = System::Drawing::Size(302, 22);
+			this->SM_Path_TB->Size = System::Drawing::Size(296, 22);
 			this->SM_Path_TB->TabIndex = 0;
 			// 
 			// WS_Dirs_Tab
@@ -244,10 +244,10 @@ namespace TileConverter
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(390, 260);
+			this->ClientSize = System::Drawing::Size(384, 261);
 			this->Controls->Add(this->SettingsTabs_TC);
 			this->Controls->Add(this->Save_BTN);
-			this->MinimumSize = System::Drawing::Size(400, 270);
+			this->MinimumSize = System::Drawing::Size(400, 300);
 			this->Name = L"SettingsGui";
 			this->ShowIcon = false;
 			this->Text = L"Settings";

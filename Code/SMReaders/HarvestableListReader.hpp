@@ -12,6 +12,8 @@
 
 class HarvestableListReader
 {
+	HarvestableListReader() = default;
+
 public:
 
 #pragma warning(push)
@@ -19,6 +21,8 @@ public:
 
 	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
 	{
+		if (!ConvertSettings::ExportHarvestables) return;
+
 		for (int a = 0; a < 4; a++)
 		{
 			const int harvestableListCompressedSize = header->harvestableListCompressedSize[a];
@@ -63,7 +67,7 @@ public:
 			HarvestableData* hvs_data = Mod::GetGlobalHarvestbale(uuid);
 			if (!hvs_data) continue;
 
-			Model* hvs_model = ModelStorage::LoadModel(hvs_data->Mesh, true, true);
+			Model* hvs_model = ModelStorage::LoadModel(hvs_data->Mesh);
 			if (!hvs_model) continue;
 
 			Harvestable* nHvs = new Harvestable(hvs_data, hvs_model, color);

@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
     <ClCompile Include="Code\Gui\AboutGui.cpp" />
+    <ClCompile Include="Code\Gui\ConvertSettingsGui.cpp" />
     <ClCompile Include="Code\Gui\MainGui.cpp" />
     <ClCompile Include="Code\Gui\SettingsGui.cpp" />
     <ClCompile Include="Code\Main.cpp" />
@@ -182,6 +183,9 @@
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
     <ClInclude Include="Code\Gui\AboutGui.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Code\Gui\ConvertSettingsGui.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Code\Gui\MainGui.h">
@@ -249,6 +253,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Code\Gui\AboutGui.resx">
       <DependentUpon>Code\Gui\AboutGui.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Code\Gui\ConvertSettingsGui.resx">
+      <DependentUpon>Code\Gui\ConvertSettingsGui.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Code\Gui\MainGui.resx">
       <DependentUpon>Code\Gui\MainGui.h</DependentUpon>

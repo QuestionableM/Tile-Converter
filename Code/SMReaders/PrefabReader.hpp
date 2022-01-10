@@ -14,6 +14,8 @@
 
 class PrefabReader
 {
+	PrefabReader() = default;
+
 public:
 
 #pragma warning(push)
@@ -21,6 +23,7 @@ public:
 
 	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
 	{
+		if (!ConvertSettings::ExportPrefabs) return;
 		if (header->prefabCount == 0 || header->prefabIndex == 0) return;
 
 		DebugOutL("Prefab: ", header->prefabSize, " / ", header->prefabCompressedSize);

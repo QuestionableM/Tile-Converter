@@ -10,9 +10,13 @@
 
 class ClutterReader
 {
+	ClutterReader() = default;
+
 public:
 	static void Read(CellHeader* header, MemoryWrapper& memory, TilePart* part)
 	{
+		if (!ConvertSettings::ExportClutter) return;
+
 		ClutterReader::Read(ClutterReader::Read(header, memory), part);
 	}
 
@@ -96,7 +100,7 @@ public:
 			ClutterData* clData = Mod::GetGlobalClutterById(cur_byte);
 			if (!clData) continue;
 
-			Model* pModel = ModelStorage::LoadModel(clData->Mesh, true, true);
+			Model* pModel = ModelStorage::LoadModel(clData->Mesh);
 			if (!pModel) continue;
 
 			part->ClutterMap[a] = new TileClutter(clData, pModel);

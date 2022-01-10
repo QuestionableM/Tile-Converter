@@ -98,13 +98,16 @@ public:
 
 			stream.ReadInt();
 
-			Blueprint* blueprint = Blueprint::LoadAutomatic(value);
-			if (!blueprint) continue;
+			if (ConvertSettings::ExportBlueprints)
+			{
+				Blueprint* blueprint = Blueprint::LoadAutomatic(value);
+				if (!blueprint) continue;
 
-			blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+				blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+				blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
 
-			prefab->AddObject(blueprint);
+				prefab->AddObject(blueprint);
+			}
 		}
 	}
 
@@ -135,14 +138,17 @@ public:
 			stream.ReadInt();
 			stream.ReadInt();
 
-			Prefab* rec_prefab = PrefabFileReader::Read(pref_path, L"");
-			if (!rec_prefab) continue;
+			if (ConvertSettings::ExportPrefabs)
+			{
+				Prefab* rec_prefab = PrefabFileReader::Read(pref_path, L"");
+				if (!rec_prefab) continue;
 
-			rec_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			rec_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			rec_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
+				rec_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+				rec_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+				rec_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
 
-			prefab->AddObject(rec_prefab);
+				prefab->AddObject(rec_prefab);
+			}
 		}
 	}
 
@@ -225,18 +231,21 @@ public:
 				}
 			}
 
-			AssetData* asset_data = Mod::GetGlobalAsset(uuid);
-			if (!asset_data) continue;
+			if (ConvertSettings::ExportAssets)
+			{
+				AssetData* asset_data = Mod::GetGlobalAsset(uuid);
+				if (!asset_data) continue;
 
-			Model* pModel = ModelStorage::LoadModel(asset_data->Mesh, true, true);
-			if (!pModel) continue;
+				Model* pModel = ModelStorage::LoadModel(asset_data->Mesh);
+				if (!pModel) continue;
 
-			Asset* nAsset = new Asset(asset_data, pModel, color_map);
-			nAsset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			nAsset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			nAsset->SetSize({ f_size[0], f_size[1], f_size[2] });
+				Asset* nAsset = new Asset(asset_data, pModel, color_map);
+				nAsset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+				nAsset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+				nAsset->SetSize({ f_size[0], f_size[1], f_size[2] });
 
-			prefab->AddObject(nAsset);
+				prefab->AddObject(nAsset);
+			}
 		}
 	}
 

@@ -13,6 +13,8 @@
 
 class MipReader
 {
+	MipReader() = default;
+
 public:
 	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
 	{
