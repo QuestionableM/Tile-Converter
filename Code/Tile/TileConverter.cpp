@@ -18,6 +18,12 @@ bool ConvertSettings::ExportHarvestables = true;
 
 constexpr const static std::wstring_view TileOutputDirectory = L"./ConvertedTiles";
 
+ConvertError::ConvertError(const unsigned short& ec, const std::wstring& error_msg)
+{
+	this->ErrorCode = ec;
+	this->ErrorMessage = error_msg;
+}
+
 ConvertResult TileConv::ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name)
 {
 	fs::directory_entry fEntry(tile_path);

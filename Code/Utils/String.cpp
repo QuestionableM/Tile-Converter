@@ -94,3 +94,29 @@ std::wstring String::ReadRegistryKey(const std::wstring& main_key, const std::ws
 
 	return L"";
 }
+
+constexpr const wchar_t AllowedCharacters[] = { L'(', L')', L'.', L' ', L'_', 0x32, L'[', L']', L'-' };
+bool String::IsPathCharacterAllowed(const wchar_t& c)
+{
+	const bool is_alphabetic = std::iswalpha(c);
+	const bool is_digit = std::iswdigit(c);
+
+	if (is_alphabetic || is_digit)
+	{
+		return true;
+	}
+	else
+	{
+		constexpr const std::size_t array_size = (sizeof(AllowedCharacters) / sizeof(wchar_t));
+
+		for (std::size_t a = 0; a < array_size; a++)
+		{
+			const wchar_t& cChar = AllowedCharacters[a];
+
+			if (cChar == c)
+				return true;
+		}
+	}
+
+	return false;
+}

@@ -27,6 +27,14 @@ enum class ConvertResult : unsigned short
 	Error_DirCreate     = 4  //the tile output directory could not be created
 };
 
+class ConvertError
+{
+	unsigned short ErrorCode;
+	std::wstring ErrorMessage;
+public:
+	ConvertError(const unsigned short& ec, const std::wstring& error_msg);
+};
+
 class TileConv
 {
 public:

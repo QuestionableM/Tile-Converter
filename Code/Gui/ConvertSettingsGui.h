@@ -79,6 +79,7 @@ namespace TileConverter
 			this->OutputName_TB->Size = System::Drawing::Size(162, 22);
 			this->OutputName_TB->TabIndex = 0;
 			this->OutputName_TB->TextChanged += gcnew System::EventHandler(this, &ConvertSettingsGui::OutputName_TB_TextChanged);
+			this->OutputName_TB->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &ConvertSettingsGui::OutputName_TB_KeyPress);
 			// 
 			// ModelSettings_GB
 			// 
@@ -250,5 +251,6 @@ namespace TileConverter
 		System::Void OutputName_TB_TextChanged(System::Object^ sender, System::EventArgs^ e);
 		System::Void Convert_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void ExportUvs_CB_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
+		System::Void OutputName_TB_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e);
 	};
 }
