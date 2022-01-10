@@ -23,7 +23,7 @@ bool Model::IsEmpty() const
 
 #include <gtx/matrix_decompose.hpp>
 
-void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity) const
+void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
 	for (const glm::vec3& vertex : this->vertices)
 	{
@@ -33,14 +33,19 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 		file.write(output_str.c_str(), output_str.size());
 	}
 
-	if (ConvertSettings::ExportUvs)
+	if (ConvertSettings::ExportUvs && this->written_uv_index == -1)
 	{
+		DebugOutL("Writing uvs for: ", this->meshPath);
+		this->written_uv_index = offset.Uv;
+
 		for (const glm::vec2& uv : this->uvs)
 		{
 			const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
 
 			file.write(output_str.c_str(), output_str.size());
 		}
+
+		offset.Uv += this->uvs.size();
 	}
 
 	if (ConvertSettings::ExportNormals)
@@ -87,7 +92,7 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 				_f_str.append("/");
 
-				if (has_uv)     _f_str.append(      std::to_string(d_idx.pUv   + offset.Uv     + 1));
+				if (has_uv)     _f_str.append(      std::to_string(d_idx.pUv   + this->written_uv_index + 1));
 				if (has_normal) _f_str.append("/" + std::to_string(d_idx.pNorm + offset.Normal + 1));
 			}
 
@@ -97,7 +102,6 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 	}
 
 	offset.Vertex += this->vertices.size();
-	offset.Uv	  += this->uvs.size();
 	offset.Normal += this->normals.size();
 }
 

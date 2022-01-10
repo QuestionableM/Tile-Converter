@@ -39,10 +39,11 @@ struct Model
 	std::vector<glm::vec2> uvs;
 	std::vector<SubMeshData*> subMeshData;
 
+	long long written_uv_index = -1;
 	std::wstring meshPath;
 
 	bool IsEmpty() const;
-	void WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const class TileEntity* pEntity) const;
+	void WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const class TileEntity* pEntity);
 
 	Model() = default;
 	Model(const std::wstring& mesh_path);
