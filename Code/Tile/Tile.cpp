@@ -443,7 +443,7 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const
 {
-	if (!ConvertSettings::ExportClutter) return;
+	if (this->Type != 0 || !ConvertSettings::ExportClutter) return;
 
 	DebugOutL("Writing clutter...");
 

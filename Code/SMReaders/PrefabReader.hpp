@@ -21,9 +21,9 @@ public:
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
+	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part, ConvertError& cError)
 	{
-		if (!ConvertSettings::ExportPrefabs) return;
+		if (cError || !ConvertSettings::ExportPrefabs) return;
 		if (header->prefabCount == 0 || header->prefabIndex == 0) return;
 
 		DebugOutL("Prefab: ", header->prefabSize, " / ", header->prefabCompressedSize);
@@ -34,10 +34,18 @@ public:
 		bytes.resize(header->prefabSize);
 
 		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->prefabSize);
-		assert(debugSize == header->prefabCompressedSize);
+		if (debugSize != header->prefabCompressedSize)
+		{
+			cError = ConvertError(1, L"PrefabReader::Read -> debugSize != header->prefabCompressedSize");
+			return;
+		}
 
 		debugSize = PrefabReader::Read(bytes, header->prefabCount, part);
-		assert(debugSize == header->prefabSize);
+		if (debugSize != header->prefabSize)
+		{
+			cError = ConvertError(1, L"PrefabReader::Read -> debugSize != header->prefabSize");
+			return;
+		}
 	}
 
 #pragma warning(pop)

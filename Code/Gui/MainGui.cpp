@@ -192,11 +192,42 @@ namespace TileConverter
 		const std::wstring tile_path_wstr = msclr::interop::marshal_as<std::wstring>(tile_path);
 		const std::wstring tile_name_wstr = msclr::interop::marshal_as<std::wstring>(tile_name);
 
-		TileConv::ConvertToModel(tile_path_wstr, tile_name_wstr);
+		ConvertError cError;
+		TileConv::ConvertToModel(tile_path_wstr, tile_name_wstr, cError);
+
+		System::Array^ result_data = nullptr;
+		if (cError)
+		{
+			result_data = gcnew cli::array<System::Object^>(2);
+			result_data->SetValue(true, (int)0);
+			result_data->SetValue(gcnew System::String(cError.GetErrorMsg().c_str()), (int)1);
+		}
+		else
+		{
+			result_data = gcnew cli::array<System::Object^>(1);
+			result_data->SetValue(false, (int)0);
+		}
+		
+		e->Result = result_data;
 	}
 
 	void MainGui::TileConverter_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
 	{
+		System::Array^ result_array = safe_cast<System::Array^>(e->Result);
+
+		bool has_error = safe_cast<bool>(result_array->GetValue((int)0));
+		if (has_error)
+		{
+			System::String^ error_msg = safe_cast<System::String^>(result_array->GetValue((int)1));
+
+			WForms::MessageBox::Show(
+				error_msg,
+				"Convert Error",
+				WForms::MessageBoxButtons::OK,
+				WForms::MessageBoxIcon::Error
+			);
+		}
+
 		this->ChangeGuiState(true, false);
 	}
 

@@ -19,9 +19,9 @@ public:
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
+	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part, ConvertError& cError)
 	{
-		if (!ConvertSettings::ExportAssets) return;
+		if (cError || !ConvertSettings::ExportAssets) return;
 
 		for (int a = 0; a < 4; a++)
 		{
@@ -39,10 +39,18 @@ public:
 				bytes.resize(assetListSize);
 
 				int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), assetListSize);
-				assert(debugSize == assetListCompressedSize);
+				if (debugSize != assetListCompressedSize)
+				{
+					cError = ConvertError(1, L"AssetListReader::Read -> debugSize != assetListCompressedSize");
+					return;
+				}
 
 				debugSize = AssetListReader::Read(bytes, a, header->assetListCount[a], part->GetParent()->GetVersion(), part);
-				assert(debugSize == assetListSize);
+				if (debugSize != assetListSize)
+				{
+					cError = ConvertError(1, L"AssetListReader::Read -> debugSize != assetListSize");
+					return;
+				}
 			}
 		}
 	}

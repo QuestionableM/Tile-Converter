@@ -19,9 +19,9 @@ public:
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
+	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part, ConvertError& cError)
 	{
-		if (!ConvertSettings::ExportHarvestables) return;
+		if (cError || !ConvertSettings::ExportHarvestables) return;
 
 		for (int a = 0; a < 4; a++)
 		{
@@ -38,10 +38,18 @@ public:
 				bytes.resize(harvestableListSize);
 
 				int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->harvestableListSize[a]);
-				assert(debugSize == harvestableListCompressedSize);
+				if (debugSize != harvestableListCompressedSize)
+				{
+					cError = ConvertError(1, L"HarvestableListReader::Read -> debugSize != harvestableListCompressedSize");
+					return;
+				}
 
 				debugSize = HarvestableListReader::Read(bytes, a, header->harvestableListCount[a], part->GetParent()->GetVersion(), part);
-				assert(debugSize == header->harvestableListSize[a]);
+				if (debugSize != header->harvestableListSize[a])
+				{
+					cError = ConvertError(1, L"HarvestableListReader::Read -> debugSize != header->harvestableListSize[a]");
+					return;
+				}
 			}
 		}
 	}

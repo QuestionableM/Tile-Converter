@@ -24,6 +24,12 @@ public:
 	std::vector<CellHeader*> CellHeaders = {};
 	MemoryWrapper mMemory;
 
+	~TileHeader()
+	{
+		for (CellHeader* pHeader : CellHeaders)
+			delete pHeader;
+	}
+
 	void FillHeaderBytes(const std::vector<Byte>& header_bytes)
 	{
 		const int wh_mul = Width * Height;
@@ -41,10 +47,8 @@ public:
 		}
 	}
 
-	static TileHeader* ReadTile(const std::vector<Byte>& bytes)
+	static TileHeader* ReadTile(const std::vector<Byte>& bytes, ConvertError& cError)
 	{
-		TileHeader* new_tile = new TileHeader();
-		new_tile->tile_bytes = bytes;
 		MemoryWrapper mMemory = bytes;
 	
 		std::vector<char> tile_keyword = mMemory.NextObjects<char>(4);
@@ -53,8 +57,12 @@ public:
 		if (tile_key != "TILE")
 		{
 			DebugOutL("Invalid File");
+			cError = ConvertError(1, L"TileHeader::ReadTile -> Invalid File");
 			return nullptr;
 		}
+
+		TileHeader* new_tile = new TileHeader();
+		new_tile->tile_bytes = bytes;
 
 		new_tile->Version = mMemory.NextObject<int>();
 		DebugOutL("Version: ", new_tile->Version);
@@ -91,6 +99,9 @@ public:
 		if (mMemory.Index() != new_tile->CellHeaderOffset)
 		{
 			DebugOutL("Error: index doesn't match the cell header offset!");
+			cError = ConvertError(1, L"TileHeader::ReadTile -> Index doesn't match the cell header offset!");
+
+			delete new_tile;
 			return nullptr;
 		}
 

@@ -15,9 +15,9 @@ public:
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
+	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part, ConvertError& cError)
 	{
-		if (!ConvertSettings::ExportBlueprints) return;
+		if (cError || !ConvertSettings::ExportBlueprints) return;
 		if (header->blueprintListCount == 0 || header->blueprintListIndex == 0) return;
 
 		DebugOutL("BlueprintList: ", header->blueprintListSize, " / ", header->blueprintListCompressedSize);
@@ -28,10 +28,18 @@ public:
 		bytes.resize(header->blueprintListSize);
 
 		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->blueprintListSize);
-		assert(debugSize == header->blueprintListCompressedSize);
+		if (debugSize != header->blueprintListCompressedSize)
+		{
+			cError = ConvertError(1, L"BlueprintListReader::Read -> debugSize != header->blueprintListCompressedSize");
+			return;
+		}
 
 		debugSize = BlueprintListReader::Read(bytes, header->blueprintListCount, part);
-		assert(debugSize == header->blueprintListSize);
+		if (debugSize != header->blueprintListSize)
+		{
+			cError = ConvertError(1, L"BlueprintListReader::Read -> debugSize != header->blueprintListSize");
+			return;
+		}
 	}
 
 #pragma warning(pop)

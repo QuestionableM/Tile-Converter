@@ -20,16 +20,16 @@ class TileReader
 	TileReader() = default;
 
 public:
-	static Tile* ReadTile(const std::wstring& path)
+	static Tile* ReadTile(const std::wstring& path, ConvertError& cError)
 	{
 		std::vector<Byte> file_bytes = File::ReadFileBytes(path);
 
-		return TileReader::ReadTile(file_bytes);
+		return TileReader::ReadTile(file_bytes, cError);
 	}
 
-	static Tile* ReadTile(const std::vector<Byte>& tile_data)
+	static Tile* ReadTile(const std::vector<Byte>& tile_data, ConvertError& cError)
 	{
-		TileHeader* header = TileHeader::ReadTile(tile_data);
+		TileHeader* header = TileHeader::ReadTile(tile_data, cError);
 		if (!header) return nullptr;
 
 		DebugOutL("TileFileVersion: ", header->Version);
@@ -65,24 +65,33 @@ public:
 		{
 			for (int y = 0; y < tileYSize; y++)
 			{
+				if (cError) break;
+
 				for (int x = 0; x < tileXSize; x++)
 				{
-					CellHeader* h = header->GetHeader(x, y);
+					CellHeader* h  = header->GetHeader(x, y);
 					TilePart* part = tile->GetPart(x, y);
 
 					if (header->Type == 0)
 					{
-						MipReader::Read(h, reader, part);
-						ClutterReader::Read(h, reader, part);
+						MipReader::Read    (h, reader, part, cError);
+						ClutterReader::Read(h, reader, part, cError);
 					}
 				
-					AssetListReader::Read(h, reader, part);
-					PrefabReader::Read(h, reader, part);
-					BlueprintListReader::Read(h, reader, part);
-					//DecalReader - in the works
-					HarvestableListReader::Read(h, reader, part);
+					AssetListReader::Read      (h, reader, part, cError);
+					PrefabReader::Read         (h, reader, part, cError);
+					BlueprintListReader::Read  (h, reader, part, cError);
+					HarvestableListReader::Read(h, reader, part, cError);
 				}
 			}
+		}
+
+		delete header;
+
+		if (cError)
+		{
+			delete tile;
+			return nullptr;
 		}
 
 		return tile;

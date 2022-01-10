@@ -16,20 +16,20 @@ class MipReader
 	MipReader() = default;
 
 public:
-	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part)
+	static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part, ConvertError& cError)
 	{
-		MipReader::Read(MipReader::Read(header, reader), part);
-	}
+		if (cError) return;
 
-	static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& reader)
-	{
-		return MipReader::Read(header, 0, reader);
+		const std::vector<Byte> bytes = MipReader::Read(header, 0, reader, cError);
+		if (bytes.empty()) return;
+
+		MipReader::Read(bytes, part);
 	}
 
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static std::vector<Byte> Read(CellHeader* header, const int& mipOrLevel, MemoryWrapper& reader)
+	static std::vector<Byte> Read(CellHeader* header, const int& mipOrLevel, MemoryWrapper& reader, ConvertError& cError)
 	{
 		DebugOutL("MipIndex: ", header->mipIndex[mipOrLevel], ", MipCompressedSize: ", header->mipCompressedSize[mipOrLevel]);
 		std::vector<Byte> compressed = reader.Objects<Byte>(header->mipIndex[mipOrLevel], header->mipCompressedSize[mipOrLevel]);
@@ -38,7 +38,11 @@ public:
 		decompressed_bytes.resize(header->mipSize[mipOrLevel]);
 
 		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)decompressed_bytes.data(), header->mipSize[mipOrLevel]);
-		assert(debugSize == header->mipCompressedSize[mipOrLevel]);
+		if (debugSize != header->mipCompressedSize[mipOrLevel])
+		{
+			cError = ConvertError(1, L"MipReader::Read -> debugSize != header->mipCompressedSize[mipOrLevel]");
+			return {};
+		}
 
 		return decompressed_bytes;
 	}

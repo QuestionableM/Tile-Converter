@@ -24,26 +24,50 @@ ConvertError::ConvertError(const unsigned short& ec, const std::wstring& error_m
 	this->ErrorMessage = error_msg;
 }
 
-ConvertResult TileConv::ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name)
+ConvertError::operator bool() const noexcept
+{
+	return (this->ErrorCode != 0);
+}
+
+std::wstring ConvertError::GetErrorMsg() const noexcept
+{
+	return this->ErrorMessage;
+}
+
+void TileConv::ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name, ConvertError& cError)
 {
 	fs::directory_entry fEntry(tile_path);
-	if (!fEntry.is_regular_file()) return ConvertResult::Error_IsDirectory;
+	if (!fEntry.is_regular_file())
+	{
+		cError = ConvertError(1, L"The specified path leads to a directory");
+		return;
+	}
 
-	if (!File::CreateDirectorySafe(TileOutputDirectory.data())) return ConvertResult::Error_MainDirCreate;
+	if (!File::CreateDirectorySafe(TileOutputDirectory.data()))
+	{
+		cError = ConvertError(1, L"Couldn't create the main output directory");
+		return;
+	}
 
 	const fs::path& fPath = fEntry.path();
 	const std::wstring tile_dir_path = std::wstring(TileOutputDirectory.data()) + L"/" + tile_name;
 
-	if (!File::CreateDirectorySafe(tile_dir_path)) return ConvertResult::Error_DirCreate;
+	if (!File::CreateDirectorySafe(tile_dir_path))
+	{
+		cError = ConvertError(1, L"Couldn't create the tile output directory!");
+		return;
+	}
 
 	{
-		Tile* out_tile = TileReader::ReadTile(tile_path);
-		out_tile->WriteToFile(tile_dir_path + L"/", tile_name);
+		Tile* out_tile = TileReader::ReadTile(tile_path, cError);
+
+		if (!cError)
+		{
+			out_tile->WriteToFile(tile_dir_path + L"/", tile_name);
+		}
 
 		delete out_tile; //clear the tile data
 
 		ModelStorage::ClearStorage(); // clear the cache
 	}
-
-	return ConvertResult::Success;
 }

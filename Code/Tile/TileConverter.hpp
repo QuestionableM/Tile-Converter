@@ -18,25 +18,20 @@ public:
 	static bool ExportHarvestables;
 };
 
-enum class ConvertResult : unsigned short
-{
-	Success             = 0, //no errors
-	Error_Unknown       = 1, //unknown error
-	Error_IsDirectory   = 2, //path to tile is not a regular file
-	Error_MainDirCreate = 3, //the main tile output directory could not be created
-	Error_DirCreate     = 4  //the tile output directory could not be created
-};
-
 class ConvertError
 {
-	unsigned short ErrorCode;
-	std::wstring ErrorMessage;
+	unsigned short ErrorCode = 0;
+	std::wstring ErrorMessage = L"";
 public:
+	ConvertError() = default;
 	ConvertError(const unsigned short& ec, const std::wstring& error_msg);
+
+	explicit operator bool() const noexcept;
+	std::wstring GetErrorMsg() const noexcept;
 };
 
 class TileConv
 {
 public:
-	static ConvertResult ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name);
+	static void ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name, ConvertError& cError);
 };

@@ -13,17 +13,20 @@ class ClutterReader
 	ClutterReader() = default;
 
 public:
-	static void Read(CellHeader* header, MemoryWrapper& memory, TilePart* part)
+	static void Read(CellHeader* header, MemoryWrapper& memory, TilePart* part, ConvertError& cError)
 	{
-		if (!ConvertSettings::ExportClutter) return;
+		if (cError || !ConvertSettings::ExportClutter) return;
 
-		ClutterReader::Read(ClutterReader::Read(header, memory), part);
+		const std::vector<Byte> bytes = ClutterReader::Read(header, memory, cError);
+		if (bytes.empty()) return;
+
+		ClutterReader::Read(bytes, part);
 	}
 
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& memory)
+	static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& memory, ConvertError& cError)
 	{
 		DebugOutL("Clutter: ", header->clutterCompressedSize, " ", header->clutterSize);
 
@@ -32,7 +35,11 @@ public:
 		bytes.resize(header->clutterSize);
 
 		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->clutterSize);
-		assert(debugSize == header->clutterCompressedSize);
+		if (debugSize != header->clutterCompressedSize)
+		{
+			cError = ConvertError(1, L"ClutterReader::Read -> debugSize != header->clutterCompressedSize");
+			return {};
+		}
 
 		return bytes;
 	}
