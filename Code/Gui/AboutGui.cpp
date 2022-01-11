@@ -2,6 +2,8 @@
 
 #include "Utils/WinInclude.hpp"
 
+typedef System::Diagnostics::Process SysProcess;
+
 namespace TileConverter
 {
 	AboutGui::AboutGui()
@@ -29,42 +31,47 @@ namespace TileConverter
 
 	void AboutGui::CreatorQM_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/QuestionableM");
+		SysProcess::Start("https://github.com/QuestionableM");
 	}
 
 	void AboutGui::CreatorHardcoded_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/Kariaro");
+		SysProcess::Start("https://github.com/Kariaro");
 	}
 
 	void AboutGui::LibPerlinNoise_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/Reputeless/PerlinNoise");
+		SysProcess::Start("https://github.com/Reputeless/PerlinNoise");
 	}
 
 	void AboutGui::LibLodePNG_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/lvandeve/lodepng");
+		SysProcess::Start("https://github.com/lvandeve/lodepng");
 	}
 
 	void AboutGui::LibLZ4_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/lz4/lz4");
+		SysProcess::Start("https://github.com/lz4/lz4");
 	}
 
 	void AboutGui::LibUUID_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/mariusbancila/stduuid");
+		SysProcess::Start("https://github.com/mariusbancila/stduuid");
 	}
 
 	void AboutGui::LibAssimp_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/assimp/assimp");
+		SysProcess::Start("https://github.com/assimp/assimp");
 	}
 
 	void AboutGui::LibNlohmannJson_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
-		System::Diagnostics::Process::Start("https://github.com/nlohmann/json");
+		SysProcess::Start("https://github.com/nlohmann/json");
+	}
+
+	void AboutGui::LibGLM_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
+	{
+		SysProcess::Start("https://github.com/g-truc/glm");
 	}
 
 	void AboutGui::MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)

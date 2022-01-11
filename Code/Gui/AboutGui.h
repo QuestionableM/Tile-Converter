@@ -32,6 +32,8 @@ namespace TileConverter {
 		System::Windows::Forms::LinkLabel^ LibPerlinNoise_LLBL;
 		System::Windows::Forms::LinkLabel^ LibUUID_LLBL;
 		System::Windows::Forms::Label^ Version_LBL;
+	private: System::Windows::Forms::LinkLabel^ LibGLM_LLBL;
+
 
 	private:
 		System::ComponentModel::Container ^components;
@@ -50,6 +52,7 @@ namespace TileConverter {
 			this->LibPerlinNoise_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibUUID_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->Version_LBL = (gcnew System::Windows::Forms::Label());
+			this->LibGLM_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->SuspendLayout();
 			// 
 			// AppDesc_TB
@@ -133,7 +136,7 @@ namespace TileConverter {
 			this->LibLodePNG_LLBL->AutoSize = true;
 			this->LibLodePNG_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->LibLodePNG_LLBL->Location = System::Drawing::Point(289, 104);
+			this->LibLodePNG_LLBL->Location = System::Drawing::Point(262, 120);
 			this->LibLodePNG_LLBL->Name = L"LibLodePNG_LLBL";
 			this->LibLodePNG_LLBL->Size = System::Drawing::Size(67, 16);
 			this->LibLodePNG_LLBL->TabIndex = 6;
@@ -189,7 +192,7 @@ namespace TileConverter {
 			this->LibUUID_LLBL->AutoSize = true;
 			this->LibUUID_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->LibUUID_LLBL->Location = System::Drawing::Point(289, 120);
+			this->LibUUID_LLBL->Location = System::Drawing::Point(271, 104);
 			this->LibUUID_LLBL->Name = L"LibUUID_LLBL";
 			this->LibUUID_LLBL->Size = System::Drawing::Size(40, 16);
 			this->LibUUID_LLBL->TabIndex = 10;
@@ -207,13 +210,27 @@ namespace TileConverter {
 			this->Version_LBL->Name = L"Version_LBL";
 			this->Version_LBL->Size = System::Drawing::Size(86, 16);
 			this->Version_LBL->TabIndex = 11;
-			this->Version_LBL->Text = L"Version: 1.0.1";
+			this->Version_LBL->Text = L"Version: 1.0.2";
+			// 
+			// LibGLM_LLBL
+			// 
+			this->LibGLM_LLBL->AutoSize = true;
+			this->LibGLM_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->LibGLM_LLBL->Location = System::Drawing::Point(317, 104);
+			this->LibGLM_LLBL->Name = L"LibGLM_LLBL";
+			this->LibGLM_LLBL->Size = System::Drawing::Size(35, 16);
+			this->LibGLM_LLBL->TabIndex = 12;
+			this->LibGLM_LLBL->TabStop = true;
+			this->LibGLM_LLBL->Text = L"GLM";
+			this->LibGLM_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibGLM_LLBL_LinkClicked);
 			// 
 			// AboutGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(399, 161);
+			this->Controls->Add(this->LibGLM_LLBL);
 			this->Controls->Add(this->Version_LBL);
 			this->Controls->Add(this->LibUUID_LLBL);
 			this->Controls->Add(this->LibPerlinNoise_LLBL);
@@ -247,6 +264,7 @@ namespace TileConverter {
 		System::Void LibUUID_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibAssimp_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibNlohmannJson_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibGLM_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
 	};
 }
