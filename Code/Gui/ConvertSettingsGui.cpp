@@ -17,7 +17,9 @@ namespace TileConverter
 
 		this->ExportUvs_CB->Checked       = ConvertSettings::ExportUvs;
 		this->ExportNormals_CB->Checked   = ConvertSettings::ExportNormals;
-		this->ExportMaterials_CB->Checked = ConvertSettings::ExportMaterials;
+		this->ExportMaterials_CB->Checked = ConvertSettings::ExportMaterials && ConvertSettings::ExportUvs;
+
+		this->ExportMaterials_CB->Enabled = this->ExportUvs_CB->Checked;
 
 		this->ExportClutter_CB->Checked      = ConvertSettings::ExportClutter;
 		this->ExportAssets_CB->Checked       = ConvertSettings::ExportAssets;
