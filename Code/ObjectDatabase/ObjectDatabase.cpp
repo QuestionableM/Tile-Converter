@@ -1,8 +1,10 @@
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/DatabaseConfig.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
+
 #include "ObjectDatabase/Mod/Mod.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase/Mod/MaterialManager.hpp"
 
 #include "Utils/Json.hpp"
 #include "Console.hpp"
@@ -71,5 +73,6 @@ void DatabaseLoader::LoadDatabase()
 void DatabaseLoader::InitializeDatabase()
 {
 	Rotations::InitializeRotations();
+	MaterialManager::Initialize();
 	DatabaseConfig::ReadConfig();
 }

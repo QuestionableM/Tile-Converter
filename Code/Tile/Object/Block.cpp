@@ -3,6 +3,7 @@
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 #include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase/Mod/MaterialManager.hpp"
 
 Block::Block(BlockData* pParent, const glm::vec3& bounds, const Color& color, const int& xAxis, const int& zAxis)
 {
@@ -21,7 +22,23 @@ EntityType Block::Type() const
 
 std::string Block::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
-	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1);
+	std::string material_idx = MaterialManager::GetMaterialA(pParent->Textures.material);
+
+	return uuid.ToString() + " " + color.StringHex() + " " + std::to_string(mIdx + 1) + " " + material_idx;
+}
+
+void Block::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
+{
+	const std::string mtl_name = this->GetMtlName(L"", 0);
+
+	if (tex_map.find(mtl_name) != tex_map.end())
+		return;
+
+	ObjectTexData oTexData;
+	oTexData.Textures = pParent->Textures;
+	oTexData.TexColor = this->color;
+
+	tex_map.insert(std::make_pair(mtl_name, oTexData));
 }
 
 void FillCustomCube(Model& model, const glm::vec3& bounds)
@@ -130,20 +147,6 @@ void AlignUvs(Model& model, const glm::vec3& bounds, const glm::vec3& pos, const
 	(model.uvs[7] *= glm::vec2(0.0f, _MulVec.z)) += _Off5;
 	(model.uvs[20] *= glm::vec2(_MulVec.y, _MulVec.z)) += _Off5;
 	model.uvs[8] += _Off5;
-}
-
-void Block::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
-{
-	const std::string mtl_name = this->GetMtlName(L"", 0);
-
-	if (tex_map.find(mtl_name) != tex_map.end())
-		return;
-
-	ObjectTexData oTexData;
-	oTexData.Textures = pParent->Textures;
-	oTexData.TexColor = color;
-
-	tex_map.insert(std::make_pair(mtl_name, oTexData));
 }
 
 void Block::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const

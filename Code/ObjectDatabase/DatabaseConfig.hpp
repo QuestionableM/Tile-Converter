@@ -8,6 +8,7 @@ class DatabaseConfig
 public:
 	constexpr static const std::wstring_view ConfigPath = L"./Resources/Config.json";
 	constexpr static const std::wstring_view RotationsPath = L"./Resources/RotationSettings.json";
+	constexpr static const std::wstring_view MaterialMapPath = L"./Resources/MaterialIds.json";
 
 	static std::wstring GamePath;
 	static std::vector<std::wstring> AssetListFolders;

@@ -156,6 +156,7 @@
     <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\MaterialManager.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\Mod.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\ObjectRotations.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\PartListLoader.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Code\ObjectDatabase\Mod\ClutterListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\MaterialManager.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\Mod.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\ObjectRotations.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\PartListLoader.hpp" />

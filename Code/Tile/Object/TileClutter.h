@@ -5,6 +5,7 @@
 class TileClutter : public TileEntity
 {
 	class ClutterData* pParent;
+	Color color = 0x00ff00;
 
 public:
 	TileClutter(ClutterData* pParent, Model* pModel);
@@ -13,6 +14,8 @@ public:
 	~TileClutter() = default;
 
 	const float& ScaleVariance() const;
+
+	void SetColor(const Color& color);
 
 	EntityType Type() const override;
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;

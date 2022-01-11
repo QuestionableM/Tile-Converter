@@ -2,6 +2,7 @@
 
 #include "ObjectDatabase/ObjectData.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
+#include "ObjectDatabase/Mod/MaterialManager.hpp"
 
 Asset::Asset(AssetData* pParent, Model* pModel, const std::unordered_map<std::wstring, Color>& color_map)
 {
@@ -38,17 +39,21 @@ std::string Asset::GetMtlName(const std::wstring& mat_name, const std::size_t& m
 
 	Color sColor = 0x000000;
 
+	std::string mat_idx = "m1";
+
 	TextureList tList;
 	if (pParent->Textures.GetEntry(mName, tList))
 	{
 		sColor = this->GetColor(tList.def_color_idx);
+		mat_idx = MaterialManager::GetMaterialA(tList.material);
 	}
 
-	return uuid.ToString() + " " + sColor.StringHex() + " " + std::to_string(mIdx + 1);
+	return uuid.ToString() + " " + sColor.StringHex() + " " + std::to_string(mIdx + 1) + " " + mat_idx;
 }
 
 void Asset::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const
 {
+	const std::string mtl_first_part = this->uuid.ToString() + " ";
 	for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
 	{
 		const SubMeshData* pSubMesh = pModel->subMeshData[a];
@@ -59,7 +64,8 @@ void Asset::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_m
 		{
 			oTexData.TexColor = this->GetColor(oTexData.Textures.def_color_idx);
 
-			const std::string mtl_name = this->uuid.ToString() + " " + oTexData.TexColor.StringHex() + " " + std::to_string(a + 1);
+			const std::string mat_idx = MaterialManager::GetMaterialA(oTexData.Textures.material);
+			const std::string mtl_name = mtl_first_part + oTexData.TexColor.StringHex() + " " + std::to_string(a + 1) + " " + mat_idx;
 
 			if (tex_map.find(mtl_name) != tex_map.end())
 				continue;
