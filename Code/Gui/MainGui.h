@@ -29,23 +29,30 @@ namespace TileConverter
 		System::ComponentModel::BackgroundWorker^ TileConverter_BW;
 		System::Windows::Forms::Button^ TilePathSelector_BTN;
 		System::Windows::Forms::ToolStripSeparator^ toolStripSeparator1;
+	private: System::Windows::Forms::ProgressBar^ ConvertProgress_PB;
+	private: System::Windows::Forms::Label^ Progress_LBL;
+	private: System::Windows::Forms::Timer^ ProgressUpdater;
 
 		System::ComponentModel::IContainer^ components;
 
 #pragma region Windows Form Designer generated code
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->Convert_BTN = (gcnew System::Windows::Forms::Button());
 			this->TilePath_TB = (gcnew System::Windows::Forms::TextBox());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->TS_About_BTN = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->optionsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->TS_ReloadDB_BTN = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
 			this->TS_Settings_BTN = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->DatabaseLoader_BW = (gcnew System::ComponentModel::BackgroundWorker());
 			this->TileConverter_BW = (gcnew System::ComponentModel::BackgroundWorker());
 			this->TilePathSelector_BTN = (gcnew System::Windows::Forms::Button());
-			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
+			this->ConvertProgress_PB = (gcnew System::Windows::Forms::ProgressBar());
+			this->Progress_LBL = (gcnew System::Windows::Forms::Label());
+			this->ProgressUpdater = (gcnew System::Windows::Forms::Timer(this->components));
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -55,7 +62,7 @@ namespace TileConverter
 			this->Convert_BTN->Enabled = false;
 			this->Convert_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Convert_BTN->Location = System::Drawing::Point(180, 57);
+			this->Convert_BTN->Location = System::Drawing::Point(310, 57);
 			this->Convert_BTN->Name = L"Convert_BTN";
 			this->Convert_BTN->Size = System::Drawing::Size(92, 36);
 			this->Convert_BTN->TabIndex = 0;
@@ -73,7 +80,7 @@ namespace TileConverter
 			this->TilePath_TB->Location = System::Drawing::Point(12, 27);
 			this->TilePath_TB->MaxLength = 512;
 			this->TilePath_TB->Name = L"TilePath_TB";
-			this->TilePath_TB->Size = System::Drawing::Size(222, 22);
+			this->TilePath_TB->Size = System::Drawing::Size(352, 22);
 			this->TilePath_TB->TabIndex = 2;
 			this->TilePath_TB->TextChanged += gcnew System::EventHandler(this, &MainGui::TilePath_TB_TextChanged);
 			// 
@@ -83,7 +90,7 @@ namespace TileConverter
 			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->TS_About_BTN, this->optionsToolStripMenuItem });
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(284, 24);
+			this->menuStrip1->Size = System::Drawing::Size(414, 24);
 			this->menuStrip1->TabIndex = 3;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
@@ -107,9 +114,14 @@ namespace TileConverter
 			// TS_ReloadDB_BTN
 			// 
 			this->TS_ReloadDB_BTN->Name = L"TS_ReloadDB_BTN";
-			this->TS_ReloadDB_BTN->Size = System::Drawing::Size(232, 22);
+			this->TS_ReloadDB_BTN->Size = System::Drawing::Size(199, 22);
 			this->TS_ReloadDB_BTN->Text = L"Reload Object Database";
 			this->TS_ReloadDB_BTN->Click += gcnew System::EventHandler(this, &MainGui::TS_ReloadDB_BTN_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this->toolStripSeparator1->Name = L"toolStripSeparator1";
+			this->toolStripSeparator1->Size = System::Drawing::Size(196, 6);
 			// 
 			// TS_Settings_BTN
 			// 
@@ -133,7 +145,7 @@ namespace TileConverter
 			this->TilePathSelector_BTN->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->TilePathSelector_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->TilePathSelector_BTN->Location = System::Drawing::Point(240, 27);
+			this->TilePathSelector_BTN->Location = System::Drawing::Point(370, 27);
 			this->TilePathSelector_BTN->Name = L"TilePathSelector_BTN";
 			this->TilePathSelector_BTN->Size = System::Drawing::Size(32, 22);
 			this->TilePathSelector_BTN->TabIndex = 4;
@@ -141,22 +153,45 @@ namespace TileConverter
 			this->TilePathSelector_BTN->UseVisualStyleBackColor = true;
 			this->TilePathSelector_BTN->Click += gcnew System::EventHandler(this, &MainGui::TilePathSelector_BTN_Click);
 			// 
-			// toolStripSeparator1
+			// ConvertProgress_PB
 			// 
-			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(196, 6);
+			this->ConvertProgress_PB->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->ConvertProgress_PB->Location = System::Drawing::Point(12, 75);
+			this->ConvertProgress_PB->Name = L"ConvertProgress_PB";
+			this->ConvertProgress_PB->Size = System::Drawing::Size(292, 18);
+			this->ConvertProgress_PB->TabIndex = 5;
+			// 
+			// Progress_LBL
+			// 
+			this->Progress_LBL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->Progress_LBL->AutoSize = true;
+			this->Progress_LBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Progress_LBL->Location = System::Drawing::Point(9, 56);
+			this->Progress_LBL->Name = L"Progress_LBL";
+			this->Progress_LBL->Size = System::Drawing::Size(100, 16);
+			this->Progress_LBL->TabIndex = 6;
+			this->Progress_LBL->Text = L"ProgressOutput";
+			// 
+			// ProgressUpdater
+			// 
+			this->ProgressUpdater->Interval = 50;
+			this->ProgressUpdater->Tick += gcnew System::EventHandler(this, &MainGui::ProgressUpdater_Tick);
 			// 
 			// MainGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(284, 103);
+			this->ClientSize = System::Drawing::Size(414, 103);
+			this->Controls->Add(this->Progress_LBL);
+			this->Controls->Add(this->ConvertProgress_PB);
 			this->Controls->Add(this->TilePathSelector_BTN);
 			this->Controls->Add(this->TilePath_TB);
 			this->Controls->Add(this->Convert_BTN);
 			this->Controls->Add(this->menuStrip1);
 			this->MainMenuStrip = this->menuStrip1;
-			this->MinimumSize = System::Drawing::Size(300, 142);
+			this->MinimumSize = System::Drawing::Size(430, 142);
 			this->Name = L"MainGui";
 			this->ShowIcon = false;
 			this->Text = L"Tile Converter";
@@ -182,5 +217,6 @@ namespace TileConverter
 		System::Void TilePathSelector_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void TS_About_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void TS_Settings_BTN_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void ProgressUpdater_Tick(System::Object^ sender, System::EventArgs^ e);
 	};
 }

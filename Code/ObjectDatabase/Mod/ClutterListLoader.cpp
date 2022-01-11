@@ -1,8 +1,10 @@
 #include "ClutterListLoader.hpp"
 
-#include "Utils/String.hpp"
 #include "ObjectDatabase/KeywordReplacer.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
+
+#include "Utils/String.hpp"
 #include "Console.hpp"
 
 bool ClutterListLoader::LoadTextureData(const nlohmann::json& fClutter, TextureList& tList, std::wstring& mesh)
@@ -40,6 +42,7 @@ void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 	if (!fClutter.is_array()) return;
 	DebugOutL("Loading Clutter List...");
 
+	ProgCounter::ProgressMax += fClutter.size();
 	for (const auto& cl_item : fClutter)
 	{
 		if (!cl_item.is_object()) continue;
@@ -75,5 +78,7 @@ void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 		mod->Clutter.insert(new_pair);
 		Mod::ClutterStorage.insert(new_pair);
 		Mod::ClutterVector.push_back(new_clutter);
+
+		ProgCounter::ProgressValue++;
 	}
 }

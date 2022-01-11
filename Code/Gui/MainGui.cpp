@@ -1,19 +1,20 @@
 #include "MainGui.h"
 #include "Console.hpp"
 
-#include <CommCtrl.h>
-#include <msclr/marshal_cppstd.h>
-
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/DatabaseConfig.hpp"
-
-#include "Tile/TileConverter.hpp"
-#include "Utils/File.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase/Mod/Mod.hpp"
 
 #include "Gui/AboutGui.h"
 #include "Gui/SettingsGui.h"
 #include "Gui/ConvertSettingsGui.h"
 
+#include "Tile/TileConverter.hpp"
+#include "Utils/File.hpp"
+
+#include <CommCtrl.h>
+#include <msclr/marshal_cppstd.h>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -70,19 +71,29 @@ namespace TileConverter
 		DebugOutL(ConCol::BLUE_INT, "Loading object database...");
 
 		this->ChangeGuiState(false, false);
+		this->ProgressUpdater->Start();
 		this->DatabaseLoader_BW->RunWorkerAsync();
 	}
 
 	void MainGui::DatabaseLoader_BW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
 	{
-		DebugOutL("Loading object database from another thread...");
 		DatabaseLoader::LoadDatabase();
 	}
 
 	void MainGui::DatabaseLoader_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
 	{
-		DebugOutL("Loading object database on a separate thread has been successfully finished!");
+		this->ProgressUpdater->Stop();
 		this->ChangeGuiState(true, false);
+
+		ProgCounter::SetState(ProgState::None, 0);
+
+		this->ConvertProgress_PB->Value = 0;
+		this->ConvertProgress_PB->Maximum = 0;
+
+		const std::size_t mod_count = Mod::GetAmountOfMods();
+		const std::size_t obj_count = Mod::GetAmountOfObjects();
+		const std::wstring load_msg = L"Successfully loaded " + std::to_wstring(obj_count) + L" objects from " + std::to_wstring(mod_count) + L" mods";
+		this->Progress_LBL->Text = gcnew System::String(load_msg.c_str());
 	}
 
 	void MainGui::TS_ReloadDB_BTN_Click(System::Object^ sender, System::EventArgs^ e)
@@ -158,6 +169,7 @@ namespace TileConverter
 			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked, (int)8);
 			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, (int)9);
 
+			this->ProgressUpdater->Start();
 			this->TileConverter_BW->RunWorkerAsync(thread_data);
 		}
 	}
@@ -214,6 +226,7 @@ namespace TileConverter
 	void MainGui::TileConverter_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
 	{
 		System::Array^ result_array = safe_cast<System::Array^>(e->Result);
+		this->ProgressUpdater->Stop();
 
 		bool has_error = safe_cast<bool>(result_array->GetValue((int)0));
 		if (has_error)
@@ -255,11 +268,37 @@ namespace TileConverter
 		SettingsGui^ settings_gui = gcnew SettingsGui();
 		settings_gui->ShowDialog();
 
-		if (*settings_gui->update_after_close)
+		if (settings_gui->update_after_close)
 		{
 			DatabaseConfig::ReadConfig();
 
 			this->LoadObjectDatabase();
 		}
+	}
+
+	void MainGui::ProgressUpdater_Tick(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (ProgCounter::State == ProgState::None) return;
+
+		std::wstring state_output = ProgCounter::GetStateString();
+		if (ProgCounter::StateHasNumbers())
+		{
+			std::size_t max_value = ProgCounter::ProgressMax;
+			std::size_t cur_value = ProgCounter::ProgressValue;
+
+			this->ConvertProgress_PB->Maximum = (int)max_value;
+			
+			std::size_t max_cast = this->ConvertProgress_PB->Maximum;
+			if (max_cast < cur_value)
+			{
+				cur_value = max_cast;
+			}
+
+			this->ConvertProgress_PB->Value = (int)cur_value;
+
+			state_output += (L"(" + std::to_wstring(cur_value) + L" / " + std::to_wstring(max_value) + L")");
+		}
+
+		this->Progress_LBL->Text = gcnew System::String(state_output.c_str());
 	}
 }

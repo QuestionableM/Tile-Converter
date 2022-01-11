@@ -2,6 +2,8 @@
 
 #include "ObjectDatabase/Mod/DefaultLoader.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
+
 #include "Console.hpp"
 
 glm::vec3 PartListLoader::LoadPartCollision(const nlohmann::json& collision)
@@ -68,6 +70,7 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 	if (!fParts.is_array()) return;
 	DebugOutL("Loading Part List...");
 
+	ProgCounter::ProgressMax += fParts.size();
 	for (const auto& fPart : fParts)
 	{
 		if (!fPart.is_object()) continue;
@@ -101,5 +104,7 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 
 		Mod::PartStorage.insert(new_pair);
 		mod->Parts.insert(new_pair);
+
+		ProgCounter::ProgressValue++;
 	}
 }

@@ -32,10 +32,6 @@ namespace TileConverter
 
 		this->old_settings = new SaveSettings(DatabaseConfig::GamePath, DatabaseConfig::ModFolders);
 		this->new_settings = new SaveSettings(DatabaseConfig::GamePath, DatabaseConfig::ModFolders);
-		
-		this->sm_path_changed = new bool(false);
-		this->mod_paths_changed = new bool(false);
-		this->update_after_close = new bool(false);
 	}
 
 	SettingsGui::~SettingsGui()
@@ -44,10 +40,6 @@ namespace TileConverter
 
 		delete this->old_settings;
 		delete this->new_settings;
-
-		delete this->sm_path_changed;
-		delete this->mod_paths_changed;
-		delete this->update_after_close;
 	}
 
 	void SettingsGui::SettingsGui_Load(System::Object^ sender, System::EventArgs^ e)
@@ -85,8 +77,8 @@ namespace TileConverter
 		std::wstring new_path = msclr::interop::marshal_as<std::wstring>(this->SM_Path_TB->Text);
 		new_path = String::ToLower(new_path);
 
-		*this->sm_path_changed = (old_settings->GamePath != new_path);
-		if (*this->sm_path_changed)
+		this->sm_path_changed = (old_settings->GamePath != new_path);
+		if (this->sm_path_changed)
 		{
 			new_settings->GamePath = new_path;
 		}
@@ -96,12 +88,12 @@ namespace TileConverter
 
 	void SettingsGui::UpdateSaveSettings()
 	{
-		this->Save_BTN->Enabled = (*this->sm_path_changed || *this->mod_paths_changed);
+		this->Save_BTN->Enabled = (this->sm_path_changed || this->mod_paths_changed);
 	}
 
 	void SettingsGui::ApplyGamePathChanges()
 	{
-		if (!*this->sm_path_changed) return;
+		if (!this->sm_path_changed) return;
 
 		if (File::Exists(new_settings->GamePath))
 		{
@@ -115,8 +107,8 @@ namespace TileConverter
 		}
 		else
 		{
-			*this->sm_path_changed   = false;
-			*this->mod_paths_changed = false;
+			this->sm_path_changed   = false;
+			this->mod_paths_changed = false;
 
 			WForms::MessageBox::Show(
 				"The specified path to the game doesn't exist!",
@@ -132,7 +124,7 @@ namespace TileConverter
 
 	void SettingsGui::ApplyModPathsChanges()
 	{
-		if (!*this->mod_paths_changed) return;
+		if (!this->mod_paths_changed) return;
 
 		std::wstring error_msg = L"Mod Directory ";
 		std::vector<std::size_t> path_ids = {};
@@ -170,8 +162,8 @@ namespace TileConverter
 				WForms::MessageBoxIcon::Warning
 			);
 
-			*this->sm_path_changed   = false;
-			*this->mod_paths_changed = false;
+			this->sm_path_changed   = false;
+			this->mod_paths_changed = false;
 		}
 		else
 		{
@@ -185,14 +177,14 @@ namespace TileConverter
 		this->ApplyGamePathChanges();
 		this->ApplyModPathsChanges();
 
-		if (*this->sm_path_changed || *this->mod_paths_changed)
+		if (this->sm_path_changed || this->mod_paths_changed)
 		{
-			*this->sm_path_changed = false;
-			*this->mod_paths_changed = false;
+			this->sm_path_changed = false;
+			this->mod_paths_changed = false;
 
 			DatabaseConfig::SaveConfig();
 
-			*this->update_after_close = true;
+			this->update_after_close = true;
 		}
 
 		this->UpdateSaveSettings();
@@ -267,7 +259,7 @@ namespace TileConverter
 		this->ModDirPaths_LB->Items->Add(gcnew System::String(mod_path.c_str()));
 		this->ModDirPath_TB->Clear();
 
-		*this->mod_paths_changed = this->IsModPathsChanged();
+		this->mod_paths_changed = this->IsModPathsChanged();
 		this->UpdateSaveSettings();
 	}
 
@@ -296,7 +288,7 @@ namespace TileConverter
 			this->ModDirPaths_LB->SelectedIndex = (is_last ? sel_idx - 1 : sel_idx);
 		}
 
-		*this->mod_paths_changed = this->IsModPathsChanged();
+		this->mod_paths_changed = this->IsModPathsChanged();
 		this->UpdateSaveSettings();
 	}
 

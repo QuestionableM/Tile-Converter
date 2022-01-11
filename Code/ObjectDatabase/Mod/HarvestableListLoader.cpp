@@ -1,6 +1,7 @@
 #include "HarvestableListLoader.hpp"
 #include "ObjectDatabase/Mod/DefaultLoader.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
 
 #include "Console.hpp"
 
@@ -9,6 +10,7 @@ void HarvestableListLoader::Load(const nlohmann::json& fHarvestables, Mod* mod)
 	if (!fHarvestables.is_array()) return;
 	DebugOutL("Loading Harvestable List...");
 
+	ProgCounter::ProgressMax += fHarvestables.size();
 	for (const auto& mHarvestable : fHarvestables)
 	{
 		if (!mHarvestable.is_object()) continue;
@@ -38,5 +40,7 @@ void HarvestableListLoader::Load(const nlohmann::json& fHarvestables, Mod* mod)
 
 		mod->Harvestables.insert(new_pair);
 		Mod::HarvestableStorage.insert(new_pair);
+
+		ProgCounter::ProgressValue++;
 	}
 }

@@ -2,8 +2,11 @@
 
 #include "ObjectDatabase/Mod/Mod.hpp"
 #include "ObjectDatabase/KeywordReplacer.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
+
 #include "Utils/Uuid.hpp"
 #include "Utils/String.hpp"
+
 #include "Console.hpp"
 
 static const std::string blkTexNames[3] = { "dif", "asg", "nor" };
@@ -30,6 +33,7 @@ void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 	if (!fBlocks.is_array()) return;
 	DebugOutL("Loading Block List...");
 
+	ProgCounter::ProgressMax += fBlocks.size();
 	for (const auto& fBlock : fBlocks)
 	{
 		if (!fBlock.is_object()) continue;
@@ -64,5 +68,7 @@ void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 
 		Mod::BlockStorage.insert(new_pair);
 		mod->Blocks.insert(new_pair);
+
+		ProgCounter::ProgressValue++;
 	}
 }

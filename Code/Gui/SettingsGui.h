@@ -18,12 +18,12 @@ namespace TileConverter
 		SaveSettings* old_settings = nullptr;
 		SaveSettings* new_settings = nullptr;
 
-		bool* sm_path_changed = nullptr;
-		bool* mod_paths_changed = nullptr;
+		bool sm_path_changed = false;
+		bool mod_paths_changed = false;
 
 	public:
 		SettingsGui();
-		bool* update_after_close = nullptr;
+		bool update_after_close = false;
 
 	protected:
 		~SettingsGui();

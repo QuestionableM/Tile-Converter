@@ -62,6 +62,9 @@ public:
 	static ClutterData* GetGlobalClutter(const SMUuid& uuid);
 	static ClutterData* GetGlobalClutterById(const std::size_t& idx);
 
+	static std::size_t GetAmountOfObjects();
+	static std::size_t GetAmountOfMods();
+
 	std::wstring GetDatabaseDirectory() const;
 
 	BlockData* GetBlock(const SMUuid& uuid) const;

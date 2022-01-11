@@ -2,6 +2,7 @@
 #include "ObjectDatabase/DatabaseConfig.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
 
 #include "Utils/Json.hpp"
 #include "Console.hpp"
@@ -11,6 +12,7 @@ namespace fs = std::filesystem;
 
 void DatabaseLoader::LoadGameDatabase()
 {
+	ProgCounter::SetState(ProgState::LoadingVanilla, 0);
 	DebugOutL(ConCol::BLUE, "Loading game data...");
 
 	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid::Null(), ModType::GameData);
@@ -36,6 +38,7 @@ void DatabaseLoader::LoadGameDatabase()
 
 void DatabaseLoader::LoadModDatabase()
 {
+	ProgCounter::SetState(ProgState::LoadingModded);
 	DebugOutL(ConCol::GREEN, "Loading mod data...");
 
 	for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)

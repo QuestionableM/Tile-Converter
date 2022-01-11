@@ -164,6 +164,27 @@ ClutterData* Mod::GetGlobalClutter(const SMUuid& uuid)
 	return nullptr;
 }
 
+ClutterData* Mod::GetGlobalClutterById(const std::size_t& idx)
+{
+	if (Mod::ClutterVector.size() <= idx)
+	{
+		DebugErrorL("The clutter index is out of bounds! (Size: ", Mod::ClutterVector.size(), ", Index: ", idx, ")");
+		return nullptr;
+	}
+
+	return Mod::ClutterVector[idx];
+}
+
+std::size_t Mod::GetAmountOfObjects()
+{
+	return (BlockStorage.size() + PartStorage.size() + AssetStorage.size() + HarvestableStorage.size() + ClutterStorage.size());
+}
+
+std::size_t Mod::GetAmountOfMods()
+{
+	return ModStorage.size();
+}
+
 std::wstring Mod::GetDatabaseDirectory() const
 {
 	switch (this->Type)
@@ -213,17 +234,6 @@ ClutterData* Mod::GetClutter(const SMUuid& uuid) const
 		return this->Clutter.at(uuid);
 
 	return nullptr;
-}
-
-ClutterData* Mod::GetGlobalClutterById(const std::size_t& idx)
-{
-	if (Mod::ClutterVector.size() <= idx)
-	{
-		DebugErrorL("The clutter index is out of bounds! (Size: ", Mod::ClutterVector.size(), ", Index: ", idx, ")");
-		return nullptr;
-	}
-
-	return Mod::ClutterVector[idx];
 }
 
 void Mod::LoadFile(const std::wstring& path)

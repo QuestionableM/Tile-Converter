@@ -3,6 +3,7 @@
 
 #include "Utils/String.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
 
 #include "Console.hpp"
 
@@ -30,6 +31,7 @@ void AssetListLoader::Load(const nlohmann::json& fAssets, Mod* mod)
 	if (!fAssets.is_array()) return;
 	DebugOutL("Loading AssetList...");
 
+	ProgCounter::ProgressMax += fAssets.size();
 	for (const auto& mAsset : fAssets)
 	{
 		if (!mAsset.is_object()) continue;
@@ -60,5 +62,7 @@ void AssetListLoader::Load(const nlohmann::json& fAssets, Mod* mod)
 
 		mod->Assets.insert(new_pair);
 		Mod::AssetStorage.insert(new_pair);
+
+		ProgCounter::ProgressValue++;
 	}
 }

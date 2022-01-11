@@ -161,6 +161,7 @@
     <ClCompile Include="Code\ObjectDatabase\Mod\PartListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectData.cpp" />
     <ClCompile Include="Code\ObjectDatabase\ObjectDatabase.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\ProgCounter.cpp" />
     <ClCompile Include="Code\Tile\Object\Asset.cpp" />
     <ClCompile Include="Code\Tile\Object\Block.cpp" />
     <ClCompile Include="Code\Tile\Object\Blueprint.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="Code\ObjectDatabase\Mod\PartListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectData.hpp" />
     <ClInclude Include="Code\ObjectDatabase\ObjectDatabase.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\ProgCounter.hpp" />
     <ClInclude Include="Code\ProgramConfig.hpp" />
     <ClInclude Include="Code\SMReaders\AssetListReader.hpp" />
     <ClInclude Include="Code\SMReaders\BlueprintListReader.hpp" />
