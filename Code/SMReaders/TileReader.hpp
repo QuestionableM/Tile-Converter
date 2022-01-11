@@ -12,6 +12,8 @@
 #include "SMReaders/PrefabReader.hpp"
 #include "SMReaders/BlueprintListReader.hpp"
 
+#include "ObjectDatabase/ProgCounter.hpp"
+
 #include "Utils/File.hpp"
 #include "Utils/String.hpp"
 
@@ -29,6 +31,8 @@ public:
 
 	static Tile* ReadTile(const std::vector<Byte>& tile_data, ConvertError& cError)
 	{
+		ProgCounter::SetState(ProgState::ReadingTile, 0);
+
 		TileHeader* header = TileHeader::ReadTile(tile_data, cError);
 		if (!header) return nullptr;
 

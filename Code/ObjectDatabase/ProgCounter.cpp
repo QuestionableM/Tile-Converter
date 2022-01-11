@@ -17,40 +17,35 @@ void ProgCounter::SetState(const ProgState& nState, const std::size_t& new_max)
 	ProgCounter::ProgressMax = new_max;
 }
 
-static const std::wstring StateStrings[] =
+struct StateData
 {
-	L"Loading Vanilla Objects... ",
-	L"Loading Modded Objects... ",
-	L"Reading Tile...",
-	L"Success!",
-	L"Convert Failed"
+	std::wstring Description;
+	bool DisplayNumbers;
 };
 
-static const bool StateNumberData[] =
+static const StateData StateDataArray[] =
 {
-	true,
-	true,
-	false,
-	false,
-	false
+	{ L"Loading Vanilla Objects... ", true },
+	{ L"Loading Modded Objects... ",  true },
+
+	{ L"Reading Tile...",          false },
+	{ L"Writing Ground Mesh...",   false },
+	{ L"Writing Clutter...  ",     true  },
+	{ L"Writing Objects... ",      true  },
+	{ L"Writing Material Maps...", false },
+	{ L"Writing Color Map...",     false },
+	{ L"Writing Mtl File...",      true  },
+
+	{ L"Success!",       false },
+	{ L"Convert Failed", false }
 };
-/*
-None = 0,
-LoadingVanilla = 1,
-LoadingModded = 2,
-
-ReadingTile = 3,
-
-ConvertSuccess = 4,
-ConvertFailure = 5
-*/
 
 std::wstring ProgCounter::GetStateString()
 {
 	const std::size_t state_idx = static_cast<std::size_t>(ProgCounter::State);
 	if (state_idx > 0)
 	{
-		return StateStrings[state_idx - 1];
+		return StateDataArray[state_idx - 1].Description;
 	}
 
 	return L"NO_STATE";
@@ -61,7 +56,7 @@ bool ProgCounter::StateHasNumbers()
 	const std::size_t state_idx = static_cast<std::size_t>(ProgCounter::State);
 	if (state_idx > 0)
 	{
-		return StateNumberData[state_idx - 1];
+		return StateDataArray[state_idx - 1].DisplayNumbers;
 	}
 
 	return false;

@@ -55,6 +55,7 @@ public:
 	virtual std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const = 0;
 	virtual void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const  = 0;
 	virtual void WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const;
+	virtual std::size_t GetAmountOfObjects() const;
 
 	void SetPosition(const glm::vec3& pos);
 	void SetRotation(const glm::quat& rot);

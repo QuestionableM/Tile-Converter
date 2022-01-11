@@ -3,8 +3,11 @@
 #include "ObjectDatabase/KeywordReplacer.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
+
 #include "Utils/String.hpp"
 #include "Utils/File.hpp"
+
 #include "Console.hpp"
 
 #include <gtx/quaternion.hpp>
@@ -94,6 +97,11 @@ void Blueprint::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset
 
 	for (const TileEntity* pEntity : this->Objects)
 		pEntity->WriteObjectToFile(file, mOffset, blueprint_matrix);
+}
+
+std::size_t Blueprint::GetAmountOfObjects() const
+{
+	return this->Objects.size();
 }
 
 Blueprint::~Blueprint()

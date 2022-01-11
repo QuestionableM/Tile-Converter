@@ -62,3 +62,13 @@ void Prefab::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_
 	for (const TileEntity* pEntity : this->Objects)
 		pEntity->FillTextureMap(tex_map);
 }
+
+std::size_t Prefab::GetAmountOfObjects() const
+{
+	std::size_t output = 0;
+
+	for (const TileEntity* tEntity : this->Objects)
+		output += tEntity->GetAmountOfObjects();
+
+	return output;
+}

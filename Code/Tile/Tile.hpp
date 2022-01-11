@@ -41,6 +41,7 @@ private:
 	Model* GenerateTerrainMesh(const std::vector<float>& height_map) const;
 	void WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const;
 	void WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const;
+	std::size_t GetAmountOfObjects() const;
 	void WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const;
 	void WriteMaterials(const std::wstring& dir) const;
 	void WriteColorMap(const std::wstring& dir) const;

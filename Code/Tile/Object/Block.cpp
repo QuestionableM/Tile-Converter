@@ -2,6 +2,7 @@
 
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
 
 Block::Block(BlockData* pParent, const glm::vec3& bounds, const Color& color, const int& xAxis, const int& zAxis)
 {
@@ -154,6 +155,8 @@ void Block::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, co
 	AlignUvs(new_block, this->size / 2.0f, this->position, pParent->Tiling);
 
 	new_block.WriteToFile(block_matrix, mOffset, file, this);
+
+	ProgCounter::ProgressValue++;
 }
 
 glm::mat4 Block::GetTransformMatrix() const

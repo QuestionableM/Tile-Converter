@@ -6,6 +6,8 @@
 #include "Tile/Object/TileEntity.hpp"
 #include "Tile/TileConverter.hpp"
 
+#include <gtx/matrix_decompose.hpp>
+
 bool SubMeshData::IsEmpty()
 {
 	return (this->DataIdx.size() <= 0);
@@ -21,8 +23,6 @@ bool Model::IsEmpty() const
 	return (this->subMeshData.size() <= 0 || (this->vertices.size() <= 0 && this->uvs.size() <= 0 && this->normals.size() <= 0));
 }
 
-#include <gtx/matrix_decompose.hpp>
-
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
 	for (std::size_t a = 0; a < this->vertices.size(); a++)
@@ -36,7 +36,6 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 	if (ConvertSettings::ExportUvs && this->written_uv_index == -1)
 	{
-		DebugOutL("Writing uvs for: ", this->meshPath);
 		this->written_uv_index = offset.Uv;
 
 		for (std::size_t a = 0; a < this->uvs.size(); a++)

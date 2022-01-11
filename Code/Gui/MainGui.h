@@ -218,5 +218,6 @@ namespace TileConverter
 		System::Void TS_About_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void TS_Settings_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void ProgressUpdater_Tick(System::Object^ sender, System::EventArgs^ e);
+		System::Void ResetProgressBar();
 	};
 }

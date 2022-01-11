@@ -228,10 +228,13 @@ namespace TileConverter
 		System::Array^ result_array = safe_cast<System::Array^>(e->Result);
 		this->ProgressUpdater->Stop();
 
+		this->ProgressUpdater_Tick(nullptr, nullptr);
+
 		bool has_error = safe_cast<bool>(result_array->GetValue((int)0));
 		if (has_error)
 		{
 			System::String^ error_msg = safe_cast<System::String^>(result_array->GetValue((int)1));
+			ProgCounter::SetState(ProgState::ConvertFailure, 0);
 
 			WForms::MessageBox::Show(
 				error_msg,
@@ -239,8 +242,21 @@ namespace TileConverter
 				WForms::MessageBoxButtons::OK,
 				WForms::MessageBoxIcon::Error
 			);
+
+		}
+		else
+		{
+			ProgCounter::SetState(ProgState::ConvertSuccess, 0);
+
+			WForms::MessageBox::Show(
+				"Tile has been successfully converted!",
+				"Convert Success",
+				WForms::MessageBoxButtons::OK,
+				WForms::MessageBoxIcon::Information
+			);
 		}
 
+		this->ProgressUpdater_Tick(nullptr, nullptr);
 		this->ChangeGuiState(true, false);
 	}
 
@@ -300,5 +316,10 @@ namespace TileConverter
 		}
 
 		this->Progress_LBL->Text = gcnew System::String(state_output.c_str());
+	}
+
+	void MainGui::ResetProgressBar()
+	{
+
 	}
 }

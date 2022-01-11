@@ -9,9 +9,15 @@ enum class ProgState : std::size_t
 	LoadingModded = 2,
 
 	ReadingTile = 3,
+	WritingGroundMesh = 4,
+	WritingClutter = 5,
+	WritingObjects = 6,
+	WritingMaterialMaps = 7,
+	WritingColorMap = 8,
+	WritingMtlFile = 9,
 
-	ConvertSuccess = 4,
-	ConvertFailure = 5
+	ConvertSuccess = 10,
+	ConvertFailure = 11
 };
 
 class ProgCounter

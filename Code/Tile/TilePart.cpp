@@ -108,3 +108,16 @@ void TilePart::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tD
 		}
 	}
 }
+
+std::size_t TilePart::GetAmountOfObjects() const
+{
+	std::size_t output = 0;
+
+	for (const std::vector<TileEntity*>& tEntityVec : this->Objects)
+	{
+		for (const TileEntity* tEntity : tEntityVec)
+			output += tEntity->GetAmountOfObjects();
+	}
+
+	return output;
+}

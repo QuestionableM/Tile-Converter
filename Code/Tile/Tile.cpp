@@ -4,6 +4,7 @@
 #include "Utils/String.hpp"
 
 #include "ObjectDatabase/ObjectData.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
 #include "Tile/TileConverter.hpp"
 
 #include <gtc/matrix_transform.hpp>
@@ -299,8 +300,8 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 	Model* tMesh = new Model();
 
-	const std::size_t tWidth = this->Width * 32 + 1;
-	const std::size_t tHeight = this->Height * 32 + 1;
+	const std::size_t tWidth = (std::size_t)this->Width * 32 + 1;
+	const std::size_t tHeight = (std::size_t)this->Height * 32 + 1;
 
 	const float hWidth = (float)this->Width * 32.0f;
 	const float hHeight = (float)this->Height * 32.0f;
@@ -434,6 +435,7 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 	if (this->Type != 0) return;
 
 	DebugOutL("Writing terrain...");
+	ProgCounter::SetState(ProgState::WritingGroundMesh, 0);
 
 	Model* terrain = this->GenerateTerrainMesh(height_map);
 	terrain->WriteToFile(glm::mat4(1.0f), mOffset, model, nullptr);
@@ -464,6 +466,7 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 	const siv::PerlinNoise x_noise(6842u);
 	const siv::PerlinNoise y_noise(1813u);
 
+	ProgCounter::SetState(ProgState::WritingClutter, clWidth * clHeight);
 	for (std::size_t y = 0; y < clWidth; y++)
 	{
 		for (std::size_t x = 0; x < clHeight; x++)
@@ -490,14 +493,27 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 			tClutter->SetSize(glm::vec3(0.25f - (rand_scale * 0.25f)));
 
 			tClutter->WriteObjectToFile(model, mOffset, glm::mat4(1.0f));
+
+			ProgCounter::ProgressValue++;
 		}
 	}
+}
+
+std::size_t Tile::GetAmountOfObjects() const
+{
+	std::size_t output = 0;
+
+	for (const TilePart* tPart : this->Tiles)
+		output += tPart->GetAmountOfObjects();
+
+	return output;
 }
 
 void Tile::WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const
 {
 	DebugOutL("Writing assets...");
 
+	ProgCounter::SetState(ProgState::WritingObjects, this->GetAmountOfObjects());
 	for (int y = 0; y < this->Width; y++)
 	{
 		for (int x = 0; x < this->Height; x++)
@@ -533,6 +549,7 @@ void Tile::WriteMaterials(const std::wstring& dir) const
 	if (!ConvertSettings::ExportMaterials) return;
 
 	DebugOutL("Writing materials...");
+	ProgCounter::SetState(ProgState::WritingMaterialMaps, 0);
 
 	const std::vector<long long> ground_data = this->GetGround();
 
@@ -569,6 +586,7 @@ void Tile::WriteColorMap(const std::wstring& dir) const
 	if (!ConvertSettings::ExportMaterials) return;
 
 	DebugOutL("Writing color map...");
+	ProgCounter::SetState(ProgState::WritingColorMap, 0);
 
 	std::vector<int> vert_colors = this->GetVertexColor();
 
@@ -636,11 +654,16 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 	if (!oMtl.is_open()) return;
 
 	DebugOutL("Writing an mtl file...");
+	ProgCounter::SetState(ProgState::WritingMtlFile, 0);
 
 	std::unordered_map<std::string, ObjectTexData> tData = {};
 
 	for (const TilePart* tPart : this->Tiles)
+	{
 		tPart->FillTextureMap(tData);
+
+		ProgCounter::ProgressMax = tData.size();
+	}
 
 	for (const auto& tDatum : tData)
 	{
@@ -663,5 +686,7 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 		output_str.append("\n\n");
 
 		oMtl.write(output_str.c_str(), output_str.size());
+
+		ProgCounter::ProgressValue++;
 	}
 }

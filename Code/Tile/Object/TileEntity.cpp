@@ -1,6 +1,7 @@
 #include "TileEntity.hpp"
 
 #include "ObjectDatabase/ModelStorage.hpp"
+#include "ObjectDatabase/ProgCounter.hpp"
 
 glm::vec3 TileEntity::GetPosition() const
 {
@@ -44,8 +45,15 @@ void TileEntity::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffse
 	const glm::mat4 model_matrix = transform_matrix * this->GetTransformMatrix();
 
 	pModel->WriteToFile(model_matrix, mOffset, file, this);
+
+	ProgCounter::ProgressValue++;
 }
 
+
+std::size_t TileEntity::GetAmountOfObjects() const
+{
+	return 1;
+}
 
 void TileEntity::SetPosition(const glm::vec3& pos)
 {
