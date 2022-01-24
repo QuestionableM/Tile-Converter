@@ -39,7 +39,6 @@ struct Model
 	std::vector<glm::vec2> uvs;
 	std::vector<SubMeshData*> subMeshData;
 
-	long long written_uv_index = -1;
 	std::wstring meshPath;
 
 	bool IsEmpty() const;

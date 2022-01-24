@@ -629,7 +629,7 @@ void Tile::WriteToFile(const std::wstring& dir_path, const std::wstring& file_na
 			output_model.write(mtl_header.c_str(), mtl_header.size());
 		}
 
-		WriterOffsetData offset_data = { 0, 0, 0, 0 };
+		WriterOffsetData offset_data;
 		const std::vector<float> pHeightArray = this->GetVertexHeight();
 
 		this->WriteTerrain(output_model, offset_data, pHeightArray);

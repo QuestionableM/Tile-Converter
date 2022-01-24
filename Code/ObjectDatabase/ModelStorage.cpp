@@ -25,46 +25,65 @@ bool Model::IsEmpty() const
 
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
+	std::vector<glm::vec3> mTranslatedVertices = {};
+	std::vector<glm::vec3> mTranslatedNormals = {};
+
+	mTranslatedVertices.resize(this->vertices.size());
+	mTranslatedNormals.resize  (this->normals.size());
+
 	for (std::size_t a = 0; a < this->vertices.size(); a++)
 	{
 		const glm::vec3& vertex = this->vertices[a];
 		const glm::vec3 pVertPos = model_mat * glm::vec4(vertex, 1.0f);
-		const std::string output_str = "v " + String::FloatVecToString(&pVertPos.x, 3) + "\n";
 
-		file.write(output_str.c_str(), output_str.size());
+		mTranslatedVertices[a] = pVertPos;
+
+		if (offset.VertexMap.find(pVertPos) == offset.VertexMap.end())
+		{
+			offset.VertexMap.insert(std::make_pair(pVertPos, offset.Vertex));
+			offset.Vertex++;
+
+			const std::string output_str = "v " + String::FloatVecToString(&pVertPos.x, 3) + "\n";
+			file.write(output_str.c_str(), output_str.size());
+		}
 	}
 
-	if (ConvertSettings::ExportUvs && this->written_uv_index == -1)
+	if (ConvertSettings::ExportUvs)
 	{
-		this->written_uv_index = offset.Uv;
-
 		for (std::size_t a = 0; a < this->uvs.size(); a++)
 		{
 			const glm::vec2& uv = this->uvs[a];
-			const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
 
-			file.write(output_str.c_str(), output_str.size());
+			if (offset.UvMap.find(uv) == offset.UvMap.end())
+			{
+				offset.UvMap.insert(std::make_pair(uv, offset.Uv));
+				offset.Uv++;
+
+				const std::string output_str = "vt " + String::FloatVecToString(&uv.x, 2) + "\n";
+				file.write(output_str.c_str(), output_str.size());
+			}
 		}
-
-		offset.Uv += this->uvs.size();
 	}
 
 	if (ConvertSettings::ExportNormals)
 	{
-		const glm::mat4 rot_matrix(
-			model_mat[0],
-			model_mat[1],
-			model_mat[2],
-			glm::highp_vec4(0.0f, 0.0f, 0.0f, 1.0f)
-		);
+		const glm::mat4 rot_matrix(model_mat[0], model_mat[1], model_mat[2], glm::highp_vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		for (std::size_t a = 0; a < this->normals.size(); a++)
 		{
 			const glm::vec3& normal = this->normals[a];
 			const glm::vec3 pNormal = rot_matrix * glm::vec4(normal, 1.0f);
-			const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
 
-			file.write(output_str.c_str(), output_str.size());
+			mTranslatedNormals[a] = pNormal;
+
+			if (offset.NormalMap.find(pNormal) == offset.NormalMap.end())
+			{
+				offset.NormalMap.insert(std::make_pair(pNormal, offset.Normal));
+				offset.Normal++;
+
+				const std::string output_str = "vn " + String::FloatVecToString(&pNormal.x, 3) + "\n";
+				file.write(output_str.c_str(), output_str.size());
+			}
 		}
 	}
 
@@ -87,8 +106,9 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 			{
 				const VertexData& d_idx = vert_vec[b];
 
-				_f_str.append(" ");
-				_f_str.append(std::to_string(d_idx.pVert + offset.Vertex + 1));
+				const glm::vec3& pVertex = mTranslatedVertices[d_idx.pVert];
+				if (offset.VertexMap.find(pVertex) != offset.VertexMap.end())
+					_f_str.append(" " + std::to_string(offset.VertexMap.at(pVertex) + 1));
 
 				const bool has_uv     = (ConvertSettings::ExportUvs     && d_idx.pUv   > -1);
 				const bool has_normal = (ConvertSettings::ExportNormals && d_idx.pNorm > -1);
@@ -97,17 +117,25 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 				_f_str.append("/");
 
-				if (has_uv)     _f_str.append(      std::to_string(d_idx.pUv   + this->written_uv_index + 1));
-				if (has_normal) _f_str.append("/" + std::to_string(d_idx.pNorm + offset.Normal + 1));
+				if (has_uv)
+				{
+					const glm::vec2& pUv = this->uvs[d_idx.pUv];
+					if (offset.UvMap.find(pUv) != offset.UvMap.end())
+						_f_str.append(std::to_string(offset.UvMap.at(pUv) + 1));
+				}
+
+				if (has_normal)
+				{
+					const glm::vec3& pNormal = mTranslatedNormals[d_idx.pNorm];
+					if (offset.NormalMap.find(pNormal) != offset.NormalMap.end())
+						_f_str.append("/" + std::to_string(offset.NormalMap.at(pNormal) + 1));
+				}
 			}
 
 			_f_str.append("\n");
 			file.write(_f_str.c_str(), _f_str.size());
 		}
 	}
-
-	offset.Vertex += this->vertices.size();
-	offset.Normal += this->normals.size();
 }
 
 Model::Model(const std::wstring& mesh_path)
