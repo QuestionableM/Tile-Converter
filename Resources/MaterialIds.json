@@ -10,6 +10,13 @@
 */
 
 {
+	"GroundVegetation": "3",
+	"GroundClutter": "1",
+
+	"BlockDifAsgNor": "1",
+	"BlockGlass": "2",
+	"BlockDifAsgNorAlpha": "5",
+
     "Dif": "1",
 	"DifAo": "1",
 	"DifAlpha": "5",
