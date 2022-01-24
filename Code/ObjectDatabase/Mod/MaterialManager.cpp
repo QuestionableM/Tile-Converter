@@ -5,6 +5,8 @@
 #include "Utils/String.hpp"
 #include "Utils/Json.hpp"
 
+#include "Console.hpp"
+
 std::unordered_map<std::wstring, std::wstring> MaterialManager::MatStorage = {};
 
 void MaterialManager::Initialize()
@@ -30,6 +32,8 @@ std::wstring MaterialManager::GetMaterialW(const std::wstring& mat_name)
 {
 	if (MatStorage.find(mat_name) != MatStorage.end())
 		return L"m" + MatStorage.at(mat_name);
+
+	DebugOutL("Couldn't find the specified material: ", mat_name);
 
 	return L"m1";
 }

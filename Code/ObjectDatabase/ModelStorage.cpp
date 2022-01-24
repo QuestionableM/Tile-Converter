@@ -106,7 +106,7 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 			{
 				const VertexData& d_idx = vert_vec[b];
 
-				const glm::vec3& pVertex = mTranslatedVertices[d_idx.pVert];
+				const glm::vec3& pVertex = mTranslatedVertices[(std::size_t)d_idx.pVert];
 				if (offset.VertexMap.find(pVertex) != offset.VertexMap.end())
 					_f_str.append(" " + std::to_string(offset.VertexMap.at(pVertex) + 1));
 
@@ -119,14 +119,14 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 				if (has_uv)
 				{
-					const glm::vec2& pUv = this->uvs[d_idx.pUv];
+					const glm::vec2& pUv = this->uvs[(std::size_t)d_idx.pUv];
 					if (offset.UvMap.find(pUv) != offset.UvMap.end())
 						_f_str.append(std::to_string(offset.UvMap.at(pUv) + 1));
 				}
 
 				if (has_normal)
 				{
-					const glm::vec3& pNormal = mTranslatedNormals[d_idx.pNorm];
+					const glm::vec3& pNormal = mTranslatedNormals[(std::size_t)d_idx.pNorm];
 					if (offset.NormalMap.find(pNormal) != offset.NormalMap.end())
 						_f_str.append("/" + std::to_string(offset.NormalMap.at(pNormal) + 1));
 				}

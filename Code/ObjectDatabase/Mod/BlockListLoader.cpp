@@ -28,6 +28,24 @@ bool BlockListLoader::GetBlockTextures(const nlohmann::json& block, TextureList&
 	return (!tex.dif.empty() || !tex.asg.empty() || !tex.nor.empty());
 }
 
+void BlockListLoader::GetBlockMaterial(const nlohmann::json& block, TextureList& tex)
+{
+	const auto& bGlass = JsonReader::Get(block, "glass");
+	const auto& bAlpha = JsonReader::Get(block, "alpha");
+
+	if (bGlass.is_boolean() && bGlass.get<bool>())
+	{
+		tex.material = L"BlockGlass";
+	}
+	else
+	{
+		tex.material = L"BlockDifAsgNor";
+
+		if (bAlpha.is_boolean() && bAlpha.get<bool>())
+			tex.material.append(L"Alpha");
+	}
+}
+
 void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 {
 	if (!fBlocks.is_array()) return;
@@ -53,6 +71,7 @@ void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 
 		TextureList tList;
 		if (!BlockListLoader::GetBlockTextures(fBlock, tList)) continue;
+		BlockListLoader::GetBlockMaterial(fBlock, tList);
 
 		int tiling_value = (bTiling.is_number() ? bTiling.get<int>() : 4);
 		if (tiling_value > 16 || tiling_value <= 0) tiling_value = 4;
