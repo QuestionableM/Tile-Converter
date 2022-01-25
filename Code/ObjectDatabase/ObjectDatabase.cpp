@@ -5,6 +5,7 @@
 #include "ObjectDatabase/Mod/Mod.hpp"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/Mod/MaterialManager.hpp"
+#include "ObjectDatabase/GroundTextureDatabase.hpp"
 
 #include "Utils/Json.hpp"
 #include "Console.hpp"
@@ -72,7 +73,8 @@ void DatabaseLoader::LoadDatabase()
 
 void DatabaseLoader::InitializeDatabase()
 {
-	Rotations::InitializeRotations();
-	MaterialManager::Initialize();
 	DatabaseConfig::ReadConfig();
+	MaterialManager::Initialize();
+	GroundTextureDatabase::Initialize();
+	Rotations::InitializeRotations();
 }

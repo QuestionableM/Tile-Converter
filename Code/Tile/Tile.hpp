@@ -4,6 +4,8 @@
 
 #include "Tile/TilePart.hpp"
 
+class GroundTexture;
+
 class Tile
 {
 	int Version;
@@ -45,6 +47,18 @@ private:
 	void WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const;
 	void WriteMaterials(const std::wstring& dir) const;
 	void WriteColorMap(const std::wstring& dir) const;
+
+	void SampleTextures(
+		GroundTexture* tex1,
+		GroundTexture* tex2,
+		GroundTexture* out_tex,
+		const std::vector<float>& material_map,
+		const std::size_t& tex_width,
+		const std::size_t& tex_height,
+		const std::size_t& gnd_width,
+		const std::size_t& gnd_height
+	) const;
+	void WriteGroundTextures(const std::wstring& dir) const;
 
 public:
 	void WriteToFile(const std::wstring& dir_path, const std::wstring& file_name) const;
