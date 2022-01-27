@@ -33,6 +33,13 @@ namespace TileConverter {
 		System::Windows::Forms::LinkLabel^ LibUUID_LLBL;
 		System::Windows::Forms::Label^ Version_LBL;
 	private: System::Windows::Forms::LinkLabel^ LibGLM_LLBL;
+	private: System::Windows::Forms::LinkLabel^ Lib_STBImage_LL;
+	private: System::Windows::Forms::LinkLabel^ Lib_LibJPEG_LL;
+
+
+
+
+
 
 
 	private:
@@ -53,6 +60,8 @@ namespace TileConverter {
 			this->LibUUID_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->Version_LBL = (gcnew System::Windows::Forms::Label());
 			this->LibGLM_LLBL = (gcnew System::Windows::Forms::LinkLabel());
+			this->Lib_STBImage_LL = (gcnew System::Windows::Forms::LinkLabel());
+			this->Lib_LibJPEG_LL = (gcnew System::Windows::Forms::LinkLabel());
 			this->SuspendLayout();
 			// 
 			// AppDesc_TB
@@ -210,10 +219,11 @@ namespace TileConverter {
 			this->Version_LBL->Name = L"Version_LBL";
 			this->Version_LBL->Size = System::Drawing::Size(86, 16);
 			this->Version_LBL->TabIndex = 11;
-			this->Version_LBL->Text = L"Version: 1.0.2";
+			this->Version_LBL->Text = L"Version: 1.0.3";
 			// 
 			// LibGLM_LLBL
 			// 
+			this->LibGLM_LLBL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
 			this->LibGLM_LLBL->AutoSize = true;
 			this->LibGLM_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
@@ -225,11 +235,41 @@ namespace TileConverter {
 			this->LibGLM_LLBL->Text = L"GLM";
 			this->LibGLM_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibGLM_LLBL_LinkClicked);
 			// 
+			// Lib_STBImage_LL
+			// 
+			this->Lib_STBImage_LL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+			this->Lib_STBImage_LL->AutoSize = true;
+			this->Lib_STBImage_LL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Lib_STBImage_LL->Location = System::Drawing::Point(199, 136);
+			this->Lib_STBImage_LL->Name = L"Lib_STBImage_LL";
+			this->Lib_STBImage_LL->Size = System::Drawing::Size(75, 16);
+			this->Lib_STBImage_LL->TabIndex = 14;
+			this->Lib_STBImage_LL->TabStop = true;
+			this->Lib_STBImage_LL->Text = L"STB Image";
+			this->Lib_STBImage_LL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::Lib_STBImage_LL_LinkClicked);
+			// 
+			// Lib_LibJPEG_LL
+			// 
+			this->Lib_LibJPEG_LL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+			this->Lib_LibJPEG_LL->AutoSize = true;
+			this->Lib_LibJPEG_LL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Lib_LibJPEG_LL->Location = System::Drawing::Point(196, 120);
+			this->Lib_LibJPEG_LL->Name = L"Lib_LibJPEG_LL";
+			this->Lib_LibJPEG_LL->Size = System::Drawing::Size(60, 16);
+			this->Lib_LibJPEG_LL->TabIndex = 15;
+			this->Lib_LibJPEG_LL->TabStop = true;
+			this->Lib_LibJPEG_LL->Text = L"LibJPEG";
+			this->Lib_LibJPEG_LL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::Lib_LibJPEG_LL_LinkClicked);
+			// 
 			// AboutGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(399, 161);
+			this->Controls->Add(this->Lib_LibJPEG_LL);
+			this->Controls->Add(this->Lib_STBImage_LL);
 			this->Controls->Add(this->LibGLM_LLBL);
 			this->Controls->Add(this->Version_LBL);
 			this->Controls->Add(this->LibUUID_LLBL);
@@ -265,6 +305,8 @@ namespace TileConverter {
 		System::Void LibAssimp_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibNlohmannJson_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibGLM_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);
+		System::Void Lib_STBImage_LL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void Lib_LibJPEG_LL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void MouseKillFocus(System::Object ^ sender, System::Windows::Forms::MouseEventArgs ^ e);
 	};
 }

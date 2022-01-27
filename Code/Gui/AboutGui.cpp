@@ -74,6 +74,16 @@ namespace TileConverter
 		SysProcess::Start("https://github.com/g-truc/glm");
 	}
 
+	void AboutGui::Lib_STBImage_LL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
+	{
+		SysProcess::Start("https://github.com/nothings/stb");
+	}
+
+	void AboutGui::Lib_LibJPEG_LL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
+	{
+		SysProcess::Start("https://github.com/LuaDist/libjpeg");
+	}
+
 	void AboutGui::MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 	{
 		this->AppDesc_TB->SelectionLength = 0;
