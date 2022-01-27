@@ -31,6 +31,8 @@ public:
 	std::size_t GetWidth() const;
 	std::size_t GetHeight() const;
 
+	Byte* Data();
+
 	Byte GetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index) const;
 	void SetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index, const Byte& b);
 

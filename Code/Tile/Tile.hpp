@@ -50,7 +50,6 @@ private:
 
 	void SampleTextures(
 		GroundTexture* tex1,
-		GroundTexture* tex2,
 		GroundTexture* out_tex,
 		const std::vector<float>& material_map,
 		const std::size_t& gnd_width,

@@ -71,12 +71,14 @@ std::size_t GroundTexture::GetHeight() const
 	return mSizeY;
 }
 
+Byte* GroundTexture::Data()
+{
+	return mImageData.data();
+}
+
 Byte GroundTexture::GetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index) const
 {
-	const std::size_t real_p_x = pX % mSizeX;
-	const std::size_t real_p_y = pY % mSizeY;
-
-	return mImageData[3 * mSizeX * real_p_y + 3 * real_p_x + index];
+	return mImageData[3 * mSizeX * pY + 3 * pX + index];
 }
 
 void GroundTexture::SetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index, const Byte& b)

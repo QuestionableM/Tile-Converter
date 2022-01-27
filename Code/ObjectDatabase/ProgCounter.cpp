@@ -38,10 +38,18 @@ static const StateData StateDataArray[] =
 
 	{ L"Success!",       false },
 	{ L"Convert Failed", false },
+	
+	{ L"Filling Ground Dif Texture...",   false },
+	{ L"Sampling Ground Dif Texture... ", true  },
+	{ L"Writing Ground Dif Texture...",   false },
 
-	{ L"Writing Ground Dif Texture... ", false },
-	{ L"Writing Ground Asg Texture... ", false },
-	{ L"Writing Ground Nor Texture... ", false }
+	{ L"Filling Ground Asg Texture...",   false },
+	{ L"Sampling Ground Asg Texture... ", true  },
+	{ L"Writing Ground Asg Texture...",   false },
+
+	{ L"Filling Ground Nor Texture...",   false },
+	{ L"Sampling Ground Nor Texture... ", true  },
+	{ L"Writing Ground Nor Texture...",   false }
 };
 
 std::wstring ProgCounter::GetStateString()

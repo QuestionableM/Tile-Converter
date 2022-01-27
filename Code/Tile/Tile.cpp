@@ -594,7 +594,6 @@ void Tile::WriteColorMap(const std::wstring& dir) const
 
 void Tile::SampleTextures(
 	GroundTexture* tex1,
-	GroundTexture* tex2,
 	GroundTexture* out_tex,
 	const std::vector<float>& material_map,
 	const std::size_t& gnd_width,
@@ -605,9 +604,6 @@ void Tile::SampleTextures(
 	const std::size_t tex1_x = tex1->GetWidth();
 	const std::size_t tex1_y = tex1->GetHeight();
 
-	const std::size_t tex2_x = tex2->GetWidth();
-	const std::size_t tex2_y = tex2->GetHeight();
-
 	const std::size_t out_tex_x = out_tex->GetWidth();
 	const std::size_t out_tex_y = out_tex->GetHeight();
 
@@ -616,28 +612,32 @@ void Tile::SampleTextures(
 		const float pY = (float)y;
 
 		const std::size_t p_tex1_y = y % tex1_y;
-		const std::size_t p_tex2_y = y % tex2_y;
+		const std::size_t p_tex2_y = y % out_tex_y;
 
 		for (std::size_t x = 0; x < out_tex_x; x++)
 		{
 			const float pX = (float)x;
 
-			const std::size_t p_tex1_x = x % tex1_x;
-			const std::size_t p_tex2_x = x % tex2_x;
-
 			const float sample_data = GetHeightPoint(material_map, out_tex_x, out_tex_y, gnd_width, gnd_height, pX, pY);
+			if (sample_data == 0.0f) continue;
 
-			const float tex_r = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 0) * mul_div;
-			const float tex_g = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 1) * mul_div;
-			const float tex_b = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 2) * mul_div;
+			const std::size_t p_tex1_x = x % tex1_x;
+			const std::size_t p_tex2_x = x % out_tex_x;
 
-			const float def_r = (float)tex2->GetByte(p_tex2_x, p_tex2_y, 0) * mul_div;
-			const float def_g = (float)tex2->GetByte(p_tex2_x, p_tex2_y, 1) * mul_div;
-			const float def_b = (float)tex2->GetByte(p_tex2_x, p_tex2_y, 2) * mul_div;
-			
-			const float r_sample = lerp(def_r, tex_r, sample_data);
-			const float g_sample = lerp(def_g, tex_g, sample_data);
-			const float b_sample = lerp(def_b, tex_b, sample_data);
+			float r_sample = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 0) * mul_div;
+			float g_sample = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 1) * mul_div;
+			float b_sample = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 2) * mul_div;
+
+			if (sample_data != 1.0f)
+			{
+				const float def_r = (float)out_tex->GetByte(p_tex2_x, p_tex2_y, 0) * mul_div;
+				const float def_g = (float)out_tex->GetByte(p_tex2_x, p_tex2_y, 1) * mul_div;
+				const float def_b = (float)out_tex->GetByte(p_tex2_x, p_tex2_y, 2) * mul_div;
+
+				r_sample = lerp(def_r, r_sample, sample_data);
+				g_sample = lerp(def_g, g_sample, sample_data);
+				b_sample = lerp(def_b, b_sample, sample_data);
+			}
 
 			out_tex->SetByte(x, y, 0, (Byte)(r_sample * 255.0f));
 			out_tex->SetByte(x, y, 1, (Byte)(g_sample * 255.0f));
@@ -646,7 +646,7 @@ void Tile::SampleTextures(
 	}
 }
 
-static const std::wstring GroundTextureNames[] = { L"GroundTexture_Dif.png", L"GroundTexture_Asg.png", L"GroundTexture_Nor.png" };
+static const std::wstring GroundTextureNames[] = { L"Dif", L"Asg", L"Nor" };
 void Tile::WriteGroundTextures(const std::wstring& dir) const
 {
 	if (this->Type != 0 || !ConvertSettings::ExportGroundTextures) return;
@@ -663,6 +663,7 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 	const std::size_t gnd_height2 = gnd_height - 1;
 
 	std::array<std::vector<float>, 8> MaterialData = {};
+	std::array<bool, 8> HasMatDataMap = { false };
 
 	for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 	{
@@ -676,41 +677,79 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 			for (std::size_t x = 0; x < gnd_width; x++)
 			{
 				const long long& cur_data = ground_data[x + y * gnd_width];
-
 				const Byte cur_chunk = (Byte)(cur_data >> mat_offset);
+				const float float_chunk = (float)cur_chunk / 255.0f;
 
-				material_vec[x + y * gnd_width] = (float)cur_chunk / 255.0f;
+				material_vec[x + y * gnd_width] = float_chunk;
+
+				if (!HasMatDataMap[mat_id] && cur_chunk != 0)
+					HasMatDataMap[mat_id] = true;
 			}
 		}
 	}
 
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
 	{
-		constexpr const std::size_t writing_gnd_idx = static_cast<std::size_t>(ProgState::WritingGndDif);
-		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx + texture_id));
-
-		GroundTexture* pDefTex = GroundTextureDatabase::GetDefaultTexture(texture_id);
-		pDefTex->LoadImageData();
+		const std::size_t writing_gnd_idx = static_cast<std::size_t>(ProgState::FillingGndDif) + (3 * texture_id);
+		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx), 8);
 
 		GroundTexture gnd_tex;
 		gnd_tex.AllocateMemory(tex_width, tex_height);
 
-		for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 		{
-			DebugOutL("Writing material id: ", mat_id);
-			GroundTexture* pGndTex = GroundTextureDatabase::GetTexture(mat_id, texture_id);
-			pGndTex->LoadImageData();
+			GroundTexture* pDefTex = GroundTextureDatabase::GetDefaultTexture(texture_id);
+			pDefTex->LoadImageData();
 
-			GroundTexture* pSecondTex = (mat_id == 0) ? pDefTex : &gnd_tex;
+			const std::size_t def_size_x = pDefTex->GetWidth();
+			const std::size_t def_size_y = pDefTex->GetHeight();
 
-			this->SampleTextures(pGndTex, pSecondTex, &gnd_tex, MaterialData[mat_id], gnd_width2, gnd_height2);
+			const std::size_t def_x_amount = tex_width / def_size_x;
+			const std::size_t def_y_amount = tex_height / def_size_y;
 
-			pGndTex->Clear();
+			const std::size_t def_width_one = def_size_x;
+
+			for (std::size_t y = 0; y < def_y_amount; y++)
+			{
+				const std::size_t real_y = y * def_size_y;
+
+				for (std::size_t x = 0; x < def_x_amount; x++)
+				{
+					const std::size_t real_x = x * def_size_x;
+
+					const std::size_t idx = real_x + real_y * tex_height;
+
+					for (std::size_t z = 0; z < def_size_y; z++)
+					{
+						const std::size_t global_offset = (idx + z * tex_width) * 3;
+						const std::size_t local_offset = (z * def_width_one) * 3;
+
+						std::memcpy(gnd_tex.Data() + global_offset, pDefTex->Data() + local_offset, def_width_one * 3);
+					}
+				}
+			}
+
+			pDefTex->Clear();
 		}
 
-		pDefTex->Clear();
+		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx + 1), 8);
 
-		gnd_tex.WriteToFile(dir + GroundTextureNames[texture_id]);
+		for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
+		{
+			if (HasMatDataMap[mat_id])
+			{
+				GroundTexture* pGndTex = GroundTextureDatabase::GetTexture(mat_id, texture_id);
+				pGndTex->LoadImageData();
+
+				this->SampleTextures(pGndTex, &gnd_tex, MaterialData[mat_id], gnd_width2, gnd_height2);
+
+				pGndTex->Clear();
+			}
+
+			ProgCounter::ProgressValue++;
+		}
+
+		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx + 2), 0);
+		gnd_tex.WriteToFile(dir + L"GroundTexture_" + GroundTextureNames[texture_id] + L".jpg");
 	}
 }
 

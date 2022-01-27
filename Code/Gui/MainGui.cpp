@@ -196,7 +196,7 @@ namespace TileConverter
 		ConvertSettings::ExportUvs       = export_uvs;
 		ConvertSettings::ExportNormals   = export_normals;
 		ConvertSettings::ExportMaterials = export_materials && export_uvs;
-		ConvertSettings::ExportGroundTextures = export_harvestables;
+		ConvertSettings::ExportGroundTextures = export_gnd_materials;
 
 		ConvertSettings::ExportClutter      = export_clutter;
 		ConvertSettings::ExportAssets       = export_assets;
