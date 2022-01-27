@@ -93,20 +93,20 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp64.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x64;$(SolutionDir)Dependencies\lz4\Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp64.lib;lz4.lib;jpeg64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x64;$(SolutionDir)Dependencies\lz4\Lib\x64;$(SolutionDir)Dependencies\libjpg\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -119,7 +119,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -132,13 +132,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\uuid;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp64.lib;lz4.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x64;$(SolutionDir)Dependencies\lz4\Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp64.lib;lz4.lib;jpeg64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib\x64;$(SolutionDir)Dependencies\lz4\Lib\x64;$(SolutionDir)Dependencies\libjpg\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

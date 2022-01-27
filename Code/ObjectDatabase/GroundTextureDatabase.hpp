@@ -33,7 +33,7 @@ public:
 	Byte GetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index) const;
 	void SetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index, const Byte& b);
 
-	void WriteToFile(const std::wstring& path) const;
+	void WriteToFile(const std::wstring& path, const int& quality = 90) const;
 };
 
 using GroundTexBundle = std::array<GroundTexture*, 3>;

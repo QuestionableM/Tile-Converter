@@ -604,37 +604,47 @@ void Tile::SampleTextures(
 {
 	constexpr const float mul_div = 1.0f / 255.0f;
 
+	const std::size_t tex1_x = tex1->GetWidth();
+	const std::size_t tex1_y = tex1->GetHeight();
+
+	const std::size_t tex2_x = tex2->GetWidth();
+	const std::size_t tex2_y = tex2->GetHeight();
+
 	for (std::size_t y = 0; y < tex_height; y++)
 	{
-		const std::size_t pt_y = y % gnd_height;
 		const float pY = (float)y;
+
+		const std::size_t p_tex1_y = y % tex1_y;
+		const std::size_t p_tex2_y = y % tex2_y;
 
 		for (std::size_t x = 0; x < tex_width; x++)
 		{
-			const std::size_t pt_x = x % gnd_width;
 			const float pX = (float)x;
+
+			const std::size_t p_tex1_x = x % tex1_x;
+			const std::size_t p_tex2_x = x % tex2_x;
 
 			const float sample_data = GetHeightPoint(material_map, tex_width, tex_height, gnd_width, gnd_height, pX, pY);
 
-			const float tex_r = (float)tex1->GetByte(x, y, 0) * mul_div;
-			const float tex_g = (float)tex1->GetByte(x, y, 1) * mul_div;
-			const float tex_b = (float)tex1->GetByte(x, y, 2) * mul_div;
-			const float tex_a = (float)tex1->GetByte(x, y, 3) * mul_div;
+			const float tex_r = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 0) * mul_div;
+			const float tex_g = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 1) * mul_div;
+			const float tex_b = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 2) * mul_div;
+			//const float tex_a = (float)tex1->GetByte(x, y, 3) * mul_div;
 
-			const float def_r = (float)tex2->GetByte(x, y, 0) * mul_div;
-			const float def_g = (float)tex2->GetByte(x, y, 1) * mul_div;
-			const float def_b = (float)tex2->GetByte(x, y, 2) * mul_div;
-			const float def_a = (float)tex2->GetByte(x, y, 3) * mul_div;
+			const float def_r = (float)tex2->GetByte(p_tex2_x, p_tex2_y, 0) * mul_div;
+			const float def_g = (float)tex2->GetByte(p_tex2_x, p_tex2_y, 1) * mul_div;
+			const float def_b = (float)tex2->GetByte(p_tex2_x, p_tex2_y, 2) * mul_div;
+			//const float def_a = (float)tex2->GetByte(x, y, 3) * mul_div;
 
 			const float r_sample = lerp(def_r, tex_r, sample_data);
 			const float g_sample = lerp(def_g, tex_g, sample_data);
 			const float b_sample = lerp(def_b, tex_b, sample_data);
-			const float a_sample = lerp(def_a, tex_a, sample_data);
+			//const float a_sample = lerp(def_a, tex_a, sample_data);
 
 			out_tex->SetByte(x, y, 0, (Byte)(r_sample * 255.0f));
 			out_tex->SetByte(x, y, 1, (Byte)(g_sample * 255.0f));
 			out_tex->SetByte(x, y, 2, (Byte)(b_sample * 255.0f));
-			out_tex->SetByte(x, y, 3, (Byte)(a_sample * 255.0f));
+			//out_tex->SetByte(x, y, 3, (Byte)(a_sample * 255.0f));
 		}
 	}
 }
