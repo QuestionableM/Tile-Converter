@@ -19,6 +19,7 @@ namespace TileConverter
 		System::Windows::Forms::CheckBox^ ExportUvs_CB;
 		System::Windows::Forms::CheckBox^ ExportNormals_CB;
 		System::Windows::Forms::CheckBox^ ExportMaterials_CB;
+		System::Windows::Forms::CheckBox^ ExportGndTextures_CB;
 
 		System::Windows::Forms::CheckBox^ ExportClutter_CB;
 		System::Windows::Forms::CheckBox^ ExportAssets_CB;
@@ -46,6 +47,7 @@ namespace TileConverter
 			this->ExportAssets_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportClutter_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->DataSettings_GB = (gcnew System::Windows::Forms::GroupBox());
+			this->ExportGndTextures_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportNormals_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportMaterials_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportUvs_CB = (gcnew System::Windows::Forms::CheckBox());
@@ -65,7 +67,7 @@ namespace TileConverter
 			this->OutName_GB->Size = System::Drawing::Size(174, 48);
 			this->OutName_GB->TabIndex = 0;
 			this->OutName_GB->TabStop = false;
-			this->OutName_GB->Text = L"OutputFileName";
+			this->OutName_GB->Text = L"File Name";
 			// 
 			// OutputName_TB
 			// 
@@ -92,7 +94,7 @@ namespace TileConverter
 			this->ModelSettings_GB->Controls->Add(this->ExportClutter_CB);
 			this->ModelSettings_GB->Location = System::Drawing::Point(12, 66);
 			this->ModelSettings_GB->Name = L"ModelSettings_GB";
-			this->ModelSettings_GB->Size = System::Drawing::Size(174, 149);
+			this->ModelSettings_GB->Size = System::Drawing::Size(174, 150);
 			this->ModelSettings_GB->TabIndex = 1;
 			this->ModelSettings_GB->TabStop = false;
 			this->ModelSettings_GB->Text = L"Model Settings";
@@ -161,15 +163,28 @@ namespace TileConverter
 			// 
 			this->DataSettings_GB->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->DataSettings_GB->Controls->Add(this->ExportGndTextures_CB);
 			this->DataSettings_GB->Controls->Add(this->ExportNormals_CB);
 			this->DataSettings_GB->Controls->Add(this->ExportMaterials_CB);
 			this->DataSettings_GB->Controls->Add(this->ExportUvs_CB);
-			this->DataSettings_GB->Location = System::Drawing::Point(12, 221);
+			this->DataSettings_GB->Location = System::Drawing::Point(12, 222);
 			this->DataSettings_GB->Name = L"DataSettings_GB";
-			this->DataSettings_GB->Size = System::Drawing::Size(174, 97);
+			this->DataSettings_GB->Size = System::Drawing::Size(174, 125);
 			this->DataSettings_GB->TabIndex = 2;
 			this->DataSettings_GB->TabStop = false;
 			this->DataSettings_GB->Text = L"Data Settings";
+			// 
+			// ExportGndTextures_CB
+			// 
+			this->ExportGndTextures_CB->AutoSize = true;
+			this->ExportGndTextures_CB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->ExportGndTextures_CB->Location = System::Drawing::Point(6, 97);
+			this->ExportGndTextures_CB->Name = L"ExportGndTextures_CB";
+			this->ExportGndTextures_CB->Size = System::Drawing::Size(166, 20);
+			this->ExportGndTextures_CB->TabIndex = 5;
+			this->ExportGndTextures_CB->Text = L"Export Ground Textures";
+			this->ExportGndTextures_CB->UseVisualStyleBackColor = true;
 			// 
 			// ExportNormals_CB
 			// 
@@ -215,7 +230,7 @@ namespace TileConverter
 			this->Convert_BTN->Enabled = false;
 			this->Convert_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Convert_BTN->Location = System::Drawing::Point(12, 324);
+			this->Convert_BTN->Location = System::Drawing::Point(12, 351);
 			this->Convert_BTN->Name = L"Convert_BTN";
 			this->Convert_BTN->Size = System::Drawing::Size(174, 29);
 			this->Convert_BTN->TabIndex = 3;
@@ -227,7 +242,7 @@ namespace TileConverter
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(198, 365);
+			this->ClientSize = System::Drawing::Size(198, 392);
 			this->Controls->Add(this->Convert_BTN);
 			this->Controls->Add(this->DataSettings_GB);
 			this->Controls->Add(this->ModelSettings_GB);

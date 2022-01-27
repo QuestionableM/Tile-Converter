@@ -4,11 +4,13 @@
 
 class ConvertSettings
 {
+	ConvertSettings() = default;
 public:
 	//model settings
 	static bool ExportUvs;
 	static bool ExportNormals;
 	static bool ExportMaterials;
+	static bool ExportGroundTextures;
 
 	//tile settings
 	static bool ExportClutter;

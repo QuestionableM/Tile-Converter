@@ -17,7 +17,11 @@ enum class ProgState : std::size_t
 	WritingMtlFile = 9,
 
 	ConvertSuccess = 10,
-	ConvertFailure = 11
+	ConvertFailure = 11,
+
+	WritingGndDif = 12,
+	WritingGndAsg = 13,
+	WritingGndNor = 14
 };
 
 class ProgCounter

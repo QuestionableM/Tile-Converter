@@ -37,7 +37,11 @@ static const StateData StateDataArray[] =
 	{ L"Writing Mtl File...",      true  },
 
 	{ L"Success!",       false },
-	{ L"Convert Failed", false }
+	{ L"Convert Failed", false },
+
+	{ L"Writing Ground Dif Texture... ", false },
+	{ L"Writing Ground Asg Texture... ", false },
+	{ L"Writing Ground Nor Texture... ", false }
 };
 
 std::wstring ProgCounter::GetStateString()

@@ -14,6 +14,7 @@ class GroundTexture
 	std::vector<Byte> mImageData;
 
 public:
+	GroundTexture() = default;
 	GroundTexture(const std::wstring& path);
 	GroundTexture(const GroundTexture&) = delete;
 	GroundTexture(GroundTexture&&) = delete;

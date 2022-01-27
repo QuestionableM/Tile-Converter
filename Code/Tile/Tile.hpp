@@ -53,8 +53,6 @@ private:
 		GroundTexture* tex2,
 		GroundTexture* out_tex,
 		const std::vector<float>& material_map,
-		const std::size_t& tex_width,
-		const std::size_t& tex_height,
 		const std::size_t& gnd_width,
 		const std::size_t& gnd_height
 	) const;

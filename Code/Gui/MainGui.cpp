@@ -155,19 +155,20 @@ namespace TileConverter
 		{
 			this->ChangeGuiState(true, true);
 
-			System::Array^ thread_data = gcnew cli::array<System::Object^>(10);
+			System::Array^ thread_data = gcnew cli::array<System::Object^>(11);
 			thread_data->SetValue(this->TilePath_TB->Text, (int)0);
 			thread_data->SetValue(conv_settings->OutputName_TB->Text, (int)1);
 
-			thread_data->SetValue(conv_settings->ExportUvs_CB->Checked, (int)2);
-			thread_data->SetValue(conv_settings->ExportNormals_CB->Checked, (int)3);
-			thread_data->SetValue(conv_settings->ExportMaterials_CB->Checked, (int)4);
+			thread_data->SetValue(conv_settings->ExportUvs_CB->Checked,         (int)2);
+			thread_data->SetValue(conv_settings->ExportNormals_CB->Checked,     (int)3);
+			thread_data->SetValue(conv_settings->ExportMaterials_CB->Checked,   (int)4);
+			thread_data->SetValue(conv_settings->ExportGndTextures_CB->Checked, (int)5);
 
-			thread_data->SetValue(conv_settings->ExportClutter_CB->Checked, (int)5);
-			thread_data->SetValue(conv_settings->ExportAssets_CB->Checked, (int)6);
-			thread_data->SetValue(conv_settings->ExportPrefabs_CB->Checked, (int)7);
-			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked, (int)8);
-			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, (int)9);
+			thread_data->SetValue(conv_settings->ExportClutter_CB->Checked,      (int)6);
+			thread_data->SetValue(conv_settings->ExportAssets_CB->Checked,       (int)7);
+			thread_data->SetValue(conv_settings->ExportPrefabs_CB->Checked,      (int)8);
+			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked,   (int)9);
+			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, (int)10);
 
 			this->ProgressUpdater->Start();
 			this->TileConverter_BW->RunWorkerAsync(thread_data);
@@ -184,16 +185,18 @@ namespace TileConverter
 		const bool export_uvs       = safe_cast<bool>(tData->GetValue((int)2));
 		const bool export_normals   = safe_cast<bool>(tData->GetValue((int)3));
 		const bool export_materials = safe_cast<bool>(tData->GetValue((int)4));
+		const bool export_gnd_materials = safe_cast<bool>(tData->GetValue((int)5));
 
-		const bool export_clutter      = safe_cast<bool>(tData->GetValue((int)5));
-		const bool export_assets       = safe_cast<bool>(tData->GetValue((int)6));
-		const bool export_prefabs      = safe_cast<bool>(tData->GetValue((int)7));
-		const bool export_blueprints   = safe_cast<bool>(tData->GetValue((int)8));
-		const bool export_harvestables = safe_cast<bool>(tData->GetValue((int)9));
+		const bool export_clutter      = safe_cast<bool>(tData->GetValue((int)6));
+		const bool export_assets       = safe_cast<bool>(tData->GetValue((int)7));
+		const bool export_prefabs      = safe_cast<bool>(tData->GetValue((int)8));
+		const bool export_blueprints   = safe_cast<bool>(tData->GetValue((int)9));
+		const bool export_harvestables = safe_cast<bool>(tData->GetValue((int)10));
 
 		ConvertSettings::ExportUvs       = export_uvs;
 		ConvertSettings::ExportNormals   = export_normals;
 		ConvertSettings::ExportMaterials = export_materials && export_uvs;
+		ConvertSettings::ExportGroundTextures = export_harvestables;
 
 		ConvertSettings::ExportClutter      = export_clutter;
 		ConvertSettings::ExportAssets       = export_assets;

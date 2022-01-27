@@ -106,6 +106,7 @@ void GroundTexture::WriteToFile(const std::wstring& path, const int& quality) co
 	FILE* outfile;		/* target file */
 	JSAMPROW row_pointer[1];	/* pointer to JSAMPLE row[s] */
 	int row_stride;		/* physical row width in image buffer */
+	errno_t open_result; /* a result of fopen_s function */
 
 	/* Step 1: allocate and initialize JPEG compression object */
 
@@ -126,7 +127,7 @@ void GroundTexture::WriteToFile(const std::wstring& path, const int& quality) co
 	 * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
 	 * requires it in order to write binary files.
 	 */
-	if ((outfile = fopen(String::ToUtf8(path).c_str(), "wb")) == NULL)
+	if ((open_result = fopen_s(&outfile, String::ToUtf8(path).c_str(), "wb")) != 0)
 	{
 		DebugOutL("Can't open ", path);
 		return;
@@ -170,9 +171,8 @@ void GroundTexture::WriteToFile(const std::wstring& path, const int& quality) co
 	 */
 	row_stride = (int)mSizeX * 3;	/* JSAMPLEs per row in image_buffer */
 	
-	//JSAMPLE == unsigned char == Byte
-	//JSAMPROW = *JSAMPLE
-	while (cinfo.next_scanline < cinfo.image_height) {
+	while (cinfo.next_scanline < cinfo.image_height)
+	{
 		/* jpeg_write_scanlines expects an array of pointers to scanlines.
 		 * Here the array is only one element long, but you could pass
 		 * more than one scanline at a time if that's more convenient.

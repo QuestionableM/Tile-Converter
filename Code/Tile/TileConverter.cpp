@@ -6,9 +6,10 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-bool ConvertSettings::ExportUvs       = true;
-bool ConvertSettings::ExportNormals   = true;
-bool ConvertSettings::ExportMaterials = true;
+bool ConvertSettings::ExportUvs            = true;
+bool ConvertSettings::ExportNormals        = true;
+bool ConvertSettings::ExportMaterials	   = true;
+bool ConvertSettings::ExportGroundTextures = false;
 
 bool ConvertSettings::ExportClutter      = true;
 bool ConvertSettings::ExportAssets       = true;
