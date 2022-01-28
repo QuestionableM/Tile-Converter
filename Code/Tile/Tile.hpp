@@ -48,13 +48,9 @@ private:
 	void WriteMaterials(const std::wstring& dir) const;
 	void WriteColorMap(const std::wstring& dir) const;
 
-	void SampleTextures(
-		GroundTexture* tex1,
-		GroundTexture* out_tex,
-		const std::vector<float>& material_map,
-		const std::size_t& gnd_width,
-		const std::size_t& gnd_height
-	) const;
+	static void FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id);
+	void FillMaterialMap(std::array<struct MaterialData, 8>& mat_data) const;
+	void SampleTextures(GroundTexture* tex1, GroundTexture* out_tex, const std::vector<float>& material_map, const std::size_t& gnd_width, const std::size_t& gnd_height) const;
 	void WriteGroundTextures(const std::wstring& dir) const;
 
 public:

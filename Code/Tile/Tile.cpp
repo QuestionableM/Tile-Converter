@@ -592,12 +592,7 @@ void Tile::WriteColorMap(const std::wstring& dir) const
 	WritePngImage(color_map, color_map_path, (unsigned)col_width, (unsigned)col_height);
 }
 
-void Tile::SampleTextures(
-	GroundTexture* tex1,
-	GroundTexture* out_tex,
-	const std::vector<float>& material_map,
-	const std::size_t& gnd_width,
-	const std::size_t& gnd_height) const
+void Tile::SampleTextures(GroundTexture* tex1, GroundTexture* out_tex, const std::vector<float>& material_map, const std::size_t& gnd_width, const std::size_t& gnd_height) const
 {
 	constexpr const float mul_div = 1.0f / 255.0f;
 
@@ -646,30 +641,65 @@ void Tile::SampleTextures(
 	}
 }
 
-static const std::wstring GroundTextureNames[] = { L"Dif", L"Asg", L"Nor" };
-void Tile::WriteGroundTextures(const std::wstring& dir) const
+void Tile::FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id)
 {
-	if (this->Type != 0 || !ConvertSettings::ExportGroundTextures) return;
+	GroundTexture* pDefTex = GroundTextureDatabase::GetDefaultTexture(tex_id);
+	pDefTex->LoadImageData();
 
+	const std::size_t gnd_tex_x = mGndTex->GetWidth();
+	const std::size_t gnd_tex_y = mGndTex->GetHeight();
+
+	const std::size_t def_size_x = pDefTex->GetWidth();
+	const std::size_t def_size_y = pDefTex->GetHeight();
+
+	const std::size_t def_x_amount = gnd_tex_x / def_size_x;
+	const std::size_t def_y_amount = gnd_tex_y / def_size_y;
+
+	const std::size_t def_width_one = def_size_x;
+
+	for (std::size_t y = 0; y < def_y_amount; y++)
+	{
+		const std::size_t real_y = y * def_size_y;
+
+		for (std::size_t x = 0; x < def_x_amount; x++)
+		{
+			const std::size_t real_x = x * def_size_x;
+			const std::size_t idx = real_x + real_y * gnd_tex_y;
+
+			for (std::size_t z = 0; z < def_size_y; z++)
+			{
+				const std::size_t global_offset = (idx + z * gnd_tex_x) * 3;
+				const std::size_t local_offset = (z * def_width_one) * 3;
+
+				std::memcpy(mGndTex->Data() + global_offset, pDefTex->Data() + local_offset, def_width_one * 3);
+			}
+		}
+	}
+
+	pDefTex->Clear();
+}
+
+struct MaterialData
+{
+	std::vector<float> MatData;
+	bool HasMatData;
+};
+
+void Tile::FillMaterialMap(std::array<MaterialData, 8>& mat_data) const
+{
 	const std::vector<long long> ground_data = this->GetGround();
-
-	const std::size_t tex_width  = 4096 * (std::size_t)this->Width;
-	const std::size_t tex_height = 4096 * (std::size_t)this->Height;
 
 	const std::size_t gnd_width = (std::size_t)this->Width * 64 + 1;
 	const std::size_t gnd_height = (std::size_t)this->Height * 64 + 1;
-
-	const std::size_t gnd_width2 = gnd_width - 1;
-	const std::size_t gnd_height2 = gnd_height - 1;
-
-	std::array<std::vector<float>, 8> MaterialData = {};
-	std::array<bool, 8> HasMatDataMap = { false };
 
 	for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 	{
 		const std::size_t mat_offset = 8 * mat_id;
 
-		std::vector<float>& material_vec = MaterialData[mat_id];
+		MaterialData& cur_mat = mat_data[mat_id];
+
+		bool& has_data = cur_mat.HasMatData;
+		std::vector<float>& material_vec = cur_mat.MatData;
 		material_vec.resize(gnd_width * gnd_height);
 
 		for (std::size_t y = 0; y < gnd_height; y++)
@@ -682,65 +712,50 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 
 				material_vec[x + y * gnd_width] = float_chunk;
 
-				if (!HasMatDataMap[mat_id] && cur_chunk != 0)
-					HasMatDataMap[mat_id] = true;
+				if (!has_data && cur_chunk != 0)
+					has_data = true;
 			}
 		}
 	}
+}
+
+static const std::wstring GroundTextureNames[] = { L"Dif", L"Asg", L"Nor" };
+void Tile::WriteGroundTextures(const std::wstring& dir) const
+{
+	if (this->Type != 0 || !ConvertSettings::ExportGroundTextures) return;
+
+	std::array<MaterialData, 8> MaterialMap = {};
+
+	this->FillMaterialMap(MaterialMap);
+	
+
+	const std::size_t tex_width = 4096 * (std::size_t)this->Width;
+	const std::size_t tex_height = 4096 * (std::size_t)this->Height;
+
+	const std::size_t gnd_width2 = (std::size_t)this->Width * 64;
+	const std::size_t gnd_height2 = (std::size_t)this->Height * 64;
 
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
 	{
 		const std::size_t writing_gnd_idx = static_cast<std::size_t>(ProgState::FillingGndDif) + (3 * texture_id);
-		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx), 8);
 
 		GroundTexture gnd_tex;
 		gnd_tex.AllocateMemory(tex_width, tex_height);
 
-		{
-			GroundTexture* pDefTex = GroundTextureDatabase::GetDefaultTexture(texture_id);
-			pDefTex->LoadImageData();
-
-			const std::size_t def_size_x = pDefTex->GetWidth();
-			const std::size_t def_size_y = pDefTex->GetHeight();
-
-			const std::size_t def_x_amount = tex_width / def_size_x;
-			const std::size_t def_y_amount = tex_height / def_size_y;
-
-			const std::size_t def_width_one = def_size_x;
-
-			for (std::size_t y = 0; y < def_y_amount; y++)
-			{
-				const std::size_t real_y = y * def_size_y;
-
-				for (std::size_t x = 0; x < def_x_amount; x++)
-				{
-					const std::size_t real_x = x * def_size_x;
-
-					const std::size_t idx = real_x + real_y * tex_height;
-
-					for (std::size_t z = 0; z < def_size_y; z++)
-					{
-						const std::size_t global_offset = (idx + z * tex_width) * 3;
-						const std::size_t local_offset = (z * def_width_one) * 3;
-
-						std::memcpy(gnd_tex.Data() + global_offset, pDefTex->Data() + local_offset, def_width_one * 3);
-					}
-				}
-			}
-
-			pDefTex->Clear();
-		}
+		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx), 8);
+		Tile::FillGndTexture(&gnd_tex, texture_id);
 
 		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx + 1), 8);
-
 		for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 		{
-			if (HasMatDataMap[mat_id])
+			const MaterialData& cur_mat = MaterialMap[mat_id];
+
+			if (cur_mat.HasMatData)
 			{
 				GroundTexture* pGndTex = GroundTextureDatabase::GetTexture(mat_id, texture_id);
 				pGndTex->LoadImageData();
 
-				this->SampleTextures(pGndTex, &gnd_tex, MaterialData[mat_id], gnd_width2, gnd_height2);
+				this->SampleTextures(pGndTex, &gnd_tex, cur_mat.MatData, gnd_width2, gnd_height2);
 
 				pGndTex->Clear();
 			}
