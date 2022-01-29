@@ -1,6 +1,5 @@
 /.vs
-/Junk
-/Bin
+/Build
 /ConvertedTiles
 /LocalBinaries
 /Resources/Config.json

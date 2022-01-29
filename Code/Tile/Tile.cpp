@@ -725,9 +725,7 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 	if (this->Type != 0 || !ConvertSettings::ExportGroundTextures) return;
 
 	std::array<MaterialData, 8> MaterialMap = {};
-
 	this->FillMaterialMap(MaterialMap);
-	
 
 	const std::size_t tex_width = 4096 * (std::size_t)this->Width;
 	const std::size_t tex_height = 4096 * (std::size_t)this->Height;
@@ -749,7 +747,6 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 		for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 		{
 			const MaterialData& cur_mat = MaterialMap[mat_id];
-
 			if (cur_mat.HasMatData)
 			{
 				GroundTexture* pGndTex = GroundTextureDatabase::GetTexture(mat_id, texture_id);
