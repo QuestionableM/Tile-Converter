@@ -323,9 +323,4 @@ namespace TileConverter
 
 		this->Progress_LBL->Text = gcnew System::String(state_output.c_str());
 	}
-
-	void MainGui::ResetProgressBar()
-	{
-
-	}
 }
