@@ -54,11 +54,6 @@ namespace TileConverter
 		SysProcess::Start("https://github.com/lz4/lz4");
 	}
 
-	void AboutGui::LibUUID_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
-	{
-		SysProcess::Start("https://github.com/mariusbancila/stduuid");
-	}
-
 	void AboutGui::LibAssimp_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 	{
 		SysProcess::Start("https://github.com/assimp/assimp");

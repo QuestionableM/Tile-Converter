@@ -44,5 +44,11 @@
  *  NOMCX             - Modem Configuration Extensions
  */
 
+#define NOHELP
+#define NOMCX
+#define NOSERVICE
+#define NOPROFILER
+#define NOKANJI
+#define NOMETAFILE
 #define NOMINMAX
 #include <Windows.h>

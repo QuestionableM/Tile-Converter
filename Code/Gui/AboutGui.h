@@ -30,19 +30,12 @@ namespace TileConverter {
 		System::Windows::Forms::LinkLabel^ LibLZ4_LLBL;
 		System::Windows::Forms::LinkLabel^ LibNlohmannJson_LLBL;
 		System::Windows::Forms::LinkLabel^ LibPerlinNoise_LLBL;
-		System::Windows::Forms::LinkLabel^ LibUUID_LLBL;
+
 		System::Windows::Forms::Label^ Version_LBL;
-	private: System::Windows::Forms::LinkLabel^ LibGLM_LLBL;
-	private: System::Windows::Forms::LinkLabel^ Lib_STBImage_LL;
-	private: System::Windows::Forms::LinkLabel^ Lib_LibJPEG_LL;
+		System::Windows::Forms::LinkLabel^ LibGLM_LLBL;
+		System::Windows::Forms::LinkLabel^ Lib_STBImage_LL;
+		System::Windows::Forms::LinkLabel^ Lib_LibJPEG_LL;
 
-
-
-
-
-
-
-	private:
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
@@ -57,7 +50,6 @@ namespace TileConverter {
 			this->LibLZ4_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibNlohmannJson_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibPerlinNoise_LLBL = (gcnew System::Windows::Forms::LinkLabel());
-			this->LibUUID_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->Version_LBL = (gcnew System::Windows::Forms::Label());
 			this->LibGLM_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->Lib_STBImage_LL = (gcnew System::Windows::Forms::LinkLabel());
@@ -187,27 +179,13 @@ namespace TileConverter {
 			this->LibPerlinNoise_LLBL->AutoSize = true;
 			this->LibPerlinNoise_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->LibPerlinNoise_LLBL->Location = System::Drawing::Point(307, 88);
+			this->LibPerlinNoise_LLBL->Location = System::Drawing::Point(231, 104);
 			this->LibPerlinNoise_LLBL->Name = L"LibPerlinNoise_LLBL";
 			this->LibPerlinNoise_LLBL->Size = System::Drawing::Size(80, 16);
 			this->LibPerlinNoise_LLBL->TabIndex = 9;
 			this->LibPerlinNoise_LLBL->TabStop = true;
 			this->LibPerlinNoise_LLBL->Text = L"Perlin Noise";
 			this->LibPerlinNoise_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibPerlinNoise_LLBL_LinkClicked);
-			// 
-			// LibUUID_LLBL
-			// 
-			this->LibUUID_LLBL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-			this->LibUUID_LLBL->AutoSize = true;
-			this->LibUUID_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->LibUUID_LLBL->Location = System::Drawing::Point(271, 104);
-			this->LibUUID_LLBL->Name = L"LibUUID_LLBL";
-			this->LibUUID_LLBL->Size = System::Drawing::Size(40, 16);
-			this->LibUUID_LLBL->TabIndex = 10;
-			this->LibUUID_LLBL->TabStop = true;
-			this->LibUUID_LLBL->Text = L"UUID";
-			this->LibUUID_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibUUID_LLBL_LinkClicked);
 			// 
 			// Version_LBL
 			// 
@@ -219,7 +197,7 @@ namespace TileConverter {
 			this->Version_LBL->Name = L"Version_LBL";
 			this->Version_LBL->Size = System::Drawing::Size(86, 16);
 			this->Version_LBL->TabIndex = 11;
-			this->Version_LBL->Text = L"Version: 1.0.3";
+			this->Version_LBL->Text = L"Version: 1.0.4";
 			// 
 			// LibGLM_LLBL
 			// 
@@ -272,7 +250,6 @@ namespace TileConverter {
 			this->Controls->Add(this->Lib_STBImage_LL);
 			this->Controls->Add(this->LibGLM_LLBL);
 			this->Controls->Add(this->Version_LBL);
-			this->Controls->Add(this->LibUUID_LLBL);
 			this->Controls->Add(this->LibPerlinNoise_LLBL);
 			this->Controls->Add(this->LibNlohmannJson_LLBL);
 			this->Controls->Add(this->LibLZ4_LLBL);
@@ -295,18 +272,17 @@ namespace TileConverter {
 		}
 #pragma endregion
 	private:
-		System::Void AboutGui_Load(System::Object^ sender, System::EventArgs^ e);
-		System::Void CreatorQM_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void AboutGui_Load                    (System::Object^ sender, System::EventArgs^ e);
+		System::Void CreatorQM_LLBL_LinkClicked       (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void CreatorHardcoded_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibPerlinNoise_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibLodePNG_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibLZ4_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibUUID_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibAssimp_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibNlohmannJson_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibGLM_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void Lib_STBImage_LL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void Lib_LibJPEG_LL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void MouseKillFocus(System::Object ^ sender, System::Windows::Forms::MouseEventArgs ^ e);
+		System::Void LibPerlinNoise_LLBL_LinkClicked  (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibLodePNG_LLBL_LinkClicked      (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibLZ4_LLBL_LinkClicked          (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibAssimp_LLBL_LinkClicked       (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibNlohmannJson_LLBL_LinkClicked (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibGLM_LLBL_LinkClicked          (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void Lib_STBImage_LL_LinkClicked      (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void Lib_LibJPEG_LL_LinkClicked       (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void MouseKillFocus                   (System::Object^ sender, System::Windows::Forms::MouseEventArgs ^ e);
 	};
 }
