@@ -56,7 +56,7 @@ public:
 		MemoryWrapper memory(bytes);
 
 		std::vector<float> height;
-		std::vector<int> color;
+		std::vector<int>   color;
 
 		height.resize(wh_mul);
 		color.resize(wh_mul);

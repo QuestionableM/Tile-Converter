@@ -88,7 +88,7 @@ public:
 		mMemory.Skip(8);
 
 		DebugOutL("CellHeadersOffset: ", new_tile->CellHeaderOffset);
-		DebugOutL("CellHeadersSize: ", new_tile->CellHeadersSize);
+		DebugOutL("CellHeadersSize: ",   new_tile->CellHeadersSize);
 
 		if (new_tile->Version <= 1000000)
 		{
