@@ -16,7 +16,7 @@ namespace fs = std::filesystem;
 void DatabaseLoader::LoadGameDatabase()
 {
 	ProgCounter::SetState(ProgState::LoadingVanilla, 0);
-	DebugOutL(ConCol::BLUE, "Loading game data...");
+	DebugOutL(0b0010_fg, "Loading game data...");
 
 	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid(), ModType::GameData);
 
@@ -42,7 +42,7 @@ void DatabaseLoader::LoadGameDatabase()
 void DatabaseLoader::LoadModDatabase()
 {
 	ProgCounter::SetState(ProgState::LoadingModded);
-	DebugOutL(ConCol::GREEN, "Loading mod data...");
+	DebugOutL(0b0100_fg, "Loading mod data...");
 
 	for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
 	{
@@ -68,7 +68,7 @@ void DatabaseLoader::LoadDatabase()
 	DatabaseLoader::LoadGameDatabase();
 	DatabaseLoader::LoadModDatabase();
 
-	DebugOutL(ConCol::GREEN_INT, "Finished! (Blocks: ", Mod::BlockStorage.size(), ", Parts: ", Mod::PartStorage.size(), ", Harvestables: ", Mod::HarvestableStorage.size(), ", Assets: ", Mod::AssetStorage.size(), ")");
+	DebugOutL(0b0101_fg, "Finished! (Blocks: ", Mod::BlockStorage.size(), ", Parts: ", Mod::PartStorage.size(), ", Harvestables: ", Mod::HarvestableStorage.size(), ", Assets: ", Mod::AssetStorage.size(), ")");
 }
 
 void DatabaseLoader::InitializeDatabase()

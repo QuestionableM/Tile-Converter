@@ -61,7 +61,7 @@ void KeywordReplacer::LoadResourceUpgrades(const std::wstring& path)
 	const nlohmann::json uJson = JsonReader::LoadParseJson(path);
 	if (!uJson.is_object()) return;
 
-	DebugOutL("Loading resource upgrades: ", ConCol::YELLOW_INT, path);
+	DebugOutL("Loading resource upgrades: ", 0b1101_fg, path);
 
 	const auto& upgrade_array = JsonReader::Get(uJson, "upgrade");
 	if (!upgrade_array.is_array()) return;

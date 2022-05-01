@@ -26,7 +26,7 @@ Blueprint* Blueprint::LoadAutomatic(const std::string& str)
 	{
 		const std::string bp_str = str.substr(secret_idx + bp_secret.size());
 
-		DebugOutL(ConCol::GREEN_INT, "LoadingBlueprintJsonString: ", bp_str);
+		DebugOutL(0b0101_fg, "LoadingBlueprintJsonString: ", bp_str);
 
 		return Blueprint::FromJsonString(bp_str);
 	}
@@ -35,7 +35,7 @@ Blueprint* Blueprint::LoadAutomatic(const std::string& str)
 		const std::wstring wide_str = String::ToWide(str);
 		const std::wstring bp_path = KeywordReplacer::ReplaceKey(wide_str);
 
-		DebugOutL(ConCol::BLUE_INT, "LoadingBlueprintPath: ", bp_path);
+		DebugOutL(0b0011_fg, "LoadingBlueprintPath: ", bp_path);
 
 		return Blueprint::FromFile(bp_path);
 	}

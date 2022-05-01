@@ -113,7 +113,7 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
 
 	Mod* nMod = new Mod(mod_name, mod_folder, mod_uuid, mod_type);
 
-	DebugOutL("Mod: ", ConCol::YELLOW_INT, nMod->Name, ConCol::WHITE, ", Uuid: ", ConCol::YELLOW_INT, nMod->Uuid.ToString());
+	DebugOutL("Mod: ", 0b1101_fg, nMod->Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, nMod->Uuid.ToString());
 	ModStorage.insert(std::make_pair(nMod->Uuid, nMod));
 
 	return nMod;

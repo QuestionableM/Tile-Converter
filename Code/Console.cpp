@@ -41,9 +41,9 @@ CONSOLE_NUMBER_OUTPUT_DEFINITION(long long&)
 CONSOLE_NUMBER_OUTPUT_DEFINITION(float&)
 CONSOLE_NUMBER_OUTPUT_DEFINITION(double&)
 
-void DebugConsole::Output(const ConCol& obj)
+void DebugConsole::Output(const ConColor& obj)
 {
-	SetConsoleTextAttribute(DebugConsole::Handle, static_cast<DWORD>(obj));
+	SetConsoleTextAttribute(DebugConsole::Handle, static_cast<WORD>(obj));
 }
 
 bool DebugConsole::Create(const wchar_t* title)

@@ -73,7 +73,7 @@ public:
 				}
 
 				SMUuid clutter_uuid(memory.Objects<long long>(offset, 2));
-				DebugOutL(ConCol::YELLOW_INT, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
+				DebugOutL(0b1101_fg, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
 
 				/*
 				int iVar8 = 0;

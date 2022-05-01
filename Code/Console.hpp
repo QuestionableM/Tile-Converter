@@ -7,36 +7,53 @@
 #include <string>
 #include <vector>
 
-enum class ConCol : WORD
+class ConColor
 {
-	RED    = FOREGROUND_RED,
-	GREEN  = FOREGROUND_GREEN,
-	BLUE   = FOREGROUND_BLUE,
-	YELLOW = FOREGROUND_RED | FOREGROUND_GREEN,
-	PINK   = FOREGROUND_RED | FOREGROUND_BLUE,
-	WHITE  = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
+	WORD color_data = 0;
 
-	RED_INT    = FOREGROUND_RED   | FOREGROUND_INTENSITY,
-	GREEN_INT  = FOREGROUND_GREEN | FOREGROUND_INTENSITY,
-	BLUE_INT   = FOREGROUND_BLUE  | FOREGROUND_INTENSITY,
-	YELLOW_INT = FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
-	PINK_INT   = FOREGROUND_RED   | FOREGROUND_BLUE  | FOREGROUND_INTENSITY,
-	WHITE_INT  = FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
+	constexpr ConColor() noexcept = default;
 
-	RED_BG    = BACKGROUND_RED,
-	GREEN_BG  = BACKGROUND_GREEN,
-	BLUE_BG   = BACKGROUND_BLUE,
-	YELLOW_BG = BACKGROUND_RED | BACKGROUND_GREEN,
-	PINK_BG   = BACKGROUND_RED | BACKGROUND_BLUE,
-	WHITE_BG  = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE,
+	friend constexpr ConColor operator"" _bg(unsigned long long val) noexcept;
+	friend constexpr ConColor operator"" _fg(unsigned long long val) noexcept;
 
-	RED_BG_INT    = BACKGROUND_RED   | BACKGROUND_INTENSITY,
-	GREEN_BG_INT  = BACKGROUND_GREEN | BACKGROUND_INTENSITY,
-	BLUE_BG_INT   = BACKGROUND_BLUE  | BACKGROUND_INTENSITY,
-	YELLOW_BG_INT = BACKGROUND_RED   | BACKGROUND_GREEN | BACKGROUND_INTENSITY,
-	PINK_BG_INT   = BACKGROUND_RED   | BACKGROUND_BLUE  | BACKGROUND_INTENSITY,
-	WHITE_BG_INT  = BACKGROUND_RED   | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY
+public:
+	inline constexpr operator WORD() const noexcept
+	{
+		return color_data;
+	}
+
+	inline constexpr ConColor operator|(const ConColor& rhs) noexcept
+	{
+		ConColor lOutput;
+		lOutput.color_data = this->color_data | rhs.color_data;
+
+		return lOutput;
+	}
 };
+
+constexpr ConColor operator"" _bg(unsigned long long val) noexcept
+{
+	ConColor lOutput;
+
+	if ((val & 0b1000) == 0b1000) lOutput.color_data |= BACKGROUND_RED;
+	if ((val & 0b0100) == 0b0100) lOutput.color_data |= BACKGROUND_GREEN;
+	if ((val & 0b0010) == 0b0010) lOutput.color_data |= BACKGROUND_BLUE;
+	if ((val & 0b0001) == 0b0001) lOutput.color_data |= BACKGROUND_INTENSITY;
+
+	return lOutput;
+}
+
+constexpr ConColor operator"" _fg(unsigned long long val) noexcept
+{
+	ConColor lOutput;
+
+	if ((val & 0b1000) == 0b1000) lOutput.color_data |= FOREGROUND_RED;
+	if ((val & 0b0100) == 0b0100) lOutput.color_data |= FOREGROUND_GREEN;
+	if ((val & 0b0010) == 0b0010) lOutput.color_data |= FOREGROUND_BLUE;
+	if ((val & 0b0001) == 0b0001) lOutput.color_data |= FOREGROUND_INTENSITY;
+
+	return lOutput;
+}
 
 class __ConsoleOutputHandler;
 
@@ -67,7 +84,7 @@ class DebugConsole
 	DECLARE_CONSOLE_OUTPUT(float&);
 	DECLARE_CONSOLE_OUTPUT(double&);
 
-	DECLARE_CONSOLE_OUTPUT(ConCol&);
+	DECLARE_CONSOLE_OUTPUT(ConColor&);
 
 	template<typename ArrayObject>
 	static inline void Output(const std::vector<ArrayObject>& obj)
@@ -118,14 +135,14 @@ public:
 };
 
 #define CreateDebugConsole(ConName) DebugConsole::Create(ConName)
-#define DebugOutL(...) DebugConsole::Out(__VA_ARGS__, ConCol::WHITE, "\n")
-#define DebugOut(...) DebugConsole::Out(__VA_ARGS__)
-#define DebugErrorL(...) DebugConsole::Out(ConCol::RED_INT, "ERROR: ", __VA_ARGS__, ConCol::WHITE, "\n")
-#define DebugWarningL(...) DebugConsole::Out(ConCol::YELLOW_INT, "WARNING: ", __VA_ARGS__, ConCol::WHITE, "\n")
+#define DebugOutL(...)              DebugConsole::Out(__VA_ARGS__, 0b1110_fg, "\n")
+#define DebugOut(...)               DebugConsole::Out(__VA_ARGS__)
+#define DebugErrorL(...)            DebugConsole::Out(0b1001_fg, "ERROR: "  , __VA_ARGS__, 0b1110_fg, "\n")
+#define DebugWarningL(...)          DebugConsole::Out(0b1101_fg, "WARNING: ", __VA_ARGS__, 0b1110_fg, "\n")
 #else
 #define CreateDebugConsole(ConName) ((void*)0)
-#define DebugOutL(...) ((void*)0)
-#define DebugOut(...) ((void*)0)
-#define DebugErrorL(...) ((void*)0)
-#define DebugWarningL(...) ((void*)0)
+#define DebugOutL(...)              ((void*)0)
+#define DebugOut(...)               ((void*)0)
+#define DebugErrorL(...)            ((void*)0)
+#define DebugWarningL(...)          ((void*)0)
 #endif

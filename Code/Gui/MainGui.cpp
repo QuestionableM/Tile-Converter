@@ -68,7 +68,7 @@ namespace TileConverter
 	{
 		if (this->DatabaseLoader_BW->IsBusy) return;
 
-		DebugOutL(ConCol::BLUE_INT, "Loading object database...");
+		DebugOutL(0b0011_fg, "Loading object database...");
 
 		this->ChangeGuiState(false, false);
 		this->ProgressUpdater->Start();

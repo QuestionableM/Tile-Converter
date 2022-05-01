@@ -68,7 +68,7 @@ void DatabaseConfig::ReadUserSettings(nlohmann::json& config_json, bool& should_
 			u_set["GamePath"] = String::ToUtf8(game_path);
 			DatabaseConfig::GamePath = game_path;
 
-			DebugOutL(ConCol::BLUE_INT, "Found a game path from the registry: ", DatabaseConfig::GamePath);
+			DebugOutL(0b0011_fg, "Found a game path from the registry: ", DatabaseConfig::GamePath);
 			
 			if (ModFolders.empty())
 			{
@@ -77,7 +77,7 @@ void DatabaseConfig::ReadUserSettings(nlohmann::json& config_json, bool& should_
 				ModFolders.push_back(ws_path);
 
 				u_set["WorkshopModFolders"] = ws_mods_array;
-				DebugOutL(ConCol::BLUE_INT, "Found a workshop path from the registry: ", ws_path);
+				DebugOutL(0b0011_fg, "Found a workshop path from the registry: ", ws_path);
 			}
 			else
 			{
@@ -212,7 +212,7 @@ void DatabaseConfig::SaveConfig()
 
 	cfgData["UserSettings"] = user_settings;
 
-	DebugOutL(ConCol::PINK_INT, "Saving a new config...");
+	DebugOutL(0b1011_fg, "Saving a new config...");
 	JsonReader::WriteJson(DatabaseConfig::ConfigPath.data(), cfgData);
 }
 
@@ -231,7 +231,7 @@ void DatabaseConfig::ReadConfig()
 
 	if (should_write)
 	{
-		DebugOutL(ConCol::PINK_INT, "Writing a new Config.json...");
+		DebugOutL(0b1011_fg, "Writing a new Config.json...");
 		JsonReader::WriteJson(DatabaseConfig::ConfigPath.data(), cfgData);
 	}
 }

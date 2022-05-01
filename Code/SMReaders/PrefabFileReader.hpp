@@ -120,7 +120,7 @@ public:
 			const std::wstring l_PrefLocalPath = String::ToWide(stream.ReadString(l_StringLength));
 			const std::wstring l_PrefFullPath = KeywordReplacer::ReplaceKey(l_PrefLocalPath);
 
-			DebugOutL(ConCol::PINK_INT, "Recursive Prefab Path: ", l_PrefFullPath);
+			DebugOutL(0b1011_fg, "Recursive Prefab Path: ", l_PrefFullPath);
 			std::vector<float> f_pos = {};
 			std::vector<float> f_quat = {};
 			std::vector<float> f_size = { 1.0f, 1.0f, 1.0f };
