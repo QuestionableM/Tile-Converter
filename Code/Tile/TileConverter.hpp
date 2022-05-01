@@ -4,20 +4,22 @@
 
 class ConvertSettings
 {
-	ConvertSettings() = default;
+	ConvertSettings()  = default;
+	~ConvertSettings() = default;
+
 public:
 	//model settings
-	static bool ExportUvs;
-	static bool ExportNormals;
-	static bool ExportMaterials;
-	static bool ExportGroundTextures;
+	inline static bool ExportUvs            = true;
+	inline static bool ExportNormals        = true;
+	inline static bool ExportMaterials      = true;
+	inline static bool ExportGroundTextures = false;
 
 	//tile settings
-	static bool ExportClutter;
-	static bool ExportAssets;
-	static bool ExportPrefabs;
-	static bool ExportBlueprints;
-	static bool ExportHarvestables;
+	inline static bool ExportClutter      = true;
+	inline static bool ExportAssets       = true;
+	inline static bool ExportPrefabs      = true;
+	inline static bool ExportBlueprints   = true;
+	inline static bool ExportHarvestables = true;
 };
 
 class ConvertError
@@ -34,6 +36,10 @@ public:
 
 class TileConv
 {
+	TileConv()  = default;
+	~TileConv() = default;
+
+	static void WriteToFileInternal(class Tile* pTile, const std::wstring& tile_name, ConvertError& cError);
 public:
 	static void ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name, ConvertError& cError);
 };

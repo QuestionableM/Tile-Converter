@@ -781,19 +781,26 @@ void Tile::WriteToFile(const std::wstring& dir_path, const std::wstring& file_na
 			output_model.write(mtl_header.c_str(), mtl_header.size());
 		}
 
-		WriterOffsetData offset_data;
-		const std::vector<float> pHeightArray = this->GetVertexHeight();
+		{
+			WriterOffsetData offset_data;
 
-		this->WriteTerrain(output_model, offset_data, pHeightArray);
-		this->WriteClutter(output_model, offset_data, pHeightArray);
-		this->WriteAssets (output_model, offset_data);
+			{
+				const std::vector<float> pHeightArray = this->GetVertexHeight();
+
+				this->WriteTerrain(output_model, offset_data, pHeightArray);
+				this->WriteClutter(output_model, offset_data, pHeightArray);
+			}
+
+			this->WriteAssets(output_model, offset_data);
+
+			output_model.close();
+		}
+
+		this->WriteMtlFile(mtl_path);
+
 		this->WriteMaterials(dir_path);
 		this->WriteColorMap (dir_path);
 		this->WriteGroundTextures(dir_path);
-
-		output_model.close();
-
-		this->WriteMtlFile(mtl_path);
 	}
 
 	DebugOutL("Finished!");

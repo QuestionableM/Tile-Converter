@@ -6,18 +6,7 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-bool ConvertSettings::ExportUvs            = true;
-bool ConvertSettings::ExportNormals        = true;
-bool ConvertSettings::ExportMaterials	   = true;
-bool ConvertSettings::ExportGroundTextures = false;
-
-bool ConvertSettings::ExportClutter      = true;
-bool ConvertSettings::ExportAssets       = true;
-bool ConvertSettings::ExportPrefabs      = true;
-bool ConvertSettings::ExportBlueprints   = true;
-bool ConvertSettings::ExportHarvestables = true;
-
-constexpr const static std::wstring_view TileOutputDirectory = L"./ConvertedTiles";
+constexpr const static std::wstring_view g_TileOutputDirectory = L"./ConvertedTiles";
 
 ConvertError::ConvertError(const unsigned short& ec, const std::wstring& error_msg)
 {
@@ -35,6 +24,26 @@ std::wstring ConvertError::GetErrorMsg() const noexcept
 	return this->ErrorMessage;
 }
 
+void TileConv::WriteToFileInternal(Tile* pTile, const std::wstring& tile_name, ConvertError& cError)
+{
+	if (cError) return; //Error check
+
+	if (!File::CreateDirectorySafe(g_TileOutputDirectory.data()))
+	{
+		cError = ConvertError(1, L"Couldn't create the main output directory");
+		return;
+	}
+
+	const std::wstring tile_dir_path = std::wstring(g_TileOutputDirectory.data()) + L"/" + tile_name;
+	if (!File::CreateDirectorySafe(tile_dir_path))
+	{
+		cError = ConvertError(1, L"Coudln't create the tile output directory");
+		return;
+	}
+
+	pTile->WriteToFile(tile_dir_path + L"/", tile_name);
+}
+
 void TileConv::ConvertToModel(const std::wstring& tile_path, const std::wstring& tile_name, ConvertError& cError)
 {
 	fs::directory_entry fEntry(tile_path);
@@ -44,30 +53,12 @@ void TileConv::ConvertToModel(const std::wstring& tile_path, const std::wstring&
 		return;
 	}
 
-	if (!File::CreateDirectorySafe(TileOutputDirectory.data()))
 	{
-		cError = ConvertError(1, L"Couldn't create the main output directory");
-		return;
-	}
+		Tile* pOutTile = TileReader::ReadTile(tile_path, cError);
 
-	const fs::path& fPath = fEntry.path();
-	const std::wstring tile_dir_path = std::wstring(TileOutputDirectory.data()) + L"/" + tile_name;
+		TileConv::WriteToFileInternal(pOutTile, tile_name, cError);
 
-	if (!File::CreateDirectorySafe(tile_dir_path))
-	{
-		cError = ConvertError(1, L"Couldn't create the tile output directory!");
-		return;
-	}
-
-	{
-		Tile* out_tile = TileReader::ReadTile(tile_path, cError);
-
-		if (!cError)
-		{
-			out_tile->WriteToFile(tile_dir_path + L"/", tile_name);
-		}
-
-		delete out_tile; //clear the tile data
+		delete pOutTile; //clear the tile data
 
 		ModelStorage::ClearStorage(); // clear the cache
 	}
