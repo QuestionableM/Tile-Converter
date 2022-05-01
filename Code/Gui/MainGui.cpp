@@ -182,9 +182,9 @@ namespace TileConverter
 		System::String^ tile_path = safe_cast<System::String^>(tData->GetValue((int)0));
 		System::String^ tile_name = safe_cast<System::String^>(tData->GetValue((int)1));
 		
-		const bool export_uvs       = safe_cast<bool>(tData->GetValue((int)2));
-		const bool export_normals   = safe_cast<bool>(tData->GetValue((int)3));
-		const bool export_materials = safe_cast<bool>(tData->GetValue((int)4));
+		const bool export_uvs           = safe_cast<bool>(tData->GetValue((int)2));
+		const bool export_normals       = safe_cast<bool>(tData->GetValue((int)3));
+		const bool export_materials     = safe_cast<bool>(tData->GetValue((int)4));
 		const bool export_gnd_materials = safe_cast<bool>(tData->GetValue((int)5));
 
 		const bool export_clutter      = safe_cast<bool>(tData->GetValue((int)6));
@@ -193,9 +193,9 @@ namespace TileConverter
 		const bool export_blueprints   = safe_cast<bool>(tData->GetValue((int)9));
 		const bool export_harvestables = safe_cast<bool>(tData->GetValue((int)10));
 
-		ConvertSettings::ExportUvs       = export_uvs;
-		ConvertSettings::ExportNormals   = export_normals;
-		ConvertSettings::ExportMaterials = export_materials && export_uvs;
+		ConvertSettings::ExportUvs            = export_uvs;
+		ConvertSettings::ExportNormals        = export_normals;
+		ConvertSettings::ExportMaterials      = export_materials && export_uvs;
 		ConvertSettings::ExportGroundTextures = export_gnd_materials;
 
 		ConvertSettings::ExportClutter      = export_clutter;
@@ -258,6 +258,9 @@ namespace TileConverter
 				WForms::MessageBoxIcon::Information
 			);
 		}
+
+		this->ConvertProgress_PB->Value = 0;
+		this->ConvertProgress_PB->Maximum = 0;
 
 		this->ProgressUpdater_Tick(nullptr, nullptr);
 		this->ChangeGuiState(true, false);
