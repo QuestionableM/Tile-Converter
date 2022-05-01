@@ -29,7 +29,6 @@ void AssetListLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unord
 void AssetListLoader::Load(const nlohmann::json& fAssets, Mod* mod)
 {
 	if (!fAssets.is_array()) return;
-	DebugOutL("Loading AssetList...");
 
 	ProgCounter::ProgressMax += fAssets.size();
 	for (const auto& mAsset : fAssets)

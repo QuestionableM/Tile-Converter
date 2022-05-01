@@ -26,7 +26,6 @@ void KeywordReplacer::SetReplacement(const std::wstring& key, const std::wstring
 		return;
 	}
 
-	DebugOutL("Added a new key: ", mLowerKey, " -> ", mLowerVal);
 	m_KeyReplacements.insert(std::make_pair(mLowerKey, mLowerVal));
 }
 

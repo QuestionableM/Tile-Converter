@@ -49,7 +49,6 @@ void BlockListLoader::GetBlockMaterial(const nlohmann::json& block, TextureList&
 void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 {
 	if (!fBlocks.is_array()) return;
-	DebugOutL("Loading Block List...");
 
 	ProgCounter::ProgressMax += fBlocks.size();
 	for (const auto& fBlock : fBlocks)

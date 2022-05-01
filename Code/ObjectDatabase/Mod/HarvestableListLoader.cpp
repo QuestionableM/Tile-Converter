@@ -8,7 +8,6 @@
 void HarvestableListLoader::Load(const nlohmann::json& fHarvestables, Mod* mod)
 {
 	if (!fHarvestables.is_array()) return;
-	DebugOutL("Loading Harvestable List...");
 
 	ProgCounter::ProgressMax += fHarvestables.size();
 	for (const auto& mHarvestable : fHarvestables)

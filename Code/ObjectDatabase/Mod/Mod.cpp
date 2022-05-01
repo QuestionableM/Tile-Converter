@@ -248,7 +248,9 @@ void Mod::LoadFile(const std::wstring& path)
 		const std::string key_str = fKey.key();
 
 		if (DataLoaders.find(key_str) != DataLoaders.end())
+		{
 			DataLoaders.at(key_str)(fKey.value(), this);
+		}
 		else
 		{
 			DebugErrorL("Couldn't find the loader for: ", key_str);

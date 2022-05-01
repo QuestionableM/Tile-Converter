@@ -40,7 +40,6 @@ void ClutterListLoader::LoadClutterData(const nlohmann::json& fClutter, ClutterD
 void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 {
 	if (!fClutter.is_array()) return;
-	DebugOutL("Loading Clutter List...");
 
 	ProgCounter::ProgressMax += fClutter.size();
 	for (const auto& cl_item : fClutter)
