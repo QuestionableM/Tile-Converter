@@ -33,7 +33,8 @@ std::vector<TileEntity*> Prefab::GetObjects() const
 
 void Prefab::AddObject(TileEntity* object)
 {
-	assert(object->Type() == EntityType::Harvestable || object->Type() == EntityType::Asset || object->Type() == EntityType::Blueprint);
+	//Check if the object is valid (Valid objects: Harvestable, Blueprint, Prefab, Asset)
+	assert((static_cast<unsigned char>(object->Type()) & 0b00011011) != 0);
 
 	this->Objects.push_back(object);
 }

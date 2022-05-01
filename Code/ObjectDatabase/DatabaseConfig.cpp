@@ -93,7 +93,7 @@ void DatabaseConfig::ReadUserSettings(nlohmann::json& config_json, bool& should_
 		}
 	}
 
-	KeywordReplacer::AddKey(L"$GAME_FOLDER", DatabaseConfig::GamePath);
+	KeywordReplacer::SetReplacement(L"$GAME_FOLDER", DatabaseConfig::GamePath);
 }
 
 void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
@@ -113,7 +113,7 @@ void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
 			std::wstring pValue = String::ToWide(key_obj.value().get<std::string>());
 			KeywordReplacer::ReplaceKeyR(pValue);
 
-			KeywordReplacer::AddKey(pKey, pValue);
+			KeywordReplacer::SetReplacement(pKey, pValue);
 		}
 	}
 

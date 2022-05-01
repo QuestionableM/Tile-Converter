@@ -1,69 +1,113 @@
 #include "Uuid.hpp"
 
-SMUuid::SMUuid(const std::vector<long long>& longs)
+#include "Utils\String.hpp"
+
+#include <iomanip>
+#include <sstream>
+
+void SMUuid::FromString(const std::string& uuid)
 {
-	std::vector<std::uint8_t> uuid_bytes(8 * 2);
-
-	std::memcpy(uuid_bytes.data(), longs.data(), 8 * 2);
-
-	this->uuid_data = uuids::uuid(uuid_bytes);
-}
-
-SMUuid::SMUuid(const long long& first, const long long& second, const bool& big_endian)
-{
-	std::vector<long long> long_data = { first, second };
-
-	std::vector<std::uint8_t> uuid_bytes(8 * 2);
-	std::memcpy(uuid_bytes.data(), long_data.data(), 8 * 2);
-
-	if (big_endian)
+	if (uuid.size() != 36) //if the string size doesn't match, then create a null uuid
 	{
-		std::reverse(uuid_bytes.begin(), uuid_bytes.end());
+		std::memset(&m_Data8, 0, 16);
+		return;
 	}
 
-	this->uuid_data = uuids::uuid(uuid_bytes);
+	std::string lUuidCopy = uuid;
+
+	std::size_t lIdx = 0;
+	while ((lIdx = lUuidCopy.find('-')) != std::string::npos)
+		lUuidCopy.erase(lUuidCopy.begin() + lIdx);
+
+	for (std::size_t a = 0; a < 16; a++)
+		m_Data8[a] = (unsigned char)std::stoi(lUuidCopy.substr(a * 2, 2), nullptr, 16);
 }
 
-SMUuid::SMUuid(const std::string& str_uuid)
+SMUuid::SMUuid()
 {
-	this->uuid_data = uuids::uuid::from_string(str_uuid);
+	std::memset(&m_Data8, 0, 16);
 }
 
-void SMUuid::operator=(const std::vector<long long>& longs)
+SMUuid::SMUuid(const std::string& uuid)
 {
-	std::vector<std::uint8_t> uuid_bytes(8 * 2);
-
-	std::memcpy(uuid_bytes.data(), longs.data(), 8 * 2);
-
-	this->uuid_data = uuids::uuid(uuid_bytes);
+	this->FromString(uuid);
 }
 
-void SMUuid::operator=(const std::string& str_uuid)
+SMUuid::SMUuid(const std::vector<long long>& longs)
 {
-	this->uuid_data = uuids::uuid::from_string(str_uuid);
+	std::memcpy(&m_Data64, longs.data(), 16);
 }
 
-SMUuid SMUuid::Null()
+SMUuid::SMUuid(const long long& first, const long long& second, const bool& isBigEndian)
 {
-	return SMUuid();
+	m_Data64[0] = first;
+	m_Data64[1] = second;
+
+	if (isBigEndian)
+	{
+		std::reverse(m_Data8, m_Data8 + 16);
+	}
+}
+
+std::size_t SMUuid::Hash() const
+{
+	return (std::hash<unsigned long long>{}(m_Data64[0]) >> 1) ^ (std::hash<unsigned long long>{}(m_Data64[1]) << 2);
 }
 
 std::string SMUuid::ToString() const
 {
-	return uuids::to_string(this->uuid_data);
+	std::stringstream lStream;
+
+	lStream << std::hex << std::setfill('0')
+		<< std::setw(2) << (int)m_Data8[0]
+		<< std::setw(2) << (int)m_Data8[1]
+		<< std::setw(2) << (int)m_Data8[2]
+		<< std::setw(2) << (int)m_Data8[3]
+		<< '-'
+		<< std::setw(2) << (int)m_Data8[4]
+		<< std::setw(2) << (int)m_Data8[5]
+		<< '-'
+		<< std::setw(2) << (int)m_Data8[6]
+		<< std::setw(2) << (int)m_Data8[7]
+		<< '-'
+		<< std::setw(2) << (int)m_Data8[8]
+		<< std::setw(2) << (int)m_Data8[9]
+		<< '-'
+		<< std::setw(2) << (int)m_Data8[10]
+		<< std::setw(2) << (int)m_Data8[11]
+		<< std::setw(2) << (int)m_Data8[12]
+		<< std::setw(2) << (int)m_Data8[13]
+		<< std::setw(2) << (int)m_Data8[14]
+		<< std::setw(2) << (int)m_Data8[15];
+
+	return lStream.str();
 }
 
 std::wstring SMUuid::ToWstring() const
 {
-	return uuids::to_wstring(this->uuid_data);
+	return String::ToWide(this->ToString());
 }
 
 bool operator==(const SMUuid& lhs, const SMUuid& rhs) noexcept
 {
-	return (lhs.uuid_data == rhs.uuid_data);
+	return (
+		lhs.m_Data64[0] == rhs.m_Data64[0] &&
+		lhs.m_Data64[1] == rhs.m_Data64[1]
+	);
 }
 
 bool operator!=(const SMUuid& lhs, const SMUuid& rhs) noexcept
 {
-	return !(lhs == rhs);
+	return (
+		lhs.m_Data64[0] != rhs.m_Data64[0] ||
+		lhs.m_Data64[1] != rhs.m_Data64[1]
+	);
+}
+
+bool operator< (const SMUuid& lhs, const SMUuid& rhs) noexcept
+{
+	return (
+		lhs.m_Data64[0] < rhs.m_Data64[0] ||
+		lhs.m_Data64[1] < rhs.m_Data64[1]
+	);
 }

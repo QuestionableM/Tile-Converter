@@ -18,7 +18,7 @@ void DatabaseLoader::LoadGameDatabase()
 	ProgCounter::SetState(ProgState::LoadingVanilla, 0);
 	DebugOutL(ConCol::BLUE, "Loading game data...");
 
-	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid::Null(), ModType::GameData);
+	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid(), ModType::GameData);
 
 	for (const std::wstring& db_dir : DatabaseConfig::AssetListFolders)
 	{

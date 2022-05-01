@@ -274,7 +274,7 @@ void Mod::ScanFolder(const std::wstring& folder)
 
 void Mod::LoadObjects()
 {
-	KeywordReplacer::SetModData(this->Uuid, this->Directory);
+	KeywordReplacer::SetModData(this->Directory, this->Uuid);
 
 	const std::wstring data_dir = this->GetDatabaseDirectory();
 

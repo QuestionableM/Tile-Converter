@@ -8,6 +8,7 @@
 #include "Utils/Memory.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
 
 #include <algorithm>
 
@@ -115,10 +116,11 @@ public:
 	{
 		for (int a = 0; a < count; a++)
 		{
-			const int string_length = stream.ReadInt();
-			const std::wstring pref_path = String::ToWide(stream.ReadString(string_length));
+			const int l_StringLength = stream.ReadInt();
+			const std::wstring l_PrefLocalPath = String::ToWide(stream.ReadString(l_StringLength));
+			const std::wstring l_PrefFullPath = KeywordReplacer::ReplaceKey(l_PrefLocalPath);
 
-			DebugOutL(ConCol::PINK_INT, "Recursive Prefab Path: ", pref_path);
+			DebugOutL(ConCol::PINK_INT, "Recursive Prefab Path: ", l_PrefFullPath);
 			std::vector<float> f_pos = {};
 			std::vector<float> f_quat = {};
 			std::vector<float> f_size = { 1.0f, 1.0f, 1.0f };
@@ -140,7 +142,7 @@ public:
 
 			if (ConvertSettings::ExportPrefabs)
 			{
-				Prefab* rec_prefab = PrefabFileReader::Read(pref_path, L"");
+				Prefab* rec_prefab = PrefabFileReader::Read(l_PrefFullPath, L"");
 				if (!rec_prefab) continue;
 
 				rec_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
@@ -207,7 +209,7 @@ public:
 	{
 		for (int a = 0; a < count; a++)
 		{
-			std::vector<float> f_pos = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
+			std::vector<float> f_pos  = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
 			std::vector<float> f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
 			std::vector<float> f_size = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
 

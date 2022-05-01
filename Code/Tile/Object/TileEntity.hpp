@@ -19,16 +19,16 @@ struct ObjectTexData
 
 struct Model;
 
-enum class EntityType
+enum class EntityType : unsigned char
 {
-	Harvestable,
-	Blueprint,
-	Clutter,
-	Prefab,
-	Asset,
-	Block,
-	Joint,
-	Part
+	Harvestable = 0b00000001,
+	Blueprint   = 0b00000010,
+	Clutter     = 0b00000100,
+	Prefab      = 0b00001000,
+	Asset       = 0b00010000,
+	Block       = 0b00100000,
+	Joint       = 0b01000000,
+	Part        = 0b10000000 
 };
 
 class TileEntity
