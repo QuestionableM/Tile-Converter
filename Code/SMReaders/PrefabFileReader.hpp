@@ -36,7 +36,7 @@ public:
 	{
 		MemoryWrapper reader(bytes);
 
-		std::vector<char> magic = reader.NextObjects<char>(4, true);
+		std::vector<char> magic = reader.NextObjects<char, true>(4);
 
 		if (std::string(magic.begin(), magic.end()) != "PREF")
 		{
@@ -46,7 +46,7 @@ public:
 
 		Prefab* prefab = new Prefab(ppath, pflag);
 		
-		const int version = reader.NextObject<int>(true);
+		const int version = reader.NextObject<int, true>();
 		DebugOutL("Prefab Version: ", version);
 
 		BitStream stream(reader);

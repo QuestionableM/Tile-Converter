@@ -6,60 +6,36 @@
 #include <gtx/quaternion.hpp>
 #include <gtx/transform.hpp>
 
+#include "Console.hpp"
+
 TilePart::TilePart(Tile* parent)
 {
 	this->Parent = parent;
 
-	VertexColor.resize(33 * 33);
-	VertexHeight.resize(33 * 33);
-	Ground.resize(65 * 65);
-	Clutter.resize(128 * 128);
+	//set all pointers to zero
+	std::memset(m_ClutterMap.data(), 0, (128 * 128) * sizeof(std::size_t));
 }
 
 TilePart::~TilePart()
 {
-	for (TileClutter*& pClutter : this->ClutterMap)
+	for (std::size_t a = 0; a < m_ClutterMap.size(); a++)
+		delete m_ClutterMap[a];
+
+	for (std::size_t a = 0; a < m_Objects.size(); a++)
 	{
-		if (!pClutter) continue;
-
-		delete pClutter;
+		for (std::size_t b = 0; b < m_Objects[a].size(); b++)
+			delete m_Objects[a][b];
 	}
-
-	for (std::size_t a = 0; a < this->Objects.size(); a++)
-	{
-		for (TileEntity*& pEntity : this->Objects[a])
-			delete pEntity;
-	}
-}
-
-void TilePart::SetVertexColor(const std::vector<int>& vert_array)
-{
-	this->VertexColor = vert_array;
-}
-
-void TilePart::SetVertexHeight(const std::vector<float>& height_array)
-{
-	this->VertexHeight = height_array;
-}
-
-void TilePart::SetGroundMaterials(const std::vector<long long>& material_array)
-{
-	this->Ground = material_array;
-}
-
-void TilePart::SetClutter(const std::vector<SignedByte>& clutter_array)
-{
-	this->Clutter = clutter_array;
 }
 
 void TilePart::AddObject(TileEntity* object, const int& index)
 {
 	assert(object != nullptr);
 	assert(0 <= index && index <= 3);
-	assert(object->Type() == EntityType::Asset || object->Type() == EntityType::Harvestable || object->Type() == EntityType::Blueprint || object->Type() == EntityType::Prefab);
-	assert((index > 0 && object->Type() == EntityType::Asset || object->Type() == EntityType::Harvestable) || index == 0);
+	assert((static_cast<unsigned char>(object->Type()) & 0b00011011) != 0);
+	assert((index > 0 && (static_cast<unsigned char>(object->Type()) & 0b00010001) != 0) || index == 0);
 
-	this->Objects[index].push_back(object);
+	this->m_Objects[index].push_back(object);
 }
 
 Tile* TilePart::GetParent()
@@ -84,9 +60,9 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 	transform *= glm::translate(glm::vec3((float)xPos * 64.0f, (float)zPos * 64.0f, 0.0f));
 	transform *= glm::translate(glm::vec3(-tWidth * 1.5f, -tHeight * 1.5f, 0.0f));
 
-	for (std::size_t vec_idx = 0; vec_idx < this->Objects.size(); vec_idx++)
+	for (std::size_t vec_idx = 0; vec_idx < m_Objects.size(); vec_idx++)
 	{
-		const std::vector<TileEntity*>& entity_array = this->Objects[vec_idx];
+		const std::vector<TileEntity*>& entity_array = m_Objects[vec_idx];
 
 		for (std::size_t a = 0; a < entity_array.size(); a++)
 			entity_array[a]->WriteObjectToFile(model, mOffsetData, transform);
@@ -95,17 +71,18 @@ void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, 
 
 void TilePart::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tData) const
 {
-	for (std::size_t a = 0; a < Objects.size(); a++)
+	for (std::size_t a = 0; a < m_Objects.size(); a++)
 	{
-		for (const TileEntity* pEntity : Objects[a])
+		for (const TileEntity* pEntity : m_Objects[a])
 			pEntity->FillTextureMap(tData);
+	}
 
-		for (const TileClutter* pClutter : ClutterMap)
-		{
-			if (!pClutter) continue;
+	for (std::size_t a = 0; a < m_ClutterMap.size(); a++)
+	{
+		const TileClutter* pClutter = m_ClutterMap[a];
+		if (!pClutter) continue;
 
-			pClutter->FillTextureMap(tData);
-		}
+		pClutter->FillTextureMap(tData);
 	}
 }
 
@@ -113,7 +90,7 @@ std::size_t TilePart::GetAmountOfObjects() const
 {
 	std::size_t output = 0;
 
-	for (const std::vector<TileEntity*>& tEntityVec : this->Objects)
+	for (const std::vector<TileEntity*>& tEntityVec : m_Objects)
 	{
 		for (const TileEntity* tEntity : tEntityVec)
 			output += tEntity->GetAmountOfObjects();

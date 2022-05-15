@@ -15,47 +15,29 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-std::unordered_map<SMUuid, Mod*> Mod::ModStorage = {};
-
-std::unordered_map<SMUuid, BlockData*> Mod::BlockStorage = {};
-std::unordered_map<SMUuid, PartData*>  Mod::PartStorage  = {};
-std::unordered_map<SMUuid, AssetData*> Mod::AssetStorage = {};
-std::unordered_map<SMUuid, HarvestableData*> Mod::HarvestableStorage = {};
-std::unordered_map<SMUuid, ClutterData*> Mod::ClutterStorage = {};
-std::vector<ClutterData*> Mod::ClutterVector = {};
-
-const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> Mod::DataLoaders =
-{
-	{ "assetListRenderable", AssetListLoader::Load       },
-	{ "harvestableList",     HarvestableListLoader::Load },
-	{ "partList",			 PartListLoader::Load		 },
-	{ "blockList",			 BlockListLoader::Load		 },
-	{ "clutterList",		 ClutterListLoader::Load     }
-};
-
 Mod::Mod(const std::wstring& name, const std::wstring& dir, const SMUuid& uuid, const ModType& type)
 {
-	this->Name = name;
-	this->Directory = dir;
-	this->Uuid = uuid;
-	this->Type = type;
+	this->m_Name = name;
+	this->m_Directory = dir;
+	this->m_Uuid = uuid;
+	this->m_Type = type;
 }
 
 Mod::~Mod()
 {
-	for (const auto& pBlock : this->Blocks)
+	for (const auto& pBlock : m_Blocks)
 		delete pBlock.second;
 
-	for (const auto& pPart : this->Parts)
+	for (const auto& pPart : m_Parts)
 		delete pPart.second;
 
-	for (const auto& pAsset : this->Assets)
+	for (const auto& pAsset : m_Assets)
 		delete pAsset.second;
 
-	for (const auto& pHarvestable : this->Harvestables)
+	for (const auto& pHarvestable : m_Harvestables)
 		delete pHarvestable.second;
 
-	for (const auto& pClutter : this->Clutter)
+	for (const auto& pClutter : m_Clutter)
 		delete pClutter.second;
 }
 
@@ -68,10 +50,11 @@ void Mod::ClearModStorage()
 	Mod::ClutterStorage.clear();
 	Mod::ClutterVector.clear();
 
-	for (const auto& pMod : Mod::ModStorage)
-		delete pMod.second;
+	for (std::size_t a = 0; a < Mod::ModVector.size(); a++)
+		delete Mod::ModVector[a];
 
 	Mod::ModStorage.clear();
+	Mod::ModVector.clear();
 }
 
 Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
@@ -107,16 +90,17 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
 	{
 		const Mod* old_mod = ModStorage.at(mod_uuid);
 
-		DebugErrorL("Uuid conflict between 2 items: ", old_mod->Name, " and ", mod_name);
+		DebugErrorL("Uuid conflict between 2 items: ", old_mod->m_Name, " and ", mod_name);
 		return nullptr;
 	}
 
-	Mod* nMod = new Mod(mod_name, mod_folder, mod_uuid, mod_type);
+	Mod* pNewMod = new Mod(mod_name, mod_folder, mod_uuid, mod_type);
 
-	DebugOutL("Mod: ", 0b1101_fg, nMod->Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, nMod->Uuid.ToString());
-	ModStorage.insert(std::make_pair(nMod->Uuid, nMod));
+	DebugOutL("Mod: ", 0b1101_fg, pNewMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, pNewMod->m_Uuid.ToString());
+	Mod::ModStorage.insert(std::make_pair(pNewMod->m_Uuid, pNewMod));
+	Mod::ModVector.push_back(pNewMod);
 
-	return nMod;
+	return pNewMod;
 }
 
 BlockData* Mod::GetGlobalBlock(const SMUuid& uuid)
@@ -187,10 +171,10 @@ std::size_t Mod::GetAmountOfMods()
 
 std::wstring Mod::GetDatabaseDirectory() const
 {
-	switch (this->Type)
+	switch (m_Type)
 	{
-	case ModType::BlocksAndParts:return this->Directory + L"/Objects/Database/ShapeSets";
-	case ModType::TerrainAssets: return this->Directory + L"/Database/AssetSets";
+	case ModType::BlocksAndParts:return m_Directory + L"/Objects/Database/ShapeSets";
+	case ModType::TerrainAssets: return m_Directory + L"/Database/AssetSets";
 	}
 
 	return L"UNKNOWN";
@@ -198,43 +182,52 @@ std::wstring Mod::GetDatabaseDirectory() const
 
 BlockData* Mod::GetBlock(const SMUuid& uuid) const
 {
-	if (this->Blocks.find(uuid) != this->Blocks.end())
-		return this->Blocks.at(uuid);
+	if (m_Blocks.find(uuid) != m_Blocks.end())
+		return m_Blocks.at(uuid);
 
 	return nullptr;
 }
 
 PartData* Mod::GetPart(const SMUuid& uuid) const
 {
-	if (this->Parts.find(uuid) != this->Parts.end())
-		return this->Parts.at(uuid);
+	if (m_Parts.find(uuid) != m_Parts.end())
+		return m_Parts.at(uuid);
 	
 	return nullptr;
 }
 
 AssetData* Mod::GetAsset(const SMUuid& uuid) const
 {
-	if (this->Assets.find(uuid) != this->Assets.end())
-		return this->Assets.at(uuid);
+	if (m_Assets.find(uuid) != m_Assets.end())
+		return m_Assets.at(uuid);
 
 	return nullptr;
 }
 
 HarvestableData* Mod::GetHarvestable(const SMUuid& uuid) const
 {
-	if (this->Harvestables.find(uuid) != this->Harvestables.end())
-		return this->Harvestables.at(uuid);
+	if (m_Harvestables.find(uuid) != m_Harvestables.end())
+		return m_Harvestables.at(uuid);
 
 	return nullptr;
 }
 
 ClutterData* Mod::GetClutter(const SMUuid& uuid) const
 {
-	if (this->Clutter.find(uuid) != this->Clutter.end())
-		return this->Clutter.at(uuid);
+	if (m_Clutter.find(uuid) != m_Clutter.end())
+		return m_Clutter.at(uuid);
 
 	return nullptr;
 }
+
+static const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> g_DataLoaders =
+{
+	{ "assetListRenderable", AssetListLoader::Load       },
+	{ "harvestableList",     HarvestableListLoader::Load },
+	{ "partList",			 PartListLoader::Load		 },
+	{ "blockList",			 BlockListLoader::Load		 },
+	{ "clutterList",		 ClutterListLoader::Load     }
+};
 
 void Mod::LoadFile(const std::wstring& path)
 {
@@ -247,9 +240,9 @@ void Mod::LoadFile(const std::wstring& path)
 	{
 		const std::string key_str = fKey.key();
 
-		if (DataLoaders.find(key_str) != DataLoaders.end())
+		if (g_DataLoaders.find(key_str) != g_DataLoaders.end())
 		{
-			DataLoaders.at(key_str)(fKey.value(), this);
+			g_DataLoaders.at(key_str)(fKey.value(), this);
 		}
 		else
 		{
@@ -276,7 +269,7 @@ void Mod::ScanFolder(const std::wstring& folder)
 
 void Mod::LoadObjects()
 {
-	KeywordReplacer::SetModData(this->Directory, this->Uuid);
+	KeywordReplacer::SetModData(m_Directory, m_Uuid);
 
 	const std::wstring data_dir = this->GetDatabaseDirectory();
 

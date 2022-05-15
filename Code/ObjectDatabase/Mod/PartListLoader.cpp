@@ -102,7 +102,7 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 		const auto new_pair = std::make_pair(new_part->Uuid, new_part);
 
 		Mod::PartStorage.insert(new_pair);
-		mod->Parts.insert(new_pair);
+		mod->m_Parts.insert(new_pair);
 
 		ProgCounter::ProgressValue++;
 	}

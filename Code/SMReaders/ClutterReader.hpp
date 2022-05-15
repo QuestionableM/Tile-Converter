@@ -13,7 +13,7 @@ class ClutterReader
 	ClutterReader() = default;
 
 public:
-	static void Read(CellHeader* header, MemoryWrapper& memory, TilePart* part, ConvertError& cError)
+	inline static void Read(CellHeader* header, MemoryWrapper& memory, TilePart* part, ConvertError& cError)
 	{
 		if (cError || !ConvertSettings::ExportClutter) return;
 
@@ -26,7 +26,7 @@ public:
 #pragma warning(push)
 #pragma warning(disable : 4996)
 
-	static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& memory, ConvertError& cError)
+	inline static std::vector<Byte> Read(CellHeader* header, MemoryWrapper& memory, ConvertError& cError)
 	{
 		DebugOutL("Clutter: ", header->clutterCompressedSize, " ", header->clutterSize);
 
@@ -34,7 +34,7 @@ public:
 		std::vector<Byte> bytes = {};
 		bytes.resize(header->clutterSize);
 
-		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->clutterSize);
+		const int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->clutterSize);
 		if (debugSize != header->clutterCompressedSize)
 		{
 			cError = ConvertError(1, L"ClutterReader::Read -> debugSize != header->clutterCompressedSize");
@@ -46,14 +46,14 @@ public:
 
 #pragma warning(pop)
 
-	static void Read(const std::vector<Byte>& bytes, TilePart* part)
+	inline static void Read(const std::vector<Byte>& bytes, TilePart* part)
 	{
 		MemoryWrapper memory(bytes);
 
-		Byte first_byte = memory.Object<Byte>(0);
+		const Byte first_byte = memory.Object<Byte>(0);
 		if (first_byte != 0)
 		{
-			std::size_t length = (std::size_t)((int)first_byte & 0xff);
+			const std::size_t length = (std::size_t)((int)first_byte & 0xff);
 			std::size_t offset = 2;
 
 			for (std::size_t i = 0; i < length; i++)
@@ -72,7 +72,7 @@ public:
 					uVar7 = a + b + c + d;
 				}
 
-				SMUuid clutter_uuid(memory.Objects<long long>(offset, 2));
+				const SMUuid clutter_uuid = memory.Object<SMUuid>(offset);
 				DebugOutL(0b1101_fg, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
 
 				/*
@@ -91,16 +91,12 @@ public:
 		}
 
 
-		std::vector<SignedByte> next_data = {};
-		next_data.resize(128 * 128);
+		const std::size_t offset = memory.Index();
 
-		std::size_t offset = memory.Index();
-
-		part->ClutterMap.resize(128 * 128);
 		for (std::size_t a = 0; a < 0x4000; a++)
 		{
 			const SignedByte cur_byte = memory.Object<SignedByte>(1 + a + offset);
-			next_data[a] = cur_byte;
+			part->m_Clutter[a] = cur_byte;
 
 			if (cur_byte < 0) continue;
 
@@ -110,9 +106,7 @@ public:
 			Model* pModel = ModelStorage::LoadModel(clData->Mesh);
 			if (!pModel) continue;
 
-			part->ClutterMap[a] = new TileClutter(clData, pModel);
+			part->m_ClutterMap[a] = new TileClutter(clData, pModel);
 		}
-
-		part->SetClutter(next_data);
 	}
 };

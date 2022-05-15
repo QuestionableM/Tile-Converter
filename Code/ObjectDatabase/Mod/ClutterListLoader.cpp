@@ -74,7 +74,7 @@ void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 
 		const auto new_pair = std::make_pair(new_clutter->Uuid, new_clutter);
 
-		mod->Clutter.insert(new_pair);
+		mod->m_Clutter.insert(new_pair);
 		Mod::ClutterStorage.insert(new_pair);
 		Mod::ClutterVector.push_back(new_clutter);
 

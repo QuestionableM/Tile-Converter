@@ -37,7 +37,7 @@ void HarvestableListLoader::Load(const nlohmann::json& fHarvestables, Mod* mod)
 
 		const auto new_pair = std::make_pair(new_hvs->Uuid, new_hvs);
 
-		mod->Harvestables.insert(new_pair);
+		mod->m_Harvestables.insert(new_pair);
 		Mod::HarvestableStorage.insert(new_pair);
 
 		ProgCounter::ProgressValue++;

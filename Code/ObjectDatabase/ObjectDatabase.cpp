@@ -18,25 +18,26 @@ void DatabaseLoader::LoadGameDatabase()
 	ProgCounter::SetState(ProgState::LoadingVanilla, 0);
 	DebugOutL(0b0010_fg, "Loading game data...");
 
-	Mod* vanilla_items = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid(), ModType::GameData);
+	Mod* pVanillaMod = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid(), ModType::GameData);
 
 	for (const std::wstring& db_dir : DatabaseConfig::AssetListFolders)
 	{
 		std::error_code rError;
+		const bool is_regular_file = fs::is_regular_file(db_dir, rError);
 
-		if (fs::is_regular_file(db_dir, rError))
+		if (rError) continue;
+
+		if (is_regular_file)
 		{
-			if (rError) continue;
-
-			vanilla_items->LoadFile(db_dir);
+			pVanillaMod->LoadFile(db_dir);
 		}
 		else
 		{
-			vanilla_items->ScanFolder(db_dir);
+			pVanillaMod->ScanFolder(db_dir);
 		}
 	}
 
-	Mod::ModStorage.insert(std::make_pair(vanilla_items->Uuid, vanilla_items));
+	Mod::ModVector.push_back(pVanillaMod);
 }
 
 void DatabaseLoader::LoadModDatabase()
@@ -47,16 +48,16 @@ void DatabaseLoader::LoadModDatabase()
 	for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
 	{
 		std::error_code rError;
-		fs::directory_iterator rDirIter(mod_dir, fs::directory_options::skip_permission_denied, rError);
+		fs::directory_iterator lDirIterator(mod_dir, fs::directory_options::skip_permission_denied, rError);
 
-		for (const auto& dir : rDirIter)
+		for (const auto& dir : lDirIterator)
 		{
 			if (rError || !dir.is_directory()) continue;
 
-			Mod* new_mod = Mod::LoadFromDescription(dir.path().wstring());
-			if (!new_mod) continue;
+			Mod* pNewMod = Mod::LoadFromDescription(dir.path().wstring());
+			if (!pNewMod) continue;
 
-			new_mod->LoadObjects();
+			pNewMod->LoadObjects();
 		}
 	}
 }

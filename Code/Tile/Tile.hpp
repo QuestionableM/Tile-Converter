@@ -8,12 +8,12 @@ class GroundTexture;
 
 class Tile
 {
-	int Version;
-	int Type;
-	long long CreatorId;
-	int Width;
-	int Height;
-	std::vector<TilePart*> Tiles;
+	int m_Version;
+	int m_Type;
+	long long m_CreatorId;
+	int m_Width;
+	int m_Height;
+	std::vector<TilePart*> m_Tiles;
 
 public:
 	Tile(const int& width, const int& height);

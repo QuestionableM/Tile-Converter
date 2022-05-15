@@ -16,28 +16,23 @@ class TilePart
 
 public:
 	// Mip
-	std::vector<float> VertexHeight;
-	std::vector<int> VertexColor;
-	std::vector<long long> Ground;
+	std::array<float, 33 * 33> m_VertexHeight;
+	std::array<int, 33 * 33> m_VertexColor;
+	std::array<long long, 65 * 65> m_Ground;
 
 	// Clutter
-	std::vector<SignedByte> Clutter;
-	std::vector<TileClutter*> ClutterMap;
+	std::array<SignedByte, 128 * 128> m_Clutter;
+	std::array<TileClutter*, 128 * 128> m_ClutterMap;
 
 	/*
 		the 1st vector contains: harvestables, assets, prefabs and blueprints
 		the 2nd-4th vectors contain: assets and harvestables
 	*/
-	std::array<std::vector<TileEntity*>, 4> Objects = {};
+	std::array<std::vector<TileEntity*>, 4> m_Objects = {};
 
 public:
 	TilePart(Tile* parent);
 	~TilePart();
-
-	void SetVertexColor(const std::vector<int>& vert_array);
-	void SetVertexHeight(const std::vector<float>& height_array);
-	void SetGroundMaterials(const std::vector<long long>& material_array);
-	void SetClutter(const std::vector<SignedByte>& clutter_array);
 
 	void AddObject(TileEntity* object, const int& index = 0);
 

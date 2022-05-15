@@ -2,25 +2,25 @@
 
 #include "Console.hpp"
 #include "Utils/Memory.hpp"
-#include <vector>
+#include <array>
 
 #include "Utils/ByteImpl.hpp"
 
 class CellHeader
 {
 public:
-	/* 0x00 */ std::vector<int> mipIndex;
-	/* 0x18 */ std::vector<int> mipCompressedSize;
-	/* 0x30 */ std::vector<int> mipSize;
+	/* 0x00 */ std::array<int, 6> mipIndex;
+	/* 0x18 */ std::array<int, 6> mipCompressedSize;
+	/* 0x30 */ std::array<int, 6> mipSize;
 
 	/* 0x48 */ int clutterIndex;
 	/* 0x4c */ int clutterCompressedSize;
 	/* 0x50 */ int clutterSize;
 
-	/* 0x54 */ std::vector<int> assetListCount;
-	/* 0x64 */ std::vector<int> assetListIndex;
-	/* 0x74 */ std::vector<int> assetListCompressedSize;
-	/* 0x84 */ std::vector<int> assetListSize;
+	/* 0x54 */ std::array<int, 4> assetListCount;
+	/* 0x64 */ std::array<int, 4> assetListIndex;
+	/* 0x74 */ std::array<int, 4> assetListCompressedSize;
+	/* 0x84 */ std::array<int, 4> assetListSize;
 
 	/* 0x94 */ int blueprintListCount;
 	/* 0x98 */ int blueprintListIndex;
@@ -47,62 +47,62 @@ public:
 	/* 0xdC */ int decalCompressedSize;
 	/* 0xe0 */ int decalSize;
 
-	/* 0xe4 */ std::vector<int> harvestableListCount;
-	/* 0xf4 */ std::vector<int> harvestableListIndex;
-	/* 0x104 */std::vector<int> harvestableListCompressedSize;
-	/* 0x114 */std::vector<int> harvestableListSize;
+	/* 0xe4 */ std::array<int, 4> harvestableListCount;
+	/* 0xf4 */ std::array<int, 4> harvestableListIndex;
+	/* 0x104 */std::array<int, 4> harvestableListCompressedSize;
+	/* 0x114 */std::array<int, 4> harvestableListSize;
 
 	std::vector<Byte> mBytes = {};
 
-	void Read()
+	inline void Read()
 	{
 		MemoryWrapper mMemory(mBytes);
 
-		this->mipIndex = mMemory.Objects<int>(0x0, 6);
-		this->mipCompressedSize = mMemory.Objects<int>(0x18, 6);
-		this->mipSize = mMemory.Objects<int>(0x30, 6);
+		mMemory.ObjectsRef<int>(this->mipIndex.data()         , 0x0 , 6);
+		mMemory.ObjectsRef<int>(this->mipCompressedSize.data(), 0x18, 6);
+		mMemory.ObjectsRef<int>(this->mipSize.data()          , 0x30, 6);
 
-		this->clutterIndex = mMemory.Object<int>(0x48);
+		this->clutterIndex          = mMemory.Object<int>(0x48);
 		this->clutterCompressedSize = mMemory.Object<int>(0x4c);
-		this->clutterSize = mMemory.Object<int>(0x50);
+		this->clutterSize           = mMemory.Object<int>(0x50);
 
-		this->assetListCount = mMemory.Objects<int>(0x54, 4);
-		this->assetListIndex = mMemory.Objects<int>(0x64, 4);
-		this->assetListCompressedSize = mMemory.Objects<int>(0x74, 4);
-		this->assetListSize = mMemory.Objects<int>(0x84, 4);
+		mMemory.ObjectsRef<int>(this->assetListCount.data()         , 0x54, 4);
+		mMemory.ObjectsRef<int>(this->assetListIndex.data()         , 0x64, 4);
+		mMemory.ObjectsRef<int>(this->assetListCompressedSize.data(), 0x74, 4);
+		mMemory.ObjectsRef<int>(this->assetListSize.data()          , 0x84, 4);
 
-		this->blueprintListCount = mMemory.Object<int>(0x94);
-		this->blueprintListIndex = mMemory.Object<int>(0x98);
+		this->blueprintListCount          = mMemory.Object<int>(0x94);
+		this->blueprintListIndex          = mMemory.Object<int>(0x98);
 		this->blueprintListCompressedSize = mMemory.Object<int>(0x9c);
-		this->blueprintListSize = mMemory.Object<int>(0xa0);
+		this->blueprintListSize           = mMemory.Object<int>(0xa0);
 
-		this->nodeCount = mMemory.Object<int>(0xa4);
-		this->nodeIndex = mMemory.Object<int>(0xa8);
+		this->nodeCount          = mMemory.Object<int>(0xa4);
+		this->nodeIndex          = mMemory.Object<int>(0xa8);
 		this->nodeCompressedSize = mMemory.Object<int>(0xac);
-		this->nodeSize = mMemory.Object<int>(0xb0);
+		this->nodeSize           = mMemory.Object<int>(0xb0);
 
-		this->prefabCount = mMemory.Object<int>(0xc4);
-		this->prefabIndex = mMemory.Object<int>(0xc8);
+		this->prefabCount          = mMemory.Object<int>(0xc4);
+		this->prefabIndex          = mMemory.Object<int>(0xc8);
 		this->prefabCompressedSize = mMemory.Object<int>(0xcc);
-		this->prefabSize = mMemory.Object<int>(0xd0);
+		this->prefabSize           = mMemory.Object<int>(0xd0);
 
-		this->decalCount = mMemory.Object<int>(0xd4);
-		this->decalIndex = mMemory.Object<int>(0xd8);
+		this->decalCount          = mMemory.Object<int>(0xd4);
+		this->decalIndex          = mMemory.Object<int>(0xd8);
 		this->decalCompressedSize = mMemory.Object<int>(0xdc);
-		this->decalSize = mMemory.Object<int>(0xe0);
+		this->decalSize           = mMemory.Object<int>(0xe0);
 
-		this->harvestableListCount = mMemory.Objects<int>(0xe4, 4);
-		this->harvestableListIndex = mMemory.Objects<int>(0xf4, 4);
-		this->harvestableListCompressedSize = mMemory.Objects<int>(0x104, 4);
-		this->harvestableListSize = mMemory.Objects<int>(0x114, 4);
+		mMemory.ObjectsRef<int>(this->harvestableListCount.data()         , 0xe4 , 4);
+		mMemory.ObjectsRef<int>(this->harvestableListIndex.data()         , 0xf4 , 4);
+		mMemory.ObjectsRef<int>(this->harvestableListCompressedSize.data(), 0x104, 4);
+		mMemory.ObjectsRef<int>(this->harvestableListSize.data()          , 0x114, 4);
 	}
 
-	CellHeader(const std::vector<Byte>& memory)
+	inline CellHeader(const std::vector<Byte>& memory)
 	{
 		this->mBytes = memory;
 	}
 
-	std::vector<Byte> Data()
+	inline std::vector<Byte> Data()
 	{
 		return this->mBytes;
 	}

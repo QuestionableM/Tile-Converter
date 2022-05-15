@@ -59,7 +59,7 @@ void AssetListLoader::Load(const nlohmann::json& fAssets, Mod* mod)
 
 		const auto new_pair = std::make_pair(new_asset->Uuid, new_asset);
 
-		mod->Assets.insert(new_pair);
+		mod->m_Assets.insert(new_pair);
 		Mod::AssetStorage.insert(new_pair);
 
 		ProgCounter::ProgressValue++;

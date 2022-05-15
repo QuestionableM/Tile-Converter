@@ -35,6 +35,7 @@ void KeywordReplacer::SetModData(const std::wstring& path, const SMUuid& uuid)
 
 	KeywordReplacer::SetReplacement(mContentKey, path);
 	KeywordReplacer::SetReplacement(L"$mod_data", path);
+	KeywordReplacer::SetReplacement(L"$content_data", path);
 }
 
 void KeywordReplacer::UpgradeResource(const std::wstring& mPath, std::wstring& mOutput)

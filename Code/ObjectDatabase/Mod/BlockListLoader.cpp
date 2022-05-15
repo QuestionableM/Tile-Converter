@@ -85,7 +85,7 @@ void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 		const auto new_pair = std::make_pair(new_block->Uuid, new_block);
 
 		Mod::BlockStorage.insert(new_pair);
-		mod->Blocks.insert(new_pair);
+		mod->m_Blocks.insert(new_pair);
 
 		ProgCounter::ProgressValue++;
 	}
