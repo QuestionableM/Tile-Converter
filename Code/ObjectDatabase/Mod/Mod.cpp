@@ -162,7 +162,7 @@ std::size_t Mod::GetAmountOfObjects()
 
 std::size_t Mod::GetAmountOfMods()
 {
-	return ModStorage.size();
+	return Mod::ModVector.size();
 }
 
 static const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> g_DataLoaders =

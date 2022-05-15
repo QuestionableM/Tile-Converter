@@ -1,7 +1,11 @@
 #include "File.hpp"
 
-#include <fstream>
+#include "Console.hpp"
 
+#include <Windows.h>
+#include <ShlObj.h>
+
+#include <fstream>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -121,4 +125,18 @@ std::wstring File::OpenFileDialog(
 	}
 
 	return _Output;
+}
+
+bool File::GetAppDataPath(std::wstring& mPath)
+{
+	TCHAR szPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szPath)))
+	{
+		mPath = std::wstring(szPath);
+
+		return true;
+	}
+
+	DebugErrorL(__FUNCTION__, " -> Failed to get the path");
+	return false;
 }

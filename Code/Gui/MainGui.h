@@ -195,7 +195,7 @@ namespace TileConverter
 			this->Name = L"MainGui";
 			this->ShowIcon = false;
 			this->Text = L"Tile Converter";
-			this->Load += gcnew System::EventHandler(this, &MainGui::MainGui_Load);
+			this->Shown += gcnew System::EventHandler(this, &MainGui::MainGui_Shown);
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
@@ -204,7 +204,7 @@ namespace TileConverter
 		}
 #pragma endregion
 	private:
-		System::Void MainGui_Load(System::Object^ sender, System::EventArgs^ e);
+		System::Void MainGui_Shown(System::Object^ sender, System::EventArgs^ e);
 		System::Void LoadObjectDatabase();
 		System::Void DatabaseLoader_BW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
 		System::Void DatabaseLoader_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);

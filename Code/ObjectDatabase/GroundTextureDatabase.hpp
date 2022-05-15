@@ -51,6 +51,7 @@ class GroundTextureDatabase
 	static void LoadTextureData(const nlohmann::json& tObj, GroundTexBundle& tBundle);
 public:
 	static void Initialize();
+	static void ClearTextureDatabase();
 
 	static GroundTexture* GetDefaultTexture(const std::size_t& index);
 	static GroundTexture* GetTexture(const std::size_t& index, const std::size_t& type);

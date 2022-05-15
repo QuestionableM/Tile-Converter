@@ -202,7 +202,7 @@ void GroundTexture::WriteToFile(const std::wstring& path, const int& quality) co
 GroundTexBundle GroundTextureDatabase::DefaultTex = {};
 std::array<GroundTexBundle, 8> GroundTextureDatabase::TexStorage = {};
 
-static const std::string objKeyVec[] = {"Dif", "Asg", "Nor"};
+static const std::string objKeyVec[3] = { "Dif", "Asg", "Nor" };
 void GroundTextureDatabase::LoadTextureData(const nlohmann::json& tObj, GroundTexBundle& tBundle)
 {
 	for (std::size_t a = 0; a < 3; a++)
@@ -218,6 +218,8 @@ void GroundTextureDatabase::LoadTextureData(const nlohmann::json& tObj, GroundTe
 
 void GroundTextureDatabase::Initialize()
 {
+	GroundTextureDatabase::ClearTextureDatabase();
+
 	const auto& tex_data = JsonReader::LoadParseJson(L"./Resources/GroundTextures.json");
 	if (!tex_data.is_object()) return;
 
@@ -237,6 +239,22 @@ void GroundTextureDatabase::Initialize()
 			GroundTextureDatabase::LoadTextureData(mTexObj, GroundTextureDatabase::TexStorage[mTexDataIdx++]);
 
 			if (mTexDataIdx == 8) break;
+		}
+	}
+}
+
+void GroundTextureDatabase::ClearTextureDatabase()
+{
+	for (std::size_t a = 0; a < GroundTextureDatabase::TexStorage.size(); a++)
+	{
+		GroundTexBundle& m_Bundle = GroundTextureDatabase::TexStorage[a];
+
+		for (std::size_t b = 0; b < m_Bundle.size(); b++)
+		{
+			if (!m_Bundle[b]) continue;
+
+			delete m_Bundle[b];
+			m_Bundle[b] = nullptr;
 		}
 	}
 }

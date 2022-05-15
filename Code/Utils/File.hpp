@@ -22,4 +22,6 @@ namespace File
 		LPCWSTR filter = L"All Files (*.*)\0*.*\0",
 		HWND owner = NULL
 	);
+
+	bool GetAppDataPath(std::wstring& mPath);
 }

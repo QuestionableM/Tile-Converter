@@ -1,10 +1,12 @@
 #include "MainGui.h"
 #include "Console.hpp"
 
+#include "ObjectDatabase\GroundTextureDatabase.hpp"
 #include "ObjectDatabase/ObjectDatabase.hpp"
 #include "ObjectDatabase/DatabaseConfig.hpp"
 #include "ObjectDatabase/ProgCounter.hpp"
 #include "ObjectDatabase/Mod/Mod.hpp"
+
 
 #include "Gui/AboutGui.h"
 #include "Gui/SettingsGui.h"
@@ -25,16 +27,6 @@ namespace TileConverter
 	MainGui::MainGui()
 	{
 		this->InitializeComponent();
-	}
-
-	MainGui::~MainGui()
-	{
-		if (components) delete components;
-	}
-
-	void MainGui::MainGui_Load(System::Object^ sender, System::EventArgs^ e)
-	{
-		DebugOutL("MainGui has been loaded!");
 
 		SendMessage(
 			static_cast<HWND>(TilePath_TB->Handle.ToPointer()),
@@ -44,6 +36,16 @@ namespace TileConverter
 		);
 
 		DatabaseLoader::InitializeDatabase();
+	}
+
+	MainGui::~MainGui()
+	{
+		if (components) delete components;
+	}
+
+	void MainGui::MainGui_Shown(System::Object^ sender, System::EventArgs^ e)
+	{
+		DebugOutL("MainGui has been loaded!");
 
 		if (DatabaseConfig::GamePath.empty() || !File::Exists(DatabaseConfig::GamePath))
 		{
@@ -55,10 +57,11 @@ namespace TileConverter
 			);
 
 			if (dr == WForms::DialogResult::Yes)
-			{
 				this->TS_Settings_BTN_Click(nullptr, nullptr);
-				return;
-			}
+			else
+				this->Close();
+
+			return;
 		}
 
 		this->LoadObjectDatabase();
@@ -145,7 +148,7 @@ namespace TileConverter
 			return;
 		}
 
-		fs::path tPath = tile_path;
+		const fs::path tPath = tile_path;
 		const std::wstring tile_name = tPath.has_stem() ? tPath.stem().wstring() : L"UnkonwnTile";
 
 		ConvertSettingsGui^ conv_settings = gcnew ConvertSettingsGui(tile_name);
@@ -294,6 +297,7 @@ namespace TileConverter
 		{
 			DatabaseConfig::ReadConfig();
 
+			GroundTextureDatabase::Initialize();
 			this->LoadObjectDatabase();
 		}
 	}
