@@ -24,15 +24,21 @@ public:
 	
 	int count_0x54;
 	int has_0x5c;
+
+	int count_0x64;
+	int has_0x6c;
+
+	int count_0x74;
+	int has_0x7c;
 	
 	int version;
 	
-	PrefabHeader(const int& version)
+	inline PrefabHeader(const int& version)
 	{
 		this->version = version;
 	}
 	
-	void Read(BitStream& stream)
+	inline void Read(BitStream& stream)
 	{
 		stream.Move(4 * 8);
 		blueprintCount = stream.ReadInt();
@@ -49,25 +55,41 @@ public:
 		stream.Move(4 * 8);
 		hasNodes = stream.ReadInt();
 
-		if (2 < version) {
+		if (2 < version)
+		{
 			stream.Move(4 * 8);
 			assetCount = stream.ReadInt();
 			stream.Move(4 * 8);
 			hasAssets = stream.ReadInt();
 		}
 
-		if (3 < version) {
+		if (3 < version)
+		{
 			stream.Move(4 * 8);
 			decalsCount = stream.ReadInt();
 			stream.Move(4 * 8);
 			hasDecals = stream.ReadInt();
 		}
 
-		if (5 < version) {
+		if (5 < version)
+		{
 			stream.Move(4 * 8);
 			count_0x54 = stream.ReadInt();
 			stream.Move(4 * 8);
 			has_0x5c = stream.ReadInt();
+		}
+
+		if (7 < version)
+		{
+			stream.Move(4 * 8);
+			count_0x64 = stream.ReadInt();
+			stream.Move(4 * 8);
+			has_0x6c = stream.ReadInt();
+
+			stream.Move(4 * 8);
+			count_0x74 = stream.ReadInt();
+			stream.Move(4 * 8);
+			has_0x7c = stream.ReadInt();
 		}
 
 		DebugOutL("Prefab Data:");
@@ -81,7 +103,12 @@ public:
 		DebugOutL("Has Assets: ", hasAssets);
 		DebugOutL("Decals Count: ", decalsCount);
 		DebugOutL("Has Decals: ", hasDecals);
+		DebugOutL("\nUnknown variables:");
 		DebugOutL("Count_0x54: ", count_0x54);
 		DebugOutL("Has_0x5c: ", has_0x5c);
+		DebugOutL("Count_0x64: ", count_0x64);
+		DebugOutL("Has_0x6c: ", has_0x6c);
+		DebugOutL("Count_0x74: ", count_0x74);
+		DebugOutL("Has_0x7c: ", has_0x7c);
 	}
 };
