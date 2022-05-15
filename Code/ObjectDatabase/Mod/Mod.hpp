@@ -65,8 +65,6 @@ public:
 	static std::size_t GetAmountOfObjects();
 	static std::size_t GetAmountOfMods();
 
-	std::wstring GetDatabaseDirectory() const;
-
 	BlockData* GetBlock(const SMUuid& uuid) const;
 	PartData* GetPart(const SMUuid& uuid) const;
 	AssetData* GetAsset(const SMUuid& uuid) const;
@@ -74,7 +72,11 @@ public:
 	ClutterData* GetClutter(const SMUuid& uuid) const;
 
 	void LoadFile(const std::wstring& path);
-	void ScanFolder(const std::wstring& folder);
 
-	void LoadObjects();
+	void ScanDatabaseFolderRecursive(const std::wstring& folder);
+	void ScanDatabaseFolder(const std::wstring& folder);
+
+	static void LoadShapeSetDatabase(const std::wstring& path, Mod* pMod);
+	static void LoadAssetSetDatabase(const std::wstring& path, Mod* pMod);
+	void LoadObjectDatabase();
 };

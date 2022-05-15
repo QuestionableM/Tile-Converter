@@ -33,7 +33,7 @@ void DatabaseLoader::LoadGameDatabase()
 		}
 		else
 		{
-			pVanillaMod->ScanFolder(db_dir);
+			pVanillaMod->ScanDatabaseFolderRecursive(db_dir);
 		}
 	}
 
@@ -57,7 +57,7 @@ void DatabaseLoader::LoadModDatabase()
 			Mod* pNewMod = Mod::LoadFromDescription(dir.path().wstring());
 			if (!pNewMod) continue;
 
-			pNewMod->LoadObjects();
+			pNewMod->LoadObjectDatabase();
 		}
 	}
 }
