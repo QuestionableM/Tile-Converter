@@ -515,7 +515,7 @@ void WritePngImage(const std::vector<Byte>& img_data, const std::wstring& output
 
 void Tile::WriteMaterials(const std::wstring& dir) const
 {
-	if (!ConvertSettings::ExportMaterials) return;
+	if (m_Type != 0 || !ConvertSettings::ExportMaterials) return;
 
 	DebugOutL("Writing materials...");
 	ProgCounter::SetState(ProgState::WritingMaterialMaps, 0);
@@ -552,7 +552,7 @@ void Tile::WriteMaterials(const std::wstring& dir) const
 
 void Tile::WriteColorMap(const std::wstring& dir) const
 {
-	if (!ConvertSettings::ExportMaterials) return;
+	if (m_Type != 0 || !ConvertSettings::ExportMaterials) return;
 
 	DebugOutL("Writing color map...");
 	ProgCounter::SetState(ProgState::WritingColorMap, 0);
