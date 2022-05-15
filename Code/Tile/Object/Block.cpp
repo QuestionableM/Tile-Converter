@@ -5,6 +5,8 @@
 #include "ObjectDatabase/ProgCounter.hpp"
 #include "ObjectDatabase/Mod/MaterialManager.hpp"
 
+#include "Tile\TileConverter.hpp"
+
 Block::Block(BlockData* pParent, const glm::vec3& bounds, const Color& color, const int& xAxis, const int& zAxis)
 {
 	this->pParent = pParent;
@@ -76,7 +78,11 @@ void FillCustomCube(Model& model, const glm::vec3& bounds)
 	};
 
 	SubMeshData* new_subMesh = new SubMeshData(0);
-	new_subMesh->DataIdx = {
+
+	new_subMesh->has_normals = ConvertSettings::ExportNormals;
+	new_subMesh->has_uvs     = ConvertSettings::ExportUvs;
+
+	new_subMesh->m_DataIdx = {
 		{{0, 0, 0}, {1, 1, 0}, {2, 2, 0}},
 		{{3, 3, 1}, {4, 4, 1}, {1, 5, 1}},
 		{{5, 6, 2}, {6, 7, 2}, {4, 8, 2}},

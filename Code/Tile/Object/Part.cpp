@@ -26,7 +26,7 @@ EntityType Part::Type() const
 std::string Part::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	const SubMeshData* pSubMesh = pModel->subMeshData[mIdx];
-	const std::wstring tex_name = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(mIdx) : pSubMesh->MaterialName);
+	const std::wstring tex_name = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(mIdx) : pSubMesh->m_MaterialName);
 
 	std::string material_idx = "m1";
 
@@ -43,7 +43,7 @@ void Part::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_ma
 	for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
 	{
 		const SubMeshData* pSubMesh = pModel->subMeshData[a];
-		const std::wstring tex_name = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->MaterialName);
+		const std::wstring tex_name = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->m_MaterialName);
 
 		ObjectTexData oTexData;
 		if (pParent->Textures.GetEntry(tex_name, oTexData.Textures))

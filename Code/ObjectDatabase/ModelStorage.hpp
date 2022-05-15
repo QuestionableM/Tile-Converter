@@ -15,17 +15,20 @@
 
 struct VertexData
 {
-	long long pVert;
-	long long pUv;
-	long long pNorm;
+	std::size_t m_Vert;
+	std::size_t m_Uv;
+	std::size_t m_Norm;
 };
 
 struct SubMeshData
 {
-	std::wstring MaterialName;
-	unsigned int SubMeshIndex;
+	std::wstring m_MaterialName;
+	unsigned int m_SubMeshIdx;
 
-	std::vector<std::vector<VertexData>> DataIdx;
+	std::vector<std::vector<VertexData>> m_DataIdx;
+
+	bool has_normals;
+	bool has_uvs;
 
 	bool IsEmpty();
 	SubMeshData(const int& sub_mesh_idx);

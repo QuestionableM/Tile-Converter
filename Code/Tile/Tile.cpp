@@ -277,11 +277,11 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 	const float hWidth = (float)m_Width * 32.0f;
 	const float hHeight = (float)m_Height * 32.0f;
 
-	const bool eNormals = ConvertSettings::ExportNormals;
-	const bool eUvs = ConvertSettings::ExportUvs;
+	const bool l_ExportNormals = ConvertSettings::ExportNormals;
+	const bool l_ExportUvs     = ConvertSettings::ExportUvs;
 
 	std::vector<std::size_t> normal_div = {};
-	if (eNormals)
+	if (l_ExportNormals)
 	{
 		tMesh->normals.reserve(tWidth * tHeight);
 		normal_div.reserve(tWidth * tHeight);
@@ -298,7 +298,7 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 			tMesh->vertices.push_back(glm::vec3(vert_x, vert_y, height));
 
-			if (eNormals)
+			if (l_ExportNormals)
 			{
 				tMesh->normals.push_back(glm::vec3(0.0f));
 				normal_div.push_back(1);
@@ -306,7 +306,7 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 		}
 	}
 
-	if (eUvs)
+	if (l_ExportUvs)
 	{
 		const float uvWidth = (float)(tWidth - 1);
 		const float uvHeight = (float)(tHeight - 1);
@@ -326,8 +326,11 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 	SubMeshData* pSubMesh = new SubMeshData(0);
 
+	pSubMesh->has_normals = ConvertSettings::ExportNormals;
+	pSubMesh->has_uvs     = ConvertSettings::ExportUvs;
+
 	//generate normals
-	pSubMesh->DataIdx.reserve(tWidth * tHeight);
+	pSubMesh->m_DataIdx.reserve(tWidth * tHeight);
 	for (std::size_t y = 0; y < tHeight - 1; y++)
 	{
 		for (std::size_t x = 0; x < tWidth - 1; x++)
@@ -337,7 +340,7 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 			const std::size_t h10 = (x + 1) + (y    ) * tWidth;
 			const std::size_t h11 = (x + 1) + (y + 1) * tWidth;
 
-			if (eNormals)
+			if (l_ExportNormals)
 			{
 				const glm::vec3& p1 = tMesh->vertices[h00];
 				const glm::vec3& p2 = tMesh->vertices[h01];
@@ -358,25 +361,20 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 				normal_div[h11] += 1;
 			}
 
-			const long long l00 = (long long)h00;
-			const long long l01 = (long long)h01;
-			const long long l10 = (long long)h10;
-			const long long l11 = (long long)h11;
-
-			const VertexData vert1 = { l00, eUvs ? l00 : -1, eNormals ? l00 : -1 };
-			const VertexData vert2 = { l01, eUvs ? l01 : -1, eNormals ? l01 : -1 };
-			const VertexData vert3 = { l10, eUvs ? l10 : -1, eNormals ? l10 : -1 };
-			const VertexData vert4 = { l11, eUvs ? l11 : -1, eNormals ? l11 : -1 };
+			const VertexData vert1 = { h00, l_ExportUvs ? h00 : 0, l_ExportNormals ? h00 : 0 };
+			const VertexData vert2 = { h01, l_ExportUvs ? h01 : 0, l_ExportNormals ? h01 : 0 };
+			const VertexData vert3 = { h10, l_ExportUvs ? h10 : 0, l_ExportNormals ? h10 : 0 };
+			const VertexData vert4 = { h11, l_ExportUvs ? h11 : 0, l_ExportNormals ? h11 : 0 };
 
 			std::vector<VertexData> pVertData1 = { vert1, vert3, vert2 };
 			std::vector<VertexData> pVertData2 = { vert2, vert3, vert4 };
 
-			pSubMesh->DataIdx.push_back(pVertData1);
-			pSubMesh->DataIdx.push_back(pVertData2);
+			pSubMesh->m_DataIdx.push_back(pVertData1);
+			pSubMesh->m_DataIdx.push_back(pVertData2);
 		}
 	}
 
-	if (eNormals)
+	if (l_ExportNormals)
 	{
 		//make normals smooth
 		for (std::size_t y = 0; y < tHeight - 1; y++)

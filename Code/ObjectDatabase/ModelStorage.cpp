@@ -10,12 +10,12 @@
 
 bool SubMeshData::IsEmpty()
 {
-	return (this->DataIdx.size() <= 0);
+	return m_DataIdx.empty();
 }
 
 SubMeshData::SubMeshData(const int& sub_mesh_idx)
 {
-	this->SubMeshIndex = sub_mesh_idx;
+	this->m_SubMeshIdx = sub_mesh_idx;
 }
 
 bool Model::IsEmpty() const
@@ -93,42 +93,39 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 		if (pEntity != nullptr && ConvertSettings::ExportMaterials)
 		{
-			const std::string mtl_name = "usemtl " + pEntity->GetMtlName(pSubMesh->MaterialName, mIdx) + "\n";
+			const std::string mtl_name = "usemtl " + pEntity->GetMtlName(pSubMesh->m_MaterialName, mIdx) + "\n";
 			file.write(mtl_name.c_str(), mtl_name.size());
 		}
 
-		for (std::size_t a = 0; a < pSubMesh->DataIdx.size(); a++)
+		for (std::size_t a = 0; a < pSubMesh->m_DataIdx.size(); a++)
 		{
 			std::string _f_str = "f";
 
-			const std::vector<VertexData>& vert_vec = pSubMesh->DataIdx[a];
+			const std::vector<VertexData>& vert_vec = pSubMesh->m_DataIdx[a];
 			for (std::size_t b = 0; b < vert_vec.size(); b++)
 			{
 				const VertexData& d_idx = vert_vec[b];
 
-				const glm::vec3& pVertex = mTranslatedVertices[(std::size_t)d_idx.pVert];
-				if (offset.VertexMap.find(pVertex) != offset.VertexMap.end())
-					_f_str.append(" " + std::to_string(offset.VertexMap.at(pVertex) + 1));
+				const glm::vec3& l_Vertex = mTranslatedVertices[d_idx.m_Vert];
+				if (offset.VertexMap.find(l_Vertex) != offset.VertexMap.end())
+					_f_str.append(" " + std::to_string(offset.VertexMap.at(l_Vertex) + 1));
 
-				const bool has_uv     = (ConvertSettings::ExportUvs     && d_idx.pUv   > -1);
-				const bool has_normal = (ConvertSettings::ExportNormals && d_idx.pNorm > -1);
-
-				if (!has_uv && !has_normal) continue;
+				if (!pSubMesh->has_uvs && !pSubMesh->has_normals) continue;
 
 				_f_str.append("/");
 
-				if (has_uv)
+				if (pSubMesh->has_uvs)
 				{
-					const glm::vec2& pUv = this->uvs[(std::size_t)d_idx.pUv];
-					if (offset.UvMap.find(pUv) != offset.UvMap.end())
-						_f_str.append(std::to_string(offset.UvMap.at(pUv) + 1));
+					const glm::vec2& l_Uv = this->uvs[d_idx.m_Uv];
+					if (offset.UvMap.find(l_Uv) != offset.UvMap.end())
+						_f_str.append(std::to_string(offset.UvMap.at(l_Uv) + 1));
 				}
 
-				if (has_normal)
+				if (pSubMesh->has_normals)
 				{
-					const glm::vec3& pNormal = mTranslatedNormals[(std::size_t)d_idx.pNorm];
-					if (offset.NormalMap.find(pNormal) != offset.NormalMap.end())
-						_f_str.append("/" + std::to_string(offset.NormalMap.at(pNormal) + 1));
+					const glm::vec3& l_Normal = mTranslatedNormals[d_idx.m_Norm];
+					if (offset.NormalMap.find(l_Normal) != offset.NormalMap.end())
+						_f_str.append("/" + std::to_string(offset.NormalMap.at(l_Normal) + 1));
 				}
 			}
 
@@ -194,19 +191,16 @@ void ModelStorage::LoadMaterialName(const aiScene*& scene, const aiMesh*& mesh, 
 	cMeshMat->Get(AI_MATKEY_NAME, cMatName);
 
 	const std::string cStrMatName = std::string(cMatName.C_Str(), cMatName.length);
-	sub_mesh->MaterialName = String::ToWide(cStrMatName);
+	sub_mesh->m_MaterialName = String::ToWide(cStrMatName);
 }
 
 void ModelStorage::LoadIndices(const aiMesh*& mesh, Model*& model, SubMeshData*& sub_mesh)
 {
-	const long long mVertOffset = model->vertices.size();
-	const long long mUvOffset = model->uvs.size();
-	const long long mNormalOffset = model->normals.size();
+	const std::size_t l_VertOffset = model->vertices.size();
+	const std::size_t l_UvOffset = model->uvs.size();
+	const std::size_t l_NormalOffset = model->normals.size();
 
-	const bool has_uvs     = (ConvertSettings::ExportUvs     && mesh->HasTextureCoords(0));
-	const bool has_normals = (ConvertSettings::ExportNormals && mesh->HasNormals());
-
-	sub_mesh->DataIdx.reserve(mesh->mNumFaces);
+	sub_mesh->m_DataIdx.reserve(mesh->mNumFaces);
 	for (unsigned int a = 0; a < mesh->mNumFaces; a++)
 	{
 		const aiFace& cFace = mesh->mFaces[a];
@@ -215,17 +209,17 @@ void ModelStorage::LoadIndices(const aiMesh*& mesh, Model*& model, SubMeshData*&
 		d_idx.reserve(cFace.mNumIndices);
 		for (unsigned int b = 0; b < cFace.mNumIndices; b++)
 		{
-			long long ind_idx = (long long)cFace.mIndices[b];
+			const std::size_t l_ind_idx = (std::size_t)cFace.mIndices[b];
 
-			VertexData nVert = {};
-			nVert.pVert = ind_idx + mVertOffset;
-			nVert.pUv = has_uvs ? (ind_idx + mUvOffset) : -1;
-			nVert.pNorm = has_normals ? (ind_idx + mNormalOffset) : -1;
+			VertexData nVert;
+			nVert.m_Vert = l_ind_idx + l_VertOffset;
+			nVert.m_Uv   = (sub_mesh->has_uvs     ? (l_ind_idx + l_UvOffset)     : 0);
+			nVert.m_Norm = (sub_mesh->has_normals ? (l_ind_idx + l_NormalOffset) : 0);
 
 			d_idx.push_back(nVert);
 		}
 
-		sub_mesh->DataIdx.push_back(d_idx);
+		sub_mesh->m_DataIdx.push_back(d_idx);
 	}
 }
 
@@ -236,6 +230,9 @@ void ModelStorage::LoadSubMeshes(const aiScene*& scene, Model*& model)
 	{
 		const aiMesh* cMesh = scene->mMeshes[a];
 		SubMeshData* cSubMesh = new SubMeshData(a);
+
+		cSubMesh->has_normals = (ConvertSettings::ExportNormals && cMesh->HasNormals());
+		cSubMesh->has_uvs     = (ConvertSettings::ExportUvs     && cMesh->HasTextureCoords(0));
 
 		ModelStorage::LoadIndices(cMesh, model, cSubMesh);
 		ModelStorage::LoadVertices(cMesh, model);

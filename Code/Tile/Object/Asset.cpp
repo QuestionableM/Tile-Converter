@@ -57,7 +57,7 @@ void Asset::FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_m
 	for (std::size_t a = 0; a < pModel->subMeshData.size(); a++)
 	{
 		const SubMeshData* pSubMesh = pModel->subMeshData[a];
-		const std::wstring tex_name = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->MaterialName);
+		const std::wstring tex_name = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(a) : pSubMesh->m_MaterialName);
 
 		ObjectTexData oTexData;
 		if (pParent->Textures.GetEntry(tex_name, oTexData.Textures))
