@@ -41,10 +41,10 @@ public:
 
 			std::memcpy(bytes_temp.data(), header_bytes.data() + (a * 0x124), 0x124);
 
-			CellHeader* part = new CellHeader(bytes_temp);
-			part->Read();
+			CellHeader* p_Header = new CellHeader(bytes_temp);
+			p_Header->Read();
 
-			this->m_CellHeaders[a] = part;
+			this->m_CellHeaders[a] = p_Header;
 		}
 	}
 
@@ -109,16 +109,14 @@ public:
 
 		if (wh_mul != 0)
 		{
-			std::vector<Byte> headerBytes = {};
-			headerBytes.resize(wh_mul * 0x124);
+			//Keep an eye on this line of code, in case the reader breaks
+			const std::size_t header_size = (new_tile->m_Version > 9) ? 0x184 : 0x124;
 
-			DebugOutL("Header bytes: ", headerBytes.size());
+			std::vector<Byte> headerBytes = {};
+			headerBytes.resize(wh_mul * header_size); //0x124
 
 			for (int a = 0; a < wh_mul; a++)
-			{
-				std::vector<Byte> data = mMemory.NextObjects<Byte>(new_tile->m_CellHeadersSize);
-				std::memcpy(headerBytes.data() + (a * 0x124), data.data(), new_tile->m_CellHeadersSize);
-			}
+				mMemory.NextObjectsRef(headerBytes.data() + (a * header_size), new_tile->m_CellHeadersSize);
 
 			new_tile->FillHeaderBytes(headerBytes);
 		}

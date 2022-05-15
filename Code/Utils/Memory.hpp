@@ -131,4 +131,18 @@ public:
 
 		return obj_copy;
 	}
+
+	template<typename T, bool is_big_endian = false>
+	inline void NextObjectsRef(T* object_array, const std::size_t& amount)
+	{
+		const std::size_t byte_amount = sizeof(T) * amount;
+
+		std::memcpy(object_array, this->bytes.data() + this->index, byte_amount);
+		this->index += byte_amount;
+
+		if constexpr (is_big_endian)
+		{
+			std::reverse(object_array, object_array + byte_amount);
+		}
+	}
 };
