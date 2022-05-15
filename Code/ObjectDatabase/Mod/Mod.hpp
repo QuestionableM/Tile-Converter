@@ -40,17 +40,18 @@ class Mod
 	std::unordered_map<SMUuid, HarvestableData*> m_Harvestables = {};
 	std::unordered_map<SMUuid, ClutterData*> m_Clutter = {};
 
+protected:
 	SMUuid m_Uuid;
 	std::wstring m_Name;
 	std::wstring m_Directory;
-	ModType m_Type;
+
+	Mod() = default;
 
 public:
-	Mod(const std::wstring& name, const std::wstring& dir, const SMUuid& uuid, const ModType& type);
 	Mod(const Mod&) = delete;
 	Mod(Mod&&)      = delete;
 	Mod(Mod&)       = delete;
-	~Mod();
+	virtual ~Mod();
 
 	static void ClearModStorage();
 	static Mod* LoadFromDescription(const std::wstring& mod_folder);
@@ -65,18 +66,11 @@ public:
 	static std::size_t GetAmountOfObjects();
 	static std::size_t GetAmountOfMods();
 
-	BlockData* GetBlock(const SMUuid& uuid) const;
-	PartData* GetPart(const SMUuid& uuid) const;
-	AssetData* GetAsset(const SMUuid& uuid) const;
-	HarvestableData* GetHarvestable(const SMUuid& uuid) const;
-	ClutterData* GetClutter(const SMUuid& uuid) const;
-
 	void LoadFile(const std::wstring& path);
 
 	void ScanDatabaseFolderRecursive(const std::wstring& folder);
 	void ScanDatabaseFolder(const std::wstring& folder);
 
-	static void LoadShapeSetDatabase(const std::wstring& path, Mod* pMod);
-	static void LoadAssetSetDatabase(const std::wstring& path, Mod* pMod);
-	void LoadObjectDatabase();
+	virtual ModType Type() const = 0;
+	virtual void LoadObjectDatabase() = 0;
 };

@@ -3,6 +3,8 @@
 #include "Utils/File.hpp"
 #include "Utils/String.hpp"
 
+#include "ObjectDatabase\Mod\TerrainAssetsMod.h"
+#include "ObjectDatabase\Mod\BlocksAndPartsMod.h"
 #include "ObjectDatabase/Mod/AssetListLoader.hpp"
 #include "ObjectDatabase/Mod/HarvestableListLoader.hpp"
 #include "ObjectDatabase/Mod/PartListLoader.hpp"
@@ -14,14 +16,6 @@
 
 #include <filesystem>
 namespace fs = std::filesystem;
-
-Mod::Mod(const std::wstring& name, const std::wstring& dir, const SMUuid& uuid, const ModType& type)
-{
-	this->m_Name = name;
-	this->m_Directory = dir;
-	this->m_Uuid = uuid;
-	this->m_Type = type;
-}
 
 Mod::~Mod()
 {
@@ -69,14 +63,6 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
 	if (!mType.is_string()) return nullptr;
 
 	const std::string mTypeStr = mType.get<std::string>();
-	ModType mod_type;
-
-	if (mTypeStr == "Blocks and Parts")
-		mod_type = ModType::BlocksAndParts;
-	else if (mTypeStr == "Terrain Assets")
-		mod_type = ModType::TerrainAssets;
-	else
-		return nullptr;
 
 	const auto& mUuid = JsonReader::Get(mDesc, "localId");
 	const auto& mName = JsonReader::Get(mDesc, "name");
@@ -94,9 +80,19 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
 		return nullptr;
 	}
 
-	Mod* pNewMod = new Mod(mod_name, mod_folder, mod_uuid, mod_type);
+	Mod* pNewMod;
+	if (mTypeStr == "Blocks and Parts")
+		pNewMod = new BlocksAndPartsMod();
+	else if (mTypeStr == "Terrain Assets")
+		pNewMod = new TerrainAssetsMod();
+	else
+		return nullptr;
 
-	DebugOutL("Mod: ", 0b1101_fg, pNewMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, pNewMod->m_Uuid.ToString());
+	pNewMod->m_Name = mod_name;
+	pNewMod->m_Directory = mod_folder;
+	pNewMod->m_Uuid = mod_uuid;
+
+	DebugOutL("Mod: ", 0b1101_fg, pNewMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, pNewMod->m_Uuid.ToString(), 0b1110_fg, ", Type: ", 0b1101_fg, mTypeStr);
 	Mod::ModStorage.insert(std::make_pair(pNewMod->m_Uuid, pNewMod));
 	Mod::ModVector.push_back(pNewMod);
 
@@ -169,46 +165,6 @@ std::size_t Mod::GetAmountOfMods()
 	return ModStorage.size();
 }
 
-BlockData* Mod::GetBlock(const SMUuid& uuid) const
-{
-	if (m_Blocks.find(uuid) != m_Blocks.end())
-		return m_Blocks.at(uuid);
-
-	return nullptr;
-}
-
-PartData* Mod::GetPart(const SMUuid& uuid) const
-{
-	if (m_Parts.find(uuid) != m_Parts.end())
-		return m_Parts.at(uuid);
-	
-	return nullptr;
-}
-
-AssetData* Mod::GetAsset(const SMUuid& uuid) const
-{
-	if (m_Assets.find(uuid) != m_Assets.end())
-		return m_Assets.at(uuid);
-
-	return nullptr;
-}
-
-HarvestableData* Mod::GetHarvestable(const SMUuid& uuid) const
-{
-	if (m_Harvestables.find(uuid) != m_Harvestables.end())
-		return m_Harvestables.at(uuid);
-
-	return nullptr;
-}
-
-ClutterData* Mod::GetClutter(const SMUuid& uuid) const
-{
-	if (m_Clutter.find(uuid) != m_Clutter.end())
-		return m_Clutter.at(uuid);
-
-	return nullptr;
-}
-
 static const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> g_DataLoaders =
 {
 	{ "assetListRenderable", AssetListLoader::Load       },
@@ -278,153 +234,5 @@ void Mod::ScanDatabaseFolder(const std::wstring& folder)
 
 		if (dir_path.has_extension() && IsShapeSetExtensionValid(dir_path.extension().string()))
 			this->LoadFile(dir_path.wstring());
-	}
-}
-
-static const std::wstring g_ShapeSetDbExtensions[2] = { L"json", L"shapedb" };
-bool GetShapeSetDatabase(const std::wstring& mod_dir, std::wstring& r_shapedb_path)
-{
-	const std::wstring near_full_path = mod_dir + L"/Objects/Database/shapesets.";
-
-	for (__int8 a = 0; a < 2; a++)
-	{
-		const std::wstring full_shapedb_path = near_full_path + g_ShapeSetDbExtensions[a];
-
-		if (File::Exists(full_shapedb_path))
-		{
-			r_shapedb_path = full_shapedb_path;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void Mod::LoadShapeSetDatabase(const std::wstring& path, Mod* pMod)
-{
-	const nlohmann::json m_shapedb_json = JsonReader::LoadParseJson(path);
-	if (!m_shapedb_json.is_object()) return;
-
-	const auto& l_shape_set_list = JsonReader::Get(m_shapedb_json, "shapeSetList");
-	if (!l_shape_set_list.is_array()) return;
-
-	for (const auto& l_shapeset : l_shape_set_list)
-	{
-		if (!l_shapeset.is_string()) continue;
-
-		const std::wstring l_shapeset_wide = String::ToWide(l_shapeset.get<std::string>());
-		const std::wstring l_shapeset_path = KeywordReplacer::ReplaceKey(l_shapeset_wide);
-
-		pMod->LoadFile(l_shapeset_path);
-	}
-}
-
-static const std::wstring g_AssetSetDirectoryPaths[2] = { L"/Terrain/Database/", L"/Database/" };
-bool GetValidAssetDbFolder(const std::wstring& mod_path, std::wstring& r_asset_db)
-{
-	for (__int8 a = 0; a < 2; a++)
-	{
-		const std::wstring asset_db_path = mod_path + g_AssetSetDirectoryPaths[a];
-
-		if (File::Exists(asset_db_path))
-		{
-			r_asset_db = asset_db_path;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-static const std::wstring g_AssetSetDbExtensions[2] = { L"json", L"assetdb" };
-bool GetAssetSetDatabase(const std::wstring& asset_db_dir, std::wstring& r_asset_set)
-{
-	const std::wstring near_full_path = asset_db_dir + L"assetsets.";
-
-	for (__int8 a = 0; a < 2; a++)
-	{
-		const std::wstring full_db_path = near_full_path + g_AssetSetDbExtensions[a];
-
-		if (File::Exists(full_db_path))
-		{
-			r_asset_set = full_db_path;
-			return true;
-		}
-	}
-
-	return true;
-}
-
-void Mod::LoadAssetSetDatabase(const std::wstring& path, Mod* pMod)
-{
-	const nlohmann::json assetset_db_json = JsonReader::LoadParseJson(path);
-	if (!assetset_db_json.is_object()) return;
-
-	const auto& asset_set_list = JsonReader::Get(assetset_db_json, "assetSetList");
-	if (!asset_set_list.is_array()) return;
-
-	for (const auto& cur_asset_set : asset_set_list)
-	{
-		if (!cur_asset_set.is_object()) continue;
-
-		const auto& asset_set_str = JsonReader::Get(cur_asset_set, "assetSet");
-		if (!asset_set_str.is_string()) continue;
-
-		const std::wstring asset_set_wide = String::ToWide(asset_set_str.get<std::string>());
-		const std::wstring asset_set_path = KeywordReplacer::ReplaceKey(asset_set_wide);
-
-		pMod->LoadFile(asset_set_path);
-	}
-}
-
-void Mod::LoadObjectDatabase()
-{
-	KeywordReplacer::SetModData(m_Directory, m_Uuid);
-
-	switch (m_Type)
-	{
-	case ModType::BlocksAndParts:
-		{
-			std::wstring l_ShapeSetDbPath;
-			if (GetShapeSetDatabase(m_Directory, l_ShapeSetDbPath))
-			{
-				Mod::LoadShapeSetDatabase(l_ShapeSetDbPath, this);
-			}
-			else
-			{
-				const std::wstring l_database_folder = m_Directory + L"/Objects/Database/ShapeSets";
-				if (File::Exists(l_database_folder))
-				{
-					this->ScanDatabaseFolder(l_database_folder);
-				}
-			}
-
-			break;
-		}
-	case ModType::TerrainAssets:
-		{
-			std::wstring l_AssetDatabaseDir;
-			if (!GetValidAssetDbFolder(m_Directory, l_AssetDatabaseDir))
-			{
-				DebugErrorL("Couldn't find a valid asset database directory!");
-				return;
-			}
-
-			std::wstring l_AssetSetDbPath;
-			if (GetAssetSetDatabase(l_AssetDatabaseDir, l_AssetSetDbPath))
-			{
-				Mod::LoadAssetSetDatabase(l_AssetSetDbPath, this);
-			}
-			else
-			{
-				const std::wstring l_assetsets_folder = m_Directory + L"/AssetSets";
-				if (File::Exists(l_assetsets_folder))
-				{
-					this->ScanDatabaseFolder(l_assetsets_folder);
-				}
-			}
-
-			break;
-		}
 	}
 }

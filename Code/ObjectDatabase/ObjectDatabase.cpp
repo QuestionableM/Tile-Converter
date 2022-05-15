@@ -2,7 +2,7 @@
 #include "ObjectDatabase/DatabaseConfig.hpp"
 #include "ObjectDatabase/ProgCounter.hpp"
 
-#include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase/Mod/GameDataMod.h"
 #include "ObjectDatabase/Mod/ObjectRotations.hpp"
 #include "ObjectDatabase/Mod/MaterialManager.hpp"
 #include "ObjectDatabase/GroundTextureDatabase.hpp"
@@ -18,26 +18,10 @@ void DatabaseLoader::LoadGameDatabase()
 	ProgCounter::SetState(ProgState::LoadingVanilla, 0);
 	DebugOutL(0b0010_fg, "Loading game data...");
 
-	Mod* pVanillaMod = new Mod(L"Vanilla Data", DatabaseConfig::GamePath, SMUuid(), ModType::GameData);
+	Mod* pGameData = new GameDataMod();
+	pGameData->LoadObjectDatabase();
 
-	for (const std::wstring& db_dir : DatabaseConfig::AssetListFolders)
-	{
-		std::error_code rError;
-		const bool is_regular_file = fs::is_regular_file(db_dir, rError);
-
-		if (rError) continue;
-
-		if (is_regular_file)
-		{
-			pVanillaMod->LoadFile(db_dir);
-		}
-		else
-		{
-			pVanillaMod->ScanDatabaseFolderRecursive(db_dir);
-		}
-	}
-
-	Mod::ModVector.push_back(pVanillaMod);
+	Mod::ModVector.push_back(pGameData);
 }
 
 void DatabaseLoader::LoadModDatabase()
