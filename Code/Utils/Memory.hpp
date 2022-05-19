@@ -85,6 +85,20 @@ public:
 		return *reinterpret_cast<T*>(obj_bytes);
 	}
 
+	template<typename T, std::size_t array_size, bool is_big_endian = false>
+	inline std::array<T, array_size> ObjectsConst(const std::size_t& offset)
+	{
+		std::array<T, array_size> l_output;
+		std::memcpy(l_output.data(), this->bytes.data() + offset, sizeof(T) * array_size);
+
+		if constexpr (is_big_endian)
+		{
+			std::reverse(l_output.begin(), l_output.end());
+		}
+
+		return l_output;
+	}
+
 	template<typename T, bool is_big_endian = false>
 	inline std::vector<T> Objects(const std::size_t& offset, const std::size_t& amount)
 	{

@@ -58,29 +58,30 @@ public:
 
 		for (int a = 0; a < prefabCount; a++)
 		{
-			std::vector<float> f_pos = memory.Objects<float>(index, 3);
-			std::vector<float> f_quat = memory.Objects<float>(index + 0xc, 4);
-			std::vector<float> f_size;
+			const glm::vec3 f_pos = memory.Object<glm::vec3>(index);
+			const std::array<float, 4> f_quat = memory.ObjectsConst<float, 4>(index + 0xc);
+			
+			glm::vec3 f_size;
 
 			if (version < 9)
 			{
-				f_size = { 1.0f, 1.0f, 1.0f };
+				f_size = glm::vec3(1.0f);
 				index += 0x1c;
 			}
 			else
 			{
-				f_size = memory.Objects<float>(index + 0x1c, 3);
+				f_size = memory.Object<glm::vec3>(index + 0x1c);
 				index += 0x28;
 			}
 
 			const int string_length = memory.Object<int>(index);
 			index += 4;
-			std::vector<char> path = memory.Objects<char>(index, string_length);
+			const std::vector<char> path = memory.Objects<char>(index, string_length);
 			index += string_length;
 
 			const int bVar2 = (int)memory.Object<Byte>(index) & 0xff;
 			index += 1;
-			std::vector<char> flag = memory.Objects<char>(index, bVar2);
+			const std::vector<char> flag = memory.Objects<char>(index, bVar2);
 			index += bVar2;
 			index += 4;
 
@@ -92,9 +93,9 @@ public:
 			Prefab* new_prefab = PrefabFileReader::Read(pref_path, pref_flag);
 			if (!new_prefab) continue;
 
-			new_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
+			new_prefab->SetPosition(f_pos);
 			new_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			new_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
+			new_prefab->SetSize(f_size);
 
 			part->AddObject(new_prefab);
 		}
