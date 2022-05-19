@@ -52,8 +52,8 @@ public:
 		int index = 0;
 		for (int a = 0; a < count; a++)
 		{
-			std::vector<float> f_pos = memory.Objects<float>(index, 3);
-			std::vector<float> f_quat = memory.Objects<float>(index + 0xc, 4);
+			const glm::vec3 f_pos = memory.Object<glm::vec3>(index);
+			const glm::quat f_quat = memory.GetQuat(index + 0xc);
 			index += 0x1c;
 
 			std::string value;
@@ -78,13 +78,13 @@ public:
 				value = std::string(value_data.begin(), value_data.end());
 			}
 
-			Blueprint* new_blueprint = Blueprint::LoadAutomatic(value);
-			if (!new_blueprint) continue;
+			Blueprint* pNewBlueprint = Blueprint::LoadAutomatic(value);
+			if (!pNewBlueprint) continue;
 
-			new_blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			new_blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+			pNewBlueprint->SetPosition(f_pos);
+			pNewBlueprint->SetRotation(f_quat);
 
-			part->AddObject(new_blueprint);
+			part->AddObject(pNewBlueprint);
 		}
 
 		return index;

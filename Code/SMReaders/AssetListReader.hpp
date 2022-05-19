@@ -64,26 +64,25 @@ public:
 		int index = 0;
 		for (int a = 0; a < len; a++)
 		{
-			std::vector<float> f_pos = memory.Objects<float>(index, 3);
-			std::vector<float> f_quat = memory.Objects<float>(index + 0xc, 4);
-			std::vector<float> f_size = {};
-			f_size.resize(3);
+			const glm::vec3 f_pos = memory.Object<glm::vec3>(index);
+			const glm::quat f_quat = memory.GetQuat(index + 0xc);
+			glm::vec3 f_size;
 
 			if (version < 5)
 			{
-				float dim = memory.Object<float>(index + 0x1c);
-				f_size = { dim, dim, dim };
+				const float f_dimension = memory.Object<float>(index + 0x1c);
+				f_size = glm::vec3(f_dimension);
 
 				index += 0x20;
 			}
 			else
 			{
-				f_size = memory.Objects<float>(index + 0x1c, 3);
+				f_size = memory.Object<glm::vec3>(index + 0x1c);
 
 				index += 0x28;
 			}
 
-			SMUuid uuid;
+			SMUuid f_uuid;
 
 			if (version < 4)
 			{
@@ -95,7 +94,8 @@ public:
 			}
 			else
 			{
-				uuid = memory.Objects<long long>(index, 2);
+				f_uuid = memory.Object<SMUuid>(index);
+			
 				index += 0x10;
 			}
 
@@ -121,18 +121,18 @@ public:
 				}
 			}
 
-			AssetData* asset_data = Mod::GetGlobalAsset(uuid);
+			AssetData* asset_data = Mod::GetGlobalAsset(f_uuid);
 			if (!asset_data) continue;
 
 			Model* pModel = ModelStorage::LoadModel(asset_data->Mesh);
 			if (!pModel) continue;
 
-			Asset* nAsset = new Asset(asset_data, pModel, color_map);
-			nAsset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			nAsset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			nAsset->SetSize({ f_size[0], f_size[1], f_size[2] });
+			Asset* pNewAsset = new Asset(asset_data, pModel, color_map);
+			pNewAsset->SetPosition(f_pos);
+			pNewAsset->SetRotation(f_quat);
+			pNewAsset->SetSize(f_size);
 
-			part->AddObject(nAsset, asset_idx);
+			part->AddObject(pNewAsset, asset_idx);
 		}
 
 		return index;
