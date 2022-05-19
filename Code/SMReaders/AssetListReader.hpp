@@ -109,7 +109,7 @@ public:
 				for (int j = 0; j < length; j++)
 				{
 					bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
-					std::vector<char> str_vec = memory.Objects<char>(index, bVar4);
+					const std::vector<char> str_vec = memory.Objects<char>(index, bVar4);
 
 					const std::wstring wstr_data = String::ToWide(std::string(str_vec.begin(), str_vec.end()));
 					index += bVar4;
