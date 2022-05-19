@@ -95,6 +95,25 @@ public:
 		return bits.converted_float_bits;
 	}
 
+	glm::vec3 ReadVec3()
+	{
+		const float vec3_x = this->ReadFloat();
+		const float vec3_y = this->ReadFloat();
+		const float vec3_z = this->ReadFloat();
+
+		return { vec3_x, vec3_y, vec3_z };
+	}
+
+	glm::quat ReadQuat()
+	{
+		const float quat_x = this->ReadFloat();
+		const float quat_y = this->ReadFloat();
+		const float quat_z = this->ReadFloat();
+		const float quat_w = this->ReadFloat();
+
+		return { quat_w, quat_x, quat_y, quat_z };
+	}
+
 	int ReadInt()
 	{
 		return (int)ReadNBytes(4);

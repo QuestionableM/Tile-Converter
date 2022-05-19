@@ -36,7 +36,7 @@ public:
 	{
 		MemoryWrapper reader(bytes);
 
-		std::vector<char> magic = reader.NextObjects<char, true>(4);
+		const std::vector<char> magic = reader.NextObjects<char, true>(4);
 
 		if (std::string(magic.begin(), magic.end()) != "PREF")
 		{
@@ -84,6 +84,16 @@ public:
 			PrefabFileReader::Read_248(stream, prefab, pHeader.count_0x54);
 		}
 
+		if (pHeader.has_0x6c != 0)
+		{
+			PrefabFileReader::Read_1(stream, prefab, pHeader.count_0x64);
+		}
+
+		if (pHeader.has_0x7c != 0)
+		{
+			PrefabFileReader::Read_2(stream, prefab, pHeader.count_0x74);
+		}
+
 		return prefab;
 	}
 
@@ -91,11 +101,11 @@ public:
 	{
 		for (int a = 0; a < count; a++)
 		{
-			int string_length = stream.ReadInt();
+			const int string_length = stream.ReadInt();
 			const std::string value = stream.ReadString(string_length);
 
-			std::vector<float> f_pos = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-			std::vector<float> f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
+			const glm::vec3 f_pos = stream.ReadVec3();
+			const glm::quat f_quat = stream.ReadQuat();
 
 			stream.ReadInt();
 
@@ -104,8 +114,8 @@ public:
 				Blueprint* blueprint = Blueprint::LoadAutomatic(value);
 				if (!blueprint) continue;
 
-				blueprint->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-				blueprint->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
+				blueprint->SetPosition(f_pos);
+				blueprint->SetRotation(f_quat);
 
 				prefab->AddObject(blueprint);
 			}
@@ -121,20 +131,21 @@ public:
 			const std::wstring l_PrefFullPath = KeywordReplacer::ReplaceKey(l_PrefLocalPath);
 
 			DebugOutL(0b1011_fg, "Recursive Prefab Path: ", l_PrefFullPath);
-			std::vector<float> f_pos = {};
-			std::vector<float> f_quat = {};
-			std::vector<float> f_size = { 1.0f, 1.0f, 1.0f };
+			glm::vec3 f_pos;
+			glm::quat f_quat;
+			glm::vec3 f_size;
 
 			if (version < 5)
 			{
-				f_pos = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-				f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
+				f_pos = stream.ReadVec3();
+				f_quat = stream.ReadQuat();
+				f_size = glm::vec3(1.0f);
 			}
 			else
 			{
-				f_pos = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-				f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-				f_size = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
+				f_pos = stream.ReadVec3();
+				f_quat = stream.ReadQuat();
+				f_size = stream.ReadVec3();
 			}
 
 			stream.ReadInt();
@@ -145,9 +156,9 @@ public:
 				Prefab* rec_prefab = PrefabFileReader::Read(l_PrefFullPath, L"");
 				if (!rec_prefab) continue;
 
-				rec_prefab->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-				rec_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-				rec_prefab->SetSize({ f_size[0], f_size[1], f_size[2] });
+				rec_prefab->SetPosition(f_pos);
+				rec_prefab->SetRotation(f_quat);
+				rec_prefab->SetSize(f_size);
 
 				prefab->AddObject(rec_prefab);
 			}
@@ -156,7 +167,7 @@ public:
 
 	static void ReadNodes(BitStream& stream, Prefab* prefab, const int& count)
 	{
-		int uVar2 = stream.ReadByte();
+		const int uVar2 = stream.ReadByte();
 		std::vector<std::string> tags = {};
 
 		if (uVar2 != 0)
@@ -164,16 +175,16 @@ public:
 			tags.reserve(uVar2);
 			for (int a = 0; a < uVar2; a++)
 			{
-				int size = stream.ReadByte();
+				const int size = stream.ReadByte();
 				tags.push_back(stream.ReadString(size));
 			}
 		}
 
 		for (int a = 0; a < count; a++)
 		{
-			std::vector<float> f_pos = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-			std::vector<float> f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-			std::vector<float> f_size = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
+			const glm::vec3 f_pos = stream.ReadVec3();
+			const glm::quat f_quat = stream.ReadQuat();
+			const glm::vec3 f_size = stream.ReadVec3();
 
 			/*
 			NodeImpl node = new NodeImpl(tags);
@@ -182,19 +193,19 @@ public:
 			node.setSize(f_size);
 			*/
 
-			int bVar2 = stream.ReadByte();
+			const int bVar2 = stream.ReadByte();
 			if (bVar2 != 0)
 			{
 				for (int b = 0; b < bVar2; b++)
 				{
-					int idx = stream.ReadByte();
+					const int idx = stream.ReadByte();
 					std::string tag_name = tags[idx];
 					
 					//node.setTagState(tag_name, true);
 				}
 			}
 
-			int uVar3 = stream.ReadInt();
+			const int uVar3 = stream.ReadInt();
 			if (uVar3 != 0)
 			{
 				stream.ReadBytes(uVar3);
@@ -209,12 +220,12 @@ public:
 	{
 		for (int a = 0; a < count; a++)
 		{
-			std::vector<float> f_pos  = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-			std::vector<float> f_quat = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
-			std::vector<float> f_size = { stream.ReadFloat(), stream.ReadFloat(), stream.ReadFloat() };
+			const glm::vec3 f_pos = stream.ReadVec3();
+			const glm::quat f_quat = stream.ReadQuat();
+			const glm::vec3 f_size = stream.ReadVec3();
 
-			SMUuid uuid = stream.ReadUuid();
-			int materialCount = stream.ReadByte();
+			const SMUuid uuid = stream.ReadUuid();
+			const int materialCount = stream.ReadByte();
 
 			std::unordered_map<std::wstring, Color> color_map;
 
@@ -242,9 +253,9 @@ public:
 				if (!pModel) continue;
 
 				Asset* nAsset = new Asset(asset_data, pModel, color_map);
-				nAsset->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-				nAsset->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-				nAsset->SetSize({ f_size[0], f_size[1], f_size[2] });
+				nAsset->SetPosition(f_pos);
+				nAsset->SetRotation(f_quat);
+				nAsset->SetSize(f_size);
 
 				prefab->AddObject(nAsset);
 			}
@@ -259,5 +270,15 @@ public:
 	static void Read_248(BitStream& stream, Prefab* prefab, const int& count)
 	{
 		DebugOutL("Read_248 - UNIMPLEMENTED");
+	}
+
+	static void Read_1(BitStream& stream, Prefab* prefab, const int& count)
+	{
+
+	}
+
+	static void Read_2(BitStream& stream, Prefab* prefab, const int& count)
+	{
+
 	}
 };

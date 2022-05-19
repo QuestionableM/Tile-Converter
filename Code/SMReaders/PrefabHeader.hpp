@@ -62,6 +62,11 @@ public:
 			stream.Move(4 * 8);
 			hasAssets = stream.ReadInt();
 		}
+		else
+		{
+			assetCount = 0;
+			hasAssets  = 0;
+		}
 
 		if (3 < version)
 		{
@@ -70,6 +75,11 @@ public:
 			stream.Move(4 * 8);
 			hasDecals = stream.ReadInt();
 		}
+		else
+		{
+			decalsCount = 0;
+			hasDecals = 0;
+		}
 
 		if (5 < version)
 		{
@@ -77,6 +87,11 @@ public:
 			count_0x54 = stream.ReadInt();
 			stream.Move(4 * 8);
 			has_0x5c = stream.ReadInt();
+		}
+		else
+		{
+			count_0x54 = 0;
+			has_0x5c   = 0;
 		}
 
 		if (7 < version)
@@ -90,6 +105,14 @@ public:
 			count_0x74 = stream.ReadInt();
 			stream.Move(4 * 8);
 			has_0x7c = stream.ReadInt();
+		}
+		else
+		{
+			count_0x64 = 0;
+			has_0x6c   = 0;
+
+			count_0x74 = 0;
+			has_0x7c   = 0;
 		}
 
 		DebugOutL("Prefab Data:");

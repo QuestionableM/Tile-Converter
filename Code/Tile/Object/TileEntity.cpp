@@ -60,7 +60,7 @@ void TileEntity::SetPosition(const glm::vec3& pos)
 	this->position = pos;
 }
 
-void TileEntity::SetRotation(const glm::quat & rot)
+void TileEntity::SetRotation(const glm::quat& rot)
 {
 	this->rotation = rot;
 }
