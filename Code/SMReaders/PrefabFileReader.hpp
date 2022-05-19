@@ -129,22 +129,18 @@ public:
 			const int l_StringLength = stream.ReadInt();
 			const std::wstring l_PrefLocalPath = String::ToWide(stream.ReadString(l_StringLength));
 			const std::wstring l_PrefFullPath = KeywordReplacer::ReplaceKey(l_PrefLocalPath);
-
 			DebugOutL(0b1011_fg, "Recursive Prefab Path: ", l_PrefFullPath);
-			glm::vec3 f_pos;
-			glm::quat f_quat;
+
+			const glm::vec3 f_pos = stream.ReadVec3();
+			const glm::quat f_quat = stream.ReadQuat();
 			glm::vec3 f_size;
 
 			if (version < 5)
 			{
-				f_pos = stream.ReadVec3();
-				f_quat = stream.ReadQuat();
 				f_size = glm::vec3(1.0f);
 			}
 			else
 			{
-				f_pos = stream.ReadVec3();
-				f_quat = stream.ReadQuat();
 				f_size = stream.ReadVec3();
 			}
 
@@ -264,21 +260,21 @@ public:
 
 	static void ReadDecals(BitStream& stream, Prefab* prefab, const int& count)
 	{
-		DebugOutL("ReadDecals - UNIMPLEMENTED");
+		DebugWarningL("UNIMPLEMENTED");
 	}
 
 	static void Read_248(BitStream& stream, Prefab* prefab, const int& count)
 	{
-		DebugOutL("Read_248 - UNIMPLEMENTED");
+		DebugWarningL("UNIMPLEMENTED -> ", stream.Index());
 	}
 
 	static void Read_1(BitStream& stream, Prefab* prefab, const int& count)
 	{
-
+		DebugWarningL("UNIMPLEMENTED -> ", stream.Index());
 	}
 
 	static void Read_2(BitStream& stream, Prefab* prefab, const int& count)
 	{
-
+		DebugWarningL("UNIMPLEMENTED -> ", stream.Index());
 	}
 };

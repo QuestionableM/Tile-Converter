@@ -59,7 +59,7 @@ public:
 		for (int a = 0; a < prefabCount; a++)
 		{
 			const glm::vec3 f_pos = memory.Object<glm::vec3>(index);
-			const std::array<float, 4> f_quat = memory.ObjectsConst<float, 4>(index + 0xc);
+			const glm::quat f_quat = memory.GetQuat(index + 0xc);
 			
 			glm::vec3 f_size;
 
@@ -90,14 +90,14 @@ public:
 			const std::wstring pref_flag = String::ToWide(std::string(flag.begin(), flag.end()));
 			DebugOutL("Prefab Path: ", pref_path);
 
-			Prefab* new_prefab = PrefabFileReader::Read(pref_path, pref_flag);
-			if (!new_prefab) continue;
+			Prefab* pNewPrefab = PrefabFileReader::Read(pref_path, pref_flag);
+			if (!pNewPrefab) continue;
 
-			new_prefab->SetPosition(f_pos);
-			new_prefab->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			new_prefab->SetSize(f_size);
+			pNewPrefab->SetPosition(f_pos);
+			pNewPrefab->SetRotation(f_quat);
+			pNewPrefab->SetSize(f_size);
 
-			part->AddObject(new_prefab);
+			part->AddObject(pNewPrefab);
 		}
 
 		return index;

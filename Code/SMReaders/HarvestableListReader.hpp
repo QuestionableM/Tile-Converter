@@ -63,27 +63,27 @@ public:
 		int index = 0;
 		for (int a = 0; a < len; a++)
 		{
-			std::vector<float> f_pos = memory.Objects<float>(index, 3);
-			std::vector<float> f_quat = memory.Objects<float>(index + 0xc, 4);
-			std::vector<float> f_size = memory.Objects<float>(index + 0x1c, 3);
+			const glm::vec3 f_pos = memory.Object<glm::vec3>(index);
+			const glm::quat f_quat = memory.GetQuat(index + 0xc);
+			const glm::vec3 f_size = memory.Object<glm::vec3>(index + 0x1c);
 
-			SMUuid uuid = memory.Objects<long long>(index + 0x28, 2);
-			Color color = memory.Object<unsigned int>(index + 0x38);
+			const SMUuid f_uuid = memory.Object<SMUuid>(index + 0x28);
+			const Color f_color = memory.Object<unsigned int>(index + 0x38);
 
 			index += 0x3c;
 
-			HarvestableData* hvs_data = Mod::GetGlobalHarvestbale(uuid);
+			HarvestableData* hvs_data = Mod::GetGlobalHarvestbale(f_uuid);
 			if (!hvs_data) continue;
 
 			Model* hvs_model = ModelStorage::LoadModel(hvs_data->Mesh);
 			if (!hvs_model) continue;
 
-			Harvestable* nHvs = new Harvestable(hvs_data, hvs_model, color);
-			nHvs->SetPosition({ f_pos[0], f_pos[1], f_pos[2] });
-			nHvs->SetRotation({ f_quat[3], f_quat[0], f_quat[1], f_quat[2] });
-			nHvs->SetSize({ f_size[0], f_size[1], f_size[2] });
+			Harvestable* pNewHvs = new Harvestable(hvs_data, hvs_model, f_color);
+			pNewHvs->SetPosition(f_pos);
+			pNewHvs->SetRotation(f_quat);
+			pNewHvs->SetSize(f_size);
 
-			part->AddObject(nHvs, hvs_index);
+			part->AddObject(pNewHvs, hvs_index);
 		}
 
 		return index;

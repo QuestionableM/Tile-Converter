@@ -1,8 +1,12 @@
 #pragma once
 
+#include <array>
 #include <vector>
 #include <algorithm>
+#include <gtc\quaternion.hpp>
+
 #include "Utils/ByteImpl.hpp"
+
 
 class MemoryWrapper
 {
@@ -97,6 +101,13 @@ public:
 		}
 
 		return l_output;
+	}
+
+	glm::quat GetQuat(const std::size_t& offset)
+	{
+		const std::array<float, 4> f_quat = this->ObjectsConst<float, 4>(offset);
+
+		return { f_quat[3], f_quat[0], f_quat[1], f_quat[2] };
 	}
 
 	template<typename T, bool is_big_endian = false>
