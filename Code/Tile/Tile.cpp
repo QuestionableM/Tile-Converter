@@ -257,7 +257,7 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 			for (std::size_t x = 0; x < tWidth; x++)
 			{
 				const float u = static_cast<float>(x) / uvWidth;
-				const float v = uvHeight - static_cast<float>(y) / uvHeight;
+				const float v = static_cast<float>(y) / uvHeight;
 
 				tMesh->uvs.push_back(glm::vec2(u, v));
 			}
@@ -381,30 +381,24 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 	ProgCounter::SetState(ProgState::WritingClutter, static_cast<std::size_t>(clWidth * clHeight));
 	for (int y = 0; y < clWidth; y++)
 	{
-		const float y_f = static_cast<float>(y);
-		const double y_d = static_cast<double>(y);
-
 		for (int x = 0; x < clHeight; x++)
 		{
 			TileClutter* tClutter = tile_clutter[x + y * clWidth];
 			if (!tClutter) continue;
 
-			const float x_f = static_cast<float>(x);
-			const double x_d = static_cast<double>(y);
+			const float x_offset = (float)x_noise.octave2D_11((double)x * 91.42f, (double)y * 83.24f, 4) * 0.5f;
+			const float y_offset = (float)y_noise.octave2D_11((double)x * 73.91f, (double)y * 98.46f, 4) * 0.5f;
 
-			const float x_offset = static_cast<float>(x_noise.octave2D_11(x_d * 91.42, y_d * 83.24, 4)) * 0.5f;
-			const float y_offset = static_cast<float>(y_noise.octave2D_11(x_d * 73.91, y_d * 98.46, 4)) * 0.5f;
-
-			const float xPosClamp = std::clamp<float>(x_f + x_offset, 0.0f, clWidthF);
-			const float yPosClamp = std::clamp<float>(y_f + y_offset, 0.0f, clHeightF);
+			const float xPosClamp = std::clamp<float>((float)x + x_offset, 0.0f, (float)clWidth);
+			const float yPosClamp = std::clamp<float>((float)y + y_offset, 0.0f, (float)clHeight);
 
 			glm::vec3 tClutterPos;
-			tClutterPos.x = -(x_f * 0.5f) + tWidth + x_offset;
-			tClutterPos.y = -(y_f * 0.5f) + tHeight + y_offset;
+			tClutterPos.x = -((float)x * 0.5f) + tWidth + x_offset;
+			tClutterPos.y = -((float)y * 0.5f) + tHeight + y_offset;
 			tClutterPos.z = GetHeightPoint(height_map, clWidth, clHeight, gridSizeX, gridSizeY, xPosClamp, yPosClamp);
 
-			const float rot_angle = static_cast<float>(rotation_noise.octave2D_11(x_d * 15.0, y_d * 17.14, 4)) * glm::two_pi<float>();
-			const float rand_scale = static_cast<float>(scale_noise.octave2D_11(x_d * 54.4, y_d * 24.54, 8)) * tClutter->ScaleVariance();
+			const float rot_angle = (float)rotation_noise.octave2D_11((double)x * 15.0, (double)y * 17.14, 4) * glm::two_pi<float>();
+			const float rand_scale = (float)scale_noise.octave2D_11((double)x * 54.4f, (double)y * 24.54, 8) * tClutter->ScaleVariance();
 
 			tClutter->SetPosition(tClutterPos);
 			tClutter->SetRotation(glm::rotate(glm::quat(), rot_angle, glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -483,8 +477,8 @@ void Tile::WriteMaterials(const std::wstring& dir) const
 			}
 		}
 
-		const std::string v_matOutputName = String::ToUtf8(dir + L"MaterialMap" + std::to_wstring(mat_id) + L".tga");
-		FreeImage_Save(FREE_IMAGE_FORMAT::FIF_TARGA, v_materialData, v_matOutputName.c_str());
+		const std::wstring v_matOutputName = dir + L"MaterialMap" + std::to_wstring(mat_id) + L".tga";
+		FreeImage_SaveU(FREE_IMAGE_FORMAT::FIF_TARGA, v_materialData, v_matOutputName.c_str());
 		FreeImage_Unload(v_materialData);
 	}
 }
@@ -524,8 +518,8 @@ void Tile::WriteColorMap(const std::wstring& dir) const
 		}
 	}
 
-	const std::string v_colorMapPath = String::ToUtf8(dir + L"ColorMap.tga");
-	FreeImage_Save(FREE_IMAGE_FORMAT::FIF_TARGA, v_colorMapData, v_colorMapPath.c_str());
+	const std::wstring v_colorMapPath = dir + L"ColorMap.tga";
+	FreeImage_SaveU(FREE_IMAGE_FORMAT::FIF_TARGA, v_colorMapData, v_colorMapPath.c_str());
 	FreeImage_Unload(v_colorMapData);
 }
 
@@ -592,7 +586,8 @@ void Tile::FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id) con
 	if (!pDefTex->LoadImageData())
 		return;
 
-	pDefTex->Resize(pDefTex->GetWidth() / m_Width, pDefTex->GetHeight() / m_Height);
+	if (!ConvertSettings::Export8kGroundTextures)
+		pDefTex->Resize(pDefTex->GetWidth() / m_Width, pDefTex->GetHeight() / m_Height);
 
 	const int gnd_tex_x = mGndTex->GetWidth();
 	const int gnd_tex_y = mGndTex->GetHeight();
@@ -667,12 +662,15 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 	const int gnd_width2  = m_Width  * 64;
 	const int gnd_height2 = m_Height * 64;
 
+	const int v_gndTexResolution = ConvertSettings::Export8kGroundTextures ? 8192 : 4096;
+
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
 	{
 		const std::size_t writing_gnd_idx = static_cast<std::size_t>(ProgState::FillingGndDif) + (3 * texture_id);
 
 		GroundTexture gnd_tex;
-		gnd_tex.AllocateMemory(4096, 4096);
+		if (!gnd_tex.AllocateMemory(v_gndTexResolution, v_gndTexResolution))
+			continue;
 
 		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx), 8);
 		this->FillGndTexture(&gnd_tex, texture_id);
@@ -687,7 +685,8 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 				if (!v_gndTexPtr->LoadImageData())
 					continue;
 
-				v_gndTexPtr->Resize(v_gndTexPtr->GetWidth() / m_Width, v_gndTexPtr->GetHeight() / m_Height);
+				if (!ConvertSettings::Export8kGroundTextures)
+					v_gndTexPtr->Resize(v_gndTexPtr->GetWidth() / m_Width, v_gndTexPtr->GetHeight() / m_Height);
 
 				this->SampleTextures(v_gndTexPtr, &gnd_tex, v_curMat.MatData, gnd_width2, gnd_height2);
 

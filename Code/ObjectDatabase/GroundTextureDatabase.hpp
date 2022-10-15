@@ -25,7 +25,7 @@ public:
 	GroundTexture(GroundTexture&) = delete;
 	~GroundTexture();
 
-	void AllocateMemory(const int& xSize, const int& ySize);
+	bool AllocateMemory(const int& xSize, const int& ySize);
 	void Resize(const int& width, const int& height);
 	bool LoadImageData();
 	void Clear();

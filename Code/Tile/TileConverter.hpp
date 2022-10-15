@@ -9,10 +9,11 @@ class ConvertSettings
 
 public:
 	//model settings
-	inline static bool ExportUvs            = true;
-	inline static bool ExportNormals        = true;
-	inline static bool ExportMaterials      = true;
-	inline static bool ExportGroundTextures = false;
+	inline static bool ExportUvs              = true;
+	inline static bool ExportNormals          = true;
+	inline static bool ExportMaterials        = true;
+	inline static bool ExportGroundTextures   = false;
+	inline static bool Export8kGroundTextures = false;
 
 	//tile settings
 	inline static bool ExportClutter      = true;

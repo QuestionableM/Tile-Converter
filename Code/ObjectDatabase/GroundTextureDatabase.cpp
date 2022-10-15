@@ -13,14 +13,22 @@ GroundTexture::~GroundTexture()
 	this->Clear();
 }
 
-void GroundTexture::AllocateMemory(const int& xSize, const int& ySize)
+bool GroundTexture::AllocateMemory(const int& xSize, const int& ySize)
 {
 	if (m_imageData)
 		FreeImage_Unload(m_imageData);
 
 	m_imageData = FreeImage_Allocate(xSize, ySize, 24);
+	if (!m_imageData)
+	{
+		DebugErrorL("Couldn't allocate memory for size: ", xSize, ", ", ySize);
+		return false;
+	}
+
 	m_width = xSize;
 	m_height = ySize;
+
+	return true;
 }
 
 void GroundTexture::Resize(const int& width, const int& height)
