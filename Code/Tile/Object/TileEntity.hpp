@@ -28,7 +28,10 @@ enum class EntityType : unsigned char
 	Asset       = 0b00010000,
 	Block       = 0b00100000,
 	Joint       = 0b01000000,
-	Part        = 0b10000000 
+	Part        = 0b10000000,
+
+	//Is not used anywhere except the GroundTerrainData class
+	GroundTerrain = 0
 };
 
 class TileEntity

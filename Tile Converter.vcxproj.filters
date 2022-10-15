@@ -317,5 +317,8 @@
     <ClInclude Include="Code\ObjectDatabase\Mod\GameDataMod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Tile\Object\GroundTerrainData.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

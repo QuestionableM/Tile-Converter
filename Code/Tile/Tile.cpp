@@ -1,16 +1,17 @@
 #include "Tile.hpp"
 
-#include "ObjectDatabase/GroundTextureDatabase.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
-#include "ObjectDatabase/ObjectData.hpp"
+#include "ObjectDatabase\GroundTextureDatabase.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\ObjectData.hpp"
 
-#include "Tile/TileConverter.hpp"
-#include "Utils/String.hpp"
+#include "Tile\Object\GroundTerrainData.hpp"
+#include "Tile\TileConverter.hpp"
+
+#include "Utils\String.hpp"
 #include "Console.hpp"
 
-#include <PerlinNoise/PerlinNoise.hpp>
-#include <gtc/matrix_transform.hpp>
-
+#include <PerlinNoise\PerlinNoise.hpp>
+#include <gtc\matrix_transform.hpp>
 #include <FreeImage.h>
 
 #include <filesystem>
@@ -346,10 +347,14 @@ void Tile::WriteTerrain(std::ofstream& model, WriterOffsetData& mOffset, const s
 	DebugOutL("Writing terrain...");
 	ProgCounter::SetState(ProgState::WritingGroundMesh, 0);
 
+	//Used to generate the material for ground terrain mesh
+	GroundTerrainData* v_tempTerrainData = new GroundTerrainData();
+
 	Model* terrain = this->GenerateTerrainMesh(height_map);
-	terrain->WriteToFile(glm::mat4(1.0f), mOffset, model, nullptr);
+	terrain->WriteToFile(glm::mat4(1.0f), mOffset, model, v_tempTerrainData);
 
 	delete terrain;
+	delete v_tempTerrainData;
 }
 
 void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const std::vector<float>& height_map) const

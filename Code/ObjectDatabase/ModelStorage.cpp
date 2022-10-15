@@ -8,21 +8,6 @@
 
 #include <gtx/matrix_decompose.hpp>
 
-bool SubMeshData::IsEmpty()
-{
-	return m_DataIdx.empty();
-}
-
-SubMeshData::SubMeshData(const int& sub_mesh_idx)
-{
-	this->m_SubMeshIdx = sub_mesh_idx;
-}
-
-bool Model::IsEmpty() const
-{
-	return (this->subMeshData.size() <= 0 || (this->vertices.size() <= 0 && this->uvs.size() <= 0 && this->normals.size() <= 0));
-}
-
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
 	std::vector<glm::vec3> mTranslatedVertices = {};
@@ -133,11 +118,6 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 			file.write(_f_str.c_str(), _f_str.size());
 		}
 	}
-}
-
-Model::Model(const std::wstring& mesh_path)
-{
-	this->meshPath = mesh_path;
 }
 
 Model::~Model()

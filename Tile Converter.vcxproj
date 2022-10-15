@@ -294,6 +294,7 @@
     <ClInclude Include="Code\Tile\Object\Asset.hpp" />
     <ClInclude Include="Code\Tile\Object\Block.hpp" />
     <ClInclude Include="Code\Tile\Object\Blueprint.hpp" />
+    <ClInclude Include="Code\Tile\Object\GroundTerrainData.hpp" />
     <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
     <ClInclude Include="Code\Tile\Object\Joint.hpp" />
     <ClInclude Include="Code\Tile\Object\Part.hpp" />

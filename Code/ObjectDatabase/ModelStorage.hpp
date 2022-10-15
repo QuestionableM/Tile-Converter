@@ -30,8 +30,9 @@ struct SubMeshData
 	bool has_normals;
 	bool has_uvs;
 
-	bool IsEmpty();
-	SubMeshData(const int& sub_mesh_idx);
+	inline bool IsEmpty() { return m_DataIdx.empty(); }
+
+	inline SubMeshData(const int& sub_mesh_idx) { this->m_SubMeshIdx = sub_mesh_idx; }
 	~SubMeshData() = default;
 };
 
@@ -44,11 +45,15 @@ struct Model
 
 	std::wstring meshPath;
 
-	bool IsEmpty() const;
 	void WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const class TileEntity* pEntity);
 
+	inline bool IsEmpty() const
+	{
+		return (this->subMeshData.size() <= 0 || (this->vertices.size() <= 0 && this->uvs.size() <= 0 && this->normals.size() <= 0));
+	}
+
+	inline Model(const std::wstring& mesh_path) { this->meshPath = mesh_path; }
 	Model() = default;
-	Model(const std::wstring& mesh_path);
 	Model(const Model&) = delete;
 	Model(Model&) = delete;
 	~Model();
