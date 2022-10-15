@@ -129,78 +129,78 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;jpeg$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\libjpg\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;jpeg$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\libjpg\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;jpeg$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\libjpg\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);RELEASE_DEBUG_INFO</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;jpeg$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\libjpg\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;jpeg$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\libjpg\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);RELEASE_DEBUG_INFO</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lodepng;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\libjpg\Include;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;jpeg$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\libjpg\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -244,10 +244,8 @@
     <ClCompile Include="Code\Utils\Color.cpp" />
     <ClCompile Include="Code\Utils\File.cpp" />
     <ClCompile Include="Code\Utils\Json.cpp" />
-    <ClCompile Include="Code\Utils\stb_impl.cpp" />
     <ClCompile Include="Code\Utils\String.cpp" />
     <ClCompile Include="Code\Utils\Uuid.cpp" />
-    <ClCompile Include="Dependencies\lodepng\lodepng\lodepng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
@@ -316,7 +314,6 @@
     <ClInclude Include="Code\Utils\String.hpp" />
     <ClInclude Include="Code\Utils\Uuid.hpp" />
     <ClInclude Include="Code\Utils\WinInclude.hpp" />
-    <ClInclude Include="Dependencies\lodepng\lodepng\lodepng.h" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
