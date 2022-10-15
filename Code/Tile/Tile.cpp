@@ -765,6 +765,20 @@ void Tile::WriteMtlFile(const std::wstring& path) const
 		ProgCounter::ProgressMax = tData.size();
 	}
 
+	{
+		ObjectTexData v_tileGroundTextureData;
+		v_tileGroundTextureData.TexColor = 0xffffff;
+
+		if (ConvertSettings::ExportGroundTextures)
+		{
+			v_tileGroundTextureData.Textures.dif = L"./GroundTexture_Dif.jpg";
+			v_tileGroundTextureData.Textures.asg = L"./GroundTexture_Asg.jpg";
+			v_tileGroundTextureData.Textures.nor = L"./GroundTexture_Nor.jpg";
+		}
+
+		tData["TileGroundTerrain"] = v_tileGroundTextureData;
+	}
+
 	for (const auto& tDatum : tData)
 	{
 		std::string output_str = "newmtl " + tDatum.first;
