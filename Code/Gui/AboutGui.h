@@ -26,15 +26,14 @@ namespace TileConverter {
 		System::Windows::Forms::Label^ Creators_LBL;
 		System::Windows::Forms::LinkLabel^ CreatorHardcoded_LLBL;
 		System::Windows::Forms::LinkLabel^ LibAssimp_LLBL;
-		System::Windows::Forms::LinkLabel^ LibLodePNG_LLBL;
+
 		System::Windows::Forms::LinkLabel^ LibLZ4_LLBL;
 		System::Windows::Forms::LinkLabel^ LibNlohmannJson_LLBL;
 		System::Windows::Forms::LinkLabel^ LibPerlinNoise_LLBL;
 
 		System::Windows::Forms::Label^ Version_LBL;
 		System::Windows::Forms::LinkLabel^ LibGLM_LLBL;
-		System::Windows::Forms::LinkLabel^ Lib_STBImage_LL;
-		System::Windows::Forms::LinkLabel^ Lib_LibJPEG_LL;
+		System::Windows::Forms::LinkLabel^ LibFreeImage_LLBL;
 
 		System::ComponentModel::Container ^components;
 
@@ -46,14 +45,12 @@ namespace TileConverter {
 			this->Creators_LBL = (gcnew System::Windows::Forms::Label());
 			this->CreatorHardcoded_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibAssimp_LLBL = (gcnew System::Windows::Forms::LinkLabel());
-			this->LibLodePNG_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibLZ4_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibNlohmannJson_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibPerlinNoise_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->Version_LBL = (gcnew System::Windows::Forms::Label());
 			this->LibGLM_LLBL = (gcnew System::Windows::Forms::LinkLabel());
-			this->Lib_STBImage_LL = (gcnew System::Windows::Forms::LinkLabel());
-			this->Lib_LibJPEG_LL = (gcnew System::Windows::Forms::LinkLabel());
+			this->LibFreeImage_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->SuspendLayout();
 			// 
 			// AppDesc_TB
@@ -131,20 +128,6 @@ namespace TileConverter {
 			this->LibAssimp_LLBL->Text = L"Assimp";
 			this->LibAssimp_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibAssimp_LLBL_LinkClicked);
 			// 
-			// LibLodePNG_LLBL
-			// 
-			this->LibLodePNG_LLBL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-			this->LibLodePNG_LLBL->AutoSize = true;
-			this->LibLodePNG_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->LibLodePNG_LLBL->Location = System::Drawing::Point(262, 120);
-			this->LibLodePNG_LLBL->Name = L"LibLodePNG_LLBL";
-			this->LibLodePNG_LLBL->Size = System::Drawing::Size(67, 16);
-			this->LibLodePNG_LLBL->TabIndex = 6;
-			this->LibLodePNG_LLBL->TabStop = true;
-			this->LibLodePNG_LLBL->Text = L"LodePNG";
-			this->LibLodePNG_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibLodePNG_LLBL_LinkClicked);
-			// 
 			// LibLZ4_LLBL
 			// 
 			this->LibLZ4_LLBL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
@@ -179,7 +162,7 @@ namespace TileConverter {
 			this->LibPerlinNoise_LLBL->AutoSize = true;
 			this->LibPerlinNoise_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->LibPerlinNoise_LLBL->Location = System::Drawing::Point(231, 104);
+			this->LibPerlinNoise_LLBL->Location = System::Drawing::Point(249, 120);
 			this->LibPerlinNoise_LLBL->Name = L"LibPerlinNoise_LLBL";
 			this->LibPerlinNoise_LLBL->Size = System::Drawing::Size(80, 16);
 			this->LibPerlinNoise_LLBL->TabIndex = 9;
@@ -213,47 +196,29 @@ namespace TileConverter {
 			this->LibGLM_LLBL->Text = L"GLM";
 			this->LibGLM_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibGLM_LLBL_LinkClicked);
 			// 
-			// Lib_STBImage_LL
+			// LibFreeImage_LLBL
 			// 
-			this->Lib_STBImage_LL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-			this->Lib_STBImage_LL->AutoSize = true;
-			this->Lib_STBImage_LL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->Lib_STBImage_LL->Location = System::Drawing::Point(199, 136);
-			this->Lib_STBImage_LL->Name = L"Lib_STBImage_LL";
-			this->Lib_STBImage_LL->Size = System::Drawing::Size(75, 16);
-			this->Lib_STBImage_LL->TabIndex = 14;
-			this->Lib_STBImage_LL->TabStop = true;
-			this->Lib_STBImage_LL->Text = L"STB Image";
-			this->Lib_STBImage_LL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::Lib_STBImage_LL_LinkClicked);
-			// 
-			// Lib_LibJPEG_LL
-			// 
-			this->Lib_LibJPEG_LL->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-			this->Lib_LibJPEG_LL->AutoSize = true;
-			this->Lib_LibJPEG_LL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->Lib_LibJPEG_LL->Location = System::Drawing::Point(196, 120);
-			this->Lib_LibJPEG_LL->Name = L"Lib_LibJPEG_LL";
-			this->Lib_LibJPEG_LL->Size = System::Drawing::Size(60, 16);
-			this->Lib_LibJPEG_LL->TabIndex = 15;
-			this->Lib_LibJPEG_LL->TabStop = true;
-			this->Lib_LibJPEG_LL->Text = L"LibJPEG";
-			this->Lib_LibJPEG_LL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::Lib_LibJPEG_LL_LinkClicked);
+			this->LibFreeImage_LLBL->AutoSize = true;
+			this->LibFreeImage_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->LibFreeImage_LLBL->Location = System::Drawing::Point(201, 136);
+			this->LibFreeImage_LLBL->Name = L"LibFreeImage_LLBL";
+			this->LibFreeImage_LLBL->Size = System::Drawing::Size(73, 16);
+			this->LibFreeImage_LLBL->TabIndex = 13;
+			this->LibFreeImage_LLBL->TabStop = true;
+			this->LibFreeImage_LLBL->Text = L"FreeImage";
+			this->LibFreeImage_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibFreeImage_LLBL_LinkClicked);
 			// 
 			// AboutGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(399, 161);
-			this->Controls->Add(this->Lib_LibJPEG_LL);
-			this->Controls->Add(this->Lib_STBImage_LL);
+			this->Controls->Add(this->LibFreeImage_LLBL);
 			this->Controls->Add(this->LibGLM_LLBL);
 			this->Controls->Add(this->Version_LBL);
 			this->Controls->Add(this->LibPerlinNoise_LLBL);
 			this->Controls->Add(this->LibNlohmannJson_LLBL);
 			this->Controls->Add(this->LibLZ4_LLBL);
-			this->Controls->Add(this->LibLodePNG_LLBL);
 			this->Controls->Add(this->LibAssimp_LLBL);
 			this->Controls->Add(this->CreatorHardcoded_LLBL);
 			this->Controls->Add(this->Creators_LBL);
@@ -276,13 +241,11 @@ namespace TileConverter {
 		System::Void CreatorQM_LLBL_LinkClicked       (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void CreatorHardcoded_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibPerlinNoise_LLBL_LinkClicked  (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void LibLodePNG_LLBL_LinkClicked      (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibLZ4_LLBL_LinkClicked          (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibAssimp_LLBL_LinkClicked       (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibNlohmannJson_LLBL_LinkClicked (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibGLM_LLBL_LinkClicked          (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void Lib_STBImage_LL_LinkClicked      (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		System::Void Lib_LibJPEG_LL_LinkClicked       (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibFreeImage_LLBL_LinkClicked    (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void MouseKillFocus                   (System::Object^ sender, System::Windows::Forms::MouseEventArgs ^ e);
 	};
 }
