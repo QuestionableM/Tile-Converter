@@ -4,45 +4,12 @@
 #include "Tile/Object/Blueprint.hpp"
 #include "ObjectDatabase/ModelStorage.hpp"
 
-Prefab::Prefab(const std::wstring& path, const std::wstring& flag)
-{
-	this->path = path;
-	this->flag = flag;
-}
-
-Prefab::~Prefab()
-{
-	for (TileEntity*& pObject : this->Objects)
-		delete pObject;
-}
-
-std::wstring Prefab::GetPath() const
-{
-	return this->path;
-}
-
-std::wstring Prefab::GetFlag() const
-{
-	return this->flag;
-}
-
-std::vector<TileEntity*> Prefab::GetObjects() const
-{
-	return this->Objects;
-}
-
 void Prefab::AddObject(TileEntity* object)
 {
 	//Check if the object is valid (Valid objects: Harvestable, Blueprint, Prefab, Asset)
 	assert((static_cast<unsigned char>(object->Type()) & 0b00011011) != 0);
 
 	this->Objects.push_back(object);
-}
-
-
-EntityType Prefab::Type() const
-{
-	return EntityType::Prefab;
 }
 
 std::string Prefab::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const

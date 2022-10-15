@@ -12,11 +12,6 @@
 
 #include <gtx/quaternion.hpp>
 
-Blueprint::Blueprint()
-{
-	this->size = glm::vec3(0.25f);
-}
-
 static const std::string bp_secret = "?JB:";
 
 Blueprint* Blueprint::LoadAutomatic(const std::string& str)
@@ -68,18 +63,6 @@ Blueprint* Blueprint::FromJsonString(const std::string& json_str)
 	return nBlueprint;
 }
 
-void Blueprint::AddObject(TileEntity* object)
-{
-	assert(object->Type() == EntityType::Block || object->Type() == EntityType::Part || object->Type() == EntityType::Joint);
-
-	this->Objects.push_back(object);
-}
-
-EntityType Blueprint::Type() const
-{
-	return EntityType::Blueprint;
-}
-
 std::string Blueprint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	return "BLUEPRINT_MTL_NAME_NOT_NEEDED";
@@ -97,17 +80,6 @@ void Blueprint::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset
 
 	for (const TileEntity* pEntity : this->Objects)
 		pEntity->WriteObjectToFile(file, mOffset, blueprint_matrix);
-}
-
-std::size_t Blueprint::GetAmountOfObjects() const
-{
-	return this->Objects.size();
-}
-
-Blueprint::~Blueprint()
-{
-	for (TileEntity*& pObject : this->Objects)
-		delete pObject;
 }
 
 glm::vec3 Blueprint::JsonToVector(const nlohmann::json& vec_json)

@@ -2,24 +2,6 @@
 
 #include "ObjectDatabase/Mod/MaterialManager.hpp"
 
-Harvestable::Harvestable(HarvestableData* pParent, Model* pModel, const Color& color)
-{
-	this->pParent = pParent;
-	this->uuid = pParent->Uuid;
-	this->pModel = pModel;
-	this->color = color;
-}
-
-Color Harvestable::GetColor() const
-{
-	return this->color;
-}
-
-EntityType Harvestable::Type() const
-{
-	return EntityType::Harvestable;
-}
-
 std::string Harvestable::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	const SubMeshData* pSubMesh = pModel->subMeshData[mIdx];

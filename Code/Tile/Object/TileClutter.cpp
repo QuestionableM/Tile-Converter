@@ -2,28 +2,6 @@
 
 #include "ObjectDatabase/Mod/MaterialManager.hpp"
 
-TileClutter::TileClutter(ClutterData* pParent, Model* pModel)
-{
-	this->pParent = pParent;
-	this->uuid = pParent->Uuid;
-	this->pModel = pModel;
-}
-
-const float& TileClutter::ScaleVariance() const
-{
-	return pParent->ScaleVariance;
-}
-
-void TileClutter::SetColor(const Color& color)
-{
-	this->color = color;
-}
-
-EntityType TileClutter::Type() const
-{
-	return EntityType::Clutter;
-}
-
 std::string	TileClutter::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	const std::string tex_mat = MaterialManager::GetMaterialA(pParent->Textures.material);

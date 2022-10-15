@@ -6,26 +6,6 @@
 
 #include "Console.hpp"
 
-Joint::Joint(PartData* pParent, Model* pModel, const Color& color, const int& xAxis, const int& zAxis)
-{
-	this->pParent = pParent;
-	this->uuid = pParent->Uuid;
-	this->pModel = pModel;
-	this->color = color;
-	this->xAxis = xAxis;
-	this->zAxis = zAxis;
-}
-
-Color Joint::GetColor() const
-{
-	return this->color;
-}
-
-EntityType Joint::Type() const
-{
-	return EntityType::Joint;
-}
-
 std::string Joint::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	const SubMeshData* pSubMesh = pModel->subMeshData[mIdx];

@@ -4,14 +4,6 @@
 #include "ObjectDatabase/ModelStorage.hpp"
 #include "ObjectDatabase/Mod/MaterialManager.hpp"
 
-Asset::Asset(AssetData* pParent, Model* pModel, const std::unordered_map<std::wstring, Color>& color_map)
-{
-	this->pParent = pParent;
-	this->uuid = pParent->Uuid;
-	this->pModel = pModel;
-	this->mColors = color_map;
-}
-
 Color Asset::GetColor(const std::wstring& color) const
 {
 	if (mColors.find(color) != mColors.end())
@@ -21,16 +13,6 @@ Color Asset::GetColor(const std::wstring& color) const
 		return pParent->DefaultColors.at(color);
 
 	return 0x000000;
-}
-
-std::unordered_map<std::wstring, Color> Asset::GetMaterials() const
-{
-	return this->mColors;
-}
-
-EntityType Asset::Type() const
-{
-	return EntityType::Asset;
 }
 
 std::string Asset::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const

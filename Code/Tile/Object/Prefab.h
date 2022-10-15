@@ -15,18 +15,28 @@ class Prefab : public TileEntity
 	std::vector<TileEntity*> Objects = {};
 
 public:
-	Prefab(const std::wstring& path, const std::wstring& flag = L"");
+	inline Prefab(const std::wstring& path, const std::wstring& flag = L"")
+	{
+		this->path = path;
+		this->flag = flag;
+	}
+
 	Prefab(Prefab&) = delete;
 	Prefab(const Prefab&) = delete;
-	~Prefab();
 
-	std::wstring GetPath() const;
-	std::wstring GetFlag() const;
-	std::vector<TileEntity*> GetObjects() const;
+	inline ~Prefab()
+	{
+		for (TileEntity*& pObject : this->Objects)
+			delete pObject;
+	}
+
+	inline std::wstring GetPath() const { return this->path; }
+	inline std::wstring GetFlag() const { return this->flag; }
+	inline std::vector<TileEntity*> GetObjects() const { return this->Objects; }
 
 	void AddObject(TileEntity* object);
 
-	EntityType Type() const override;
+	inline EntityType Type() const override { return EntityType::Prefab; }
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
 	void WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const override;

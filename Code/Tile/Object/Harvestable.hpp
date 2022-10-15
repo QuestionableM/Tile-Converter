@@ -11,14 +11,21 @@ class Harvestable : public TileEntity
 	class HarvestableData* pParent;
 
 public:
-	Harvestable(HarvestableData* pParent, Model* pModel, const Color& color);
+	inline Harvestable(HarvestableData* pParent, Model* pModel, const Color& color)
+	{
+		this->pParent = pParent;
+		this->uuid = pParent->Uuid;
+		this->pModel = pModel;
+		this->color = color;
+	}
+
 	Harvestable(const Harvestable&) = delete;
 	Harvestable(Harvestable&) = delete;
 	~Harvestable() = default;
 
-	Color GetColor() const;
+	inline Color GetColor() const { return this->color; }
 
-	EntityType Type() const;
+	inline EntityType Type() const { return EntityType::Harvestable; }
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
 };

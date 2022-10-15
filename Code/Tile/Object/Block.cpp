@@ -7,21 +7,6 @@
 
 #include "Tile\TileConverter.hpp"
 
-Block::Block(BlockData* pParent, const glm::vec3& bounds, const Color& color, const int& xAxis, const int& zAxis)
-{
-	this->pParent = pParent;
-	this->uuid = pParent->Uuid;
-	this->Bounds = bounds;
-	this->color = color;
-	this->xAxis = xAxis;
-	this->zAxis = zAxis;
-}
-
-EntityType Block::Type() const
-{
-	return EntityType::Block;
-}
-
 std::string Block::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	std::string material_idx = MaterialManager::GetMaterialA(pParent->Textures.material);

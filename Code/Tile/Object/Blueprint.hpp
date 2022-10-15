@@ -8,7 +8,10 @@
 
 class Blueprint : public TileEntity
 {
-	Blueprint();
+	inline Blueprint()
+	{
+		this->size = glm::vec3(0.25f);
+	}
 
 public:
 	static Blueprint* LoadAutomatic(const std::string& str);
@@ -18,15 +21,24 @@ public:
 	//This vector contains blocks, parts and joints
 	std::vector<TileEntity*> Objects = {};
 
-	void AddObject(TileEntity* object);
+	inline void AddObject(TileEntity* object)
+	{
+		assert(object->Type() == EntityType::Block || object->Type() == EntityType::Part || object->Type() == EntityType::Joint);
 
-	EntityType Type() const override;
+		this->Objects.push_back(object);
+	}
+
+	inline EntityType Type() const override { return EntityType::Blueprint; }
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tex_map) const override;
 	void WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const override;
-	std::size_t GetAmountOfObjects() const override;
+	inline std::size_t GetAmountOfObjects() const override { return this->Objects.size(); }
 
-	~Blueprint();
+	inline ~Blueprint()
+	{
+		for (TileEntity*& pObject : this->Objects)
+			delete pObject;
+	}
 
 private:
 	static glm::vec3 JsonToVector(const nlohmann::json& vec_json);
