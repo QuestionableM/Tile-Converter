@@ -360,8 +360,8 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 	std::vector<TileClutter*> tile_clutter = this->GetClutter();
 
-	const std::size_t clWidth  = static_cast<std::size_t>(m_Width)  * 128;
-	const std::size_t clHeight = static_cast<std::size_t>(m_Height) * 128;
+	const int clWidth  = m_Width  * 128;
+	const int clHeight = m_Height * 128;
 
 	const float clWidthF  = static_cast<float>(clWidth);
 	const float clHeightF = static_cast<float>(clHeight);
@@ -378,13 +378,13 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 	const siv::PerlinNoise x_noise(6842u);
 	const siv::PerlinNoise y_noise(1813u);
 
-	ProgCounter::SetState(ProgState::WritingClutter, clWidth * clHeight);
-	for (std::size_t y = 0; y < clWidth; y++)
+	ProgCounter::SetState(ProgState::WritingClutter, static_cast<std::size_t>(clWidth * clHeight));
+	for (int y = 0; y < clWidth; y++)
 	{
 		const float y_f = static_cast<float>(y);
 		const double y_d = static_cast<double>(y);
 
-		for (std::size_t x = 0; x < clHeight; x++)
+		for (int x = 0; x < clHeight; x++)
 		{
 			TileClutter* tClutter = tile_clutter[x + y * clWidth];
 			if (!tClutter) continue;
@@ -529,7 +529,7 @@ void Tile::WriteColorMap(const std::wstring& dir) const
 	FreeImage_Unload(v_colorMapData);
 }
 
-void Tile::SampleTextures(GroundTexture* tex1, GroundTexture* out_tex, const std::vector<float>& material_map, const std::size_t& gnd_width, const std::size_t& gnd_height) const
+void Tile::SampleTextures(GroundTexture* tex1, GroundTexture* out_tex, const std::vector<float>& material_map, const int& gnd_width, const int& gnd_height) const
 {
 	constexpr const float mul_div = 1.0f / 255.0f;
 
@@ -664,8 +664,8 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 	std::array<MaterialData, 8> v_materialMap = {};
 	this->FillMaterialMap(v_materialMap);
 
-	const std::size_t gnd_width2  = static_cast<std::size_t>(m_Width ) * 64;
-	const std::size_t gnd_height2 = static_cast<std::size_t>(m_Height) * 64;
+	const int gnd_width2  = m_Width  * 64;
+	const int gnd_height2 = m_Height * 64;
 
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
 	{
