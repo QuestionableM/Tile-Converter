@@ -20,7 +20,7 @@ Tile::Tile(const int& width, const int& height)
 {
 	this->m_Width = width;
 	this->m_Height = height;
-	this->m_Tiles.resize((std::size_t)(m_Width * m_Height));
+	this->m_Tiles.resize(static_cast<std::size_t>(m_Width * m_Height));
 
 	for (std::size_t a = 0; a < m_Tiles.size(); a++)
 		m_Tiles[a] = new TilePart(this);
@@ -199,8 +199,8 @@ inline float GetHeightPoint(
 inline glm::vec3 CalculateNormalVector(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
 {
 	//p2 is the new origin (can be changed later)
-	glm::vec3 a = p2 - p1;
-	glm::vec3 b = p3 - p1;
+	const glm::vec3 a = p2 - p1;
+	const glm::vec3 b = p3 - p1;
 
 	return glm::normalize(glm::cross(a, b));
 }
