@@ -7,7 +7,7 @@
 
 #include "Console.hpp"
 
-std::unordered_map<std::wstring, std::wstring> MaterialManager::MatStorage = {};
+MaterialManager::MaterialMap MaterialManager::m_materialStorage = {};
 
 void MaterialManager::Initialize()
 {
@@ -21,17 +21,18 @@ void MaterialManager::Initialize()
 		const std::wstring pKey = String::ToWide(pObject.key());
 		const std::wstring pValue = String::ToWide(pObject.value().get<std::string>());
 
-		if (MatStorage.find(pKey) != MatStorage.end())
+		if (m_materialStorage.find(pKey) != m_materialStorage.end())
 			continue;
 
-		MatStorage.insert(std::make_pair(pKey, pValue));
+		m_materialStorage.insert(std::make_pair(pKey, pValue));
 	}
 }
 
 std::wstring MaterialManager::GetMaterialW(const std::wstring& mat_name)
 {
-	if (MatStorage.find(mat_name) != MatStorage.end())
-		return L"m" + MatStorage.at(mat_name);
+	const MaterialMap::const_iterator iter = m_materialStorage.find(mat_name);
+	if (iter != m_materialStorage.end())
+		return L"m" + iter->second;
 
 	DebugOutL("Couldn't find the specified material: ", mat_name);
 
@@ -40,7 +41,5 @@ std::wstring MaterialManager::GetMaterialW(const std::wstring& mat_name)
 
 std::string MaterialManager::GetMaterialA(const std::wstring& mat_name)
 {
-	const std::wstring wMaterial = MaterialManager::GetMaterialW(mat_name);
-
-	return String::ToUtf8(wMaterial);
+	return String::ToUtf8(MaterialManager::GetMaterialW(mat_name));
 }

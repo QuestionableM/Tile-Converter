@@ -5,10 +5,13 @@
 
 class MaterialManager
 {
-	static std::unordered_map<std::wstring, std::wstring> MatStorage;
+	using MaterialMap = std::unordered_map<std::wstring, std::wstring>;
 public:
 	static void Initialize();
 
 	static std::wstring GetMaterialW(const std::wstring& mat_name);
 	static std::string GetMaterialA(const std::wstring& mat_name);
+
+private:
+	static MaterialMap m_materialStorage;
 };

@@ -640,9 +640,8 @@ void Tile::FillMaterialMap(std::array<MaterialData, 8>& mat_data) const
 			{
 				const long long& cur_data = ground_data[x + y * gnd_width];
 				const Byte cur_chunk = static_cast<Byte>(cur_data >> mat_offset);
-				const float float_chunk = static_cast<float>(cur_chunk) / 255.0f;
 
-				material_vec[x + y * gnd_width] = float_chunk;
+				material_vec[x + y * gnd_width] = static_cast<float>(cur_chunk) / 255.0f;
 
 				if (!has_data && cur_chunk != 0)
 					has_data = true;

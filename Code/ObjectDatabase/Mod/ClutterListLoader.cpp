@@ -18,7 +18,7 @@ bool ClutterListLoader::LoadTextureData(const nlohmann::json& fClutter, TextureL
 	
 	const std::wstring clDifWide = String::ToWide(clDif.get<std::string>());
 	tList.dif = KeywordReplacer::ReplaceKey(clDifWide);
-	tList.material = (clMaterial.is_string() ? String::ToWide(clMaterial.get<std::string>()) : L"GroundClutter");
+	tList.material = (clMaterial.is_string() ? String::ToWide(clMaterial.get<std::string>()) : L"GroundVegetation");
 
 	const std::wstring mPathWide = String::ToWide(clMesh.get<std::string>());
 	mesh = KeywordReplacer::ReplaceKey(mPathWide);
