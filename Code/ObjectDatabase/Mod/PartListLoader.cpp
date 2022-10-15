@@ -96,7 +96,7 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 		new_part->Textures = tex_data;
 		new_part->Uuid = part_uuid;
 		new_part->pMod = mod;
-		new_part->DefaultColor = pColor.get<std::string>();
+		new_part->DefaultColor = (pColor.is_string() ? pColor.get<std::string>() : "375000");
 		new_part->Bounds = PartListLoader::LoadPartCollision(fPart);
 
 		const auto new_pair = std::make_pair(new_part->Uuid, new_part);

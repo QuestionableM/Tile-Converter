@@ -3,12 +3,6 @@
 #include "Utils/String.hpp"
 #include "ObjectDatabase/KeywordReplacer.hpp"
 
-#include <stb/stb_image.h>
-#include <lodepng/lodepng.h>
-#include <libjpeg/jpeglib.h>
-
-#include "Console.hpp"
-
 GroundTexture::GroundTexture(const std::wstring& path)
 {
 	this->SetPath(path);
@@ -19,182 +13,99 @@ GroundTexture::~GroundTexture()
 	this->Clear();
 }
 
-void GroundTexture::AllocateMemory(const std::size_t& xSize, const std::size_t& ySize)
+void GroundTexture::AllocateMemory(const int& xSize, const int& ySize)
 {
-	this->mSizeX = xSize;
-	this->mSizeY = ySize;
+	if (m_imageData)
+		FreeImage_Unload(m_imageData);
 
-	this->mImageData.clear();
-	this->mImageData.resize(xSize * ySize * 3);
+	m_imageData = FreeImage_Allocate(xSize, ySize, 24);
+	m_width = xSize;
+	m_height = ySize;
+}
+
+void GroundTexture::Resize(const int& width, const int& height)
+{
+	if (!m_imageData)
+		return;
+
+	FIBITMAP* v_newImagePtr = FreeImage_Rescale(m_imageData, width, height);
+	if (!v_newImagePtr)
+	{
+		DebugErrorL("Couldn't resize the ground texture (size: ", m_width, ", ", m_height, "; new_size: ", width, ", ", height, ")");
+		return;
+	}
+
+	FreeImage_Unload(m_imageData);
+	m_imageData = v_newImagePtr;
+
+	this->m_width = width;
+	this->m_height = height;
 }
 
 bool GroundTexture::LoadImageData()
 {
-	if (!mImageData.empty()) return false;
-
-	int img_x, img_y;
-	int num_channels;
-
-	Byte* temp_ptr = stbi_load(String::ToUtf8(mTexturePath).c_str(), &img_x, &img_y, &num_channels, 3);
-	if (!temp_ptr)
+	if (m_imageData)
 	{
-		DebugErrorL("Couldn't load the specified texture: ", mTexturePath);
+		DebugErrorL("Image data already exists!");
 		return false;
 	}
 
-	this->AllocateMemory((std::size_t)img_x, (std::size_t)img_y);
-	std::memcpy(mImageData.data(), temp_ptr, mSizeX * mSizeY * 3);
+	FREE_IMAGE_FORMAT v_freeImageFormat = FreeImage_GetFileTypeU(m_texturePath.c_str());
+	if (v_freeImageFormat == FIF_UNKNOWN)
+		v_freeImageFormat = FreeImage_GetFIFFromFilenameU(m_texturePath.c_str());
 
-	stbi_image_free(temp_ptr);
+	if (v_freeImageFormat == FIF_UNKNOWN)
+	{
+		DebugErrorL("Couldn't identity the image format (path: ", m_texturePath, ")");
+		return false;
+	}
+
+	m_imageData = FreeImage_LoadU(v_freeImageFormat, m_texturePath.c_str());
+	if (!m_imageData)
+	{
+		DebugErrorL("Couldn't load the specified texture: ", m_texturePath);
+		return false;
+	}
+
+	if (FreeImage_GetBPP(m_imageData) != 24)
+	{
+		FIBITMAP* v_oldImagePtr = m_imageData;
+		m_imageData = FreeImage_ConvertTo24Bits(m_imageData);
+		if (!m_imageData)
+		{
+			DebugErrorL("Couldn't convert the image to 24 BPP");
+		}
+
+		FreeImage_Unload(v_oldImagePtr);
+	}
+
+	this->m_width = static_cast<int>(FreeImage_GetWidth(m_imageData));
+	this->m_height = static_cast<int>(FreeImage_GetHeight(m_imageData));
 
 	return true;
 }
 
 void GroundTexture::Clear()
 {
-	mImageData.clear();
+	if (m_imageData)
+	{
+		FreeImage_Unload(m_imageData);
+		m_imageData = nullptr;
+	}
 }
 
 void GroundTexture::SetPath(const std::wstring& path)
 {
-	this->mTexturePath = KeywordReplacer::ReplaceKey(path);
-	DebugOutL("TexPath: ", this->mTexturePath);
-}
-
-std::size_t GroundTexture::GetWidth() const
-{
-	return mSizeX;
-}
-
-std::size_t GroundTexture::GetHeight() const
-{
-	return mSizeY;
-}
-
-Byte* GroundTexture::Data()
-{
-	return mImageData.data();
-}
-
-Byte GroundTexture::GetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index) const
-{
-	return mImageData[3 * mSizeX * pY + 3 * pX + index];
-}
-
-void GroundTexture::SetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index, const Byte& b)
-{
-	mImageData[3 * mSizeX * pY + 3 * pX + index] = b;
+	m_texturePath = KeywordReplacer::ReplaceKey(path);
+	DebugOutL("TexPath: ", m_texturePath);
 }
 
 void GroundTexture::WriteToFile(const std::wstring& path, const int& quality) const
 {
-	/* This struct contains the JPEG compression parameters and pointers to
-	 * working space (which is allocated as needed by the JPEG library).
-	 * It is possible to have several such structures, representing multiple
-	 * compression/decompression processes, in existence at once.  We refer
-	 * to any one struct (and its associated working data) as a "JPEG object".
-	 */
-	struct jpeg_compress_struct cinfo;
-	/* This struct represents a JPEG error handler.  It is declared separately
-	 * because applications often want to supply a specialized error handler
-	 * (see the second half of this file for an example).  But here we just
-	 * take the easy way out and use the standard error handler, which will
-	 * print a message on stderr and call exit() if compression fails.
-	 * Note that this struct must live as long as the main JPEG parameter
-	 * struct, to avoid dangling-pointer problems.
-	 */
-	struct jpeg_error_mgr jerr;
-	/* More stuff */
-	FILE* outfile;		/* target file */
-	JSAMPROW row_pointer[1];	/* pointer to JSAMPLE row[s] */
-	int row_stride;		/* physical row width in image buffer */
-	errno_t open_result; /* a result of fopen_s function */
-
-	/* Step 1: allocate and initialize JPEG compression object */
-
-	/* We have to set up the error handler first, in case the initialization
-	 * step fails.  (Unlikely, but it could happen if you are out of memory.)
-	 * This routine fills in the contents of struct jerr, and returns jerr's
-	 * address which we place into the link field in cinfo.
-	 */
-	cinfo.err = jpeg_std_error(&jerr);
-	/* Now we can initialize the JPEG compression object. */
-	jpeg_create_compress(&cinfo);
-
-	/* Step 2: specify data destination (eg, a file) */
-	/* Note: steps 2 and 3 can be done in either order. */
-
-	/* Here we use the library-supplied code to send compressed data to a
-	 * stdio stream.  You can also write your own code to do something else.
-	 * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
-	 * requires it in order to write binary files.
-	 */
-	if ((open_result = fopen_s(&outfile, String::ToUtf8(path).c_str(), "wb")) != 0)
-	{
-		DebugOutL("Can't open ", path);
+	if (!m_imageData)
 		return;
-	}
 
-	jpeg_stdio_dest(&cinfo, outfile);
-
-	/* Step 3: set parameters for compression */
-
-	/* First we supply a description of the input image.
-	 * Four fields of the cinfo struct must be filled in:
-	 */
-	cinfo.image_width = (unsigned int)mSizeX; 	/* image width and height, in pixels */
-	cinfo.image_height = (unsigned int)mSizeY;
-	cinfo.input_components = 3;		/* # of color components per pixel */
-	cinfo.in_color_space = JCS_RGB; 	/* colorspace of input image */
-	/* Now use the library's routine to set default compression parameters.
-	 * (You must set at least cinfo.in_color_space before calling this,
-	 * since the defaults depend on the source color space.)
-	 */
-	jpeg_set_defaults(&cinfo);
-	/* Now you can set any non-default parameters you wish to.
-	 * Here we just illustrate the use of quality (quantization table) scaling:
-	 */
-	jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
-
-	/* Step 4: Start compressor */
-
-	/* TRUE ensures that we will write a complete interchange-JPEG file.
-	 * Pass TRUE unless you are very sure of what you're doing.
-	 */
-	jpeg_start_compress(&cinfo, TRUE);
-
-	/* Step 5: while (scan lines remain to be written) */
-	/*           jpeg_write_scanlines(...); */
-
-	/* Here we use the library's state variable cinfo.next_scanline as the
-	 * loop counter, so that we don't have to keep track ourselves.
-	 * To keep things simple, we pass one scanline per call; you can pass
-	 * more if you wish, though.
-	 */
-	row_stride = (int)mSizeX * 3;	/* JSAMPLEs per row in image_buffer */
-	
-	while (cinfo.next_scanline < cinfo.image_height)
-	{
-		/* jpeg_write_scanlines expects an array of pointers to scanlines.
-		 * Here the array is only one element long, but you could pass
-		 * more than one scanline at a time if that's more convenient.
-		 */
-		row_pointer[0] = (JSAMPROW)&mImageData[cinfo.next_scanline * row_stride];
-		(void)jpeg_write_scanlines(&cinfo, row_pointer, 1);
-	}
-
-	/* Step 6: Finish compression */
-
-	jpeg_finish_compress(&cinfo);
-	/* After finish_compress, we can close the output file. */
-	fclose(outfile);
-
-	/* Step 7: release JPEG compression object */
-
-	/* This is an important step since it will release a good deal of memory. */
-	jpeg_destroy_compress(&cinfo);
-
-	/* And we're done! */
+	FreeImage_Save(FREE_IMAGE_FORMAT::FIF_JPEG, m_imageData, String::ToUtf8(path).c_str(), JPEG_QUALITYSUPERB);
 }
 
 

@@ -73,7 +73,15 @@ public:
 				}
 
 				const SMUuid clutter_uuid = memory.Object<SMUuid>(offset);
-				DebugOutL(0b1101_fg, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
+				const ClutterData* pData = Mod::GetGlobalClutter(clutter_uuid);
+				if (pData)
+				{
+					DebugOutL(0b1101_fg, "Clutter: ", clutter_uuid.ToString(), " -> ", uVar7);
+				}
+				else
+				{
+					DebugErrorL("The specified clutter doesn't exist: ", clutter_uuid.ToString());
+				}
 
 				/*
 				int iVar8 = 0;

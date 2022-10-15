@@ -79,7 +79,7 @@ void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
 		new_block->Uuid = block_uuid;
 		new_block->Textures = tList;
 		new_block->Tiling = tiling_value;
-		new_block->DefaultColor = bColor.get<std::string>();
+		new_block->DefaultColor = (bColor.is_string() ? bColor.get<std::string>() : "375000");
 		new_block->pMod = mod;
 		
 		const auto new_pair = std::make_pair(new_block->Uuid, new_block);

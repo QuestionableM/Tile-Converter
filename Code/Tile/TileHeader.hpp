@@ -110,6 +110,7 @@ public:
 		if (wh_mul != 0)
 		{
 			//Keep an eye on this line of code, in case the reader breaks
+			//388 bytes : 292 bytes
 			const std::size_t header_size = (new_tile->m_Version > 9) ? 0x184 : 0x124;
 
 			std::vector<Byte> headerBytes = {};

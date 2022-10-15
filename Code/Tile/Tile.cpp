@@ -11,8 +11,7 @@
 #include <PerlinNoise/PerlinNoise.hpp>
 #include <gtc/matrix_transform.hpp>
 
-#include <lodepng/lodepng.h>
-#include <stb/stb_image.h>
+#include <FreeImage.h>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -33,65 +32,13 @@ Tile::~Tile()
 		delete m_Tiles[a];
 }
 
-int Tile::GetWidth() const
-{
-	return m_Width;
-}
-
-int Tile::GetHeight() const
-{
-	return m_Height;
-}
-
-int Tile::GetVersion() const
-{
-	return m_Version;
-}
-
-//UUID IMPLEMENTATION GOES HERE
-
-int Tile::GetTileType() const
-{
-	return m_Type;
-}
-
-long long Tile::GetCreatorId() const
-{
-	return m_CreatorId;
-}
-
-
-
-void Tile::SetVersion(const int& version)
-{
-	this->m_Version = version;
-}
-
-void Tile::SetTileType(const int& type)
-{
-	this->m_Type = type;
-}
-
-void Tile::SetCreatorId(const long long& creator_id)
-{
-	this->m_CreatorId = creator_id;
-}
-
-void Tile::SetPart(const int& x, const int& y, TilePart* part)
-{
-	assert(part == nullptr);
-
-	this->m_Tiles[(std::size_t)(x + y * m_Width)] = part;
-}
-
-
 
 void Tile::Resize(const int& width, const int& height)
 {
 	assert(width < 1 || height < 1);
 
 	std::vector<TilePart*> nTileArray = {};
-	nTileArray.resize((std::size_t)(width * height));
+	nTileArray.resize(static_cast<std::size_t>(width * height));
 
 	const int min_height = std::min(height, m_Height);
 	const int min_width = std::min(width, m_Width);
@@ -100,7 +47,7 @@ void Tile::Resize(const int& width, const int& height)
 	{
 		for (int x = 0; x < min_width; x++)
 		{
-			nTileArray[(std::size_t)(x + y * width)] = this->GetPart(x, y);
+			nTileArray[x + y * width] = this->GetPart(x, y);
 		}
 	}
 
@@ -114,8 +61,6 @@ void Tile::Resize(const int& width, const int& height)
 	this->m_Height = height;
 	this->m_Tiles = nTileArray;
 }
-
-
 
 std::vector<float> Tile::GetVertexHeight() const
 {
@@ -173,7 +118,7 @@ std::vector<TileClutter*> Tile::GetClutter() const
 	const int h = m_Height * 128;
 
 	std::vector<TileClutter*> clutter_bytes = {};
-	clutter_bytes.resize((std::size_t)(w * h));
+	clutter_bytes.resize(static_cast<std::size_t>(w * h));
 
 	for (int y = 0; y < m_Height; y++)
 	{
@@ -217,27 +162,22 @@ std::vector<long long> Tile::GetGround() const
 	return ground_bytes;
 }
 
-TilePart* Tile::GetPart(const int& x, const int& y) const
-{
-	return this->m_Tiles[(std::size_t)(x + y * m_Width)];
-}
-
-float lerp(const float& s, const float& e, const float& t)
+inline float lerp(const float& s, const float& e, const float& t)
 {
 	return s + (e - s) * t;
 }
 
-float blerp(const float& c00, const float& c10, const float& c01, const float& c11, const float& tx, const float& ty)
+inline float blerp(const float& c00, const float& c10, const float& c01, const float& c11, const float& tx, const float& ty)
 {
 	return lerp(lerp(c00, c10, tx), lerp(c01, c11, tx), ty);
 }
 
-float GetHeightPoint(
+inline float GetHeightPoint(
 	const std::vector<float>& vec,
-	const std::size_t& vec_width,
-	const std::size_t& vec_height,
-	const std::size_t& gridSzX,
-	const std::size_t& gridSzY,
+	const int& vec_width,
+	const int& vec_height,
+	const int& gridSzX,
+	const int& gridSzY,
 	const float& x,
 	const float& y
 )
@@ -256,7 +196,7 @@ float GetHeightPoint(
 	return blerp(c00, c10, c01, c11, gx - gxi, gy - gyi);
 }
 
-glm::vec3 CalculateNormalVector(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
+inline glm::vec3 CalculateNormalVector(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
 {
 	//p2 is the new origin (can be changed later)
 	glm::vec3 a = p2 - p1;
@@ -271,11 +211,11 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 	Model* tMesh = new Model();
 
-	const std::size_t tWidth = (std::size_t)m_Width * 32 + 1;
-	const std::size_t tHeight = (std::size_t)m_Height * 32 + 1;
+	const std::size_t tWidth  = static_cast<std::size_t>(m_Width)  * 32 + 1;
+	const std::size_t tHeight = static_cast<std::size_t>(m_Height) * 32 + 1;
 
-	const float hWidth = (float)m_Width * 32.0f;
-	const float hHeight = (float)m_Height * 32.0f;
+	const float hWidth  = static_cast<float>(m_Width) * 32.0f;
+	const float hHeight = static_cast<float>(m_Height) * 32.0f;
 
 	const bool l_ExportNormals = ConvertSettings::ExportNormals;
 	const bool l_ExportUvs     = ConvertSettings::ExportUvs;
@@ -293,8 +233,8 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 		for (std::size_t x = 0; x < tWidth; x++)
 		{
 			const float& height = height_map[x + y * tWidth];
-			const float vert_x = -((float)x * 2.0f) + hWidth;
-			const float vert_y = -((float)y * 2.0f) + hHeight;
+			const float vert_x = -(static_cast<float>(x) * 2.0f) + hWidth;
+			const float vert_y = -(static_cast<float>(y) * 2.0f) + hHeight;
 
 			tMesh->vertices.push_back(glm::vec3(vert_x, vert_y, height));
 
@@ -308,16 +248,16 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 
 	if (l_ExportUvs)
 	{
-		const float uvWidth = (float)(tWidth - 1);
-		const float uvHeight = (float)(tHeight - 1);
+		const float uvWidth = static_cast<float>(tWidth - 1);
+		const float uvHeight = static_cast<float>(tHeight - 1);
 
 		tMesh->uvs.reserve(tWidth * tHeight);
 		for (std::size_t y = 0; y < tHeight; y++)
 		{
 			for (std::size_t x = 0; x < tWidth; x++)
 			{
-				const float u = (float)x / uvWidth;
-				const float v = uvHeight - (float)y / uvHeight;
+				const float u = static_cast<float>(x) / uvWidth;
+				const float v = uvHeight - static_cast<float>(y) / uvHeight;
 
 				tMesh->uvs.push_back(glm::vec2(u, v));
 			}
@@ -366,8 +306,8 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 			const VertexData vert3 = { h10, l_ExportUvs ? h10 : 0, l_ExportNormals ? h10 : 0 };
 			const VertexData vert4 = { h11, l_ExportUvs ? h11 : 0, l_ExportNormals ? h11 : 0 };
 
-			std::vector<VertexData> pVertData1 = { vert1, vert3, vert2 };
-			std::vector<VertexData> pVertData2 = { vert2, vert3, vert4 };
+			const std::vector<VertexData> pVertData1 = { vert1, vert3, vert2 };
+			const std::vector<VertexData> pVertData2 = { vert2, vert3, vert4 };
 
 			pSubMesh->m_DataIdx.push_back(pVertData1);
 			pSubMesh->m_DataIdx.push_back(pVertData2);
@@ -386,10 +326,10 @@ Model* Tile::GenerateTerrainMesh(const std::vector<float>& height_map) const
 				const std::size_t h10 = (x + 1) + (y    ) * tWidth;
 				const std::size_t h11 = (x + 1) + (y + 1) * tWidth;
 
-				tMesh->normals[h00] = glm::normalize(tMesh->normals[h00] / (float)normal_div[h00]);
-				tMesh->normals[h01] = glm::normalize(tMesh->normals[h01] / (float)normal_div[h01]);
-				tMesh->normals[h10] = glm::normalize(tMesh->normals[h10] / (float)normal_div[h10]);
-				tMesh->normals[h11] = glm::normalize(tMesh->normals[h11] / (float)normal_div[h11]);
+				tMesh->normals[h00] = glm::normalize(tMesh->normals[h00] / static_cast<float>(normal_div[h00]));
+				tMesh->normals[h01] = glm::normalize(tMesh->normals[h01] / static_cast<float>(normal_div[h01]));
+				tMesh->normals[h10] = glm::normalize(tMesh->normals[h10] / static_cast<float>(normal_div[h10]));
+				tMesh->normals[h11] = glm::normalize(tMesh->normals[h11] / static_cast<float>(normal_div[h11]));
 			}
 		}
 	}
@@ -420,14 +360,17 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 
 	std::vector<TileClutter*> tile_clutter = this->GetClutter();
 
-	const std::size_t clWidth  = (std::size_t)m_Width  * 128;
-	const std::size_t clHeight = (std::size_t)m_Height * 128;
+	const std::size_t clWidth  = static_cast<std::size_t>(m_Width)  * 128;
+	const std::size_t clHeight = static_cast<std::size_t>(m_Height) * 128;
+
+	const float clWidthF  = static_cast<float>(clWidth);
+	const float clHeightF = static_cast<float>(clHeight);
 
 	const int gridSizeX = m_Width  * 32;
 	const int gridSizeY = m_Height * 32;
 
-	const float tWidth  = (float)gridSizeX;
-	const float tHeight = (float)gridSizeY;
+	const float tWidth  = static_cast<float>(gridSizeX);
+	const float tHeight = static_cast<float>(gridSizeY);
 
 	//initialize perlin noise
 	const siv::PerlinNoise rotation_noise(1337u);
@@ -438,24 +381,30 @@ void Tile::WriteClutter(std::ofstream& model, WriterOffsetData& mOffset, const s
 	ProgCounter::SetState(ProgState::WritingClutter, clWidth * clHeight);
 	for (std::size_t y = 0; y < clWidth; y++)
 	{
+		const float y_f = static_cast<float>(y);
+		const double y_d = static_cast<double>(y);
+
 		for (std::size_t x = 0; x < clHeight; x++)
 		{
 			TileClutter* tClutter = tile_clutter[x + y * clWidth];
 			if (!tClutter) continue;
 
-			const float x_offset = (float)x_noise.octave2D_11((double)x * 91.42f, (double)y * 83.24f, 4) * 0.5f;
-			const float y_offset = (float)y_noise.octave2D_11((double)x * 73.91f, (double)y * 98.46f, 4) * 0.5f;
+			const float x_f = static_cast<float>(x);
+			const double x_d = static_cast<double>(y);
 
-			const float xPosClamp = std::clamp<float>((float)x + x_offset, 0.0f, (float)clWidth);
-			const float yPosClamp = std::clamp<float>((float)y + y_offset, 0.0f, (float)clHeight);
+			const float x_offset = static_cast<float>(x_noise.octave2D_11(x_d * 91.42, y_d * 83.24, 4)) * 0.5f;
+			const float y_offset = static_cast<float>(y_noise.octave2D_11(x_d * 73.91, y_d * 98.46, 4)) * 0.5f;
+
+			const float xPosClamp = std::clamp<float>(x_f + x_offset, 0.0f, clWidthF);
+			const float yPosClamp = std::clamp<float>(y_f + y_offset, 0.0f, clHeightF);
 
 			glm::vec3 tClutterPos;
-			tClutterPos.x = -((float)x * 0.5f) + tWidth + x_offset;
-			tClutterPos.y = -((float)y * 0.5f) + tHeight + y_offset;
+			tClutterPos.x = -(x_f * 0.5f) + tWidth + x_offset;
+			tClutterPos.y = -(y_f * 0.5f) + tHeight + y_offset;
 			tClutterPos.z = GetHeightPoint(height_map, clWidth, clHeight, gridSizeX, gridSizeY, xPosClamp, yPosClamp);
 
-			const float rot_angle = (float)rotation_noise.octave2D_11((double)x * 15.0, (double)y * 17.14, 4) * glm::two_pi<float>();
-			const float rand_scale = (float)scale_noise.octave2D_11((double)x * 54.4f, (double)y * 24.54, 8) * tClutter->ScaleVariance();
+			const float rot_angle = static_cast<float>(rotation_noise.octave2D_11(x_d * 15.0, y_d * 17.14, 4)) * glm::two_pi<float>();
+			const float rand_scale = static_cast<float>(scale_noise.octave2D_11(x_d * 54.4, y_d * 24.54, 8)) * tClutter->ScaleVariance();
 
 			tClutter->SetPosition(tClutterPos);
 			tClutter->SetRotation(glm::rotate(glm::quat(), rot_angle, glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -494,25 +443,6 @@ void Tile::WriteAssets(std::ofstream& model, WriterOffsetData& mOffset) const
 	}
 }
 
-void WritePngImage(const std::vector<Byte>& img_data, const std::wstring& output_name, const unsigned& width, const unsigned& height)
-{
-	std::vector<Byte> img_data_png;
-	lodepng::State state;
-
-	unsigned int error = lodepng::encode(img_data_png, img_data, width, height, state);
-	if (!error)
-	{
-		if (lodepng::save_file(img_data_png, String::ToUtf8(output_name)))
-		{
-			DebugErrorL("Couldn't save image: ", output_name);
-		}
-	}
-	else
-	{
-		DebugErrorL("Couldn't encode image: ", output_name);
-	}
-}
-
 void Tile::WriteMaterials(const std::wstring& dir) const
 {
 	if (m_Type != 0 || !ConvertSettings::ExportMaterials) return;
@@ -522,31 +452,40 @@ void Tile::WriteMaterials(const std::wstring& dir) const
 
 	const std::vector<long long> ground_data = this->GetGround();
 
-	const std::size_t gnd_width  = (std::size_t)m_Width  * 64 + 1;
-	const std::size_t gnd_height = (std::size_t)m_Height * 64 + 1;
+	const int gnd_width  = m_Width  * 64 + 1;
+	const int gnd_height = m_Height * 64 + 1;
 
 	for (std::size_t mat_id = 0; mat_id < 2; mat_id++)
 	{
-		std::vector<Byte> material_map;
-		material_map.resize(gnd_width * gnd_height * 4);
-
-		for (std::size_t y = 0; y < gnd_width; y++)
+		FIBITMAP* v_materialData = FreeImage_Allocate(gnd_width, gnd_height, 32);
+		if (!v_materialData)
 		{
-			for (std::size_t x = 0; x < gnd_height; x++)
+			DebugErrorL("Couldn't allocate memory for material id: ", mat_id);
+			continue;
+		}
+
+		const std::size_t v_curOffset = 32 * mat_id;
+		RGBQUAD v_pixelData;
+
+		for (int y = 0; y < gnd_width; y++)
+		{
+			for (int x = 0; x < gnd_height; x++)
 			{
 				const long long& cur_data = ground_data[x + y * gnd_width];
+				const long cur_chunk = static_cast<long>(cur_data >> v_curOffset);
 
-				const long cur_chunk = (long)(cur_data >> (32 * mat_id));
+				v_pixelData.rgbRed      = static_cast<Byte>(cur_chunk >> 0);
+				v_pixelData.rgbGreen    = static_cast<Byte>(cur_chunk >> 8);
+				v_pixelData.rgbBlue     = static_cast<Byte>(cur_chunk >> 16);
+				v_pixelData.rgbReserved = static_cast<Byte>(cur_chunk >> 24);
 
-				material_map[4 * gnd_width * y + 4 * x + 0] = (Byte)(cur_chunk >> 0);
-				material_map[4 * gnd_width * y + 4 * x + 1] = (Byte)(cur_chunk >> 8);
-				material_map[4 * gnd_width * y + 4 * x + 2] = (Byte)(cur_chunk >> 16);
-				material_map[4 * gnd_width * y + 4 * x + 3] = (Byte)(cur_chunk >> 24);
+				FreeImage_SetPixelColor(v_materialData, x, y, &v_pixelData);
 			}
 		}
 
-		const std::wstring out_name = dir + L"MaterialMap" + std::to_wstring(mat_id) + L".png";
-		WritePngImage(material_map, out_name, (unsigned)gnd_width, (unsigned)gnd_height);
+		const std::string v_matOutputName = String::ToUtf8(dir + L"MaterialMap" + std::to_wstring(mat_id) + L".tga");
+		FreeImage_Save(FREE_IMAGE_FORMAT::FIF_TARGA, v_materialData, v_matOutputName.c_str());
+		FreeImage_Unload(v_materialData);
 	}
 }
 
@@ -559,110 +498,118 @@ void Tile::WriteColorMap(const std::wstring& dir) const
 
 	std::vector<int> vert_colors = this->GetVertexColor();
 
-	const std::size_t col_width  = (std::size_t)m_Width  * 32 + 1;
-	const std::size_t col_height = (std::size_t)m_Height * 32 + 1;
+	const int col_width  = m_Width  * 32 + 1;
+	const int col_height = m_Height * 32 + 1;
 
-	std::vector<Byte> color_map;
-	color_map.resize(col_width * col_height * 4);
-
-	for (std::size_t y = 0; y < col_height; y++)
+	FIBITMAP* v_colorMapData = FreeImage_Allocate(col_width, col_height, 24);
+	if (!v_colorMapData)
 	{
-		for (std::size_t x = 0; x < col_width; x++)
+		DebugErrorL("Couldn't allocate memory for color map!");
+		return;
+	}
+
+	RGBQUAD v_pixelColor;
+
+	for (int y = 0; y < col_height; y++)
+	{
+		for (int x = 0; x < col_width; x++)
 		{
 			const int& cur_data = vert_colors[x + y * col_width];
 
-			color_map[4 * col_width * y + 4 * x + 0] = (Byte)cur_data;
-			color_map[4 * col_width * y + 4 * x + 1] = (Byte)(cur_data >> 8);
-			color_map[4 * col_width * y + 4 * x + 2] = (Byte)(cur_data >> 16);
-			color_map[4 * col_width * y + 4 * x + 3] = 255;
+			v_pixelColor.rgbRed   = static_cast<Byte>(cur_data);
+			v_pixelColor.rgbGreen = static_cast<Byte>(cur_data >> 8);
+			v_pixelColor.rgbBlue  = static_cast<Byte>(cur_data >> 16);
+
+			FreeImage_SetPixelColor(v_colorMapData, x, y, &v_pixelColor);
 		}
 	}
 
-	const std::wstring color_map_path = dir + L"ColorMap.png";
-	WritePngImage(color_map, color_map_path, (unsigned)col_width, (unsigned)col_height);
+	const std::string v_colorMapPath = String::ToUtf8(dir + L"ColorMap.tga");
+	FreeImage_Save(FREE_IMAGE_FORMAT::FIF_TARGA, v_colorMapData, v_colorMapPath.c_str());
+	FreeImage_Unload(v_colorMapData);
 }
 
 void Tile::SampleTextures(GroundTexture* tex1, GroundTexture* out_tex, const std::vector<float>& material_map, const std::size_t& gnd_width, const std::size_t& gnd_height) const
 {
 	constexpr const float mul_div = 1.0f / 255.0f;
 
-	const std::size_t tex1_x = tex1->GetWidth();
-	const std::size_t tex1_y = tex1->GetHeight();
+	const int tex1_x = tex1->GetWidth();
+	const int tex1_y = tex1->GetHeight();
 
-	const std::size_t out_tex_x = out_tex->GetWidth();
-	const std::size_t out_tex_y = out_tex->GetHeight();
+	const int out_tex_x = out_tex->GetWidth();
+	const int out_tex_y = out_tex->GetHeight();
 
-	for (std::size_t y = 0; y < out_tex_y; y++)
+	RGBQUAD m_pixelData;
+
+	for (int y = 0; y < out_tex_y; y++)
 	{
-		const float pY = (float)y;
+		const float pY = static_cast<float>(y);
 
-		const std::size_t p_tex1_y = y % tex1_y;
-		const std::size_t p_tex2_y = y % out_tex_y;
+		const int p_tex1_y = y % tex1_y;
+		const int p_tex2_y = y % out_tex_y;
 
-		for (std::size_t x = 0; x < out_tex_x; x++)
+		for (int x = 0; x < out_tex_x; x++)
 		{
-			const float pX = (float)x;
+			const float pX = static_cast<float>(x);
 
 			const float sample_data = GetHeightPoint(material_map, out_tex_x, out_tex_y, gnd_width, gnd_height, pX, pY);
 			if (sample_data == 0.0f) continue;
 
-			const std::size_t p_tex1_x = x % tex1_x;
-			const std::size_t p_tex2_x = x % out_tex_x;
+			const int p_tex1_x = x % tex1_x;
+			const int p_tex2_x = x % out_tex_x;
 
-			float r_sample = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 0) * mul_div;
-			float g_sample = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 1) * mul_div;
-			float b_sample = (float)tex1->GetByte(p_tex1_x, p_tex1_y, 2) * mul_div;
+			tex1->GetByte(p_tex1_x, p_tex1_y, &m_pixelData);
+
+			float r_sample = static_cast<float>(m_pixelData.rgbRed)   * mul_div;
+			float g_sample = static_cast<float>(m_pixelData.rgbGreen) * mul_div;
+			float b_sample = static_cast<float>(m_pixelData.rgbBlue)  * mul_div;
 
 			if (sample_data != 1.0f)
 			{
-				const float def_r = (float)out_tex->GetByte(p_tex2_x, p_tex2_y, 0) * mul_div;
-				const float def_g = (float)out_tex->GetByte(p_tex2_x, p_tex2_y, 1) * mul_div;
-				const float def_b = (float)out_tex->GetByte(p_tex2_x, p_tex2_y, 2) * mul_div;
+				out_tex->GetByte(p_tex2_x, p_tex2_y, &m_pixelData);
+
+				const float def_r = static_cast<float>(m_pixelData.rgbRed)   * mul_div;
+				const float def_g = static_cast<float>(m_pixelData.rgbGreen) * mul_div;
+				const float def_b = static_cast<float>(m_pixelData.rgbBlue)  * mul_div;
 
 				r_sample = lerp(def_r, r_sample, sample_data);
 				g_sample = lerp(def_g, g_sample, sample_data);
 				b_sample = lerp(def_b, b_sample, sample_data);
 			}
 
-			out_tex->SetByte(x, y, 0, (Byte)(r_sample * 255.0f));
-			out_tex->SetByte(x, y, 1, (Byte)(g_sample * 255.0f));
-			out_tex->SetByte(x, y, 2, (Byte)(b_sample * 255.0f));
+			m_pixelData.rgbRed   = static_cast<Byte>(r_sample * 255.0f);
+			m_pixelData.rgbGreen = static_cast<Byte>(g_sample * 255.0f);
+			m_pixelData.rgbBlue  = static_cast<Byte>(b_sample * 255.0f);
+
+			out_tex->SetByte(x, y, &m_pixelData);
 		}
 	}
 }
 
-void Tile::FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id)
+void Tile::FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id) const
 {
 	GroundTexture* pDefTex = GroundTextureDatabase::GetDefaultTexture(tex_id);
-	pDefTex->LoadImageData();
+	if (!pDefTex->LoadImageData())
+		return;
 
-	const std::size_t gnd_tex_x = mGndTex->GetWidth();
-	const std::size_t gnd_tex_y = mGndTex->GetHeight();
+	pDefTex->Resize(pDefTex->GetWidth() / m_Width, pDefTex->GetHeight() / m_Height);
 
-	const std::size_t def_size_x = pDefTex->GetWidth();
-	const std::size_t def_size_y = pDefTex->GetHeight();
+	const int gnd_tex_x = mGndTex->GetWidth();
+	const int gnd_tex_y = mGndTex->GetHeight();
 
-	const std::size_t def_x_amount = gnd_tex_x / def_size_x;
-	const std::size_t def_y_amount = gnd_tex_y / def_size_y;
+	const int def_size_x = pDefTex->GetWidth();
+	const int def_size_y = pDefTex->GetHeight();
 
-	const std::size_t def_width_one = def_size_x;
+	const int def_x_amount = gnd_tex_x / def_size_x;
+	const int def_y_amount = gnd_tex_y / def_size_y;
 
-	for (std::size_t y = 0; y < def_y_amount; y++)
+	for (int y = 0; y < def_y_amount; y++)
 	{
-		const std::size_t real_y = y * def_size_y;
+		const int v_img_y_offset = y * def_size_y;
 
-		for (std::size_t x = 0; x < def_x_amount; x++)
+		for (int x = 0; x < def_x_amount; x++)
 		{
-			const std::size_t real_x = x * def_size_x;
-			const std::size_t idx = real_x + real_y * gnd_tex_y;
-
-			for (std::size_t z = 0; z < def_size_y; z++)
-			{
-				const std::size_t global_offset = (idx + z * gnd_tex_x) * 3;
-				const std::size_t local_offset = (z * def_width_one) * 3;
-
-				std::memcpy(mGndTex->Data() + global_offset, pDefTex->Data() + local_offset, def_width_one * 3);
-			}
+			FreeImage_Paste(mGndTex->Data(), pDefTex->Data(), x * def_size_x, v_img_y_offset, 256);
 		}
 	}
 
@@ -679,8 +626,8 @@ void Tile::FillMaterialMap(std::array<MaterialData, 8>& mat_data) const
 {
 	const std::vector<long long> ground_data = this->GetGround();
 
-	const std::size_t gnd_width = (std::size_t)m_Width * 64 + 1;
-	const std::size_t gnd_height = (std::size_t)m_Height * 64 + 1;
+	const std::size_t gnd_width  = static_cast<std::size_t>(m_Width ) * 64 + 1;
+	const std::size_t gnd_height = static_cast<std::size_t>(m_Height) * 64 + 1;
 
 	for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 	{
@@ -697,8 +644,8 @@ void Tile::FillMaterialMap(std::array<MaterialData, 8>& mat_data) const
 			for (std::size_t x = 0; x < gnd_width; x++)
 			{
 				const long long& cur_data = ground_data[x + y * gnd_width];
-				const Byte cur_chunk = (Byte)(cur_data >> mat_offset);
-				const float float_chunk = (float)cur_chunk / 255.0f;
+				const Byte cur_chunk = static_cast<Byte>(cur_data >> mat_offset);
+				const float float_chunk = static_cast<float>(cur_chunk) / 255.0f;
 
 				material_vec[x + y * gnd_width] = float_chunk;
 
@@ -714,37 +661,37 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 {
 	if (m_Type != 0 || !ConvertSettings::ExportGroundTextures) return;
 
-	std::array<MaterialData, 8> MaterialMap = {};
-	this->FillMaterialMap(MaterialMap);
+	std::array<MaterialData, 8> v_materialMap = {};
+	this->FillMaterialMap(v_materialMap);
 
-	const std::size_t tex_width = 4096 * (std::size_t)m_Width;
-	const std::size_t tex_height = 4096 * (std::size_t)m_Height;
-
-	const std::size_t gnd_width2 = (std::size_t)m_Width * 64;
-	const std::size_t gnd_height2 = (std::size_t)m_Height * 64;
+	const std::size_t gnd_width2  = static_cast<std::size_t>(m_Width ) * 64;
+	const std::size_t gnd_height2 = static_cast<std::size_t>(m_Height) * 64;
 
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
 	{
 		const std::size_t writing_gnd_idx = static_cast<std::size_t>(ProgState::FillingGndDif) + (3 * texture_id);
 
 		GroundTexture gnd_tex;
-		gnd_tex.AllocateMemory(tex_width, tex_height);
+		gnd_tex.AllocateMemory(4096, 4096);
 
 		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx), 8);
-		Tile::FillGndTexture(&gnd_tex, texture_id);
+		this->FillGndTexture(&gnd_tex, texture_id);
 
 		ProgCounter::SetState(static_cast<ProgState>(writing_gnd_idx + 1), 8);
 		for (std::size_t mat_id = 0; mat_id < 8; mat_id++)
 		{
-			const MaterialData& cur_mat = MaterialMap[mat_id];
-			if (cur_mat.HasMatData)
+			const MaterialData& v_curMat = v_materialMap[mat_id];
+			if (v_curMat.HasMatData)
 			{
-				GroundTexture* pGndTex = GroundTextureDatabase::GetTexture(mat_id, texture_id);
-				pGndTex->LoadImageData();
+				GroundTexture* v_gndTexPtr = GroundTextureDatabase::GetTexture(mat_id, texture_id);
+				if (!v_gndTexPtr->LoadImageData())
+					continue;
 
-				this->SampleTextures(pGndTex, &gnd_tex, cur_mat.MatData, gnd_width2, gnd_height2);
+				v_gndTexPtr->Resize(v_gndTexPtr->GetWidth() / m_Width, v_gndTexPtr->GetHeight() / m_Height);
 
-				pGndTex->Clear();
+				this->SampleTextures(v_gndTexPtr, &gnd_tex, v_curMat.MatData, gnd_width2, gnd_height2);
+
+				v_gndTexPtr->Clear();
 			}
 
 			ProgCounter::ProgressValue++;

@@ -46,6 +46,7 @@ public:
 				}
 
 				debugSize = AssetListReader::Read(bytes, a, header->assetListCount[a], part->GetParent()->GetVersion(), part);
+				DebugOutL(0b0111_fg, "Debug Size: ", debugSize, ", AssetListSize: ", assetListSize);
 				if (debugSize != assetListSize)
 				{
 					cError = ConvertError(1, L"AssetListReader::Read -> debugSize != assetListSize");
@@ -95,7 +96,6 @@ public:
 			else
 			{
 				f_uuid = memory.Object<SMUuid>(index);
-			
 				index += 0x10;
 			}
 
@@ -104,7 +104,7 @@ public:
 			int bVar4 = (int)memory.Object<Byte>(index++) & 0xff;
 			if (bVar4 != 0)
 			{
-				int length = bVar4;
+				const int length = bVar4;
 
 				for (int j = 0; j < length; j++)
 				{

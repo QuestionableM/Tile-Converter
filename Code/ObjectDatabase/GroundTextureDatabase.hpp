@@ -7,11 +7,15 @@
 #include "Utils/ByteImpl.hpp"
 #include "Utils/Json.hpp"
 
+#include "Console.hpp"
+#include <FreeImage.h>
+
 class GroundTexture
 {
-	std::size_t mSizeX, mSizeY;
-	std::wstring mTexturePath;
-	std::vector<Byte> mImageData;
+	int m_width, m_height;
+	std::wstring m_texturePath;
+
+	FIBITMAP* m_imageData = nullptr;
 
 public:
 	GroundTexture() = default;
@@ -21,20 +25,28 @@ public:
 	GroundTexture(GroundTexture&) = delete;
 	~GroundTexture();
 
-	void AllocateMemory(const std::size_t& xSize, const std::size_t& ySize);
-
+	void AllocateMemory(const int& xSize, const int& ySize);
+	void Resize(const int& width, const int& height);
 	bool LoadImageData();
 	void Clear();
 
 	void SetPath(const std::wstring& path);
 
-	std::size_t GetWidth() const;
-	std::size_t GetHeight() const;
+	inline int GetWidth() const { return m_width; }
+	inline int GetHeight() const { return m_height; }
 
-	Byte* Data();
+	inline FIBITMAP* Data() { return m_imageData; };
+	inline void SetData(FIBITMAP* p_tex_data) { m_imageData = p_tex_data; }
 
-	Byte GetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index) const;
-	void SetByte(const std::size_t& pX, const std::size_t& pY, const std::size_t& index, const Byte& b);
+	inline void GetByte(const int& p_x, const int& p_y, RGBQUAD* p_pixel) const
+	{
+		FreeImage_GetPixelColor(m_imageData, p_x, p_y, p_pixel);
+	}
+
+	inline void SetByte(const int& p_x, const int& p_y, RGBQUAD* new_data)
+	{
+		FreeImage_SetPixelColor(m_imageData, p_x, p_y, new_data);
+	}
 
 	void WriteToFile(const std::wstring& path, const int& quality = 90) const;
 };
