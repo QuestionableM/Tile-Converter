@@ -34,7 +34,13 @@ public:
 	inline std::wstring GetFlag() const { return this->flag; }
 	inline std::vector<TileEntity*> GetObjects() const { return this->Objects; }
 
-	void AddObject(TileEntity* object);
+	inline void AddObject(TileEntity* object)
+	{
+		//Check if the object is valid (Valid objects: Harvestable, Blueprint, Prefab, Asset)
+		assert((static_cast<unsigned char>(object->Type()) & 0b00011011) != 0);
+
+		this->Objects.push_back(object);
+	}
 
 	inline EntityType Type() const override { return EntityType::Prefab; }
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;

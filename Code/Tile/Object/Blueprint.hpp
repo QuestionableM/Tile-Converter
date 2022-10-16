@@ -23,7 +23,8 @@ public:
 
 	inline void AddObject(TileEntity* object)
 	{
-		assert(object->Type() == EntityType::Block || object->Type() == EntityType::Part || object->Type() == EntityType::Joint);
+		//Check if the object is valid (Valid objects: Block, Part, Joint)
+		assert((static_cast<unsigned char>(object->Type()) & 0b11100000) != 0);
 
 		this->Objects.push_back(object);
 	}
