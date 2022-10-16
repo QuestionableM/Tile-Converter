@@ -592,12 +592,12 @@ void Tile::FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id) con
 	if (!pDefTex->LoadImageData())
 		return;
 
-	int v_widthDiv = m_Width;
-	int v_heightDiv = m_Height;
-	if (ConvertSettings::Export8kGroundTextures)
+	int v_widthDiv = std::max(m_Width / 2, 1);
+	int v_heightDiv = std::max(m_Height / 2, 1);
+	if (!ConvertSettings::Export8kGroundTextures)
 	{
-		v_widthDiv = (m_Width / 2) + 1;
-		v_heightDiv = (m_Height / 2) + 1;
+		v_widthDiv = m_Width * 2;
+		v_heightDiv = m_Height * 2;
 	}
 
 	pDefTex->Resize(pDefTex->GetWidth() / v_widthDiv, pDefTex->GetHeight() / v_heightDiv);
@@ -676,12 +676,12 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 
 	const int v_gndTexResolution = ConvertSettings::Export8kGroundTextures ? 8192 : 4096;
 
-	int v_widthDiv = m_Width;
-	int v_heightDiv = m_Height;
-	if (ConvertSettings::Export8kGroundTextures)
+	int v_widthDiv = std::max(m_Width / 2, 1);
+	int v_heightDiv = std::max(m_Height / 2, 1);
+	if (!ConvertSettings::Export8kGroundTextures)
 	{
-		v_widthDiv = (m_Width / 2) + 1;
-		v_heightDiv = (m_Height / 2) + 1;
+		v_widthDiv = m_Width * 2;
+		v_heightDiv = m_Height * 2;
 	}
 
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
