@@ -48,6 +48,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -55,6 +56,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -69,6 +71,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -76,6 +79,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -175,6 +179,7 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -193,6 +198,7 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -211,6 +217,7 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -229,6 +236,7 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
