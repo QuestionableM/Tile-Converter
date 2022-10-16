@@ -132,6 +132,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -145,6 +146,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -158,6 +160,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -171,6 +174,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -184,6 +188,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -197,6 +202,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>

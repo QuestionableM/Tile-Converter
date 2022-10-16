@@ -1,7 +1,9 @@
 #include "GroundTextureDatabase.hpp"
 
-#include "Utils/String.hpp"
 #include "ObjectDatabase/KeywordReplacer.hpp"
+#include "Utils/String.hpp"
+
+#include "Console.hpp"
 
 GroundTexture::GroundTexture(const std::wstring& path)
 {

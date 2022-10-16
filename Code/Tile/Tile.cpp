@@ -7,6 +7,7 @@
 #include "Tile\Object\GroundTerrainData.hpp"
 #include "Tile\TileConverter.hpp"
 
+#include "Utils\WinInclude.hpp"
 #include "Utils\String.hpp"
 #include "Console.hpp"
 
@@ -69,7 +70,7 @@ std::vector<float> Tile::GetVertexHeight() const
 	const int h = m_Height * 32 + 1;
 
 	std::vector<float> float_array = {};
-	float_array.resize((std::size_t)(w * h));
+	float_array.resize(static_cast<std::size_t>(w * h));
 
 	for (int y = 0; y < m_Height; y++)
 	{
@@ -94,7 +95,7 @@ std::vector<int> Tile::GetVertexColor() const
 	const int h = m_Height * 32 + 1;
 
 	std::vector<int> vert_colors = {};
-	vert_colors.resize((std::size_t)(w * h));
+	vert_colors.resize(static_cast<std::size_t>(w * h));
 
 	for (int y = 0; y < m_Height; y++)
 	{
@@ -144,7 +145,7 @@ std::vector<long long> Tile::GetGround() const
 	const int h = m_Height * 64 + 1;
 
 	std::vector<long long> ground_bytes = {};
-	ground_bytes.resize((std::size_t)(w * h));
+	ground_bytes.resize(static_cast<std::size_t>(w * h));
 
 	for (int y = 0; y < m_Height; y++)
 	{
@@ -591,8 +592,15 @@ void Tile::FillGndTexture(GroundTexture* mGndTex, const std::size_t& tex_id) con
 	if (!pDefTex->LoadImageData())
 		return;
 
-	if (!ConvertSettings::Export8kGroundTextures)
-		pDefTex->Resize(pDefTex->GetWidth() / m_Width, pDefTex->GetHeight() / m_Height);
+	int v_widthDiv = m_Width;
+	int v_heightDiv = m_Height;
+	if (ConvertSettings::Export8kGroundTextures)
+	{
+		v_widthDiv = (m_Width / 2) + 1;
+		v_heightDiv = (m_Height / 2) + 1;
+	}
+
+	pDefTex->Resize(pDefTex->GetWidth() / v_widthDiv, pDefTex->GetHeight() / v_heightDiv);
 
 	const int gnd_tex_x = mGndTex->GetWidth();
 	const int gnd_tex_y = mGndTex->GetHeight();
@@ -668,6 +676,14 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 
 	const int v_gndTexResolution = ConvertSettings::Export8kGroundTextures ? 8192 : 4096;
 
+	int v_widthDiv = m_Width;
+	int v_heightDiv = m_Height;
+	if (ConvertSettings::Export8kGroundTextures)
+	{
+		v_widthDiv = (m_Width / 2) + 1;
+		v_heightDiv = (m_Height / 2) + 1;
+	}
+
 	for (std::size_t texture_id = 0; texture_id < 3; texture_id++)
 	{
 		const std::size_t writing_gnd_idx = static_cast<std::size_t>(ProgState::FillingGndDif) + (3 * texture_id);
@@ -689,8 +705,7 @@ void Tile::WriteGroundTextures(const std::wstring& dir) const
 				if (!v_gndTexPtr->LoadImageData())
 					continue;
 
-				if (!ConvertSettings::Export8kGroundTextures)
-					v_gndTexPtr->Resize(v_gndTexPtr->GetWidth() / m_Width, v_gndTexPtr->GetHeight() / m_Height);
+				v_gndTexPtr->Resize(v_gndTexPtr->GetWidth() / v_widthDiv, v_gndTexPtr->GetHeight() / v_heightDiv);
 
 				this->SampleTextures(v_gndTexPtr, &gnd_tex, v_curMat.MatData, gnd_width2, gnd_height2);
 

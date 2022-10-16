@@ -1,14 +1,14 @@
 #pragma once
 
-#include <array>
+#include "Utils\WinInclude.hpp"
+#include "Utils\ByteImpl.hpp"
+#include "Utils\Json.hpp"
+
+#include <FreeImage.h>
+
 #include <vector>
 #include <string>
-
-#include "Utils/ByteImpl.hpp"
-#include "Utils/Json.hpp"
-
-#include "Console.hpp"
-#include <FreeImage.h>
+#include <array>
 
 class GroundTexture
 {
