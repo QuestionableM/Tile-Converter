@@ -103,7 +103,6 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder, const bool& is_loc
 	v_newMod->m_Uuid = v_modUuid;
 	v_newMod->m_isLocal = is_local;
 
-
 	DebugOutL("Mod: ", 0b1101_fg, v_newMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, v_newMod->m_Uuid.ToString(), 0b1110_fg, ", Type: ", 0b1101_fg, mTypeStr);
 	Mod::ModStorage.insert(std::make_pair(v_newMod->m_Uuid, v_newMod));
 	Mod::ModVector.push_back(v_newMod);

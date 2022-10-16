@@ -1,9 +1,12 @@
 #include "DatabaseConfig.hpp"
+
 #include "ObjectDatabase/KeywordReplacer.hpp"
+#include "Console.hpp"
+
 #include "Utils/String.hpp"
 #include "Utils/File.hpp"
 
-#include "Console.hpp"
+#include <valve_vdf\vdf_parser.hpp>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -89,24 +92,101 @@ void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
 	DatabaseConfig::JsonStrArrayToVector(program_settings, "ScrapAssetDatabase", DatabaseConfig::AssetListFolders, true);
 }
 
-bool DatabaseConfig::GetSteamPaths(std::wstring& game_path, std::wstring& workshop_path)
+using vdf_childs_table = std::unordered_map<std::string, std::shared_ptr<tyti::vdf::object>>;
+using vdf_attrib_table = std::unordered_map<std::string, std::string>;
+bool DatabaseConfig::GetSteamPaths(std::wstring& r_game_path, std::wstring& r_workshop_path)
 {
-	std::wstring steam_path = String::ReadRegistryKey(L"SOFTWARE\\Valve\\Steam", L"SteamPath");
-	if (steam_path.empty() || !File::Exists(steam_path))
-		steam_path = String::ReadRegistryKey(L"SOFTWARE\\WOW6432Node\\Valve\\Steam", L"SteamPath");
+	std::wstring v_steamPath;
+	if (!String::ReadRegistryKey(L"SOFTWARE\\Valve\\Steam", L"SteamPath", v_steamPath))
+	{
+		if (!String::ReadRegistryKey(L"SOFTWARE\\WOW6432Node\\Valve\\Steam", L"SteamPath", v_steamPath))
+		{
+			return false;
+		}
+	}
 
-	if (steam_path.empty() || !File::Exists(steam_path)) return false;
+	if (!File::Exists(v_steamPath))
+		return false;
 
-	const std::wstring sm_path = steam_path + L"/steamapps/common/scrap mechanic";
-	const std::wstring ws_path = steam_path + L"/steamapps/workshop/content/387990";
+	DebugOutL("Found a steam path: ", v_steamPath);
 
-	if (File::Exists(sm_path))
-		game_path = sm_path;
+	const std::wstring v_guessedGamePath = v_steamPath + L"/steamapps/common/scrap mechanic";
+	const std::wstring v_guessedWorkshopPath = v_steamPath + L"/steamapps/workshop/content/387990";
 
-	if (File::Exists(ws_path))
-		workshop_path = ws_path;
+	if (File::Exists(v_guessedGamePath) && File::Exists(v_guessedWorkshopPath))
+	{
+		r_game_path = v_guessedGamePath;
+		r_workshop_path = v_guessedWorkshopPath;
 
-	return true;
+		DebugOutL("Guessed the game path: ", 0b1101_fg, v_guessedGamePath);
+		DebugOutL("Guessed the workshop path: ", 0b1101_fg, v_guessedWorkshopPath);
+
+		return true;
+	}
+	else
+	{
+		const std::wstring v_vdfPath = v_steamPath + L"/steamapps/libraryfolders.vdf";
+		if (!File::Exists(v_vdfPath))
+			return false;
+
+		DebugOutL("VDF Path found: ", v_vdfPath);
+
+		std::ifstream v_vdfReader(v_vdfPath);
+		if (!v_vdfReader.is_open())
+			return false;
+
+		tyti::vdf::basic_object<char> v_vdfRoot = tyti::vdf::read(v_vdfReader);
+		v_vdfReader.close();
+
+		if (v_vdfRoot.name != "libraryfolders")
+			return false;
+
+		const vdf_childs_table& v_vdfLibFolders = v_vdfRoot.childs;
+		for (const auto& v_libFolder : v_vdfLibFolders)
+		{
+			const vdf_attrib_table& v_libFolderAttribs = v_libFolder.second->attribs;
+			const vdf_attrib_table::const_iterator v_attribIter = v_libFolderAttribs.find("path");
+			if (v_attribIter == v_libFolderAttribs.end())
+				continue;
+
+			const vdf_childs_table& v_libFolderChilds = v_libFolder.second->childs;
+			const vdf_childs_table::const_iterator v_childsIter = v_libFolderChilds.find("apps");
+			if (v_childsIter == v_libFolderChilds.end())
+				continue;
+
+			const vdf_attrib_table& v_appAttribs = v_childsIter->second->attribs;
+			const vdf_attrib_table::const_iterator v_appAttribsIter = v_appAttribs.find("387990");
+			if (v_appAttribsIter == v_appAttribs.end())
+				continue;
+
+			const std::wstring v_libraryPathWstr = String::ToWide(v_attribIter->second);
+			const std::wstring v_librarySmPath = v_libraryPathWstr + L"/steamapps/common/scrap mechanic";
+			const std::wstring v_libraryWsPath = v_libraryPathWstr + L"/steamapps/workshop/content/387990";
+
+			const bool v_librarySmExists = File::Exists(v_librarySmPath);
+			const bool v_libraryWsExists = File::Exists(v_libraryWsPath);
+
+			if (v_librarySmExists)
+			{
+				DebugOutL("Found a game path from the library: ", 0b1101_fg, v_librarySmPath);
+				r_game_path = v_librarySmPath;
+			}
+
+			if (v_libraryWsExists)
+			{
+				DebugOutL("Found a workshop path from the library: ", 0b1101_fg, v_libraryWsPath);
+				r_workshop_path = v_libraryWsPath;
+			}
+
+			if (v_librarySmExists || v_libraryWsExists)
+			{
+				DebugOutL("Successfully got the steam paths!");
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 void DatabaseConfig::FindLocalUsers()
@@ -150,9 +230,6 @@ void DatabaseConfig::FindGamePath(const nlohmann::json& config_json, bool& shoul
 		if (DatabaseConfig::GetSteamPaths(game_path, ws_path))
 		{
 			DatabaseConfig::GamePath = game_path;
-			DebugOutL("Found a game path from the registry: ", 0b1101_fg, DatabaseConfig::GamePath);
-			DebugOutL("Found a workshop path from the registry: ", 0b1101_fg, ws_path);
-
 			DatabaseConfig::AddToStrVec(DatabaseConfig::ModFolders, ws_path);
 
 			should_write = true;
@@ -238,6 +315,8 @@ nlohmann::json DatabaseConfig::GetConfigJson(bool* should_write)
 		if (should_write)
 			(*should_write) = true;
 	}
+
+	cfgData["ProgramSettings"] = v_programSettings;
 
 	return cfgData;
 }

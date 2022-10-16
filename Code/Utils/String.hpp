@@ -18,7 +18,7 @@ namespace String
 	std::string BytesToHexString(const std::vector<Byte>& bytes, const int& maxLength, const int& lineLength);
 	std::string FloatVecToString(const float* f, const std::size_t& amount, const std::string separator = " ");
 
-	std::wstring ReadRegistryKey(const std::wstring& main_key, const std::wstring& sub_key);
+	bool ReadRegistryKey(const std::wstring& main_key, const std::wstring& sub_key, std::wstring& r_output);
 
 	bool IsPathCharacterAllowed(const wchar_t& c);
 }
