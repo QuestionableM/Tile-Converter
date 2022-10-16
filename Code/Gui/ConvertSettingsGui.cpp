@@ -15,12 +15,14 @@ namespace TileConverter
 	{
 		this->InitializeComponent();
 
-		this->ExportUvs_CB->Checked         = ConvertSettings::ExportUvs;
-		this->ExportNormals_CB->Checked     = ConvertSettings::ExportNormals;
-		this->ExportMaterials_CB->Checked   = ConvertSettings::ExportMaterials && ConvertSettings::ExportUvs;
-		this->ExportGndTextures_CB->Checked = ConvertSettings::ExportGroundTextures;
+		this->ExportUvs_CB->Checked              = ConvertSettings::ExportUvs;
+		this->ExportNormals_CB->Checked          = ConvertSettings::ExportNormals;
+		this->ExportMaterials_CB->Checked        = ConvertSettings::ExportMaterials && ConvertSettings::ExportUvs;
+		this->ExportGndTextures_CB->Checked      = ConvertSettings::ExportGroundTextures;
+		this->Export8kGroundTextures_CB->Checked = ConvertSettings::ExportGroundTextures && ConvertSettings::Export8kGroundTextures;
 
-		this->ExportMaterials_CB->Enabled = this->ExportUvs_CB->Checked;
+		this->ExportMaterials_CB->Enabled        = this->ExportUvs_CB->Checked;
+		this->Export8kGroundTextures_CB->Enabled = this->ExportGndTextures_CB->Checked;
 
 		this->ExportClutter_CB->Checked      = ConvertSettings::ExportClutter;
 		this->ExportAssets_CB->Checked       = ConvertSettings::ExportAssets;
@@ -78,5 +80,15 @@ namespace TileConverter
 	{
 		if (!String::IsPathCharacterAllowed(e->KeyChar) && e->KeyChar != 0x8 && e->KeyChar != 0x1)
 			e->Handled = true;
+	}
+
+	void ConvertSettingsGui::ExportGndTextures_CB_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+	{
+		const bool v_isActive = this->ExportGndTextures_CB->Checked;
+
+		this->Export8kGroundTextures_CB->Enabled = v_isActive;
+
+		if (!v_isActive)
+			this->Export8kGroundTextures_CB->Checked = false;
 	}
 }
