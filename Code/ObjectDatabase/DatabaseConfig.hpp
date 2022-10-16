@@ -7,17 +7,19 @@
 class DatabaseConfig
 {
 public:
-	constexpr static const std::wstring_view ConfigPath = L"./Resources/Config.json";
-	constexpr static const std::wstring_view RotationsPath = L"./Resources/RotationSettings.json";
-	constexpr static const std::wstring_view MaterialMapPath = L"./Resources/MaterialIds.json";
-	constexpr static const std::wstring_view GroundTexturesPath = L"./Resources/GroundTextures.json";
+	constexpr static const std::wstring_view ConfigPath = L"../Resources/Config.json";
+	constexpr static const std::wstring_view RotationsPath = L"../Resources/RotationSettings.json";
+	constexpr static const std::wstring_view MaterialMapPath = L"../Resources/MaterialIds.json";
+	constexpr static const std::wstring_view GroundTexturesPath = L"../Resources/GroundTextures.json";
 
 	inline static std::wstring GamePath                      = L"";
 	inline static std::vector<std::wstring> AssetListFolders = {};
 	inline static std::vector<std::wstring> ModFolders       = {};
+	inline static std::vector<std::wstring> LocalModFolders  = {};
 
 private:
-	static void JsonStrArrayToVector(const nlohmann::json& pJson, const std::string& pKey, std::vector<std::wstring>& pWstrVec);
+	static void WstrArrayToJson(nlohmann::json& j_obj, const std::string& key, const std::vector<std::wstring>& r_wstr_vec);
+	static void JsonStrArrayToVector(const nlohmann::json& pJson, const std::string& pKey, std::vector<std::wstring>& pWstrVec, const bool& replace_keys);
 	static void AddToStrVec(std::vector<std::wstring>& mWstrVec, const std::wstring& mWstr);
 
 	static void ReadProgramSettings(const nlohmann::json& config_json);

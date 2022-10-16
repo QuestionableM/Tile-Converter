@@ -29,24 +29,22 @@ std::vector<Byte> File::ReadFileBytes(const std::wstring& path)
 	return file_bytes;
 }
 
-std::string File::ReadToString(const std::wstring& path)
+bool File::ReadToString(const std::wstring& path, std::string& r_output)
 {
 	std::ifstream input_file(path, std::ios::binary);
-	std::string file_string;
+	if (!input_file.is_open())
+		return false;
 
-	if (input_file.is_open())
-	{
-		input_file.seekg(0, std::ios::end);
-		const std::size_t file_size = (std::size_t)input_file.tellg();
-		input_file.seekg(0, std::ios::beg);
+	input_file.seekg(0, std::ios::end);
+	const std::size_t file_size = (std::size_t)input_file.tellg();
+	input_file.seekg(0, std::ios::beg);
 
-		file_string.resize(file_size);
-		input_file.read(file_string.data(), file_size);
+	r_output.resize(file_size);
+	input_file.read(r_output.data(), file_size);
 
-		input_file.close();
-	}
+	input_file.close();
 
-	return file_string;
+	return true;
 }
 
 bool File::Exists(const std::wstring& path)

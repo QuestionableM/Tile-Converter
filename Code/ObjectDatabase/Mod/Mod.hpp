@@ -23,7 +23,9 @@ class Mod
 	friend class BlockListLoader;
 	friend class ClutterListLoader;
 
-	inline static std::unordered_map<SMUuid, Mod*> ModStorage = {};
+	using ModMap = std::unordered_map<SMUuid, Mod*>;
+
+	inline static ModMap ModStorage = {};
 	inline static std::vector<Mod*> ModVector = {};
 
 	inline static std::unordered_map<SMUuid, BlockData*> BlockStorage             = {};
@@ -44,6 +46,7 @@ protected:
 	SMUuid m_Uuid;
 	std::wstring m_Name;
 	std::wstring m_Directory;
+	bool m_isLocal;
 
 	Mod() = default;
 
@@ -54,7 +57,7 @@ public:
 	virtual ~Mod();
 
 	static void ClearModStorage();
-	static Mod* LoadFromDescription(const std::wstring& mod_folder);
+	static Mod* LoadFromDescription(const std::wstring& mod_folder, const bool& is_local);
 
 	static BlockData* GetGlobalBlock(const SMUuid& uuid);
 	static PartData* GetGlobalPart(const SMUuid& uuid);

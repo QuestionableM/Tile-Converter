@@ -24,26 +24,33 @@ void DatabaseLoader::LoadGameDatabase()
 	Mod::ModVector.push_back(pGameData);
 }
 
+void DatabaseLoader::LoadModsFromPaths(const std::vector<std::wstring>& path_vector, const bool& is_local)
+{
+	for (const std::wstring& v_modDir : path_vector)
+	{
+		std::error_code v_errorCode;
+		fs::directory_iterator v_dirIter(v_modDir, fs::directory_options::skip_permission_denied, v_errorCode);
+
+		for (const auto& v_curDir : v_dirIter)
+		{
+			if (v_errorCode || !v_curDir.is_directory())
+				continue;
+
+			Mod* v_newMod = Mod::LoadFromDescription(v_curDir.path().wstring(), is_local);
+			if (!v_newMod) continue;
+
+			v_newMod->LoadObjectDatabase();
+		}
+	}
+}
+
 void DatabaseLoader::LoadModDatabase()
 {
 	ProgCounter::SetState(ProgState::LoadingModded);
 	DebugOutL(0b0100_fg, "Loading mod data...");
 
-	for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
-	{
-		std::error_code rError;
-		fs::directory_iterator lDirIterator(mod_dir, fs::directory_options::skip_permission_denied, rError);
-
-		for (const auto& dir : lDirIterator)
-		{
-			if (rError || !dir.is_directory()) continue;
-
-			Mod* pNewMod = Mod::LoadFromDescription(dir.path().wstring());
-			if (!pNewMod) continue;
-
-			pNewMod->LoadObjectDatabase();
-		}
-	}
+	DatabaseLoader::LoadModsFromPaths(DatabaseConfig::LocalModFolders, true);
+	DatabaseLoader::LoadModsFromPaths(DatabaseConfig::ModFolders, false);
 }
 
 void DatabaseLoader::LoadDatabase()

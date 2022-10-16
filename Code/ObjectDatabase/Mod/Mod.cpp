@@ -51,7 +51,7 @@ void Mod::ClearModStorage()
 	Mod::ModVector.clear();
 }
 
-Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
+Mod* Mod::LoadFromDescription(const std::wstring& mod_folder, const bool& is_local)
 {
 	const std::wstring mDescPath = mod_folder + L"/description.json";
 	if (!File::Exists(mDescPath)) return nullptr;
@@ -69,34 +69,46 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder)
 
 	if (!mUuid.is_string() || !mName.is_string()) return nullptr;
 
-	const SMUuid mod_uuid = mUuid.get<std::string>();
-	const std::wstring mod_name = String::ToWide(mName.get<std::string>());
+	const SMUuid v_modUuid = mUuid.get<std::string>();
+	const std::wstring v_modName = String::ToWide(mName.get<std::string>());
 
-	if (ModStorage.find(mod_uuid) != ModStorage.end())
+	const ModMap::const_iterator v_iter = ModStorage.find(v_modUuid);
+	if (v_iter != ModStorage.end())
 	{
-		const Mod* old_mod = ModStorage.at(mod_uuid);
+		const Mod* v_modPtr = v_iter->second;
 
-		DebugErrorL("Uuid conflict between 2 items: ", old_mod->m_Name, " and ", mod_name);
-		return nullptr;
+		if (v_iter->second->m_isLocal && !is_local)
+		{
+			DebugOutL("Skipped a mod as it was already loaded locally (name: ", v_modName, ", uuid: ", v_modUuid.ToString(), ")");
+			return nullptr;
+		}
+
+		if (v_iter->second->m_isLocal == is_local)
+		{
+			DebugWarningL("Uuid conflict between: ", v_iter->second->m_Name, " and ", v_modName, " (uuid: ", v_modUuid.ToString(), ")");
+			return nullptr;
+		}
 	}
 
-	Mod* pNewMod;
+	Mod* v_newMod;
 	if (mTypeStr == "Blocks and Parts")
-		pNewMod = new BlocksAndPartsMod();
+		v_newMod = new BlocksAndPartsMod();
 	else if (mTypeStr == "Terrain Assets")
-		pNewMod = new TerrainAssetsMod();
+		v_newMod = new TerrainAssetsMod();
 	else
 		return nullptr;
 
-	pNewMod->m_Name = mod_name;
-	pNewMod->m_Directory = mod_folder;
-	pNewMod->m_Uuid = mod_uuid;
+	v_newMod->m_Name = v_modName;
+	v_newMod->m_Directory = mod_folder;
+	v_newMod->m_Uuid = v_modUuid;
+	v_newMod->m_isLocal = is_local;
 
-	DebugOutL("Mod: ", 0b1101_fg, pNewMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, pNewMod->m_Uuid.ToString(), 0b1110_fg, ", Type: ", 0b1101_fg, mTypeStr);
-	Mod::ModStorage.insert(std::make_pair(pNewMod->m_Uuid, pNewMod));
-	Mod::ModVector.push_back(pNewMod);
 
-	return pNewMod;
+	DebugOutL("Mod: ", 0b1101_fg, v_newMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, v_newMod->m_Uuid.ToString(), 0b1110_fg, ", Type: ", 0b1101_fg, mTypeStr);
+	Mod::ModStorage.insert(std::make_pair(v_newMod->m_Uuid, v_newMod));
+	Mod::ModVector.push_back(v_newMod);
+
+	return v_newMod;
 }
 
 BlockData* Mod::GetGlobalBlock(const SMUuid& uuid)

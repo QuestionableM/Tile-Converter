@@ -40,14 +40,14 @@ Blueprint* Blueprint::LoadAutomatic(const std::string& str)
 
 Blueprint* Blueprint::FromFile(const std::wstring& path)
 {
-	const std::string file_string = File::ReadToString(path);
-	if (file_string.empty())
+	std::string v_fileString;
+	if (!File::ReadToString(path, v_fileString))
 	{
 		DebugErrorL("Couldn't load the specified blueprint: ", path);
 		return nullptr;
 	}
 
-	return Blueprint::FromJsonString(file_string);
+	return Blueprint::FromJsonString(v_fileString);
 }
 
 Blueprint* Blueprint::FromJsonString(const std::string& json_str)

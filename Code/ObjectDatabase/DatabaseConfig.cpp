@@ -8,19 +8,34 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-void DatabaseConfig::JsonStrArrayToVector(const nlohmann::json& pJson, const std::string& pKey, std::vector<std::wstring>& pWstrVec)
+void DatabaseConfig::WstrArrayToJson(nlohmann::json& j_obj, const std::string& key, const std::vector<std::wstring>& r_wstr_vec)
 {
-	const auto& json_str_array = JsonReader::Get(pJson, pKey);
-	if (!json_str_array.is_array()) return;
+	nlohmann::json v_strArray = nlohmann::json::array();
 
-	for (const auto& pValue : json_str_array)
+	for (const std::wstring& v_curWstr : r_wstr_vec)
+		v_strArray.push_back(String::ToUtf8(v_curWstr));
+
+	j_obj[key] = v_strArray;
+}
+
+void DatabaseConfig::JsonStrArrayToVector(const nlohmann::json& pJson, const std::string& pKey, std::vector<std::wstring>& pWstrVec, const bool& replace_keys)
+{
+	const auto& v_jArray = JsonReader::Get(pJson, pKey);
+	if (!v_jArray.is_array()) return;
+
+	for (const auto& v_curVal : v_jArray)
 	{
-		if (!pValue.is_string()) continue;
+		if (!v_curVal.is_string()) continue;
 
-		const std::wstring l_wide_path = String::ToWide(pValue.get<std::string>());
-		const std::wstring l_final_path = KeywordReplacer::ReplaceKey(l_wide_path);
-
-		pWstrVec.push_back(l_final_path);
+		const std::wstring v_wstrPath = String::ToWide(v_curVal.get<std::string>());
+		if (replace_keys)
+		{
+			pWstrVec.push_back(KeywordReplacer::ReplaceKey(v_wstrPath));
+		}
+		else
+		{
+			pWstrVec.push_back(v_wstrPath);
+		}
 	}
 }
 
@@ -65,13 +80,13 @@ void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
 
 	{
 		std::vector<std::wstring> l_upgrade_array = {};
-		DatabaseConfig::JsonStrArrayToVector(program_settings, "ResourceUpgradeFiles", l_upgrade_array);
+		DatabaseConfig::JsonStrArrayToVector(program_settings, "ResourceUpgradeFiles", l_upgrade_array, true);
 
 		for (const std::wstring& l_upgrade_path : l_upgrade_array)
 			KeywordReplacer::LoadResourceUpgrades(l_upgrade_path);
 	}
 
-	DatabaseConfig::JsonStrArrayToVector(program_settings, "ScrapAssetDatabase", DatabaseConfig::AssetListFolders);
+	DatabaseConfig::JsonStrArrayToVector(program_settings, "ScrapAssetDatabase", DatabaseConfig::AssetListFolders, true);
 }
 
 bool DatabaseConfig::GetSteamPaths(std::wstring& game_path, std::wstring& workshop_path)
@@ -96,31 +111,33 @@ bool DatabaseConfig::GetSteamPaths(std::wstring& game_path, std::wstring& worksh
 
 void DatabaseConfig::FindLocalUsers()
 {
-	std::wstring lSmLocalData;
-	if (!File::GetAppDataPath(lSmLocalData)) return;
+	std::wstring v_smLocalData;
+	if (!File::GetAppDataPath(v_smLocalData))
+		return;
 
-	lSmLocalData.append(L"\\Axolot Games\\Scrap Mechanic\\User");
-	if (!File::Exists(lSmLocalData)) return;
+	v_smLocalData.append(L"\\Axolot Games\\Scrap Mechanic\\User");
+	if (!File::Exists(v_smLocalData))
+		return;
 
-	std::error_code rError;
-	fs::directory_iterator rDirIterator(lSmLocalData, fs::directory_options::skip_permission_denied, rError);
+	std::error_code v_errorCode;
+	fs::directory_iterator v_dirIterator(v_smLocalData, fs::directory_options::skip_permission_denied, v_errorCode);
 
-	for (const auto& cur_dir : rDirIterator)
+	for (const auto& v_curDir : v_dirIterator)
 	{
-		if (rError)
+		if (v_errorCode)
 		{
-			DebugErrorL("Couldn't read an item in the directory: ", lSmLocalData);
+			DebugErrorL("Couldn't read an item in the directory: ", v_smLocalData);
 			continue;
 		}
 
-		if (!cur_dir.is_directory()) continue;
+		if (!v_curDir.is_directory()) continue;
 
-		std::wstring l_mod_path = cur_dir.path().wstring() + L"\\Mods";
+		std::wstring l_mod_path = v_curDir.path().wstring() + L"\\Mods";
 
 		if (File::Exists(l_mod_path))
 		{
-			DebugOutL("Found a new path to mods: ", 0b01101_fg, l_mod_path);
-			DatabaseConfig::AddToStrVec(DatabaseConfig::ModFolders, l_mod_path);
+			DebugOutL("Found a new path to local mods: ", 0b01101_fg, l_mod_path);
+			DatabaseConfig::AddToStrVec(DatabaseConfig::LocalModFolders, l_mod_path);
 		}
 	}
 }
@@ -157,18 +174,8 @@ void DatabaseConfig::ReadUserSettings(const nlohmann::json& config_json, bool& s
 			DebugOutL("Game Path: ", DatabaseConfig::GamePath);
 		}
 
-		const auto& wd_mod_folders = JsonReader::Get(user_settings, "WorkshopModFolders");
-		if (wd_mod_folders.is_array())
-		{
-			for (const auto& ws_item : wd_mod_folders)
-			{
-				if (!ws_item.is_string()) continue;
-
-				const std::string ws_mod_folder = ws_item.get<std::string>();
-				DatabaseConfig::ModFolders.push_back(String::ToWide(ws_mod_folder));
-				DebugOutL("Added a new mod folder: ", ws_mod_folder);
-			}
-		}
+		DatabaseConfig::JsonStrArrayToVector(user_settings, "LocalModFolders", DatabaseConfig::LocalModFolders, false);
+		DatabaseConfig::JsonStrArrayToVector(user_settings, "WorkshopModFolders", DatabaseConfig::ModFolders, false);
 	}
 
 	DatabaseConfig::FindGamePath(config_json, should_write);
@@ -182,45 +189,54 @@ nlohmann::json DatabaseConfig::GetConfigJson(bool* should_write)
 		cfgData = nlohmann::json::object();
 	}
 
-	if (!cfgData.contains("ProgramSettings"))
+	nlohmann::json v_programSettings = JsonReader::Get(cfgData, "ProgramSettings");
+	if (!v_programSettings.is_object())
+		v_programSettings = nlohmann::json::object();
+
+	if (!v_programSettings.contains("Keywords"))
 	{
-		cfgData["ProgramSettings"] =
+		v_programSettings["Keywords"] =
 		{
-			{
-				"Keywords",
-				{
-					{ "$CHALLENGE_DATA", "$GAME_FOLDER/ChallengeData" },
-					{ "$GAME_DATA"     , "$GAME_FOLDER/Data"          },
-					{ "$SURVIVAL_DATA" , "$GAME_FOLDER/Survival"      }
-				}
-			},
-			{
-				"ResourceUpgradeFiles",
-				{
-					"$GAME_DATA/upgrade_resources.json"
-				}
-			},
-			{
-				"ScrapAssetDatabase",
-				{
-					"$CHALLENGE_DATA/Terrain/Database/AssetSets",
-					"$SURVIVAL_DATA/Terrain/Database/AssetSets",
-					"$GAME_DATA/Terrain/Database/AssetSets",
-
-					"$SURVIVAL_DATA/Harvestables/Database/HarvestableSets",
-
-					"$CHALLENGE_DATA/Objects/Database/ShapeSets",
-					"$GAME_DATA/Objects/Database/ShapeSets",
-					"$SURVIVAL_DATA/Objects/Database/ShapeSets",
-
-					"$GAME_DATA/Terrain/Database/clutter.json",
-					"$SURVIVAL_DATA/Terrain/Database/clutter.json"
-				}
-			}
+			{ "$CHALLENGE_DATA", "$GAME_FOLDER/ChallengeData" },
+			{ "$GAME_DATA"     , "$GAME_FOLDER/Data"          },
+			{ "$SURVIVAL_DATA" , "$GAME_FOLDER/Survival"      }
 		};
 
-		if (should_write != nullptr)
-			*should_write = true;
+		if (should_write)
+			(*should_write) = true;
+	}
+
+	if (!v_programSettings.contains("ResourceUpgradeFiles"))
+	{
+		v_programSettings["ResourceUpgradeFiles"] =
+		{
+			"$GAME_DATA/upgrade_resources.json"
+		};
+
+		if (should_write)
+			(*should_write) = true;
+	}
+
+	if (!v_programSettings.contains("ScrapAssetDatabase"))
+	{
+		v_programSettings["ScrapAssetDatabase"] =
+		{
+			"$CHALLENGE_DATA/Terrain/Database/AssetSets",
+			"$SURVIVAL_DATA/Terrain/Database/AssetSets",
+			"$GAME_DATA/Terrain/Database/AssetSets",
+
+			"$SURVIVAL_DATA/Harvestables/Database/HarvestableSets",
+
+			"$CHALLENGE_DATA/Objects/Database/ShapeSets",
+			"$GAME_DATA/Objects/Database/ShapeSets",
+			"$SURVIVAL_DATA/Objects/Database/ShapeSets",
+
+			"$GAME_DATA/Terrain/Database/clutter.json",
+			"$SURVIVAL_DATA/Terrain/Database/clutter.json"
+		};
+
+		if (should_write)
+			(*should_write) = true;
 	}
 
 	return cfgData;
@@ -241,13 +257,8 @@ void DatabaseConfig::SaveConfig()
 
 		user_settings["GamePath"] = String::ToUtf8(DatabaseConfig::GamePath);
 
-		{
-			nlohmann::json ws_mod_folders = nlohmann::json::array();
-			for (const std::wstring& mod_dir : DatabaseConfig::ModFolders)
-				ws_mod_folders.push_back(String::ToUtf8(mod_dir));
-
-			user_settings["WorkshopModFolders"] = ws_mod_folders;
-		}
+		DatabaseConfig::WstrArrayToJson(user_settings, "WorkshopModFolders", DatabaseConfig::ModFolders);
+		DatabaseConfig::WstrArrayToJson(user_settings, "LocalModFolders", DatabaseConfig::LocalModFolders);
 
 		cfgData["UserSettings"] = user_settings;
 	}

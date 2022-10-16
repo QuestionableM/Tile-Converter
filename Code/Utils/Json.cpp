@@ -6,13 +6,6 @@
 #include <fstream>
 #include <iomanip>
 
-const nlohmann::json JsonReader::EmptyObject = nlohmann::json();
-
-nlohmann::json JsonReader::ParseJsonStringInternal(const std::string& json_str)
-{
-	return nlohmann::json::parse(json_str);
-}
-
 nlohmann::json JsonReader::ParseJsonString(const std::string& json_str)
 {
 	try
@@ -22,33 +15,38 @@ nlohmann::json JsonReader::ParseJsonString(const std::string& json_str)
 #ifdef _DEBUG
 	catch (nlohmann::json::parse_error& p_err)
 	{
-		DebugErrorL("Couldn't load the specified json string: ", json_str, "\nError: ", p_err.what());
+		DebugErrorL("Couldn't parse the specified json string: ", json_str, "\nError: ", p_err.what());
 	}
 #else
 	catch (...) {}
 #endif
 
-	return EmptyObject;
+	return m_emptyObject;
 }
 
 nlohmann::json JsonReader::LoadParseJson(const std::wstring& path)
 {
-	const std::string file_data = File::ReadToString(path);
+	std::string v_fileData;
+	if (!File::ReadToString(path, v_fileData))
+	{
+		DebugErrorL("Couldn't read the specified json file: ", path);
+		return m_emptyObject;
+	}
 
 	try
 	{
-		return nlohmann::json::parse(file_data, nullptr, true, true);
+		return nlohmann::json::parse(v_fileData, nullptr, true, true);
 	}
 #ifdef _DEBUG
 	catch (nlohmann::json::parse_error& p_err)
 	{
-		DebugErrorL("Couldn't load the specified json file: ", path, "\nError: ", p_err.what());
+		DebugErrorL("Couldn't parse the json file:\nPath: ", path, "\nError: ", p_err.what());
 	}
 #else
 	catch (...) {}
 #endif
 
-	return EmptyObject;
+	return m_emptyObject;
 }
 
 void JsonReader::WriteJson(const std::wstring& path, const nlohmann::json& pJson)
@@ -57,22 +55,5 @@ void JsonReader::WriteJson(const std::wstring& path, const nlohmann::json& pJson
 	if (!out_file.is_open()) return;
 
 	out_file << std::setw(1) << std::setfill('\t') << pJson;
-
 	out_file.close();
-}
-
-const nlohmann::json& JsonReader::Get(const nlohmann::json& obj, const std::string& key)
-{
-	if (obj.find(key) != obj.end())
-		return obj.at(key);
-
-	return JsonReader::EmptyObject;
-}
-
-const nlohmann::json& JsonReader::Get(const nlohmann::json& obj, const std::size_t& key)
-{
-	if (key < obj.size())
-		return obj.at(key);
-
-	return JsonReader::EmptyObject;
 }
