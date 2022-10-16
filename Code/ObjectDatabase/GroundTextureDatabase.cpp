@@ -1,7 +1,8 @@
 #include "GroundTextureDatabase.hpp"
 
-#include "ObjectDatabase/KeywordReplacer.hpp"
-#include "Utils/String.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
+#include "Utils\String.hpp"
 
 #include "Console.hpp"
 
@@ -141,7 +142,7 @@ void GroundTextureDatabase::Initialize()
 {
 	GroundTextureDatabase::ClearTextureDatabase();
 
-	const auto& tex_data = JsonReader::LoadParseJson(L"./Resources/GroundTextures.json");
+	const auto& tex_data = JsonReader::LoadParseJson(DatabaseConfig::GroundTexturesPath.data());
 	if (!tex_data.is_object()) return;
 
 	const auto& def_textures = JsonReader::Get(tex_data, "DefaultTexture");

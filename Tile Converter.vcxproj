@@ -102,28 +102,34 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Build\Bin\$(Platform)$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(Platform)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
+    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Build\Bin\$(Platform)$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(Platform)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
+    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'">
-    <OutDir>$(SolutionDir)Build\Bin\$(Platform)$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(Platform)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
+    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Build\Bin\$(Platform)$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(Platform)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
+    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Build\Bin\$(Platform)$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(Platform)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
+    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'">
-    <OutDir>$(SolutionDir)Build\Bin\$(Platform)$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(Platform)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
+    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -138,6 +144,10 @@
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,6 +162,10 @@
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -166,6 +180,10 @@
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'">
     <ClCompile>
@@ -180,6 +198,10 @@
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -194,6 +216,10 @@
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'">
     <ClCompile>
@@ -208,6 +234,10 @@
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Code\Console.cpp" />
