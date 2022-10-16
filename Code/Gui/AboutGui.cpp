@@ -69,6 +69,11 @@ namespace TileConverter
 		SysProcess::Start("https://freeimage.sourceforge.io/");
 	}
 
+	void AboutGui::LibValveVDF_LLBL_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
+	{
+		SysProcess::Start("https://github.com/TinyTinni/ValveFileVDF");
+	}
+
 	void AboutGui::MouseKillFocus(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 	{
 		this->AppDesc_TB->SelectionLength = 0;

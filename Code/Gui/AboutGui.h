@@ -34,6 +34,7 @@ namespace TileConverter {
 		System::Windows::Forms::Label^ Version_LBL;
 		System::Windows::Forms::LinkLabel^ LibGLM_LLBL;
 		System::Windows::Forms::LinkLabel^ LibFreeImage_LLBL;
+		System::Windows::Forms::LinkLabel^ LibValveVDF_LLBL;
 
 		System::ComponentModel::Container ^components;
 
@@ -51,6 +52,7 @@ namespace TileConverter {
 			this->Version_LBL = (gcnew System::Windows::Forms::Label());
 			this->LibGLM_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->LibFreeImage_LLBL = (gcnew System::Windows::Forms::LinkLabel());
+			this->LibValveVDF_LLBL = (gcnew System::Windows::Forms::LinkLabel());
 			this->SuspendLayout();
 			// 
 			// AppDesc_TB
@@ -162,7 +164,7 @@ namespace TileConverter {
 			this->LibPerlinNoise_LLBL->AutoSize = true;
 			this->LibPerlinNoise_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->LibPerlinNoise_LLBL->Location = System::Drawing::Point(249, 120);
+			this->LibPerlinNoise_LLBL->Location = System::Drawing::Point(231, 104);
 			this->LibPerlinNoise_LLBL->Name = L"LibPerlinNoise_LLBL";
 			this->LibPerlinNoise_LLBL->Size = System::Drawing::Size(80, 16);
 			this->LibPerlinNoise_LLBL->TabIndex = 9;
@@ -180,7 +182,7 @@ namespace TileConverter {
 			this->Version_LBL->Name = L"Version_LBL";
 			this->Version_LBL->Size = System::Drawing::Size(86, 16);
 			this->Version_LBL->TabIndex = 11;
-			this->Version_LBL->Text = L"Version: 1.0.5";
+			this->Version_LBL->Text = L"Version: 1.0.6";
 			// 
 			// LibGLM_LLBL
 			// 
@@ -208,11 +210,24 @@ namespace TileConverter {
 			this->LibFreeImage_LLBL->Text = L"FreeImage";
 			this->LibFreeImage_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibFreeImage_LLBL_LinkClicked);
 			// 
+			// LibValveVDF_LLBL
+			// 
+			this->LibValveVDF_LLBL->AutoSize = true;
+			this->LibValveVDF_LLBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->LibValveVDF_LLBL->Location = System::Drawing::Point(238, 120);
+			this->LibValveVDF_LLBL->Name = L"LibValveVDF_LLBL";
+			this->LibValveVDF_LLBL->Size = System::Drawing::Size(91, 16);
+			this->LibValveVDF_LLBL->TabIndex = 14;
+			this->LibValveVDF_LLBL->TabStop = true;
+			this->LibValveVDF_LLBL->Text = L"ValveFileVDF";
+			this->LibValveVDF_LLBL->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &AboutGui::LibValveVDF_LLBL_LinkClicked);
+			// 
 			// AboutGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(399, 161);
+			this->Controls->Add(this->LibValveVDF_LLBL);
 			this->Controls->Add(this->LibFreeImage_LLBL);
 			this->Controls->Add(this->LibGLM_LLBL);
 			this->Controls->Add(this->Version_LBL);
@@ -246,6 +261,7 @@ namespace TileConverter {
 		System::Void LibNlohmannJson_LLBL_LinkClicked (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibGLM_LLBL_LinkClicked          (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void LibFreeImage_LLBL_LinkClicked    (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		System::Void LibValveVDF_LLBL_LinkClicked     (System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
 		System::Void MouseKillFocus                   (System::Object^ sender, System::Windows::Forms::MouseEventArgs ^ e);
 	};
 }
