@@ -31,15 +31,15 @@ public:
 			delete m_CellHeaders[a];
 	}
 
-	void FillHeaderBytes(const std::vector<Byte>& header_bytes)
+	void FillHeaderBytes(const std::vector<Byte>& header_bytes, const std::size_t& header_size)
 	{
 		const int wh_mul = m_Width * m_Height;
 		for (int a = 0; a < wh_mul; a++)
 		{
 			std::vector<Byte> bytes_temp = {};
-			bytes_temp.resize(0x124);
+			bytes_temp.resize(header_size);
 
-			std::memcpy(bytes_temp.data(), header_bytes.data() + (a * 0x124), 0x124);
+			std::memcpy(bytes_temp.data(), header_bytes.data() + (a * header_size), header_size);
 
 			CellHeader* p_Header = new CellHeader(bytes_temp);
 			p_Header->Read();
@@ -119,7 +119,7 @@ public:
 			for (int a = 0; a < wh_mul; a++)
 				mMemory.NextObjectsRef(headerBytes.data() + (a * header_size), new_tile->m_CellHeadersSize);
 
-			new_tile->FillHeaderBytes(headerBytes);
+			new_tile->FillHeaderBytes(headerBytes, header_size);
 		}
 
 		return new_tile;

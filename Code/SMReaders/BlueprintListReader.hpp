@@ -78,6 +78,12 @@ public:
 				value = std::string(value_data.begin(), value_data.end());
 			}
 
+			if (version >= 13)
+			{
+				//Skip a random null byte that was added in the newest versions of tiles
+				index++;
+			}
+
 			Blueprint* pNewBlueprint = Blueprint::LoadAutomatic(value);
 			if (!pNewBlueprint) continue;
 
