@@ -1,11 +1,2 @@
 /.vs
-/Build/Resources/Config.json
-/Build/Junk
-/Build/x64-Debug
-/Build/x64-Release
-/Build/x86-Debug
-/Build/x86-Release
-/Build/x64-ReleaseDebugInfo
-/Build/x86-ReleaseDebugInfo
-/ConvertedTiles
-/LocalBinaries
+/Build

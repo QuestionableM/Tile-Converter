@@ -150,7 +150,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -168,7 +169,8 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -187,7 +189,8 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'">
@@ -206,7 +209,8 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -225,7 +229,8 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'">
@@ -244,7 +249,8 @@ xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\F
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"</Command>
+xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

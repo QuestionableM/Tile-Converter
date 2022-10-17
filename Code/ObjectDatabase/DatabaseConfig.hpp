@@ -29,7 +29,7 @@ private:
 	static void FindGamePath(const nlohmann::json& config_json, bool& should_write);
 	static void ReadUserSettings(const nlohmann::json& config_json, bool& should_write);
 
-	static nlohmann::json GetConfigJson(bool* should_write = nullptr);
+	static nlohmann::json GetConfigJson(bool* should_write, const bool& read_from_file);
 	static void UpdatePathReplacement();
 
 public:

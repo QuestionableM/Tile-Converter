@@ -258,10 +258,16 @@ void DatabaseConfig::ReadUserSettings(const nlohmann::json& config_json, bool& s
 	DatabaseConfig::FindGamePath(config_json, should_write);
 }
 
-nlohmann::json DatabaseConfig::GetConfigJson(bool* should_write)
+nlohmann::json DatabaseConfig::GetConfigJson(bool* should_write, const bool& read_from_file)
 {
-	nlohmann::json cfgData = JsonReader::LoadParseJson(DatabaseConfig::ConfigPath.data());
-	if (!cfgData.is_object())
+	nlohmann::json cfgData;
+	if (read_from_file)
+	{
+		cfgData = JsonReader::LoadParseJson(DatabaseConfig::ConfigPath.data());
+		if (!cfgData.is_object())
+			cfgData = nlohmann::json::object();
+	}
+	else
 	{
 		cfgData = nlohmann::json::object();
 	}
@@ -329,7 +335,7 @@ void DatabaseConfig::UpdatePathReplacement()
 
 void DatabaseConfig::SaveConfig()
 {
-	nlohmann::json cfgData = DatabaseConfig::GetConfigJson();
+	nlohmann::json cfgData = DatabaseConfig::GetConfigJson(nullptr, false);
 
 	{
 		nlohmann::json user_settings = nlohmann::json::object();
@@ -356,10 +362,11 @@ void DatabaseConfig::ReadConfig()
 	DatabaseConfig::GamePath.clear();
 	DatabaseConfig::AssetListFolders.clear();
 	DatabaseConfig::ModFolders.clear();
+	DatabaseConfig::LocalModFolders.clear();
 	KeywordReplacer::Clear();
 
 	bool should_write = false;
-	nlohmann::json cfgData = DatabaseConfig::GetConfigJson(&should_write);
+	nlohmann::json cfgData = DatabaseConfig::GetConfigJson(&should_write, true);
 
 	DatabaseConfig::ReadUserSettings(cfgData, should_write);
 	
