@@ -30,11 +30,15 @@ public:
 	{
 		DebugOutL("Clutter: ", header->clutterCompressedSize, " ", header->clutterSize);
 
-		std::vector<Byte> compressed = memory.Objects<Byte>(header->clutterIndex, header->clutterCompressedSize);
+		const std::vector<Byte> compressed = memory.Objects<Byte>(header->clutterIndex, header->clutterCompressedSize);
+		if (compressed.empty())
+			return {};
+
 		std::vector<Byte> bytes = {};
 		bytes.resize(header->clutterSize);
 
 		const int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->clutterSize);
+		DebugOutL("DebugSize: ", debugSize, ", ClutterCompressedSize: ", header->clutterCompressedSize);
 		if (debugSize != header->clutterCompressedSize)
 		{
 			cError = ConvertError(1, L"ClutterReader::Read -> debugSize != header->clutterCompressedSize");

@@ -33,7 +33,7 @@ public:
 				DebugOutL("Asset[", a, "]: ", header->assetListCount[a]);
 				const int assetListIndex = header->assetListIndex[a];
 
-				std::vector<Byte> compressed = reader.Objects<Byte>(assetListIndex, assetListCompressedSize);
+				const std::vector<Byte> compressed = reader.Objects<Byte>(assetListIndex, assetListCompressedSize);
 
 				std::vector<Byte> bytes = {};
 				bytes.resize(assetListSize);
@@ -119,6 +119,12 @@ public:
 					if (color_map.find(wstr_data) == color_map.end())
 						color_map.insert(std::make_pair(wstr_data, color));
 				}
+			}
+
+			if (version >= 13)
+			{
+				//Skip one byte that was added in the newest version of .tile files
+				index++;
 			}
 
 			AssetData* asset_data = Mod::GetGlobalAsset(f_uuid);

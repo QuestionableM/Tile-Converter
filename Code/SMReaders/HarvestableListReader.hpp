@@ -32,7 +32,7 @@ public:
 			{
 				DebugOutL("Harvestable[", a, "]: ", harvestableListSize, ", ", harvestableListCompressedSize);
 
-				std::vector<Byte> compressed = reader.Objects<Byte>(header->harvestableListIndex[a], harvestableListCompressedSize);
+				const std::vector<Byte> compressed = reader.Objects<Byte>(header->harvestableListIndex[a], harvestableListCompressedSize);
 
 				std::vector<Byte> bytes = {};
 				bytes.resize(harvestableListSize);
@@ -63,14 +63,20 @@ public:
 		int index = 0;
 		for (int a = 0; a < len; a++)
 		{
-			const glm::vec3 f_pos = memory.Object<glm::vec3>(index);
-			const glm::quat f_quat = memory.GetQuat(index + 0xc);
-			const glm::vec3 f_size = memory.Object<glm::vec3>(index + 0x1c);
+			const glm::vec3 f_pos = memory.Object<glm::vec3>(index); //12
+			const glm::quat f_quat = memory.GetQuat(index + 0xc); //16
+			const glm::vec3 f_size = memory.Object<glm::vec3>(index + 0x1c); //12
 
-			const SMUuid f_uuid = memory.Object<SMUuid>(index + 0x28);
-			const Color f_color = memory.Object<unsigned int>(index + 0x38);
+			const SMUuid f_uuid = memory.Object<SMUuid>(index + 0x28); //16
+			const Color f_color = memory.Object<unsigned int>(index + 0x38); //4
 
 			index += 0x3c;
+
+			if (version >= 13)
+			{
+				//Skip 5 unknown bytes that were added in the newest version of tiles
+				index += 0x5;
+			}
 
 			HarvestableData* hvs_data = Mod::GetGlobalHarvestbale(f_uuid);
 			if (!hvs_data) continue;
