@@ -11,7 +11,7 @@ class BitStream
 	int index = 0;
 
 public:
-	BitStream(MemoryWrapper& memory)
+	inline BitStream(MemoryWrapper& memory)
 	{
 		const std::size_t chunk_size = memory.Size() - memory.Index();
 		data.resize(chunk_size);
@@ -19,32 +19,32 @@ public:
 		std::memcpy(data.data(), memory.Data() + memory.Index(), chunk_size);
 	}
 
-	int Index() const
+	inline int Index() const
 	{
 		return this->index;
 	}
 
-	int Size() const
+	inline int Size() const
 	{
-		return (int)this->data.size();
+		return static_cast<int>(this->data.size());
 	}
 
-	void Align()
+	inline void Align()
 	{
 		index += (7 - ((index - 1) & 7));
 	}
 
-	void Move(const int& step)
+	inline void Move(const int& step)
 	{
 		index += step;
 	}
 
-	const Byte* Data() const
+	inline const Byte* Data() const
 	{
 		return this->data.data();
 	}
 
-	long long ReadNBytes(const int& count)
+	inline long long ReadNBytes(const int& count)
 	{
 		if (Size() < (index >> 3) + count) return 0;
 
@@ -87,7 +87,7 @@ public:
 		float converted_float_bits;
 	};
 
-	float ReadFloat()
+	inline float ReadFloat()
 	{
 		union int_to_float_bits bits = {};
 		bits.integer_bits = (int)ReadNBytes(4);
@@ -95,7 +95,7 @@ public:
 		return bits.converted_float_bits;
 	}
 
-	glm::vec3 ReadVec3()
+	inline glm::vec3 ReadVec3()
 	{
 		const float vec3_x = this->ReadFloat();
 		const float vec3_y = this->ReadFloat();
@@ -104,7 +104,7 @@ public:
 		return { vec3_x, vec3_y, vec3_z };
 	}
 
-	glm::quat ReadQuat()
+	inline glm::quat ReadQuat()
 	{
 		const float quat_x = this->ReadFloat();
 		const float quat_y = this->ReadFloat();
@@ -114,22 +114,22 @@ public:
 		return { quat_w, quat_x, quat_y, quat_z };
 	}
 
-	int ReadInt()
+	inline int ReadInt()
 	{
 		return (int)ReadNBytes(4);
 	}
 
-	int ReadShort()
+	inline int ReadShort()
 	{
 		return (int)ReadNBytes(2);
 	}
 
-	int ReadByte()
+	inline int ReadByte()
 	{
 		return (int)ReadNBytes(1);
 	}
 
-	SMUuid ReadUuid()
+	inline SMUuid ReadUuid()
 	{
 		const long long first = ReadNBytes(8);
 		const long long second = ReadNBytes(8);
@@ -137,7 +137,7 @@ public:
 		return SMUuid(second, first, true);
 	}
 
-	std::vector<Byte> ReadBytes(const int& length)
+	inline std::vector<Byte> ReadBytes(const int& length)
 	{
 		std::vector<Byte> bytes;
 		bytes.resize(length);
@@ -148,7 +148,7 @@ public:
 		return bytes;
 	}
 
-	std::string ReadString(const int& length)
+	inline std::string ReadString(const int& length)
 	{
 		std::vector<Byte> bytes = ReadBytes(length);
 

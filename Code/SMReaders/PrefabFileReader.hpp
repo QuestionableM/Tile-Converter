@@ -76,7 +76,7 @@ public:
 
 		if (pHeader.hasDecals != 0)
 		{
-			PrefabFileReader::ReadDecals(stream, prefab, pHeader.decalsCount);
+			PrefabFileReader::ReadDecals(stream, prefab, pHeader.decalsCount, version);
 		}
 
 		if (pHeader.has_0x5c != 0)
@@ -258,9 +258,62 @@ public:
 		}
 	}
 
-	static void ReadDecals(BitStream& stream, Prefab* prefab, const int& count)
+	static void ReadDecals(BitStream& stream, Prefab* prefab, const int& count, const int& version)
 	{
-		DebugWarningL("UNIMPLEMENTED");
+		DebugOutL("Reading ", count, " decals...");
+
+		for (int a = 0; a < count; a++)
+		{
+
+			const glm::vec3 v_pos = stream.ReadVec3();
+			const glm::quat v_quat = stream.ReadQuat();
+			const glm::vec3 v_size = stream.ReadVec3();
+
+			const SMUuid v_uuid = stream.ReadUuid();
+			const Color v_color = stream.ReadInt();
+
+			//Read a random 4 byte value
+			stream.ReadInt();
+
+			if (version >= 13)
+			{
+				//Skip a random byte that is not used anywhere
+				stream.ReadByte();
+			}
+
+			DebugOutL("Decal[", a, "]:");
+			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
+			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);
+			DebugOutL("\tSize: ", v_size.x, ", ", v_size.y, ", ", v_size.z);
+			DebugOutL("\tUuid: ", v_uuid.ToString());
+			DebugOutL("\tColor: ", v_color.StringHex());
+			/*
+			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
+			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);
+			DebugOutL("\tSize: ", v_size.x, ", ", v_size.y, ", ", v_size.z);
+
+			index += 0x28;
+
+			const SMUuid v_uuid = memory.Object<SMUuid>(index);
+			index += 0x10;
+
+			DebugOutL("\tUuid: ", v_uuid.ToString());
+
+			const Color v_color = memory.Object<unsigned int>(index);
+			index += 0x4;
+
+			DebugOutL("\tColor: ", v_color.StringHex());
+
+			//Some value that takes 4 bytes
+			index += 0x4;
+
+			if (version >= 13)
+			{
+				//Skip a random byte that was added in the newest versions of tiles
+				index++;
+			}
+			*/
+		}
 	}
 
 	static void Read_248(BitStream& stream, Prefab* prefab, const int& count)
