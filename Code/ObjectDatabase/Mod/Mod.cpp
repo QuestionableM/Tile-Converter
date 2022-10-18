@@ -3,11 +3,11 @@
 #include "ObjectDatabase\Mod\HarvestableListLoader.hpp"
 #include "ObjectDatabase\Mod\DecalsetListReader.hpp"
 #include "ObjectDatabase\Mod\ClutterListLoader.hpp"
-#include "ObjectDatabase\Mod\BlocksAndPartsMod.h"
+#include "ObjectDatabase\Mod\BlocksAndPartsMod.hpp"
+#include "ObjectDatabase\Mod\TerrainAssetsMod.hpp"
 #include "ObjectDatabase\Mod\AssetListLoader.hpp"
 #include "ObjectDatabase\Mod\BlockListLoader.hpp"
 #include "ObjectDatabase\Mod\PartListLoader.hpp"
-#include "ObjectDatabase\Mod\TerrainAssetsMod.h"
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
 #include "Utils\String.hpp"

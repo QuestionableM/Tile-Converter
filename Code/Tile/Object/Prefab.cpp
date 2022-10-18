@@ -1,8 +1,9 @@
-#include "Prefab.h"
+#include "Prefab.hpp"
 
-#include "Tile/Object/Asset.hpp"
-#include "Tile/Object/Blueprint.hpp"
-#include "ObjectDatabase/ModelStorage.hpp"
+#include "ObjectDatabase\ModelStorage.hpp"
+
+#include "Tile\Object\Blueprint.hpp"
+#include "Tile\Object\Asset.hpp"
 
 std::string Prefab::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {

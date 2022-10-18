@@ -1,13 +1,14 @@
-#include "ObjectDatabase/ObjectDatabase.hpp"
-#include "ObjectDatabase/DatabaseConfig.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase.hpp"
 
-#include "ObjectDatabase/Mod/GameDataMod.h"
-#include "ObjectDatabase/Mod/ObjectRotations.hpp"
-#include "ObjectDatabase/Mod/MaterialManager.hpp"
-#include "ObjectDatabase/GroundTextureDatabase.hpp"
+#include "ObjectDatabase\GroundTextureDatabase.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
 
-#include "Utils/Json.hpp"
+#include "ObjectDatabase\Mod\MaterialManager.hpp"
+#include "ObjectDatabase\Mod\ObjectRotations.hpp"
+#include "ObjectDatabase\Mod\GameDataMod.hpp"
+
+#include "Utils\Json.hpp"
 #include "Console.hpp"
 
 #include <filesystem>

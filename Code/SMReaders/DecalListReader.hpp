@@ -84,13 +84,6 @@ public:
 
 			const DecalData* v_decalData = Mod::GetGlobalDecal(v_uuid);
 			if (!v_decalData) continue;
-
-			DebugOutL("Decal[", a, "]");
-			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
-			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);
-			DebugOutL("\tSize: ", v_size.x, ", ", v_size.y, ", ", v_size.z);
-			DebugOutL("\tUuid: ", v_uuid.ToString());
-			DebugOutL("\tColor: ", v_color.StringHex());
 		}
 
 		return index;

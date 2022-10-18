@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Utils/ByteImpl.hpp"
-#include "Tile/Object/Asset.hpp"
-#include "Tile/Object/Harvestable.hpp"
-#include "Tile/Object/Prefab.h"
-#include "Tile/Object/Blueprint.hpp"
-#include "Tile/Object/TileClutter.h"
-#include "Tile/WriterOffset.hpp"
+#include "Tile\Object\TileClutter.hpp"
+#include "Tile\Object\Harvestable.hpp"
+#include "Tile\Object\Blueprint.hpp"
+#include "Tile\Object\Prefab.hpp"
+#include "Tile\Object\Asset.hpp"
+#include "Tile\WriterOffset.hpp"
+
+#include "Utils\ByteImpl.hpp"
 
 class Tile;
 

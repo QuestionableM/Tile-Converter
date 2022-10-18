@@ -1,4 +1,4 @@
-#include "TerrainAssetsMod.h"
+#include "TerrainAssetsMod.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 

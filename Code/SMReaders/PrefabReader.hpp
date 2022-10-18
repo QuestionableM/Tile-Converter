@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Tile/CellHeader.hpp"
-#include "Tile/TilePart.hpp"
-#include "Tile/Tile.hpp"
-#include "Tile/Object/Prefab.h"
+#include "Tile\Object\Prefab.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\TilePart.hpp"
+#include "Tile\Tile.hpp"
 
-#include "Utils/Memory.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "SMReaders\PrefabFileReader.hpp"
 
-#include "SMReaders/PrefabFileReader.hpp"
-#include "ObjectDatabase/KeywordReplacer.hpp"
+#include "Utils\Memory.hpp"
 
-#include <lz4/lz4.h>
+#include <lz4\lz4.h>
 
 class PrefabReader
 {

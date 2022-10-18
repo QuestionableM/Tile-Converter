@@ -236,10 +236,10 @@
     <ClInclude Include="Code\Tile\Object\Part.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Tile\Object\Prefab.h">
+    <ClInclude Include="Code\Tile\Object\Prefab.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Tile\Object\TileClutter.h">
+    <ClInclude Include="Code\Tile\Object\TileClutter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Tile\Object\TileEntity.hpp">
@@ -317,13 +317,13 @@
     <ClInclude Include="Code\ObjectDatabase\GroundTextureDatabase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\BlocksAndPartsMod.h">
+    <ClInclude Include="Code\ObjectDatabase\Mod\BlocksAndPartsMod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\TerrainAssetsMod.h">
+    <ClInclude Include="Code\ObjectDatabase\Mod\TerrainAssetsMod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\GameDataMod.h">
+    <ClInclude Include="Code\ObjectDatabase\Mod\GameDataMod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Tile\Object\GroundTerrainData.hpp">

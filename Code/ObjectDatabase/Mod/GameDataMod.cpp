@@ -1,4 +1,4 @@
-#include "GameDataMod.h"
+#include "GameDataMod.hpp"
 
 #include "ObjectDatabase/DatabaseConfig.hpp"
 

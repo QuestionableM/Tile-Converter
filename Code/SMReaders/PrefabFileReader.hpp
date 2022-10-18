@@ -1,18 +1,20 @@
 #pragma once
 
-#include "Tile/Object/Prefab.h"
-#include "Tile/Object/Blueprint.hpp"
-#include "SMReaders/PrefabHeader.hpp"
-
-#include "Utils/File.hpp"
-#include "Utils/Memory.hpp"
-#include "ObjectDatabase/ObjectDatabase.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
 #include "ObjectDatabase\KeywordReplacer.hpp"
+#include "ObjectDatabase\ObjectDatabase.hpp"
+#include "ObjectDatabase\Mod\Mod.hpp"
+
+#include "Tile\Object\Blueprint.hpp"
+#include "Tile\Object\Prefab.hpp"
+
+#include "Utils\Memory.hpp"
+#include "Utils\File.hpp"
+
+#include "SMReaders\PrefabHeader.hpp"
+#include "Console.hpp"
 
 #include <algorithm>
 
-#include "Console.hpp"
 
 class PrefabFileReader
 {
@@ -276,13 +278,6 @@ public:
 
 			const DecalData* v_decalData = Mod::GetGlobalDecal(v_uuid);
 			if (!v_decalData) continue;
-
-			DebugOutL("Prefab Decal[", a, "]:");
-			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
-			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);
-			DebugOutL("\tSize: ", v_size.x, ", ", v_size.y, ", ", v_size.z);
-			DebugOutL("\tUuid: ", v_uuid.ToString());
-			DebugOutL("\tColor: ", v_color.StringHex());
 		}
 	}
 

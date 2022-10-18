@@ -1,4 +1,4 @@
-#include "BlocksAndPartsMod.h"
+#include "BlocksAndPartsMod.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
