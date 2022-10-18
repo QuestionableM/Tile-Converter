@@ -37,7 +37,8 @@ public:
 		std::vector<Byte> bytes = {};
 		bytes.resize(header->clutterSize);
 
-		const int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->clutterSize);
+		const int debugSize = LZ4_decompress_fast(reinterpret_cast<const char*>(compressed.data()),
+			reinterpret_cast<char*>(bytes.data()), header->clutterSize);
 		DebugOutL("DebugSize: ", debugSize, ", ClutterCompressedSize: ", header->clutterCompressedSize);
 		if (debugSize != header->clutterCompressedSize)
 		{

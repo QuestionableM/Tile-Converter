@@ -39,7 +39,8 @@ public:
 		std::vector<Byte> decompressed_bytes = {};
 		decompressed_bytes.resize(header->mipSize[mipOrLevel]);
 
-		const int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)decompressed_bytes.data(), header->mipSize[mipOrLevel]);
+		const int debugSize = LZ4_decompress_fast(reinterpret_cast<const char*>(compressed.data()),
+			reinterpret_cast<char*>(decompressed_bytes.data()), header->mipSize[mipOrLevel]);
 		DebugOutL(0b0111_fg, "Debug Size: ", debugSize, ", Compressed size: ", header->mipCompressedSize[mipOrLevel]);
 		if (debugSize != header->mipCompressedSize[mipOrLevel])
 		{

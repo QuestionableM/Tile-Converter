@@ -274,12 +274,6 @@ public:
 			//Read a random 4 byte value
 			stream.ReadInt();
 
-			if (version >= 13)
-			{
-				//Skip a random byte that is not used anywhere
-				stream.ReadByte();
-			}
-
 			DebugOutL("Prefab Decal[", a, "]:");
 			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
 			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);

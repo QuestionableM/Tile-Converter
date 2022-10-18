@@ -24,6 +24,11 @@ public:
 		return this->index;
 	}
 
+	inline void SetIndex(const int& value)
+	{
+		this->index = value;
+	}
+
 	inline int Size() const
 	{
 		return static_cast<int>(this->data.size());

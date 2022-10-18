@@ -38,7 +38,8 @@ public:
 				std::vector<Byte> bytes = {};
 				bytes.resize(assetListSize);
 
-				int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), assetListSize);
+				int debugSize = LZ4_decompress_fast(reinterpret_cast<const char*>(compressed.data()),
+					reinterpret_cast<char*>(bytes.data()), assetListSize);
 				if (debugSize != assetListCompressedSize)
 				{
 					cError = ConvertError(1, L"AssetListReader::Read -> debugSize != assetListCompressedSize");

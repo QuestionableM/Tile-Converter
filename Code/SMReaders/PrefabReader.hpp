@@ -33,14 +33,15 @@ public:
 		std::vector<Byte> bytes = {};
 		bytes.resize(header->prefabSize);
 
-		int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->prefabSize);
+		int debugSize = LZ4_decompress_fast(reinterpret_cast<const char*>(compressed.data()),
+			reinterpret_cast<char*>(bytes.data()), header->prefabSize);
 		if (debugSize != header->prefabCompressedSize)
 		{
 			cError = ConvertError(1, L"PrefabReader::Read -> debugSize != header->prefabCompressedSize");
 			return;
 		}
 
-		debugSize = PrefabReader::Read(bytes, header->prefabCount, part);
+		debugSize = PrefabReader::Read(bytes, header->prefabCount, part, cError);
 		if (debugSize != header->prefabSize)
 		{
 			cError = ConvertError(1, L"PrefabReader::Read -> debugSize != header->prefabSize");
@@ -50,7 +51,7 @@ public:
 
 #pragma warning(pop)
 
-	static int Read(const std::vector<Byte>& bytes, const int& prefabCount, TilePart* part)
+	static int Read(const std::vector<Byte>& bytes, const int& prefabCount, TilePart* part, ConvertError& cError)
 	{
 		int index = 0;
 		MemoryWrapper memory(bytes);
