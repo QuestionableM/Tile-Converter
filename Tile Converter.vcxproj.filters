@@ -320,5 +320,8 @@
     <ClInclude Include="Code\Tile\Object\GroundTerrainData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\SMReaders\DecalListReader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

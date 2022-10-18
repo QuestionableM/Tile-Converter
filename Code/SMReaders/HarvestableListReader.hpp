@@ -37,7 +37,8 @@ public:
 				std::vector<Byte> bytes = {};
 				bytes.resize(harvestableListSize);
 
-				int debugSize = LZ4_decompress_fast((char*)compressed.data(), (char*)bytes.data(), header->harvestableListSize[a]);
+				int debugSize = LZ4_decompress_fast(reinterpret_cast<const char*>(compressed.data()),
+					reinterpret_cast<char*>(bytes.data()), header->harvestableListSize[a]);
 				if (debugSize != harvestableListCompressedSize)
 				{
 					cError = ConvertError(1, L"HarvestableListReader::Read -> debugSize != harvestableListCompressedSize");

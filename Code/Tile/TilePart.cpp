@@ -38,11 +38,6 @@ void TilePart::AddObject(TileEntity* object, const int& index)
 	this->m_Objects[index].push_back(object);
 }
 
-Tile* TilePart::GetParent()
-{
-	return this->Parent;
-}
-
 void TilePart::WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, const int& xPos, const int& zPos)
 {
 	constexpr const float rot_offset = 1.0f * glm::pi<float>();

@@ -5,12 +5,13 @@
 #include "Tile/TileHeader.hpp"
 #include "Tile/Tile.hpp"
 
-#include "SMReaders/MipReader.hpp"
-#include "SMReaders/ClutterReader.hpp"
-#include "SMReaders/AssetListReader.hpp"
-#include "SMReaders/HarvestableListReader.hpp"
-#include "SMReaders/PrefabReader.hpp"
-#include "SMReaders/BlueprintListReader.hpp"
+#include "SMReaders\MipReader.hpp"
+#include "SMReaders\ClutterReader.hpp"
+#include "SMReaders\AssetListReader.hpp"
+#include "SMReaders\HarvestableListReader.hpp"
+#include "SMReaders\PrefabReader.hpp"
+#include "SMReaders\BlueprintListReader.hpp"
+#include "SMReaders\DecalListReader.hpp"
 
 #include "ObjectDatabase/ProgCounter.hpp"
 
@@ -86,6 +87,7 @@ public:
 					PrefabReader::Read         (h, reader, part, cError);
 					BlueprintListReader::Read  (h, reader, part, cError);
 					HarvestableListReader::Read(h, reader, part, cError);
+					DecalListReader::Read      (h, reader, part, cError);
 				}
 			}
 		}

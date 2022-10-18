@@ -30,7 +30,7 @@ public:
 
 			if (header->assetListCount[a] != 0)
 			{
-				DebugOutL("Asset[", a, "]: ", header->assetListCount[a]);
+				DebugOutL("Asset[", a, "]: ", header->assetListSize[a], ", ", header->assetListCompressedSize[a]);
 				const int assetListIndex = header->assetListIndex[a];
 
 				const std::vector<Byte> compressed = reader.Objects<Byte>(assetListIndex, assetListCompressedSize);

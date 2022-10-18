@@ -334,6 +334,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClInclude Include="Code\SMReaders\AssetListReader.hpp" />
     <ClInclude Include="Code\SMReaders\BlueprintListReader.hpp" />
     <ClInclude Include="Code\SMReaders\ClutterReader.hpp" />
+    <ClInclude Include="Code\SMReaders\DecalListReader.hpp" />
     <ClInclude Include="Code\SMReaders\HarvestableListReader.hpp" />
     <ClInclude Include="Code\SMReaders\MipReader.hpp" />
     <ClInclude Include="Code\SMReaders\PrefabFileReader.hpp" />

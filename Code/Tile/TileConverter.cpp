@@ -8,22 +8,6 @@ namespace fs = std::filesystem;
 
 constexpr const static std::wstring_view g_TileOutputDirectory = L"./ConvertedTiles";
 
-ConvertError::ConvertError(const unsigned short& ec, const std::wstring& error_msg)
-{
-	this->ErrorCode = ec;
-	this->ErrorMessage = error_msg;
-}
-
-ConvertError::operator bool() const noexcept
-{
-	return (this->ErrorCode != 0);
-}
-
-std::wstring ConvertError::GetErrorMsg() const noexcept
-{
-	return this->ErrorMessage;
-}
-
 void TileConv::WriteToFileInternal(Tile* pTile, const std::wstring& tile_name, ConvertError& cError)
 {
 	if (cError) return; //Error check

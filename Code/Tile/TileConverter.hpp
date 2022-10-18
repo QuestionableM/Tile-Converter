@@ -25,14 +25,28 @@ public:
 
 class ConvertError
 {
-	unsigned short ErrorCode = 0;
-	std::wstring ErrorMessage = L"";
 public:
 	ConvertError() = default;
-	ConvertError(const unsigned short& ec, const std::wstring& error_msg);
 
-	explicit operator bool() const noexcept;
-	std::wstring GetErrorMsg() const noexcept;
+	inline ConvertError(const unsigned short& ec, const std::wstring& error_msg)
+	{
+		this->m_errorCode = ec;
+		this->m_errorMessage = error_msg;
+	}
+
+	inline explicit operator bool() const noexcept
+	{
+		return (m_errorCode != 0);
+	}
+
+	inline std::wstring GetErrorMsg() const noexcept
+	{
+		return m_errorMessage;
+	}
+
+private:
+	unsigned short m_errorCode = 0;
+	std::wstring m_errorMessage;
 };
 
 class TileConv

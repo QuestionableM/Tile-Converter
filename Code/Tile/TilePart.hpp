@@ -36,7 +36,7 @@ public:
 
 	void AddObject(TileEntity* object, const int& index = 0);
 
-	Tile* GetParent();
+	inline Tile* GetParent() { return this->Parent; }
 
 	void WriteToFile(std::ofstream& model, WriterOffsetData& mOffsetData, const int& xPos, const int& zPos);
 	void FillTextureMap(std::unordered_map<std::string, ObjectTexData>& tData) const;
