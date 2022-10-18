@@ -12,11 +12,6 @@ GameDataMod::GameDataMod()
 	this->m_Uuid = SMUuid();
 }
 
-ModType GameDataMod::Type() const
-{
-	return ModType::GameData;
-}
-
 void GameDataMod::LoadObjectDatabase()
 {
 	for (const std::wstring& db_dir : DatabaseConfig::AssetListFolders)

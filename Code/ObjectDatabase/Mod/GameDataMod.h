@@ -8,6 +8,6 @@ public:
 	GameDataMod();
 	~GameDataMod() = default;
 
-	ModType Type() const override;
+	inline ModType Type() const override { return ModType::GameData; }
 	void LoadObjectDatabase() override;
 };

@@ -641,10 +641,9 @@ void Tile::FillMaterialMap(std::array<MaterialData, 8>& mat_data) const
 	{
 		const std::size_t mat_offset = 8 * mat_id;
 
-		MaterialData& cur_mat = mat_data[mat_id];
+		MaterialData& v_curMaterial = mat_data[mat_id];
 
-		bool& has_data = cur_mat.HasMatData;
-		std::vector<float>& material_vec = cur_mat.MatData;
+		std::vector<float>& material_vec = v_curMaterial.MatData;
 		material_vec.resize(gnd_width * gnd_height);
 
 		for (std::size_t y = 0; y < gnd_height; y++)
@@ -656,8 +655,8 @@ void Tile::FillMaterialMap(std::array<MaterialData, 8>& mat_data) const
 
 				material_vec[x + y * gnd_width] = static_cast<float>(cur_chunk) / 255.0f;
 
-				if (!has_data && cur_chunk != 0)
-					has_data = true;
+				if (cur_chunk != 0)
+					v_curMaterial.HasMatData = true;
 			}
 		}
 	}

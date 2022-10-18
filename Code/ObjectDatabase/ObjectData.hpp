@@ -24,6 +24,9 @@ public:
 	std::wstring def_color_idx;
 
 	std::wstring& GetStringRef(const std::size_t& idx);
+
+	TextureList() = default;
+	~TextureList() = default;
 };
 
 class TextureData
@@ -39,6 +42,7 @@ public:
 
 	TextureData() = default;
 	TextureData(const TextureDataType& type);
+	~TextureData() = default;
 };
 
 class Mod;
@@ -55,6 +59,7 @@ public:
 	AssetData() = default;
 	AssetData(const AssetData&) = delete;
 	AssetData(AssetData&&) = delete;
+	~AssetData() = default;
 };
 
 class HarvestableData
@@ -68,6 +73,7 @@ public:
 	HarvestableData() = default;
 	HarvestableData(const HarvestableData&) = delete;
 	HarvestableData(HarvestableData&) = delete;
+	~HarvestableData() = default;
 };
 
 class BlockData
@@ -82,6 +88,7 @@ public:
 	BlockData() = default;
 	BlockData(const BlockData&) = delete;
 	BlockData(BlockData&) = delete;
+	~BlockData() = default;
 };
 
 class PartData
@@ -97,6 +104,7 @@ public:
 	PartData() = default;
 	PartData(const PartData&) = delete;
 	PartData(PartData&) = delete;
+	~PartData() = default;
 };
 
 class ClutterData
@@ -113,4 +121,20 @@ public:
 	ClutterData() = default;
 	ClutterData(const ClutterData&) = delete;
 	ClutterData(ClutterData&) = delete;
+	~ClutterData() = default;
+};
+
+class DecalData
+{
+public:
+	std::string m_name;
+	SMUuid m_uuid;
+	TextureList m_textures;
+	int m_ranges[4];
+	Mod* m_mod;
+
+	DecalData() = default;
+	DecalData(const DecalData&) = delete;
+	DecalData(DecalData&) = delete;
+	~DecalData() = default;
 };

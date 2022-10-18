@@ -61,27 +61,16 @@ public:
 		int index = 0;
 		for (int a = 0; a < decal_count; a++)
 		{
-			DebugOutL("Decal[", a, "]");
-
 			const glm::vec3 v_pos = memory.Object<glm::vec3>(index);
 			const glm::quat v_quat = memory.GetQuat(index + 0xc);
 			const glm::vec3 v_size = memory.Object<glm::vec3>(index + 0x1c);
-
-			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
-			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);
-			DebugOutL("\tSize: ", v_size.x, ", ", v_size.y, ", ", v_size.z);
-
 			index += 0x28;
 
 			const SMUuid v_uuid = memory.Object<SMUuid>(index);
 			index += 0x10;
 
-			DebugOutL("\tUuid: ", v_uuid.ToString());
-
 			const Color v_color = memory.Object<unsigned int>(index);
 			index += 0x4;
-
-			DebugOutL("\tColor: ", v_color.StringHex());
 
 			//Some value that takes 4 bytes
 			index += 0x4;
@@ -92,6 +81,16 @@ public:
 				//Skip a random byte that was added in the newest versions of tiles
 				index++;
 			}
+
+			const DecalData* v_decalData = Mod::GetGlobalDecal(v_uuid);
+			if (!v_decalData) continue;
+
+			DebugOutL("Decal[", a, "]");
+			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
+			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);
+			DebugOutL("\tSize: ", v_size.x, ", ", v_size.y, ", ", v_size.z);
+			DebugOutL("\tUuid: ", v_uuid.ToString());
+			DebugOutL("\tColor: ", v_color.StringHex());
 		}
 
 		return index;

@@ -1,16 +1,17 @@
 #include "Mod.hpp"
 
-#include "Utils/File.hpp"
-#include "Utils/String.hpp"
-
-#include "ObjectDatabase\Mod\TerrainAssetsMod.h"
+#include "ObjectDatabase\Mod\HarvestableListLoader.hpp"
+#include "ObjectDatabase\Mod\DecalsetListReader.hpp"
+#include "ObjectDatabase\Mod\ClutterListLoader.hpp"
 #include "ObjectDatabase\Mod\BlocksAndPartsMod.h"
-#include "ObjectDatabase/Mod/AssetListLoader.hpp"
-#include "ObjectDatabase/Mod/HarvestableListLoader.hpp"
-#include "ObjectDatabase/Mod/PartListLoader.hpp"
-#include "ObjectDatabase/Mod/BlockListLoader.hpp"
-#include "ObjectDatabase/Mod/ClutterListLoader.hpp"
-#include "ObjectDatabase/KeywordReplacer.hpp"
+#include "ObjectDatabase\Mod\AssetListLoader.hpp"
+#include "ObjectDatabase\Mod\BlockListLoader.hpp"
+#include "ObjectDatabase\Mod\PartListLoader.hpp"
+#include "ObjectDatabase\Mod\TerrainAssetsMod.h"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+
+#include "Utils\String.hpp"
+#include "Utils\File.hpp"
 
 #include "Console.hpp"
 
@@ -33,6 +34,9 @@ Mod::~Mod()
 
 	for (const auto& pClutter : m_Clutter)
 		delete pClutter.second;
+
+	for (const auto& pDecal : m_Decals)
+		delete pDecal.second;
 }
 
 void Mod::ClearModStorage()
@@ -43,6 +47,7 @@ void Mod::ClearModStorage()
 	Mod::HarvestableStorage.clear();
 	Mod::ClutterStorage.clear();
 	Mod::ClutterVector.clear();
+	Mod::DecalStorage.clear();
 
 	for (std::size_t a = 0; a < Mod::ModVector.size(); a++)
 		delete Mod::ModVector[a];
@@ -72,8 +77,8 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder, const bool& is_loc
 	const SMUuid v_modUuid = mUuid.get<std::string>();
 	const std::wstring v_modName = String::ToWide(mName.get<std::string>());
 
-	const ModMap::const_iterator v_iter = ModStorage.find(v_modUuid);
-	if (v_iter != ModStorage.end())
+	const UuidObjMapIterator<Mod*> v_iter = Mod::ModStorage.find(v_modUuid);
+	if (v_iter != Mod::ModStorage.end())
 	{
 		const Mod* v_modPtr = v_iter->second;
 
@@ -112,8 +117,9 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder, const bool& is_loc
 
 BlockData* Mod::GetGlobalBlock(const SMUuid& uuid)
 {
-	if (BlockStorage.find(uuid) != BlockStorage.end())
-		return BlockStorage.at(uuid);
+	const UuidObjMapIterator<BlockData*> v_iter = Mod::BlockStorage.find(uuid);
+	if (v_iter != Mod::BlockStorage.end())
+		return v_iter->second;
 
 	DebugErrorL("Couldn't find a block with the specified uuid: ", uuid.ToString());
 	return nullptr;
@@ -121,8 +127,9 @@ BlockData* Mod::GetGlobalBlock(const SMUuid& uuid)
 
 PartData* Mod::GetGlobalPart(const SMUuid& uuid)
 {
-	if (PartStorage.find(uuid) != PartStorage.end())
-		return PartStorage.at(uuid);
+	const UuidObjMapIterator<PartData*> v_iter = Mod::PartStorage.find(uuid);
+	if (v_iter != Mod::PartStorage.end())
+		return v_iter->second;
 
 	DebugErrorL("Couldn't find a part with the specified uuid: ", uuid.ToString());
 	return nullptr;
@@ -130,8 +137,9 @@ PartData* Mod::GetGlobalPart(const SMUuid& uuid)
 
 AssetData* Mod::GetGlobalAsset(const SMUuid& uuid)
 {
-	if (AssetStorage.find(uuid) != AssetStorage.end())
-		return AssetStorage.at(uuid);
+	const UuidObjMapIterator<AssetData*> v_iter = Mod::AssetStorage.find(uuid);
+	if (v_iter != Mod::AssetStorage.end())
+		return v_iter->second;
 
 	DebugErrorL("Couldn't find an asset with the specified uuid: ", uuid.ToString());
 	return nullptr;
@@ -139,17 +147,29 @@ AssetData* Mod::GetGlobalAsset(const SMUuid& uuid)
 
 HarvestableData* Mod::GetGlobalHarvestbale(const SMUuid& uuid)
 {
-	if (HarvestableStorage.find(uuid) != HarvestableStorage.end())
-		return HarvestableStorage.at(uuid);
+	const UuidObjMapIterator<HarvestableData*> v_iter = Mod::HarvestableStorage.find(uuid);
+	if (v_iter != Mod::HarvestableStorage.end())
+		return v_iter->second;
 
 	DebugErrorL("Couldn't find a harvestable with the specified uuid: ", uuid.ToString());
 	return nullptr;
 }
 
+DecalData* Mod::GetGlobalDecal(const SMUuid& uuid)
+{
+	const UuidObjMapIterator<DecalData*> v_iter = Mod::DecalStorage.find(uuid);
+	if (v_iter != Mod::DecalStorage.end())
+		return v_iter->second;
+
+	DebugErrorL("Couldn't find a decal with the specified uuid: ", uuid.ToString());
+	return nullptr;
+}
+
 ClutterData* Mod::GetGlobalClutter(const SMUuid& uuid)
 {
-	if (ClutterStorage.find(uuid) != ClutterStorage.end())
-		return ClutterStorage.at(uuid);
+	const UuidObjMapIterator<ClutterData*> v_iter = Mod::ClutterStorage.find(uuid);
+	if (v_iter != Mod::ClutterStorage.end())
+		return v_iter->second;
 
 	DebugErrorL("Couldn't find clutter with the specified uuid: ", uuid.ToString());
 	return nullptr;
@@ -166,23 +186,15 @@ ClutterData* Mod::GetGlobalClutterById(const std::size_t& idx)
 	return Mod::ClutterVector[idx];
 }
 
-std::size_t Mod::GetAmountOfObjects()
-{
-	return (BlockStorage.size() + PartStorage.size() + AssetStorage.size() + HarvestableStorage.size() + ClutterStorage.size());
-}
-
-std::size_t Mod::GetAmountOfMods()
-{
-	return Mod::ModVector.size();
-}
-
-static const std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)> g_DataLoaders =
+using DataLoaderMap = std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)>;
+static const DataLoaderMap g_DataLoaders =
 {
 	{ "assetListRenderable", AssetListLoader::Load       },
 	{ "harvestableList",     HarvestableListLoader::Load },
 	{ "partList",			 PartListLoader::Load		 },
 	{ "blockList",			 BlockListLoader::Load		 },
-	{ "clutterList",		 ClutterListLoader::Load     }
+	{ "clutterList",		 ClutterListLoader::Load     },
+	{ "decalSetList",        DecalsetListReader::Load    }
 };
 
 void Mod::LoadFile(const std::wstring& path)
@@ -196,9 +208,10 @@ void Mod::LoadFile(const std::wstring& path)
 	{
 		const std::string key_str = fKey.key();
 
-		if (g_DataLoaders.find(key_str) != g_DataLoaders.end())
+		const DataLoaderMap::const_iterator iter = g_DataLoaders.find(key_str);
+		if (iter != g_DataLoaders.end())
 		{
-			g_DataLoaders.at(key_str)(fKey.value(), this);
+			iter->second(fKey.value(), this);
 		}
 		else
 		{
@@ -207,7 +220,7 @@ void Mod::LoadFile(const std::wstring& path)
 	}
 }
 
-bool IsShapeSetExtensionValid(const std::string& extension)
+inline bool IsShapeSetExtensionValid(const std::string& extension)
 {
 	if (extension == ".json") return true;
 	if (extension == ".shapeset") return true;

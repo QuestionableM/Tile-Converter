@@ -268,6 +268,8 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\ObjectDatabase\Mod\BlockListLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\BlocksAndPartsMod.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\DecalsetListReader.cpp" />
+    <ClCompile Include="Code\ObjectDatabase\Mod\DecalsetReader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\GameDataMod.cpp" />
     <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp" />
@@ -282,6 +284,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\Tile\Object\Asset.cpp" />
     <ClCompile Include="Code\Tile\Object\Block.cpp" />
     <ClCompile Include="Code\Tile\Object\Blueprint.cpp" />
+    <ClCompile Include="Code\Tile\Object\Decal.cpp" />
     <ClCompile Include="Code\Tile\Object\Harvestable.cpp" />
     <ClCompile Include="Code\Tile\Object\Joint.cpp" />
     <ClCompile Include="Code\Tile\Object\Part.cpp" />
@@ -319,6 +322,8 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClInclude Include="Code\ObjectDatabase\Mod\BlockListLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\BlocksAndPartsMod.h" />
     <ClInclude Include="Code\ObjectDatabase\Mod\ClutterListLoader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\DecalsetListReader.hpp" />
+    <ClInclude Include="Code\ObjectDatabase\Mod\DecalsetReader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp" />
     <ClInclude Include="Code\ObjectDatabase\Mod\GameDataMod.h" />
     <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp" />
@@ -345,6 +350,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClInclude Include="Code\Tile\Object\Asset.hpp" />
     <ClInclude Include="Code\Tile\Object\Block.hpp" />
     <ClInclude Include="Code\Tile\Object\Blueprint.hpp" />
+    <ClInclude Include="Code\Tile\Object\Decal.hpp" />
     <ClInclude Include="Code\Tile\Object\GroundTerrainData.hpp" />
     <ClInclude Include="Code\Tile\Object\Harvestable.hpp" />
     <ClInclude Include="Code\Tile\Object\Joint.hpp" />

@@ -12,6 +12,6 @@ public:
 	TerrainAssetsMod() = default;
 	~TerrainAssetsMod() = default;
 
-	ModType Type() const override;
+	inline ModType Type() const override { return ModType::TerrainAssets; }
 	void LoadObjectDatabase() override;
 };

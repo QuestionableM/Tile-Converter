@@ -11,6 +11,6 @@ public:
 	BlocksAndPartsMod() = default;
 	~BlocksAndPartsMod() = default;
 
-	ModType Type() const override;
+	inline ModType Type() const override { return ModType::BlocksAndParts; }
 	void LoadObjectDatabase() override;
 };

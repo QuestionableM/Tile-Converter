@@ -274,6 +274,9 @@ public:
 			//Read a random 4 byte value
 			stream.ReadInt();
 
+			const DecalData* v_decalData = Mod::GetGlobalDecal(v_uuid);
+			if (!v_decalData) continue;
+
 			DebugOutL("Prefab Decal[", a, "]:");
 			DebugOutL("\tPos: ", v_pos.x, ", ", v_pos.y, ", ", v_pos.z);
 			DebugOutL("\tQuat: ", v_quat.x, ", ", v_quat.y, ", ", v_quat.z, ", ", v_quat.w);

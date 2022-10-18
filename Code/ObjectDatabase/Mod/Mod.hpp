@@ -1,11 +1,12 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
+#include "ObjectDatabase\ObjectData.hpp"
 
-#include "Utils/Uuid.hpp"
-#include "Utils/Json.hpp"
-#include "ObjectDatabase/ObjectData.hpp"
+#include "Utils\Uuid.hpp"
+#include "Utils\Json.hpp"
+
+#include <unordered_map>
+#include <string>
 
 enum class ModType
 {
@@ -22,25 +23,33 @@ class Mod
 	friend class PartListLoader;
 	friend class BlockListLoader;
 	friend class ClutterListLoader;
+	friend class DecalsetListReader;
+	friend class DecalsetReader;
 
-	using ModMap = std::unordered_map<SMUuid, Mod*>;
+	template<class T>
+	using UuidObjectMap = std::unordered_map<SMUuid, T>;
 
-	inline static ModMap ModStorage = {};
+	template<class T>
+	using UuidObjMapIterator = typename UuidObjectMap<T>::const_iterator;
+
+	inline static UuidObjectMap<Mod*> ModStorage = {};
 	inline static std::vector<Mod*> ModVector = {};
 
-	inline static std::unordered_map<SMUuid, BlockData*> BlockStorage             = {};
-	inline static std::unordered_map<SMUuid, PartData*> PartStorage               = {};
-	inline static std::unordered_map<SMUuid, AssetData*> AssetStorage             = {};
-	inline static std::unordered_map<SMUuid, HarvestableData*> HarvestableStorage = {};
+	inline static UuidObjectMap<BlockData*> BlockStorage             = {};
+	inline static UuidObjectMap<PartData*> PartStorage               = {};
+	inline static UuidObjectMap<AssetData*> AssetStorage             = {};
+	inline static UuidObjectMap<HarvestableData*> HarvestableStorage = {};
+	inline static UuidObjectMap<DecalData*> DecalStorage             = {};
 
-	inline static std::unordered_map<SMUuid, ClutterData*> ClutterStorage = {};
+	inline static UuidObjectMap<ClutterData*> ClutterStorage = {};
 	inline static std::vector<ClutterData*> ClutterVector                 = {};
 
-	std::unordered_map<SMUuid, BlockData*> m_Blocks = {};
-	std::unordered_map<SMUuid, PartData*> m_Parts   = {};
-	std::unordered_map<SMUuid, AssetData*> m_Assets = {};
-	std::unordered_map<SMUuid, HarvestableData*> m_Harvestables = {};
-	std::unordered_map<SMUuid, ClutterData*> m_Clutter = {};
+	UuidObjectMap<BlockData*> m_Blocks = {};
+	UuidObjectMap<PartData*> m_Parts   = {};
+	UuidObjectMap<AssetData*> m_Assets = {};
+	UuidObjectMap<HarvestableData*> m_Harvestables = {};
+	UuidObjectMap<DecalData*> m_Decals = {};
+	UuidObjectMap<ClutterData*> m_Clutter = {};
 
 protected:
 	SMUuid m_Uuid;
@@ -63,11 +72,17 @@ public:
 	static PartData* GetGlobalPart(const SMUuid& uuid);
 	static AssetData* GetGlobalAsset(const SMUuid& uuid);
 	static HarvestableData* GetGlobalHarvestbale(const SMUuid& uuid);
+	static DecalData* GetGlobalDecal(const SMUuid& uuid);
 	static ClutterData* GetGlobalClutter(const SMUuid& uuid);
 	static ClutterData* GetGlobalClutterById(const std::size_t& idx);
 
-	static std::size_t GetAmountOfObjects();
-	static std::size_t GetAmountOfMods();
+	inline static std::size_t GetAmountOfObjects()
+	{
+		return (Mod::BlockStorage.size() + Mod::PartStorage.size() + Mod::AssetStorage.size()
+			+ Mod::HarvestableStorage.size() + Mod::ClutterStorage.size() + Mod::DecalStorage.size());
+	}
+
+	inline static std::size_t GetAmountOfMods() { return Mod::ModVector.size(); }
 
 	void LoadFile(const std::wstring& path);
 

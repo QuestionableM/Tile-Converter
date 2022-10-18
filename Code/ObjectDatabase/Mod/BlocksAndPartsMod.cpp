@@ -45,11 +45,6 @@ void BlocksAndPartsMod::LoadShapeSetDatabase(const std::wstring& path, Mod* pMod
 	}
 }
 
-ModType BlocksAndPartsMod::Type() const
-{
-	return ModType::BlocksAndParts;
-}
-
 void BlocksAndPartsMod::LoadObjectDatabase()
 {
 	KeywordReplacer::SetModData(m_Directory, m_Uuid);

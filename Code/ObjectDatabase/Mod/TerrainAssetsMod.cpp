@@ -64,11 +64,6 @@ void TerrainAssetsMod::LoadAssetSetDatabase(const std::wstring& path, Mod* pMod)
 	}
 }
 
-ModType TerrainAssetsMod::Type() const
-{
-	return ModType::TerrainAssets;
-}
-
 void TerrainAssetsMod::LoadObjectDatabase()
 {
 	KeywordReplacer::SetModData(m_Directory, m_Uuid);

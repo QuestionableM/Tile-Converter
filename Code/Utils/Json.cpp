@@ -1,6 +1,7 @@
 #include "Json.hpp"
 
-#include "Utils/File.hpp"
+#include "Utils\String.hpp"
+#include "Utils\File.hpp"
 #include "Console.hpp"
 
 #include <fstream>
