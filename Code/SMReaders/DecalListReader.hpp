@@ -84,6 +84,13 @@ public:
 
 			const DecalData* v_decalData = Mod::GetGlobalDecal(v_uuid);
 			if (!v_decalData) continue;
+
+			Decal* v_newDecal = new Decal(v_decalData, v_color);
+			v_newDecal->SetPosition(v_pos);
+			v_newDecal->SetRotation(v_quat);
+			v_newDecal->SetSize(v_size);
+
+			part->AddObject(v_newDecal);
 		}
 
 		return index;

@@ -19,16 +19,17 @@ struct ObjectTexData
 
 struct Model;
 
-enum class EntityType : unsigned char
+enum class EntityType : unsigned short
 {
-	Harvestable = 0b00000001,
-	Blueprint   = 0b00000010,
-	Clutter     = 0b00000100,
-	Prefab      = 0b00001000,
-	Asset       = 0b00010000,
-	Block       = 0b00100000,
-	Joint       = 0b01000000,
-	Part        = 0b10000000,
+	Harvestable = (1 << 0),
+	Blueprint   = (1 << 1),
+	Clutter     = (1 << 2),
+	Prefab      = (1 << 3),
+	Asset       = (1 << 4),
+	Block       = (1 << 5),
+	Joint       = (1 << 6),
+	Part        = (1 << 7),
+	Decal       = (1 << 8),
 
 	//Is not used anywhere except the GroundTerrainData class
 	GroundTerrain = 0

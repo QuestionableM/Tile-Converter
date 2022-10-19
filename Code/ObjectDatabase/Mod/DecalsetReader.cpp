@@ -55,6 +55,8 @@ void DecalsetReader::LoadFromFile(const std::wstring& path, Mod* mod)
 			continue;
 		}
 
+		v_texList.material = String::ToWide(v_decalMaterial.get_ref<const std::string&>());
+
 		DecalData* v_newDecal = new DecalData();
 		v_newDecal->m_name = v_curDecal.key();
 		v_newDecal->m_uuid = v_decalUuid;

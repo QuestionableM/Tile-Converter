@@ -37,7 +37,7 @@ public:
 	inline void AddObject(TileEntity* object)
 	{
 		//Check if the object is valid (Valid objects: Harvestable, Blueprint, Prefab, Asset)
-		assert((static_cast<unsigned char>(object->Type()) & 0b00011011) != 0);
+		assert((static_cast<unsigned char>(object->Type()) & 0b100011011) != 0);
 
 		this->Objects.push_back(object);
 	}
