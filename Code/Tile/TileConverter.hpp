@@ -21,6 +21,7 @@ public:
 	inline static bool ExportPrefabs      = true;
 	inline static bool ExportBlueprints   = true;
 	inline static bool ExportHarvestables = true;
+	inline static bool ExportDecals       = false;
 };
 
 class ConvertError

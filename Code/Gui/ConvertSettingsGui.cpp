@@ -29,6 +29,7 @@ namespace TileConverter
 		this->ExportPrefabs_CB->Checked      = ConvertSettings::ExportPrefabs;
 		this->ExportBlueprints_CB->Checked   = ConvertSettings::ExportBlueprints;
 		this->ExportHarvestables_CB->Checked = ConvertSettings::ExportHarvestables;
+		this->ExportDecals_CB->Checked       = ConvertSettings::ExportDecals;
 
 		this->OutputName_TB->Text = gcnew System::String(tile_name.c_str());
 	}
@@ -48,7 +49,7 @@ namespace TileConverter
 		const std::wstring tile_name = msclr::interop::marshal_as<std::wstring>(this->OutputName_TB->Text);
 		
 		std::error_code ec;
-		bool t_exists = fs::exists(L"./" + tile_name, ec);
+		const bool t_exists = fs::exists(L"./" + tile_name, ec);
 
 		if (ec)
 		{

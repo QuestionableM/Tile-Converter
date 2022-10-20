@@ -21,7 +21,7 @@ public:
 
 	inline static void Read(CellHeader* header, MemoryWrapper& reader, TilePart* part, ConvertError& cError)
 	{
-		if (cError) return;
+		if (cError || !ConvertSettings::ExportDecals) return;
 
 		if (header->decalCount != 0)
 		{

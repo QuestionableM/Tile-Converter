@@ -27,6 +27,7 @@ namespace TileConverter
 		System::Windows::Forms::CheckBox^ ExportPrefabs_CB;
 		System::Windows::Forms::CheckBox^ ExportBlueprints_CB;
 		System::Windows::Forms::CheckBox^ ExportHarvestables_CB;
+		System::Windows::Forms::CheckBox^ ExportDecals_CB;
 
 	private:
 		System::Windows::Forms::GroupBox^ ModelSettings_GB;
@@ -48,12 +49,13 @@ namespace TileConverter
 			this->ExportAssets_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportClutter_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->DataSettings_GB = (gcnew System::Windows::Forms::GroupBox());
+			this->Export8kGroundTextures_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportGndTextures_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportNormals_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportMaterials_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportUvs_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->Convert_BTN = (gcnew System::Windows::Forms::Button());
-			this->Export8kGroundTextures_CB = (gcnew System::Windows::Forms::CheckBox());
+			this->ExportDecals_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->OutName_GB->SuspendLayout();
 			this->ModelSettings_GB->SuspendLayout();
 			this->DataSettings_GB->SuspendLayout();
@@ -89,6 +91,7 @@ namespace TileConverter
 			// 
 			this->ModelSettings_GB->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->ModelSettings_GB->Controls->Add(this->ExportDecals_CB);
 			this->ModelSettings_GB->Controls->Add(this->ExportHarvestables_CB);
 			this->ModelSettings_GB->Controls->Add(this->ExportBlueprints_CB);
 			this->ModelSettings_GB->Controls->Add(this->ExportPrefabs_CB);
@@ -96,7 +99,7 @@ namespace TileConverter
 			this->ModelSettings_GB->Controls->Add(this->ExportClutter_CB);
 			this->ModelSettings_GB->Location = System::Drawing::Point(12, 66);
 			this->ModelSettings_GB->Name = L"ModelSettings_GB";
-			this->ModelSettings_GB->Size = System::Drawing::Size(174, 150);
+			this->ModelSettings_GB->Size = System::Drawing::Size(174, 175);
 			this->ModelSettings_GB->TabIndex = 1;
 			this->ModelSettings_GB->TabStop = false;
 			this->ModelSettings_GB->Text = L"Model Settings";
@@ -170,12 +173,23 @@ namespace TileConverter
 			this->DataSettings_GB->Controls->Add(this->ExportNormals_CB);
 			this->DataSettings_GB->Controls->Add(this->ExportMaterials_CB);
 			this->DataSettings_GB->Controls->Add(this->ExportUvs_CB);
-			this->DataSettings_GB->Location = System::Drawing::Point(12, 222);
+			this->DataSettings_GB->Location = System::Drawing::Point(12, 247);
 			this->DataSettings_GB->Name = L"DataSettings_GB";
 			this->DataSettings_GB->Size = System::Drawing::Size(174, 149);
 			this->DataSettings_GB->TabIndex = 2;
 			this->DataSettings_GB->TabStop = false;
 			this->DataSettings_GB->Text = L"Data Settings";
+			// 
+			// Export8kGroundTextures_CB
+			// 
+			this->Export8kGroundTextures_CB->AutoSize = true;
+			this->Export8kGroundTextures_CB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->Export8kGroundTextures_CB->Location = System::Drawing::Point(6, 123);
+			this->Export8kGroundTextures_CB->Name = L"Export8kGroundTextures_CB";
+			this->Export8kGroundTextures_CB->Size = System::Drawing::Size(142, 20);
+			this->Export8kGroundTextures_CB->TabIndex = 6;
+			this->Export8kGroundTextures_CB->Text = L"8k Ground Textures";
+			this->Export8kGroundTextures_CB->UseVisualStyleBackColor = true;
 			// 
 			// ExportGndTextures_CB
 			// 
@@ -234,7 +248,7 @@ namespace TileConverter
 			this->Convert_BTN->Enabled = false;
 			this->Convert_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Convert_BTN->Location = System::Drawing::Point(12, 377);
+			this->Convert_BTN->Location = System::Drawing::Point(12, 402);
 			this->Convert_BTN->Name = L"Convert_BTN";
 			this->Convert_BTN->Size = System::Drawing::Size(174, 29);
 			this->Convert_BTN->TabIndex = 3;
@@ -242,22 +256,22 @@ namespace TileConverter
 			this->Convert_BTN->UseVisualStyleBackColor = true;
 			this->Convert_BTN->Click += gcnew System::EventHandler(this, &ConvertSettingsGui::Convert_BTN_Click);
 			// 
-			// Export8kGroundTextures_CB
+			// ExportDecals_CB
 			// 
-			this->Export8kGroundTextures_CB->AutoSize = true;
-			this->Export8kGroundTextures_CB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
-			this->Export8kGroundTextures_CB->Location = System::Drawing::Point(6, 123);
-			this->Export8kGroundTextures_CB->Name = L"Export8kGroundTextures_CB";
-			this->Export8kGroundTextures_CB->Size = System::Drawing::Size(142, 20);
-			this->Export8kGroundTextures_CB->TabIndex = 6;
-			this->Export8kGroundTextures_CB->Text = L"8k Ground Textures";
-			this->Export8kGroundTextures_CB->UseVisualStyleBackColor = true;
+			this->ExportDecals_CB->AutoSize = true;
+			this->ExportDecals_CB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->ExportDecals_CB->Location = System::Drawing::Point(6, 149);
+			this->ExportDecals_CB->Name = L"ExportDecals_CB";
+			this->ExportDecals_CB->Size = System::Drawing::Size(110, 20);
+			this->ExportDecals_CB->TabIndex = 5;
+			this->ExportDecals_CB->Text = L"Export Decals";
+			this->ExportDecals_CB->UseVisualStyleBackColor = true;
 			// 
 			// ConvertSettingsGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(198, 418);
+			this->ClientSize = System::Drawing::Size(198, 443);
 			this->Controls->Add(this->Convert_BTN);
 			this->Controls->Add(this->DataSettings_GB);
 			this->Controls->Add(this->ModelSettings_GB);

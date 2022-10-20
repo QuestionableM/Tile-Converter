@@ -49,7 +49,7 @@ namespace TileConverter
 
 		if (DatabaseConfig::GamePath.empty() || !File::Exists(DatabaseConfig::GamePath))
 		{
-			WForms::DialogResult dr = WForms::MessageBox::Show(
+			const WForms::DialogResult dr = WForms::MessageBox::Show(
 				"The program couldn't find a path to Scrap Mechanic.\n\nWould you like to specify the path to Scrap Mechanic by yourself?",
 				"No Game Path",
 				WForms::MessageBoxButtons::YesNo,
@@ -158,7 +158,7 @@ namespace TileConverter
 		{
 			this->ChangeGuiState(true, true);
 
-			System::Array^ thread_data = gcnew cli::array<System::Object^>(12);
+			System::Array^ thread_data = gcnew cli::array<System::Object^>(13);
 
 			thread_data->SetValue(this->TilePath_TB->Text, static_cast<int>(0));
 			thread_data->SetValue(conv_settings->OutputName_TB->Text, static_cast<int>(1));
@@ -174,6 +174,7 @@ namespace TileConverter
 			thread_data->SetValue(conv_settings->ExportPrefabs_CB->Checked,      static_cast<int>(9));
 			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked,   static_cast<int>(10));
 			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, static_cast<int>(11));
+			thread_data->SetValue(conv_settings->ExportDecals_CB->Checked,       static_cast<int>(12));
 
 			this->ProgressUpdater->Start();
 			this->TileConverter_BW->RunWorkerAsync(thread_data);
@@ -198,6 +199,7 @@ namespace TileConverter
 		const bool export_prefabs      = safe_cast<bool>(tData->GetValue(static_cast<int>(9)));
 		const bool export_blueprints   = safe_cast<bool>(tData->GetValue(static_cast<int>(10)));
 		const bool export_harvestables = safe_cast<bool>(tData->GetValue(static_cast<int>(11)));
+		const bool export_decals       = safe_cast<bool>(tData->GetValue(static_cast<int>(12)));
 
 		ConvertSettings::ExportUvs              = export_uvs;
 		ConvertSettings::ExportNormals          = export_normals;
@@ -210,6 +212,7 @@ namespace TileConverter
 		ConvertSettings::ExportPrefabs      = export_prefabs;
 		ConvertSettings::ExportBlueprints   = export_blueprints;
 		ConvertSettings::ExportHarvestables = export_harvestables;
+		ConvertSettings::ExportDecals       = export_decals;
 
 		const std::wstring tile_path_wstr = msclr::interop::marshal_as<std::wstring>(tile_path);
 		const std::wstring tile_name_wstr = msclr::interop::marshal_as<std::wstring>(tile_name);
@@ -221,13 +224,13 @@ namespace TileConverter
 		if (cError)
 		{
 			result_data = gcnew cli::array<System::Object^>(2);
-			result_data->SetValue(true, (int)0);
-			result_data->SetValue(gcnew System::String(cError.GetErrorMsg().c_str()), (int)1);
+			result_data->SetValue(true, static_cast<int>(0));
+			result_data->SetValue(gcnew System::String(cError.GetErrorMsg().c_str()), static_cast<int>(1));
 		}
 		else
 		{
 			result_data = gcnew cli::array<System::Object^>(1);
-			result_data->SetValue(false, (int)0);
+			result_data->SetValue(false, static_cast<int>(0));
 		}
 		
 		e->Result = result_data;
