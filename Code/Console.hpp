@@ -9,50 +9,48 @@
 
 class ConColor
 {
-	WORD color_data = 0;
+public:
+	inline constexpr operator WORD() const noexcept { return color_data; }
 
+	inline constexpr ConColor operator|(const ConColor& rhs) noexcept
+	{
+		ConColor v_output;
+		v_output.color_data = this->color_data | rhs.color_data;
+
+		return v_output;
+	}
+
+private:
 	constexpr ConColor() noexcept = default;
 
 	friend constexpr ConColor operator"" _bg(unsigned long long val) noexcept;
 	friend constexpr ConColor operator"" _fg(unsigned long long val) noexcept;
 
-public:
-	inline constexpr operator WORD() const noexcept
-	{
-		return color_data;
-	}
-
-	inline constexpr ConColor operator|(const ConColor& rhs) noexcept
-	{
-		ConColor lOutput;
-		lOutput.color_data = this->color_data | rhs.color_data;
-
-		return lOutput;
-	}
+	WORD color_data = 0;
 };
 
 inline constexpr ConColor operator"" _bg(unsigned long long val) noexcept
 {
-	ConColor lOutput;
+	ConColor v_output;
 
-	if ((val & 0b1000) == 0b1000) lOutput.color_data |= BACKGROUND_RED;
-	if ((val & 0b0100) == 0b0100) lOutput.color_data |= BACKGROUND_GREEN;
-	if ((val & 0b0010) == 0b0010) lOutput.color_data |= BACKGROUND_BLUE;
-	if ((val & 0b0001) == 0b0001) lOutput.color_data |= BACKGROUND_INTENSITY;
+	if ((val & 0b1000) == 0b1000) v_output.color_data |= BACKGROUND_RED;
+	if ((val & 0b0100) == 0b0100) v_output.color_data |= BACKGROUND_GREEN;
+	if ((val & 0b0010) == 0b0010) v_output.color_data |= BACKGROUND_BLUE;
+	if ((val & 0b0001) == 0b0001) v_output.color_data |= BACKGROUND_INTENSITY;
 
-	return lOutput;
+	return v_output;
 }
 
 inline constexpr ConColor operator"" _fg(unsigned long long val) noexcept
 {
-	ConColor lOutput;
+	ConColor v_output;
 
-	if ((val & 0b1000) == 0b1000) lOutput.color_data |= FOREGROUND_RED;
-	if ((val & 0b0100) == 0b0100) lOutput.color_data |= FOREGROUND_GREEN;
-	if ((val & 0b0010) == 0b0010) lOutput.color_data |= FOREGROUND_BLUE;
-	if ((val & 0b0001) == 0b0001) lOutput.color_data |= FOREGROUND_INTENSITY;
+	if ((val & 0b1000) == 0b1000) v_output.color_data |= FOREGROUND_RED;
+	if ((val & 0b0100) == 0b0100) v_output.color_data |= FOREGROUND_GREEN;
+	if ((val & 0b0010) == 0b0010) v_output.color_data |= FOREGROUND_BLUE;
+	if ((val & 0b0001) == 0b0001) v_output.color_data |= FOREGROUND_INTENSITY;
 
-	return lOutput;
+	return v_output;
 }
 
 class __ConsoleOutputHandler;
@@ -62,6 +60,35 @@ class __ConsoleOutputHandler;
 class DebugConsole
 {
 	friend __ConsoleOutputHandler;
+
+public:
+	inline static bool Create(const wchar_t* title)
+	{
+		if (DebugConsole::Handle != NULL)
+			return false;
+
+		if (!AllocConsole())
+			return false;
+
+		SetConsoleOutputCP(CP_UTF8);
+		SetConsoleTitleW(title);
+
+		DebugConsole::Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		return true;
+	}
+
+	inline static void Destroy()
+	{
+		if (DebugConsole::Handle == NULL) return;
+
+		FreeConsole();
+		DebugConsole::Handle = NULL;
+	}
+
+	static __ConsoleOutputHandler Out;
+
+private:
 	static HANDLE Handle;
 
 	inline static void Output(const char* c_str)
@@ -118,32 +145,6 @@ class DebugConsole
 		}
 		DebugConsole::Output(" }");
 	}
-
-public:
-	inline static bool Create(const wchar_t* title)
-	{
-		if (DebugConsole::Handle != NULL) return false;
-
-		BOOL is_created = AllocConsole();
-		if (!is_created) return false;
-
-		SetConsoleOutputCP(CP_UTF8);
-		SetConsoleTitleW(title);
-
-		DebugConsole::Handle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-		return true;
-	}
-
-	inline static void Destroy()
-	{
-		if (DebugConsole::Handle == NULL) return;
-
-		FreeConsole();
-		DebugConsole::Handle = NULL;
-	}
-
-	static __ConsoleOutputHandler Out;
 };
 
 class __ConsoleOutputHandler
@@ -173,9 +174,6 @@ public:
 	__ConsoleOutputHandler() = default;
 	~__ConsoleOutputHandler() = default;
 };
-
-HANDLE DebugConsole::Handle = NULL;
-__ConsoleOutputHandler DebugConsole::Out = __ConsoleOutputHandler();
 
 #define CreateDebugConsole(ConName) DebugConsole::Create(ConName)
 #define DebugOutL(...)              DebugConsole::Out(__VA_ARGS__, 0b1110_fg, "\n")

@@ -258,6 +258,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Console.cpp" />
     <ClCompile Include="Code\Gui\AboutGui.cpp" />
     <ClCompile Include="Code\Gui\ConvertSettingsGui.cpp" />
     <ClCompile Include="Code\Gui\MainGui.cpp" />
@@ -299,7 +300,6 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\Tile\TilePart.cpp" />
     <ClCompile Include="Code\Utils\File.cpp" />
     <ClCompile Include="Code\Utils\Json.cpp" />
-    <ClCompile Include="Code\Utils\String.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />

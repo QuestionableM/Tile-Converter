@@ -17,11 +17,11 @@ std::vector<Byte> File::ReadFileBytes(const std::wstring& path)
 	if (input_file.is_open())
 	{
 		input_file.seekg(0, std::ios::end);
-		const std::size_t file_size = (std::size_t)input_file.tellg();
+		const std::size_t file_size = static_cast<std::size_t>(input_file.tellg());
 		input_file.seekg(0, std::ios::beg);
 
 		file_bytes.resize(file_size);
-		input_file.read((char*)file_bytes.data(), file_size);
+		input_file.read(reinterpret_cast<char*>(file_bytes.data()), file_size);
 
 		input_file.close();
 	}
@@ -36,7 +36,7 @@ bool File::ReadToString(const std::wstring& path, std::string& r_output)
 		return false;
 
 	input_file.seekg(0, std::ios::end);
-	const std::size_t file_size = (std::size_t)input_file.tellg();
+	const std::size_t file_size = static_cast<std::size_t>(input_file.tellg());
 	input_file.seekg(0, std::ios::beg);
 
 	r_output.resize(file_size);
