@@ -10,7 +10,9 @@
 class Asset : public TileEntity
 {
 	class AssetData* pParent;
-	std::unordered_map<std::wstring /*material*/, Color> mColors;
+
+	using ColorMap = std::unordered_map<std::wstring, Color>;
+	ColorMap m_Colors;
 
 public:
 	inline Asset(AssetData* pParent, Model* pModel, const std::unordered_map<std::wstring, Color>& color_map)
@@ -18,7 +20,7 @@ public:
 		this->pParent = pParent;
 		this->uuid = pParent->Uuid;
 		this->pModel = pModel;
-		this->mColors = color_map;
+		this->m_Colors = color_map;
 	}
 
 	Asset(const Asset&) = delete;
@@ -26,7 +28,7 @@ public:
 	~Asset() = default;
 
 	Color GetColor(const std::wstring& color) const;
-	inline std::unordered_map<std::wstring, Color> GetMaterials() const { return this->mColors; }
+	inline std::unordered_map<std::wstring, Color> GetMaterials() const { return this->m_Colors; }
 
 	inline EntityType Type() const override { return EntityType::Asset; }
 	std::string GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const override;

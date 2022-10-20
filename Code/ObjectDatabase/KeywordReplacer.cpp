@@ -15,45 +15,47 @@ void KeywordReplacer::CreateKey(std::wstring& key, std::wstring& replacement)
 
 void KeywordReplacer::SetReplacement(const std::wstring& key, const std::wstring& replacement)
 {
-	std::wstring mLowerKey = key;
-	std::wstring mLowerVal = replacement;
+	std::wstring v_lowerKey = key;
+	std::wstring v_lowerVal = replacement;
 
-	KeywordReplacer::CreateKey(mLowerKey, mLowerVal);
+	KeywordReplacer::CreateKey(v_lowerKey, v_lowerVal);
 
-	if (m_KeyReplacements.find(mLowerKey) != m_KeyReplacements.end())
+	const StringMap::iterator v_iter = m_KeyReplacements.find(v_lowerKey);
+	if (v_iter != m_KeyReplacements.end())
 	{
-		m_KeyReplacements.at(mLowerKey) = mLowerVal;
+		v_iter->second = v_lowerVal;
 		return;
 	}
 
-	m_KeyReplacements.insert(std::make_pair(mLowerKey, mLowerVal));
+	m_KeyReplacements.insert(std::make_pair(v_lowerKey, v_lowerVal));
 }
 
 void KeywordReplacer::SetModData(const std::wstring& path, const SMUuid& uuid)
 {
-	const std::wstring mContentKey = String::ToWide("$content_" + uuid.ToString());
+	const std::wstring v_contentKey = L"$content_" + uuid.ToWstring();
 
-	KeywordReplacer::SetReplacement(mContentKey, path);
-	KeywordReplacer::SetReplacement(L"$mod_data", path);
+	KeywordReplacer::SetReplacement(v_contentKey    , path);
+	KeywordReplacer::SetReplacement(L"$mod_data"    , path);
 	KeywordReplacer::SetReplacement(L"$content_data", path);
 }
 
 void KeywordReplacer::UpgradeResource(const std::wstring& mPath, std::wstring& mOutput)
 {
-	std::wstring mLowerPath = mPath;
+	std::wstring v_lowerPath = mPath;
 
 	{
-		String::ToLowerR(mLowerPath);
-		String::ReplaceAllR(mLowerPath, L'\\', L'/');
+		String::ToLowerR(v_lowerPath);
+		String::ReplaceAllR(v_lowerPath, L'\\', L'/');
 	}
 
-	if (m_ResourceUpgrades.find(mLowerPath) != m_ResourceUpgrades.end())
+	const StringMap::const_iterator v_iter = m_ResourceUpgrades.find(v_lowerPath);
+	if (v_iter != m_ResourceUpgrades.end())
 	{
-		mOutput = m_ResourceUpgrades.at(mLowerPath);
+		mOutput = v_iter->second;
 	}
 	else
 	{
-		mOutput = mLowerPath;
+		mOutput = v_lowerPath;
 	}
 }
 
@@ -91,32 +93,34 @@ void KeywordReplacer::LoadResourceUpgrades(const std::wstring& path)
 
 std::wstring KeywordReplacer::ReplaceKey(const std::wstring& path)
 {
-	std::wstring mOutput;
-	KeywordReplacer::UpgradeResource(path, mOutput);
+	std::wstring v_output;
+	KeywordReplacer::UpgradeResource(path, v_output);
 
-	const std::size_t mKeyIdx = mOutput.find_first_of(L'/');
-	if (mKeyIdx != std::wstring::npos)
+	const std::size_t v_key_idx = v_output.find_first_of(L'/');
+	if (v_key_idx != std::wstring::npos)
 	{
-		const std::wstring mKeyChunk = mOutput.substr(0, mKeyIdx);
+		const std::wstring v_key_chunk = v_output.substr(0, v_key_idx);
 
-		if (m_KeyReplacements.find(mKeyChunk) != m_KeyReplacements.end())
-			return (m_KeyReplacements.at(mKeyChunk) + mOutput.substr(mKeyIdx));
+		const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
+		if (v_iter != m_KeyReplacements.end())
+			return (v_iter->second + v_output.substr(v_key_idx));
 	}
 
-	return mOutput;
+	return v_output;
 }
 
 void KeywordReplacer::ReplaceKeyR(std::wstring& path)
 {
 	KeywordReplacer::UpgradeResource(path, path);
 
-	const std::size_t mKeyIdx = path.find_first_of(L'/');
-	if (mKeyIdx != std::wstring::npos)
+	const std::size_t v_key_idx = path.find_first_of(L'/');
+	if (v_key_idx != std::wstring::npos)
 	{
-		const std::wstring mKeyChunk = path.substr(0, mKeyIdx);
+		const std::wstring v_key_chunk = path.substr(0, v_key_idx);
 
-		if (m_KeyReplacements.find(mKeyChunk) != m_KeyReplacements.end())
-			path = (m_KeyReplacements.at(mKeyChunk) + path.substr(mKeyIdx));
+		const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
+		if (v_iter != m_KeyReplacements.end())
+			path = (v_iter->second + path.substr(v_key_idx));
 	}
 }
 

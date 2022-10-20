@@ -11,15 +11,14 @@
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
 	std::vector<glm::vec3> mTranslatedVertices = {};
-	std::vector<glm::vec3> mTranslatedNormals = {};
+	std::vector<glm::vec3> mTranslatedNormals  = {};
 
 	mTranslatedVertices.resize(this->vertices.size());
-	mTranslatedNormals.resize  (this->normals.size());
+	mTranslatedNormals.resize (this->normals.size());
 
 	for (std::size_t a = 0; a < this->vertices.size(); a++)
 	{
-		const glm::vec3& vertex = this->vertices[a];
-		const glm::vec3 pVertPos = model_mat * glm::vec4(vertex, 1.0f);
+		const glm::vec3 pVertPos = model_mat * glm::vec4(this->vertices[a], 1.0f);
 
 		mTranslatedVertices[a] = pVertPos;
 
@@ -56,8 +55,7 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 		for (std::size_t a = 0; a < this->normals.size(); a++)
 		{
-			const glm::vec3& normal = this->normals[a];
-			const glm::vec3 pNormal = rot_matrix * glm::vec4(normal, 1.0f);
+			const glm::vec3 pNormal = rot_matrix * glm::vec4(this->normals[a], 1.0f);
 
 			mTranslatedNormals[a] = pNormal;
 
@@ -92,8 +90,9 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 				const VertexData& d_idx = vert_vec[b];
 
 				const glm::vec3& l_Vertex = mTranslatedVertices[d_idx.m_Vert];
-				if (offset.VertexMap.find(l_Vertex) != offset.VertexMap.end())
-					_f_str.append(" " + std::to_string(offset.VertexMap.at(l_Vertex) + 1));
+				const WriterOffsetData::Vec3Iterator v_vert_iter = offset.VertexMap.find(l_Vertex);
+				if (v_vert_iter != offset.VertexMap.end())
+					_f_str.append(" " + std::to_string(v_vert_iter->second + 1));
 
 				if (!pSubMesh->has_uvs && !pSubMesh->has_normals) continue;
 
@@ -101,16 +100,17 @@ void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, st
 
 				if (pSubMesh->has_uvs)
 				{
-					const glm::vec2& l_Uv = this->uvs[d_idx.m_Uv];
-					if (offset.UvMap.find(l_Uv) != offset.UvMap.end())
-						_f_str.append(std::to_string(offset.UvMap.at(l_Uv) + 1));
+					const WriterOffsetData::Vec2Iterator v_uv_iter = offset.UvMap.find(this->uvs[d_idx.m_Uv]);
+					if (v_uv_iter != offset.UvMap.end())
+						_f_str.append(std::to_string(v_uv_iter->second + 1));
 				}
 
 				if (pSubMesh->has_normals)
 				{
 					const glm::vec3& l_Normal = mTranslatedNormals[d_idx.m_Norm];
-					if (offset.NormalMap.find(l_Normal) != offset.NormalMap.end())
-						_f_str.append("/" + std::to_string(offset.NormalMap.at(l_Normal) + 1));
+					const WriterOffsetData::Vec3Iterator v_norm_iter = offset.NormalMap.find(l_Normal);
+					if (v_norm_iter != offset.NormalMap.end())
+						_f_str.append("/" + std::to_string(v_norm_iter->second + 1));
 				}
 			}
 
@@ -222,8 +222,9 @@ void ModelStorage::LoadSubMeshes(const aiScene*& scene, Model*& model)
 
 Model* ModelStorage::LoadModel(const std::wstring& path)
 {
-	if (CachedModels.find(path) != CachedModels.end())
-		return CachedModels.at(path);
+	const ModelMap::const_iterator v_iter = ModelStorage::CachedModels.find(path);
+	if (v_iter != ModelStorage::CachedModels.end())
+		return v_iter->second;
 
 	const aiScene* ModelScene = ModelStorage::LoadScene(path);
 	if (ModelScene && ModelScene->HasMeshes())

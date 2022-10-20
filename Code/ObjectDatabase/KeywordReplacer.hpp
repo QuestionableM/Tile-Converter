@@ -5,8 +5,10 @@
 
 class KeywordReplacer
 {
-	inline static std::unordered_map<std::wstring, std::wstring> m_KeyReplacements = {};
-	inline static std::unordered_map<std::wstring, std::wstring> m_ResourceUpgrades = {};
+	using StringMap = std::unordered_map<std::wstring, std::wstring>;
+
+	inline static StringMap m_KeyReplacements  = {};
+	inline static StringMap m_ResourceUpgrades = {};
 
 	static void CreateKey(std::wstring& key, std::wstring& replacement);
 public:

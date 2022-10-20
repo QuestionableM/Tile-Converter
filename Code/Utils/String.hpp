@@ -123,7 +123,7 @@ namespace String
 	inline bool ReadRegistryKey(const std::wstring& main_key, const std::wstring& sub_key, std::wstring& r_output)
 	{
 		wchar_t v_data_buf[255] = {};
-		DWORD v_buf_sz = 8196;
+		DWORD v_buf_sz = sizeof(v_data_buf);
 
 		const LSTATUS v_status = RegGetValueW(
 			HKEY_CURRENT_USER,

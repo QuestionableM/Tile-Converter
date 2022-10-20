@@ -6,11 +6,17 @@
 
 Color Asset::GetColor(const std::wstring& color) const
 {
-	if (mColors.find(color) != mColors.end())
-		return mColors.at(color);
+	{
+		const ColorMap::const_iterator v_iter = m_Colors.find(color);
+		if (v_iter != m_Colors.end())
+			return v_iter->second;
+	}
 
-	if (pParent->DefaultColors.find(color) != pParent->DefaultColors.end())
-		return pParent->DefaultColors.at(color);
+	{
+		const ColorMap::const_iterator v_iter = pParent->DefaultColors.find(color);
+		if (v_iter != pParent->DefaultColors.end())
+			return v_iter->second;
+	}
 
 	return 0x000000;
 }

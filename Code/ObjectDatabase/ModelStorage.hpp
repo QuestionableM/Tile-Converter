@@ -61,7 +61,9 @@ struct Model
 
 class ModelStorage
 {
-	static std::unordered_map<std::wstring, Model*> CachedModels;
+	using ModelMap = std::unordered_map<std::wstring, Model*>;
+
+	static ModelMap CachedModels;
 	static Assimp::Importer Importer;
 
 	static const aiScene* LoadScene(const std::wstring& path);
