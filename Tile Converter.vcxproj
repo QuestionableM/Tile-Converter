@@ -182,6 +182,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -202,6 +203,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -222,6 +224,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -242,6 +245,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -294,11 +298,9 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\Tile\TileConverter.cpp" />
     <ClCompile Include="Code\Tile\Tile.cpp" />
     <ClCompile Include="Code\Tile\TilePart.cpp" />
-    <ClCompile Include="Code\Utils\Color.cpp" />
     <ClCompile Include="Code\Utils\File.cpp" />
     <ClCompile Include="Code\Utils\Json.cpp" />
     <ClCompile Include="Code\Utils\String.cpp" />
-    <ClCompile Include="Code\Utils\Uuid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Console.hpp" />
