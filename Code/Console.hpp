@@ -31,7 +31,7 @@ public:
 	}
 };
 
-constexpr ConColor operator"" _bg(unsigned long long val) noexcept
+inline constexpr ConColor operator"" _bg(unsigned long long val) noexcept
 {
 	ConColor lOutput;
 
@@ -43,7 +43,7 @@ constexpr ConColor operator"" _bg(unsigned long long val) noexcept
 	return lOutput;
 }
 
-constexpr ConColor operator"" _fg(unsigned long long val) noexcept
+inline constexpr ConColor operator"" _fg(unsigned long long val) noexcept
 {
 	ConColor lOutput;
 
@@ -57,51 +57,91 @@ constexpr ConColor operator"" _fg(unsigned long long val) noexcept
 
 class __ConsoleOutputHandler;
 
-#define DECLARE_CONSOLE_OUTPUT(type_name) static void Output(const type_name obj)
+#define DECLARE_INTEGER_OUTPUT(type) inline static void Output(const type number) { DebugConsole::Output(std::to_string(number)); }
 
 class DebugConsole
 {
 	friend __ConsoleOutputHandler;
 	static HANDLE Handle;
 
-	DECLARE_CONSOLE_OUTPUT(char*);
-	DECLARE_CONSOLE_OUTPUT(wchar_t*);
+	inline static void Output(const char* c_str)
+	{
+		WriteConsoleA(DebugConsole::Handle, c_str, static_cast<DWORD>(strlen(c_str)), NULL, NULL);
+	}
 
-	DECLARE_CONSOLE_OUTPUT(std::string&);
-	DECLARE_CONSOLE_OUTPUT(std::wstring&);
+	inline static void Output(const wchar_t* wc_str)
+	{
+		WriteConsoleW(DebugConsole::Handle, wc_str, static_cast<DWORD>(wcslen(wc_str)), NULL, NULL);
+	}
 
-	DECLARE_CONSOLE_OUTPUT(unsigned char&);
-	DECLARE_CONSOLE_OUTPUT(char&);
-	DECLARE_CONSOLE_OUTPUT(unsigned short&);
-	DECLARE_CONSOLE_OUTPUT(short&);
-	DECLARE_CONSOLE_OUTPUT(unsigned int&);
-	DECLARE_CONSOLE_OUTPUT(int&);
-	DECLARE_CONSOLE_OUTPUT(unsigned long&);
-	DECLARE_CONSOLE_OUTPUT(long&);
-	DECLARE_CONSOLE_OUTPUT(unsigned long long&);
-	DECLARE_CONSOLE_OUTPUT(long long&);
+	inline static void Output(const std::string& str)
+	{
+		WriteConsoleA(DebugConsole::Handle, str.data(), static_cast<DWORD>(str.size()), NULL, NULL);
+	}
 
-	DECLARE_CONSOLE_OUTPUT(float&);
-	DECLARE_CONSOLE_OUTPUT(double&);
+	inline static void Output(const std::wstring& wstr)
+	{
+		WriteConsoleW(DebugConsole::Handle, wstr.data(), static_cast<DWORD>(wstr.size()), NULL, NULL);
+	}
 
-	DECLARE_CONSOLE_OUTPUT(ConColor&);
+	DECLARE_INTEGER_OUTPUT(unsigned char&);
+	DECLARE_INTEGER_OUTPUT(char&);
+	DECLARE_INTEGER_OUTPUT(unsigned short&);
+	DECLARE_INTEGER_OUTPUT(short&);
+	DECLARE_INTEGER_OUTPUT(unsigned int&);
+	DECLARE_INTEGER_OUTPUT(int&);
+	DECLARE_INTEGER_OUTPUT(unsigned long&);
+	DECLARE_INTEGER_OUTPUT(long&);
+	DECLARE_INTEGER_OUTPUT(unsigned long long&);
+	DECLARE_INTEGER_OUTPUT(long long&);
+
+	DECLARE_INTEGER_OUTPUT(float&);
+	DECLARE_INTEGER_OUTPUT(double&);
+
+	inline static void Output(const ConColor& con_color)
+	{
+		SetConsoleTextAttribute(DebugConsole::Handle, static_cast<WORD>(con_color));
+	}
 
 	template<typename ArrayObject>
 	static inline void Output(const std::vector<ArrayObject>& obj)
 	{
-		Console::Output("{ ");
-		for (std::size_t a = 0; a < obj.size(); a++)
+		DebugConsole::Output("{ ");
+		if (!obj.empty())
 		{
-			if (a > 0) Console::Output(", ");
-
-			Console::Output(obj[a]);
+			DebugConsole::Output(obj[0]);
+			for (std::size_t a = 1; a < obj.size(); a++)
+			{
+				DebugConsole::Output(", ");
+				DebugConsole::Output(obj[a]);
+			}
 		}
-		Console::Output(" }");
+		DebugConsole::Output(" }");
 	}
 
 public:
-	static bool Create(const wchar_t* title);
-	static void Destroy();
+	inline static bool Create(const wchar_t* title)
+	{
+		if (DebugConsole::Handle != NULL) return false;
+
+		BOOL is_created = AllocConsole();
+		if (!is_created) return false;
+
+		SetConsoleOutputCP(CP_UTF8);
+		SetConsoleTitleW(title);
+
+		DebugConsole::Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		return true;
+	}
+
+	inline static void Destroy()
+	{
+		if (DebugConsole::Handle == NULL) return;
+
+		FreeConsole();
+		DebugConsole::Handle = NULL;
+	}
 
 	static __ConsoleOutputHandler Out;
 };
@@ -133,6 +173,9 @@ public:
 	__ConsoleOutputHandler() = default;
 	~__ConsoleOutputHandler() = default;
 };
+
+HANDLE DebugConsole::Handle = NULL;
+__ConsoleOutputHandler DebugConsole::Out = __ConsoleOutputHandler();
 
 #define CreateDebugConsole(ConName) DebugConsole::Create(ConName)
 #define DebugOutL(...)              DebugConsole::Out(__VA_ARGS__, 0b1110_fg, "\n")
