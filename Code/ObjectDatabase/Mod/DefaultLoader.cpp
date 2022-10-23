@@ -18,7 +18,7 @@ TextureList DefaultLoader::LoadTextureList(const nlohmann::json& texList)
 		{
 			std::wstring& wstr_path = new_list.GetStringRef(a);
 
-			wstr_path = String::ToWide(cur_item.get<std::string>());
+			wstr_path = String::ToWide(cur_item.get_ref<const std::string&>());
 			KeywordReplacer::ReplaceKeyR(wstr_path);
 		}
 	}
@@ -38,12 +38,12 @@ void DefaultLoader::AddSubMesh(const nlohmann::json& subMesh, TextureData& tData
 	{
 		const auto& def_color_idx = JsonReader::Get(sCustomProp, "color");
 		if (def_color_idx.is_string())
-			new_tList.def_color_idx = String::ToWide(def_color_idx.get<std::string>());
+			new_tList.def_color_idx = String::ToWide(def_color_idx.get_ref<const std::string&>());
 	}
 
 	const auto& sTexName = JsonReader::Get(subMesh, "material");
 	if (sTexName.is_string())
-		new_tList.material = String::ToWide(sTexName.get<std::string>());
+		new_tList.material = String::ToWide(sTexName.get_ref<const std::string&>());
 
 	tData.AddEntry(idx, new_tList);
 }
@@ -103,7 +103,7 @@ bool DefaultLoader::LoadRenderableData(const nlohmann::json& jRenderable, Textur
 	const auto& aMeshPath = JsonReader::Get(aLodList0, "mesh");
 	if (!aMeshPath.is_string()) return false;
 
-	mesh = String::ToWide(aMeshPath.get<std::string>());
+	mesh = String::ToWide(aMeshPath.get_ref<const std::string&>());
 	KeywordReplacer::ReplaceKeyR(mesh);
 
 	return true;
@@ -111,21 +111,23 @@ bool DefaultLoader::LoadRenderableData(const nlohmann::json& jRenderable, Textur
 
 bool DefaultLoader::LoadRenderable(const nlohmann::json& jAsset, TextureData& tData, std::wstring& mesh)
 {
-	const auto& aRenderable = JsonReader::Get(jAsset, "renderable");
-	if (aRenderable.is_string())
+	const auto& v_rendJson = JsonReader::Get(jAsset, "renderable");
+	switch (v_rendJson.type())
 	{
-		std::wstring aRenderablePath = String::ToWide(aRenderable.get<std::string>());
-		KeywordReplacer::ReplaceKeyR(aRenderablePath);
+	case nlohmann::json::value_t::string:
+		{
+			std::wstring v_renderablePath = String::ToWide(v_rendJson.get_ref<const std::string&>());
+			KeywordReplacer::ReplaceKeyR(v_renderablePath);
 
-		nlohmann::json aRendData = JsonReader::LoadParseJson(aRenderablePath);
-		if (!aRendData.is_object()) return false;
+			const nlohmann::json v_rendData = JsonReader::LoadParseJson(v_renderablePath);
+			if (!v_rendData.is_object())
+				return false;
 
-		return DefaultLoader::LoadRenderableData(aRendData, tData, mesh);
+			return DefaultLoader::LoadRenderableData(v_rendData, tData, mesh);
+		}
+	case nlohmann::json::value_t::object:
+		return DefaultLoader::LoadRenderableData(v_rendJson, tData, mesh);
+	default:
+		return false;
 	}
-	else if (aRenderable.is_object())
-	{
-		return DefaultLoader::LoadRenderableData(aRenderable, tData, mesh);
-	}
-
-	return false;
 }

@@ -125,8 +125,8 @@ void Blueprint::LoadBodies(const nlohmann::json& pJson)
 
 			const glm::vec3 sPositionVec = Blueprint::JsonToVector(sPosition);
 
-			SMUuid obj_uuid = sUuid.get<std::string>();
-			Color obj_color = sColor.get<std::string>();
+			const SMUuid obj_uuid(sUuid.get_ref<const std::string&>());
+			const Color obj_color(sColor.get_ref<const std::string&>());
 
 			if (sBounds.is_object())
 			{
@@ -182,8 +182,8 @@ void Blueprint::LoadJoints(const nlohmann::json& pJson)
 
 		const glm::vec3 jPositionVec = Blueprint::JsonToVector(jPosition);
 
-		SMUuid joint_uuid = jUuid.get<std::string>();
-		Color joint_color = jColor.get<std::string>();
+		const SMUuid joint_uuid(jUuid.get_ref<const std::string&>());
+		const Color joint_color(jColor.get_ref<const std::string&>());
 
 		PartData* joint_data = Mod::GetGlobalPart(joint_uuid);
 		if (!joint_data) continue;

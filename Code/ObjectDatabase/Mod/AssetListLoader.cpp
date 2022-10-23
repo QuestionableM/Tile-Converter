@@ -16,7 +16,7 @@ void AssetListLoader::LoadDefaultColors(const nlohmann::json& jAsset, std::unord
 	{
 		if (!def_color.value().is_string()) continue;
 
-		std::string color_val = def_color.value().get<std::string>();
+		std::string color_val = def_color.value().get_ref<const std::string&>();
 		if (color_val.size() < 6)
 			color_val = "000000";
 
@@ -38,7 +38,7 @@ void AssetListLoader::Load(const nlohmann::json& fAssets, Mod* mod)
 		const auto& aUuid = JsonReader::Get(mAsset, "uuid");
 		if (!aUuid.is_string()) continue;
 
-		SMUuid asset_uuid = aUuid.get<std::string>();
+		const SMUuid asset_uuid(aUuid.get_ref<const std::string&>());
 		if (Mod::AssetStorage.find(asset_uuid) != Mod::AssetStorage.end())
 		{
 			DebugWarningL("Asset with the same uuid already exists! (", asset_uuid.ToString(), ")");

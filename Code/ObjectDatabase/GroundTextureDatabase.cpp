@@ -132,7 +132,7 @@ void GroundTextureDatabase::LoadTextureData(const nlohmann::json& tObj, GroundTe
 		const std::string& cur_val = objKeyVec[a];
 		const auto& tex_obj = JsonReader::Get(tObj, cur_val);
 
-		const std::wstring wstr_tex = tex_obj.is_string() ? String::ToWide(tex_obj.get<std::string>()) : L"";
+		const std::wstring wstr_tex = tex_obj.is_string() ? String::ToWide(tex_obj.get_ref<const std::string&>()) : L"";
 
 		tBundle[a] = new GroundTexture(wstr_tex);
 	}

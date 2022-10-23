@@ -17,7 +17,7 @@ void HarvestableListLoader::Load(const nlohmann::json& fHarvestables, Mod* mod)
 		const auto& hUuid = JsonReader::Get(mHarvestable, "uuid");
 		if (!hUuid.is_string()) continue;
 
-		SMUuid hvs_uuid = hUuid.get<std::string>();
+		const SMUuid hvs_uuid(hUuid.get_ref<const std::string&>());
 		if (Mod::HarvestableStorage.find(hvs_uuid) != Mod::HarvestableStorage.end())
 		{
 			DebugWarningL("Harvestable with the specified uuid already exists! (", hvs_uuid.ToString(), ")");

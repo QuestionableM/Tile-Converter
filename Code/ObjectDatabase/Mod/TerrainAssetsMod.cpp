@@ -57,7 +57,7 @@ void TerrainAssetsMod::LoadAssetSetDatabase(const std::wstring& path, Mod* pMod)
 		const auto& asset_set_str = JsonReader::Get(cur_asset_set, "assetSet");
 		if (!asset_set_str.is_string()) continue;
 
-		const std::wstring asset_set_wide = String::ToWide(asset_set_str.get<std::string>());
+		const std::wstring asset_set_wide = String::ToWide(asset_set_str.get_ref<const std::string&>());
 		const std::wstring asset_set_path = KeywordReplacer::ReplaceKey(asset_set_wide);
 
 		pMod->LoadFile(asset_set_path);

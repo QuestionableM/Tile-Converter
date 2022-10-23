@@ -16,11 +16,11 @@ bool ClutterListLoader::LoadTextureData(const nlohmann::json& fClutter, TextureL
 	const auto& clMesh = JsonReader::Get(fClutter, "mesh");
 	if (!clMesh.is_string()) return false;
 	
-	const std::wstring clDifWide = String::ToWide(clDif.get<std::string>());
+	const std::wstring clDifWide = String::ToWide(clDif.get_ref<const std::string&>());
 	tList.dif = KeywordReplacer::ReplaceKey(clDifWide);
-	tList.material = (clMaterial.is_string() ? String::ToWide(clMaterial.get<std::string>()) : L"GroundVegetation");
+	tList.material = (clMaterial.is_string() ? String::ToWide(clMaterial.get_ref<const std::string&>()) : L"GroundVegetation");
 
-	const std::wstring mPathWide = String::ToWide(clMesh.get<std::string>());
+	const std::wstring mPathWide = String::ToWide(clMesh.get_ref<const std::string&>());
 	mesh = KeywordReplacer::ReplaceKey(mPathWide);
 
 	return true;
@@ -49,7 +49,7 @@ void ClutterListLoader::Load(const nlohmann::json& fClutter, Mod* mod)
 		const auto& clUuid = JsonReader::Get(cl_item, "uuid");
 		if (!clUuid.is_string()) continue;
 
-		SMUuid clutter_uuid = clUuid.get<std::string>();
+		const SMUuid clutter_uuid(clUuid.get_ref<const std::string&>());
 		if (Mod::ClutterStorage.find(clutter_uuid) != Mod::ClutterStorage.end())
 		{
 			DebugErrorL("Clutter with the specified uuid already exists! (", clutter_uuid.ToString(), ")");

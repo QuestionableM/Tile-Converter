@@ -6,63 +6,80 @@
 
 #include "Console.hpp"
 
+const PartListLoader::__CollisionLoaderData PartListLoader::g_collisionDataLoaders[] =
+{
+	{ "box"     , PartListLoader::LoadBoxCollision      },
+	{ "hull"    , PartListLoader::LoadBoxCollision      },
+	{ "cylinder", PartListLoader::LoadCylinderCollision },
+	{ "sphere"  , PartListLoader::LoadSphereCollision   }
+};
+
+void PartListLoader::LoadBoxCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
+{
+	const auto& v_coll_x = JsonReader::Get(collision, "x");
+	const auto& v_coll_y = JsonReader::Get(collision, "y");
+	const auto& v_coll_z = JsonReader::Get(collision, "z");
+
+	if (v_coll_x.is_number() && v_coll_y.is_number() && v_coll_z.is_number())
+		vec_ref = glm::vec3(v_coll_x.get<float>(), v_coll_y.get<float>(), v_coll_z.get<float>());
+}
+
+void PartListLoader::LoadCylinderCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
+{
+	const auto& v_diameter = JsonReader::Get(collision, "diameter");
+	const auto& v_depth = JsonReader::Get(collision, "depth");
+
+	if (!v_diameter.is_number() || !v_depth.is_number())
+		return;
+
+	const auto& v_axis = JsonReader::Get(collision, "axis");
+	const std::string v_axis_str = (v_axis.is_string() ? v_axis.get_ref<const std::string&>() : "z");
+
+	if (v_axis_str.empty())
+		return;
+
+	const float v_diameter_f = v_diameter.get<float>();
+	const float v_depth_f = v_depth.get<float>();
+
+	const char v_axis_char = std::tolower(v_axis_str[0]);
+	switch (v_axis_char)
+	{
+	case 'x':
+		vec_ref = glm::vec3(v_depth_f, v_diameter_f, v_diameter_f);
+		break;
+	case 'y':
+		vec_ref = glm::vec3(v_diameter_f, v_depth_f, v_diameter_f);
+		break;
+	case 'z':
+		vec_ref = glm::vec3(v_diameter_f, v_diameter_f, v_depth_f);
+		break;
+	}
+}
+
+void PartListLoader::LoadSphereCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
+{
+	const auto& v_diameter = JsonReader::Get(collision, "diameter");
+	if (v_diameter.is_number())
+		vec_ref = glm::vec3(v_diameter.get<float>());
+}
+
 glm::vec3 PartListLoader::LoadPartCollision(const nlohmann::json& collision)
 {
-	glm::vec3 out_coll(1.0f);
+	glm::vec3 v_out_collision(1.0f);
 
-	bool isBoxCol = collision.contains("box");
-	bool isHullCol = collision.contains("hull");
-	if (isBoxCol || isHullCol)
+	for (unsigned __int8 a = 0; a < 4; a++)
 	{
-		const auto& b_Col = collision.at(isBoxCol ? "box" : "hull");
+		const __CollisionLoaderData& v_curData = g_collisionDataLoaders[a];
 
-		if (b_Col.is_object())
-		{
-			const auto& xPos = JsonReader::Get(b_Col, "x");
-			const auto& yPos = JsonReader::Get(b_Col, "y");
-			const auto& zPos = JsonReader::Get(b_Col, "z");
+		const auto& v_collisionData = JsonReader::Get(collision, v_curData.key);
+		if (!v_collisionData.is_object())
+			continue;
 
-			if (xPos.is_number() && yPos.is_number() && zPos.is_number())
-				out_coll = glm::vec3(xPos.get<float>(), yPos.get<float>(), zPos.get<float>());
-		}
-	}
-	else
-	{
-		const auto& cyl_col = JsonReader::Get(collision, "cylinder");
-		if (cyl_col.is_object())
-		{
-			const auto& c_Diameter = JsonReader::Get(cyl_col, "diameter");
-			const auto& c_Depth = JsonReader::Get(cyl_col, "depth");
-
-			if (c_Diameter.is_number() && c_Depth.is_number())
-			{
-				float f_Diameter = c_Diameter.get<float>();
-				float f_Depth = c_Depth.get<float>();
-
-				const auto& c_Axis = JsonReader::Get(cyl_col, "axis");
-				std::string c_AxisStr = (c_Axis.is_string() ? c_Axis.get<std::string>() : "z");
-
-				if (c_AxisStr == "x" || c_AxisStr == "X")
-					out_coll = glm::vec3(f_Depth, f_Diameter, f_Diameter);
-				else if (c_AxisStr == "y" || c_AxisStr == "Y")
-					out_coll = glm::vec3(f_Diameter, f_Depth, f_Diameter);
-				else if (c_AxisStr == "z" || c_AxisStr == "Z")
-					out_coll = glm::vec3(f_Diameter, f_Diameter, f_Depth);
-			}
-		}
-		else
-		{
-			const auto& sphere_col = JsonReader::Get(collision, "sphere");
-			if (sphere_col.is_object())
-			{
-				const auto& s_Diameter = JsonReader::Get(sphere_col, "diameter");
-				if (s_Diameter.is_number())
-					out_coll = glm::vec3(s_Diameter.get<float>());
-			}
-		}
+		v_curData.func_ptr(v_collisionData, v_out_collision);
+		break;
 	}
 
-	return out_coll;
+	return v_out_collision;
 }
 
 void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
@@ -79,7 +96,7 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 
 		if (!pUuid.is_string()) continue;
 
-		SMUuid part_uuid = pUuid.get<std::string>();
+		const SMUuid part_uuid(pUuid.get_ref<const std::string&>());
 		if (Mod::PartStorage.find(part_uuid) != Mod::PartStorage.end())
 		{
 			DebugWarningL("Part with the uuid already exists! (", part_uuid.ToString(), ")");
@@ -96,7 +113,7 @@ void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
 		new_part->Textures = tex_data;
 		new_part->Uuid = part_uuid;
 		new_part->pMod = mod;
-		new_part->DefaultColor = (pColor.is_string() ? pColor.get<std::string>() : "375000");
+		new_part->DefaultColor = (pColor.is_string() ? pColor.get_ref<const std::string&>() : "375000");
 		new_part->Bounds = PartListLoader::LoadPartCollision(fPart);
 
 		const auto new_pair = std::make_pair(new_part->Uuid, new_part);

@@ -38,7 +38,7 @@ void BlocksAndPartsMod::LoadShapeSetDatabase(const std::wstring& path, Mod* pMod
 	{
 		if (!l_shapeset.is_string()) continue;
 
-		const std::wstring l_shapeset_wide = String::ToWide(l_shapeset.get<std::string>());
+		const std::wstring l_shapeset_wide = String::ToWide(l_shapeset.get_ref<const std::string&>());
 		const std::wstring l_shapeset_path = KeywordReplacer::ReplaceKey(l_shapeset_wide);
 
 		pMod->LoadFile(l_shapeset_path);

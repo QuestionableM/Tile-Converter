@@ -30,7 +30,7 @@ void DatabaseConfig::JsonStrArrayToVector(const nlohmann::json& pJson, const std
 	{
 		if (!v_curVal.is_string()) continue;
 
-		const std::wstring v_wstrPath = String::ToWide(v_curVal.get<std::string>());
+		const std::wstring v_wstrPath = String::ToWide(v_curVal.get_ref<const std::string&>());
 		if (replace_keys)
 		{
 			pWstrVec.push_back(KeywordReplacer::ReplaceKey(v_wstrPath));
@@ -70,11 +70,12 @@ void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
 	{
 		for (const auto& key_obj : pKeywords.items())
 		{
-			if (!key_obj.value().is_string()) continue;
+			const auto& v_keyObjVal = key_obj.value();
+			if (!v_keyObjVal.is_string()) continue;
 
 			const std::wstring pKey = String::ToWide(key_obj.key());
 
-			std::wstring pValue = String::ToWide(key_obj.value().get<std::string>());
+			std::wstring pValue = String::ToWide(v_keyObjVal.get_ref<const std::string&>());
 			KeywordReplacer::ReplaceKeyR(pValue);
 
 			KeywordReplacer::SetReplacement(pKey, pValue);
@@ -247,7 +248,7 @@ void DatabaseConfig::ReadUserSettings(const nlohmann::json& config_json, bool& s
 		const auto& game_path = JsonReader::Get(user_settings, "GamePath");
 		if (game_path.is_string())
 		{
-			DatabaseConfig::GamePath = String::ToWide(game_path.get<std::string>());
+			DatabaseConfig::GamePath = String::ToWide(game_path.get_ref<const std::string&>());
 			DebugOutL("Game Path: ", DatabaseConfig::GamePath);
 		}
 

@@ -19,7 +19,7 @@ void MaterialManager::Initialize()
 		if (!pObject.value().is_string()) continue;
 
 		const std::wstring pKey = String::ToWide(pObject.key());
-		const std::wstring pValue = String::ToWide(pObject.value().get<std::string>());
+		const std::wstring pValue = String::ToWide(pObject.value().get_ref<const std::string&>());
 
 		if (m_materialStorage.find(pKey) != m_materialStorage.end())
 			continue;

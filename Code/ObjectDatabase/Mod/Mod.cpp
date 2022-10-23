@@ -67,15 +67,15 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder, const bool& is_loc
 	const auto& mType = JsonReader::Get(mDesc, "type");
 	if (!mType.is_string()) return nullptr;
 
-	const std::string mTypeStr = mType.get<std::string>();
+	const std::string& mTypeStr = mType.get_ref<const std::string&>();
 
 	const auto& mUuid = JsonReader::Get(mDesc, "localId");
 	const auto& mName = JsonReader::Get(mDesc, "name");
 
 	if (!mUuid.is_string() || !mName.is_string()) return nullptr;
 
-	const SMUuid v_modUuid = mUuid.get<std::string>();
-	const std::wstring v_modName = String::ToWide(mName.get<std::string>());
+	const SMUuid v_modUuid(mUuid.get_ref<const std::string&>());
+	const std::wstring v_modName = String::ToWide(mName.get_ref<const std::string&>());
 
 	const UuidObjMapIterator<Mod*> v_iter = Mod::ModStorage.find(v_modUuid);
 	if (v_iter != Mod::ModStorage.end())
