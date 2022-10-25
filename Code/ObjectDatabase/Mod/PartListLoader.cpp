@@ -11,7 +11,8 @@ const PartListLoader::__CollisionLoaderData PartListLoader::g_collisionDataLoade
 	{ "box"     , PartListLoader::LoadBoxCollision      },
 	{ "hull"    , PartListLoader::LoadBoxCollision      },
 	{ "cylinder", PartListLoader::LoadCylinderCollision },
-	{ "sphere"  , PartListLoader::LoadSphereCollision   }
+	{ "sphere"  , PartListLoader::LoadSphereCollision   },
+	{ "slant"   , PartListLoader::LoadBoxCollision      }
 };
 
 void PartListLoader::LoadBoxCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
@@ -44,15 +45,9 @@ void PartListLoader::LoadCylinderCollision(const nlohmann::json& collision, glm:
 	const char v_axis_char = std::tolower(v_axis_str[0]);
 	switch (v_axis_char)
 	{
-	case 'x':
-		vec_ref = glm::vec3(v_depth_f, v_diameter_f, v_diameter_f);
-		break;
-	case 'y':
-		vec_ref = glm::vec3(v_diameter_f, v_depth_f, v_diameter_f);
-		break;
-	case 'z':
-		vec_ref = glm::vec3(v_diameter_f, v_diameter_f, v_depth_f);
-		break;
+	case 'x': vec_ref = glm::vec3(v_depth_f   , v_diameter_f, v_diameter_f); break;
+	case 'y': vec_ref = glm::vec3(v_diameter_f, v_depth_f   , v_diameter_f); break;
+	case 'z': vec_ref = glm::vec3(v_diameter_f, v_diameter_f, v_depth_f   ); break;
 	}
 }
 
@@ -67,7 +62,8 @@ glm::vec3 PartListLoader::LoadPartCollision(const nlohmann::json& collision)
 {
 	glm::vec3 v_out_collision(1.0f);
 
-	for (unsigned __int8 a = 0; a < 4; a++)
+	const unsigned __int8 v_collisionDataLoadersSz = sizeof(g_collisionDataLoaders) / sizeof(__CollisionLoaderData);
+	for (unsigned __int8 a = 0; a < v_collisionDataLoadersSz; a++)
 	{
 		const __CollisionLoaderData& v_curData = g_collisionDataLoaders[a];
 
