@@ -182,7 +182,7 @@ namespace TileConverter {
 			this->Version_LBL->Name = L"Version_LBL";
 			this->Version_LBL->Size = System::Drawing::Size(86, 16);
 			this->Version_LBL->TabIndex = 11;
-			this->Version_LBL->Text = L"Version: 1.0.7";
+			this->Version_LBL->Text = L"Version: 1.0.8";
 			// 
 			// LibGLM_LLBL
 			// 

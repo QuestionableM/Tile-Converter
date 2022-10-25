@@ -43,6 +43,7 @@ namespace TileConverter
 			this->OutName_GB = (gcnew System::Windows::Forms::GroupBox());
 			this->OutputName_TB = (gcnew System::Windows::Forms::TextBox());
 			this->ModelSettings_GB = (gcnew System::Windows::Forms::GroupBox());
+			this->ExportDecals_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportHarvestables_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportBlueprints_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportPrefabs_CB = (gcnew System::Windows::Forms::CheckBox());
@@ -55,7 +56,6 @@ namespace TileConverter
 			this->ExportMaterials_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->ExportUvs_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->Convert_BTN = (gcnew System::Windows::Forms::Button());
-			this->ExportDecals_CB = (gcnew System::Windows::Forms::CheckBox());
 			this->OutName_GB->SuspendLayout();
 			this->ModelSettings_GB->SuspendLayout();
 			this->DataSettings_GB->SuspendLayout();
@@ -103,6 +103,17 @@ namespace TileConverter
 			this->ModelSettings_GB->TabIndex = 1;
 			this->ModelSettings_GB->TabStop = false;
 			this->ModelSettings_GB->Text = L"Model Settings";
+			// 
+			// ExportDecals_CB
+			// 
+			this->ExportDecals_CB->AutoSize = true;
+			this->ExportDecals_CB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->ExportDecals_CB->Location = System::Drawing::Point(6, 149);
+			this->ExportDecals_CB->Name = L"ExportDecals_CB";
+			this->ExportDecals_CB->Size = System::Drawing::Size(146, 20);
+			this->ExportDecals_CB->TabIndex = 5;
+			this->ExportDecals_CB->Text = L"Export Decals (WIP)";
+			this->ExportDecals_CB->UseVisualStyleBackColor = true;
 			// 
 			// ExportHarvestables_CB
 			// 
@@ -255,17 +266,6 @@ namespace TileConverter
 			this->Convert_BTN->Text = L"Convert";
 			this->Convert_BTN->UseVisualStyleBackColor = true;
 			this->Convert_BTN->Click += gcnew System::EventHandler(this, &ConvertSettingsGui::Convert_BTN_Click);
-			// 
-			// ExportDecals_CB
-			// 
-			this->ExportDecals_CB->AutoSize = true;
-			this->ExportDecals_CB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
-			this->ExportDecals_CB->Location = System::Drawing::Point(6, 149);
-			this->ExportDecals_CB->Name = L"ExportDecals_CB";
-			this->ExportDecals_CB->Size = System::Drawing::Size(110, 20);
-			this->ExportDecals_CB->TabIndex = 5;
-			this->ExportDecals_CB->Text = L"Export Decals";
-			this->ExportDecals_CB->UseVisualStyleBackColor = true;
 			// 
 			// ConvertSettingsGui
 			// 
