@@ -14,17 +14,33 @@ namespace String
 	inline std::string ToUtf8(const std::wstring& wstr)
 	{
 		const int v_count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
-		std::string str(v_count, 0);
-		WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], v_count, NULL, NULL);
-		return str;
+
+		std::string v_str(v_count, 0);
+		WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &v_str[0], v_count, NULL, NULL);
+
+		return v_str;
+	}
+
+	inline std::wstring ToWide(const char* str)
+	{
+		const int v_str_sz = static_cast<int>(strlen(str));
+		const int v_count = MultiByteToWideChar(CP_UTF8, 0, str, v_str_sz, NULL, 0);
+
+		std::wstring v_wstr(v_count, 0);
+		MultiByteToWideChar(CP_UTF8, 0, str, v_str_sz, &v_wstr[0], v_count);
+
+		return v_wstr;
 	}
 
 	inline std::wstring ToWide(const std::string& str)
 	{
-		const int v_count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), NULL, 0);
-		std::wstring wstr(v_count, 0);
-		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), &wstr[0], v_count);
-		return wstr;
+		const int v_str_sz = static_cast<int>(str.size());
+		const int v_count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), v_str_sz, NULL, 0);
+
+		std::wstring v_wstr(v_count, 0);
+		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), v_str_sz, &v_wstr[0], v_count);
+
+		return v_wstr;
 	}
 
 	template<typename T>

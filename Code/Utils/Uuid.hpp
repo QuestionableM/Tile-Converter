@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Utils/WinInclude.hpp"
+#include "Utils\WinInclude.hpp"
+#include "Utils\Crypt.hpp"
 
 #include <iomanip>
 #include <sstream>
@@ -14,6 +15,7 @@ public:
 
 	inline SMUuid(const std::string& uuid) { this->FromString<std::string>(uuid); }
 	inline SMUuid(const std::wstring& uuid) { this->FromString<std::wstring>(uuid); }
+	inline SMUuid(const char* uuid) { this->FromCString(uuid); }
 
 	inline SMUuid(const std::vector<long long>& longs)
 	{
@@ -31,7 +33,34 @@ public:
 		}
 	}
 
-	inline std::size_t  Hash() const
+	inline static SMUuid GenerateNamed(const SMUuid& uuid, const std::string& some_string)
+	{
+		const std::string v_hash_string = uuid.ToString() + some_string;
+		const std::string v_hash = Crypt::GetHashString(v_hash_string.data(), v_hash_string.size(), Crypt::HashType::Sha1);
+
+		SMUuid v_new_uuid;
+
+		v_new_uuid.m_Data8[0] = static_cast<unsigned char>(std::stoi(v_hash.substr(0, 2), nullptr, 16));
+		v_new_uuid.m_Data8[1] = static_cast<unsigned char>(std::stoi(v_hash.substr(2, 2), nullptr, 16));
+		v_new_uuid.m_Data8[2] = static_cast<unsigned char>(std::stoi(v_hash.substr(4, 2), nullptr, 16));
+		v_new_uuid.m_Data8[3] = static_cast<unsigned char>(std::stoi(v_hash.substr(6, 2), nullptr, 16));
+		v_new_uuid.m_Data8[4] = static_cast<unsigned char>(std::stoi(v_hash.substr(8, 2), nullptr, 16));
+		v_new_uuid.m_Data8[5] = static_cast<unsigned char>(std::stoi(v_hash.substr(10, 2), nullptr, 16));
+		v_new_uuid.m_Data8[6] = static_cast<unsigned char>(std::stoi(v_hash.substr(12, 2), nullptr, 16));
+		v_new_uuid.m_Data8[7] = static_cast<unsigned char>(std::stoi(v_hash.substr(14, 2), nullptr, 16));
+		v_new_uuid.m_Data8[8] = static_cast<unsigned char>(std::stoi(v_hash.substr(16, 2), nullptr, 16));
+		v_new_uuid.m_Data8[9] = static_cast<unsigned char>(std::stoi(v_hash.substr(18, 2), nullptr, 16));
+		v_new_uuid.m_Data8[10] = static_cast<unsigned char>(std::stoi(v_hash.substr(20, 2), nullptr, 16));
+		v_new_uuid.m_Data8[11] = static_cast<unsigned char>(std::stoi(v_hash.substr(22, 2), nullptr, 16));
+		v_new_uuid.m_Data8[12] = static_cast<unsigned char>(std::stoi(v_hash.substr(24, 2), nullptr, 16));
+		v_new_uuid.m_Data8[13] = static_cast<unsigned char>(std::stoi(v_hash.substr(26, 2), nullptr, 16));
+		v_new_uuid.m_Data8[14] = static_cast<unsigned char>(std::stoi(v_hash.substr(28, 2), nullptr, 16));
+		v_new_uuid.m_Data8[15] = static_cast<unsigned char>(std::stoi(v_hash.substr(30, 2), nullptr, 16));
+
+		return v_new_uuid;
+	}
+
+	inline std::size_t Hash() const
 	{
 		return (std::hash<unsigned long long>{}(m_Data64[0]) >> 1) ^ (std::hash<unsigned long long>{}(m_Data64[1]) << 2);
 	}
@@ -98,9 +127,58 @@ public:
 		return wstream.str();
 	}
 
-private:
+	inline static unsigned char hex_strtol_safe(char* v_ptr)
+	{
+		char* v_end_ptr;
+		const long v_output = strtol(v_ptr, &v_end_ptr, 16);
+
+		if (v_ptr == v_end_ptr)
+		{
+			*v_ptr = 0;
+			return 0;
+		}
+
+		*v_ptr = 0;
+
+		return static_cast<unsigned char>(v_output);
+	}
+
+	inline void FromCString(const char* v_str)
+	{
+		if (strlen(v_str) != 36)
+		{
+			std::memset(m_Data8, 0, 16);
+			return;
+		}
+
+		char v_str_cpy[37];
+		v_str_cpy[36] = 0;
+		std::memcpy(v_str_cpy, v_str, 36);
+
+		m_Data8[15] = hex_strtol_safe(v_str_cpy + 34);
+		m_Data8[14] = hex_strtol_safe(v_str_cpy + 32);
+		m_Data8[13] = hex_strtol_safe(v_str_cpy + 30);
+		m_Data8[12] = hex_strtol_safe(v_str_cpy + 28);
+		m_Data8[11] = hex_strtol_safe(v_str_cpy + 26);
+		m_Data8[10] = hex_strtol_safe(v_str_cpy + 24);
+
+		m_Data8[9] = hex_strtol_safe(v_str_cpy + 21);
+		m_Data8[8] = hex_strtol_safe(v_str_cpy + 19);
+
+		m_Data8[7] = hex_strtol_safe(v_str_cpy + 16);
+		m_Data8[6] = hex_strtol_safe(v_str_cpy + 14);
+
+		m_Data8[5] = hex_strtol_safe(v_str_cpy + 11);
+		m_Data8[4] = hex_strtol_safe(v_str_cpy + 9);
+
+		m_Data8[3] = hex_strtol_safe(v_str_cpy + 6);
+		m_Data8[2] = hex_strtol_safe(v_str_cpy + 4);
+		m_Data8[1] = hex_strtol_safe(v_str_cpy + 2);
+		m_Data8[0] = hex_strtol_safe(v_str_cpy);
+	}
+
 	template<typename T>
-	void FromString(const T& uuid)
+	inline void FromString(const T& uuid)
 	{
 		static_assert(std::_Is_any_of_v<T, std::string, std::wstring>, "Uuid::FromString can only be used for the following types: std::string, std::wstring");
 
@@ -132,6 +210,7 @@ private:
 		m_Data8[15] = static_cast<unsigned char>(std::stoi(uuid.substr(34, 2), nullptr, 16));
 	}
 
+public:
 	friend bool operator==(const SMUuid& lhs, const SMUuid& rhs) noexcept;
 	friend bool operator!=(const SMUuid& lhs, const SMUuid& rhs) noexcept;
 	friend bool operator< (const SMUuid& lhs, const SMUuid& rhs) noexcept;

@@ -144,6 +144,15 @@
     <ClCompile Include="Code\LuaWorldGenerator\LuaWorldGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\BaseLuaFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\LuaUuid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Utils\Crypt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
@@ -336,6 +345,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\LuaWorldGenerator\LuaWorldGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\BaseLuaFunctions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\LuaUuid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\CLuaTableUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Utils\Crypt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

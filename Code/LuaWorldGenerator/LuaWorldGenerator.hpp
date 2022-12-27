@@ -20,7 +20,7 @@ namespace SM
 		LuaWorldGenerator(LuaWorldGenerator&&) = delete;
 		~LuaWorldGenerator();
 
-		void RegisterFunctions();
+		void RegisterSMTable();
 
 		void Load(const std::wstring& path, const std::wstring& name);
 
