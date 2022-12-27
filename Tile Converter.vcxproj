@@ -5,14 +5,6 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ReleaseDebugInfo|Win32">
-      <Configuration>ReleaseDebugInfo</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="ReleaseDebugInfo|x64">
-      <Configuration>ReleaseDebugInfo</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -50,14 +42,6 @@
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>true</CLRSupport>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -66,14 +50,6 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>true</CLRSupport>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -92,16 +68,10 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -111,11 +81,6 @@
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
-    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'">
     <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
     <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
@@ -130,27 +95,23 @@
     <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'">
-    <OutDir>$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\</OutDir>
-    <IntDir>Build\Junk\$(PlatformShortName)-$(Configuration)\</IntDir>
-    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;Lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture);$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)\Lua.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -158,18 +119,19 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;Lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture);$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)\Lua.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -177,7 +139,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
@@ -185,33 +147,13 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;Lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture);$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);RELEASE_DEBUG_INFO</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ShowIncludes>false</ShowIncludes>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
-    </Link>
-    <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)\Lua.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -219,7 +161,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
@@ -227,33 +169,13 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;Lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture);$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebugInfo|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);RELEASE_DEBUG_INFO</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ShowIncludes>false</ShowIncludes>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>assimp$(PlatformArchitecture).lib;lz4_$(PlatformArchitecture).lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Assimp\Lib;$(SolutionDir)Dependencies\lz4\Lib;$(SolutionDir)Dependencies\FreeImage\Lib\x$(PlatformArchitecture)</AdditionalLibraryDirectories>
-    </Link>
-    <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Dependencies\Assimp\DLL\assimp$(PlatformArchitecture).dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
-xcopy /y /d "$(SolutionDir)Dependencies\FreeImage\DLL\x$(PlatformArchitecture)\FreeImage.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
+xcopy /y /d "$(SolutionDir)Dependencies\LUA\Lib\$(PlatformShortName)-$(Configuration)\Lua.dll" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)"
 xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-$(Configuration)\Resources" /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -263,6 +185,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\Gui\ConvertSettingsGui.cpp" />
     <ClCompile Include="Code\Gui\MainGui.cpp" />
     <ClCompile Include="Code\Gui\SettingsGui.cpp" />
+    <ClCompile Include="Code\LuaWorldGenerator\LuaWorldGenerator.cpp" />
     <ClCompile Include="Code\Main.cpp" />
     <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp" />
     <ClCompile Include="Code\ObjectDatabase\GroundTextureDatabase.cpp" />
@@ -315,6 +238,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClInclude Include="Code\Gui\SettingsGui.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\LuaWorldGenerator.hpp" />
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp" />
     <ClInclude Include="Code\ObjectDatabase\GroundTextureDatabase.hpp" />
     <ClInclude Include="Code\ObjectDatabase\KeywordReplacer.hpp" />

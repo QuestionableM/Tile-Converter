@@ -2,38 +2,35 @@
 #include "Console.hpp"
 
 #include "ObjectDatabase\GroundTextureDatabase.hpp"
-#include "ObjectDatabase/ObjectDatabase.hpp"
-#include "ObjectDatabase/DatabaseConfig.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase\ObjectDatabase.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\Mod\Mod.hpp"
 
+#include "Gui\ConvertSettingsGui.h"
+#include "Gui\SettingsGui.h"
+#include "Gui\AboutGui.h"
 
-#include "Gui/AboutGui.h"
-#include "Gui/SettingsGui.h"
-#include "Gui/ConvertSettingsGui.h"
-
-#include "Tile/TileConverter.hpp"
-#include "Utils/File.hpp"
+#include "LuaWorldGenerator\LuaWorldGenerator.hpp"
+#include "Tile\TileConverter.hpp"
+#include "Utils\File.hpp"
 
 #include <CommCtrl.h>
-#include <msclr/marshal_cppstd.h>
+#include <msclr\marshal_cppstd.h>
 #include <filesystem>
 namespace fs = std::filesystem;
 
 namespace WForms = System::Windows::Forms;
+
+#define GeneratorType_TileFile 0
+#define GeneratorType_LuaFile  1
 
 namespace TileConverter
 {
 	MainGui::MainGui()
 	{
 		this->InitializeComponent();
-
-		SendMessage(
-			static_cast<HWND>(TilePath_TB->Handle.ToPointer()),
-			EM_SETCUEBANNER,
-			0,
-			(LPARAM)L"Path to Tile"
-		);
+		this->CB_SelectedGeneratorType->SelectedIndex = 0;
 
 		DatabaseLoader::InitializeDatabase();
 	}
@@ -149,32 +146,33 @@ namespace TileConverter
 		}
 
 		const fs::path tPath = tile_path;
-		const std::wstring tile_name = tPath.has_stem() ? tPath.stem().wstring() : L"UnkonwnTile";
+		const std::wstring v_file_name = tPath.has_stem() ? tPath.stem().wstring() : L"UnknownFile";
 
-		ConvertSettingsGui^ conv_settings = gcnew ConvertSettingsGui(tile_name);
+		ConvertSettingsGui^ conv_settings = gcnew ConvertSettingsGui(v_file_name);
 		conv_settings->ShowDialog();
 
 		if (conv_settings->CanConvert)
 		{
 			this->ChangeGuiState(true, true);
 
-			System::Array^ thread_data = gcnew cli::array<System::Object^>(13);
+			System::Array^ thread_data = gcnew cli::array<System::Object^>(14);
 
-			thread_data->SetValue(this->TilePath_TB->Text, static_cast<int>(0));
-			thread_data->SetValue(conv_settings->OutputName_TB->Text, static_cast<int>(1));
+			thread_data->SetValue(this->TilePath_TB->Text,                       static_cast<int>(0));
+			thread_data->SetValue(conv_settings->OutputName_TB->Text,            static_cast<int>(1));
+			thread_data->SetValue(this->CB_SelectedGeneratorType->SelectedIndex, static_cast<int>(2));
 
-			thread_data->SetValue(conv_settings->ExportUvs_CB->Checked,              static_cast<int>(2));
-			thread_data->SetValue(conv_settings->ExportNormals_CB->Checked,          static_cast<int>(3));
-			thread_data->SetValue(conv_settings->ExportMaterials_CB->Checked,        static_cast<int>(4));
-			thread_data->SetValue(conv_settings->ExportGndTextures_CB->Checked,      static_cast<int>(5));
-			thread_data->SetValue(conv_settings->Export8kGroundTextures_CB->Checked, static_cast<int>(6));
+			thread_data->SetValue(conv_settings->ExportUvs_CB->Checked,              static_cast<int>(3));
+			thread_data->SetValue(conv_settings->ExportNormals_CB->Checked,          static_cast<int>(4));
+			thread_data->SetValue(conv_settings->ExportMaterials_CB->Checked,        static_cast<int>(5));
+			thread_data->SetValue(conv_settings->ExportGndTextures_CB->Checked,      static_cast<int>(6));
+			thread_data->SetValue(conv_settings->Export8kGroundTextures_CB->Checked, static_cast<int>(7));
 
-			thread_data->SetValue(conv_settings->ExportClutter_CB->Checked,      static_cast<int>(7));
-			thread_data->SetValue(conv_settings->ExportAssets_CB->Checked,       static_cast<int>(8));
-			thread_data->SetValue(conv_settings->ExportPrefabs_CB->Checked,      static_cast<int>(9));
-			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked,   static_cast<int>(10));
-			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, static_cast<int>(11));
-			thread_data->SetValue(conv_settings->ExportDecals_CB->Checked,       static_cast<int>(12));
+			thread_data->SetValue(conv_settings->ExportClutter_CB->Checked,      static_cast<int>(8));
+			thread_data->SetValue(conv_settings->ExportAssets_CB->Checked,       static_cast<int>(9));
+			thread_data->SetValue(conv_settings->ExportPrefabs_CB->Checked,      static_cast<int>(10));
+			thread_data->SetValue(conv_settings->ExportBlueprints_CB->Checked,   static_cast<int>(11));
+			thread_data->SetValue(conv_settings->ExportHarvestables_CB->Checked, static_cast<int>(12));
+			thread_data->SetValue(conv_settings->ExportDecals_CB->Checked,       static_cast<int>(13));
 
 			this->ProgressUpdater->Start();
 			this->TileConverter_BW->RunWorkerAsync(thread_data);
@@ -185,21 +183,22 @@ namespace TileConverter
 	{
 		System::Array^ tData = safe_cast<System::Array^>(e->Argument);
 
-		System::String^ tile_path = safe_cast<System::String^>(tData->GetValue(static_cast<int>(0)));
-		System::String^ tile_name = safe_cast<System::String^>(tData->GetValue(static_cast<int>(1)));
+		System::String^ v_file_path = safe_cast<System::String^>(tData->GetValue(static_cast<int>(0)));
+		System::String^ v_file_name = safe_cast<System::String^>(tData->GetValue(static_cast<int>(1)));
+		const int v_selected_generator = safe_cast<int>(tData->GetValue(static_cast<int>(2)));
 		
-		const bool export_uvs              = safe_cast<bool>(tData->GetValue(static_cast<int>(2)));
-		const bool export_normals          = safe_cast<bool>(tData->GetValue(static_cast<int>(3)));
-		const bool export_materials        = safe_cast<bool>(tData->GetValue(static_cast<int>(4)));
-		const bool export_gnd_materials    = safe_cast<bool>(tData->GetValue(static_cast<int>(5)));
-		const bool export_8k_gnd_materials = safe_cast<bool>(tData->GetValue(static_cast<int>(6)));
+		const bool export_uvs              = safe_cast<bool>(tData->GetValue(static_cast<int>(3)));
+		const bool export_normals          = safe_cast<bool>(tData->GetValue(static_cast<int>(4)));
+		const bool export_materials        = safe_cast<bool>(tData->GetValue(static_cast<int>(5)));
+		const bool export_gnd_materials    = safe_cast<bool>(tData->GetValue(static_cast<int>(6)));
+		const bool export_8k_gnd_materials = safe_cast<bool>(tData->GetValue(static_cast<int>(7)));
 
-		const bool export_clutter      = safe_cast<bool>(tData->GetValue(static_cast<int>(7)));
-		const bool export_assets       = safe_cast<bool>(tData->GetValue(static_cast<int>(8)));
-		const bool export_prefabs      = safe_cast<bool>(tData->GetValue(static_cast<int>(9)));
-		const bool export_blueprints   = safe_cast<bool>(tData->GetValue(static_cast<int>(10)));
-		const bool export_harvestables = safe_cast<bool>(tData->GetValue(static_cast<int>(11)));
-		const bool export_decals       = safe_cast<bool>(tData->GetValue(static_cast<int>(12)));
+		const bool export_clutter      = safe_cast<bool>(tData->GetValue(static_cast<int>(8)));
+		const bool export_assets       = safe_cast<bool>(tData->GetValue(static_cast<int>(9)));
+		const bool export_prefabs      = safe_cast<bool>(tData->GetValue(static_cast<int>(10)));
+		const bool export_blueprints   = safe_cast<bool>(tData->GetValue(static_cast<int>(11)));
+		const bool export_harvestables = safe_cast<bool>(tData->GetValue(static_cast<int>(12)));
+		const bool export_decals       = safe_cast<bool>(tData->GetValue(static_cast<int>(13)));
 
 		ConvertSettings::ExportUvs              = export_uvs;
 		ConvertSettings::ExportNormals          = export_normals;
@@ -214,21 +213,35 @@ namespace TileConverter
 		ConvertSettings::ExportHarvestables = export_harvestables;
 		ConvertSettings::ExportDecals       = export_decals;
 
-		const std::wstring tile_path_wstr = msclr::interop::marshal_as<std::wstring>(tile_path);
-		const std::wstring tile_name_wstr = msclr::interop::marshal_as<std::wstring>(tile_name);
-
-		ConvertError cError;
-		TileConv::ConvertToModel(tile_path_wstr, tile_name_wstr, cError);
+		const std::wstring v_file_path_wstr = msclr::interop::marshal_as<std::wstring>(v_file_path);
+		const std::wstring v_file_name_wstr = msclr::interop::marshal_as<std::wstring>(v_file_name);
 
 		System::Array^ result_data = nullptr;
-		if (cError)
+
+		if (v_selected_generator == GeneratorType_TileFile) //Generate mesh from .tile file
 		{
-			result_data = gcnew cli::array<System::Object^>(2);
-			result_data->SetValue(true, static_cast<int>(0));
-			result_data->SetValue(gcnew System::String(cError.GetErrorMsg().c_str()), static_cast<int>(1));
+			ConvertError cError;
+			TileConv::ConvertToModel(v_file_path_wstr, v_file_name_wstr, cError);
+
+			if (cError)
+			{
+				result_data = gcnew cli::array<System::Object^>(2);
+				result_data->SetValue(true, static_cast<int>(0));
+				result_data->SetValue(gcnew System::String(cError.GetErrorMsg().c_str()), static_cast<int>(1));
+			}
+			else
+			{
+				result_data = gcnew cli::array<System::Object^>(1);
+				result_data->SetValue(false, static_cast<int>(0));
+			}
 		}
-		else
+		else //Generate mesh from lua file
 		{
+			DebugOutL("This should definitely do something");
+
+			SM::LuaWorldGenerator v_generator;
+			v_generator.Load(v_file_path_wstr, v_file_name_wstr);
+
 			result_data = gcnew cli::array<System::Object^>(1);
 			result_data->SetValue(false, static_cast<int>(0));
 		}
@@ -333,5 +346,28 @@ namespace TileConverter
 		}
 
 		this->Progress_LBL->Text = gcnew System::String(state_output.c_str());
+	}
+
+	void MainGui::CB_SelectedGeneratorType_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)
+	{
+		switch (this->CB_SelectedGeneratorType->SelectedIndex)
+		{
+		case GeneratorType_TileFile:
+			SendMessage(
+				static_cast<HWND>(this->TilePath_TB->Handle.ToPointer()),
+				EM_SETCUEBANNER,
+				0,
+				reinterpret_cast<LPARAM>(L"Path to Tile")
+			);
+			break;
+		case GeneratorType_LuaFile:
+			SendMessage(
+				static_cast<HWND>(this->TilePath_TB->Handle.ToPointer()),
+				EM_SETCUEBANNER,
+				0,
+				reinterpret_cast<LPARAM>(L"Path to Lua File")
+			);
+			break;
+		}
 	}
 }

@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tile Converter", "Tile Converter.vcxproj", "{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB62BF96-0530-40ED-877E-FB3BDB331144} = {BB62BF96-0530-40ED-877E-FB3BDB331144}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lua", "..\LUA DLL\LUA DLL.vcxproj", "{BB62BF96-0530-40ED-877E-FB3BDB331144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +28,22 @@ Global
 		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.Release|x64.Build.0 = Release|x64
 		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.Release|x86.ActiveCfg = Release|Win32
 		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.Release|x86.Build.0 = Release|Win32
-		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.ReleaseDebugInfo|x64.ActiveCfg = ReleaseDebugInfo|x64
-		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.ReleaseDebugInfo|x64.Build.0 = ReleaseDebugInfo|x64
+		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.ReleaseDebugInfo|x64.ActiveCfg = Release|x64
+		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.ReleaseDebugInfo|x64.Build.0 = Release|x64
 		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.ReleaseDebugInfo|x86.ActiveCfg = ReleaseDebugInfo|Win32
 		{AA90FB17-EE08-4148-9DC1-6F3110FFEA91}.ReleaseDebugInfo|x86.Build.0 = ReleaseDebugInfo|Win32
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Debug|x64.ActiveCfg = Debug|x64
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Debug|x64.Build.0 = Debug|x64
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Debug|x86.ActiveCfg = Debug|Win32
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Debug|x86.Build.0 = Debug|Win32
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Release|x64.ActiveCfg = Release|x64
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Release|x64.Build.0 = Release|x64
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Release|x86.ActiveCfg = Release|Win32
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.Release|x86.Build.0 = Release|Win32
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.ReleaseDebugInfo|x64.ActiveCfg = Release|x64
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.ReleaseDebugInfo|x64.Build.0 = Release|x64
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.ReleaseDebugInfo|x86.ActiveCfg = Release|Win32
+		{BB62BF96-0530-40ED-877E-FB3BDB331144}.ReleaseDebugInfo|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

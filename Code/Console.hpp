@@ -111,6 +111,11 @@ private:
 		WriteConsoleW(DebugConsole::Handle, wstr.data(), static_cast<DWORD>(wstr.size()), NULL, NULL);
 	}
 
+	inline static void Output(const std::string_view& str_view)
+	{
+		WriteConsoleA(DebugConsole::Handle, str_view.data(), static_cast<DWORD>(str_view.size()), NULL, NULL);
+	}
+
 	DECLARE_INTEGER_OUTPUT(unsigned char&);
 	DECLARE_INTEGER_OUTPUT(char&);
 	DECLARE_INTEGER_OUTPUT(unsigned short&);

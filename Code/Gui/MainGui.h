@@ -32,6 +32,8 @@ namespace TileConverter
 	private: System::Windows::Forms::ProgressBar^ ConvertProgress_PB;
 	private: System::Windows::Forms::Label^ Progress_LBL;
 	private: System::Windows::Forms::Timer^ ProgressUpdater;
+	private: System::Windows::Forms::ComboBox^ CB_SelectedGeneratorType;
+	private: System::Windows::Forms::Label^ label1;
 
 		System::ComponentModel::IContainer^ components;
 
@@ -53,6 +55,8 @@ namespace TileConverter
 			this->ConvertProgress_PB = (gcnew System::Windows::Forms::ProgressBar());
 			this->Progress_LBL = (gcnew System::Windows::Forms::Label());
 			this->ProgressUpdater = (gcnew System::Windows::Forms::Timer(this->components));
+			this->CB_SelectedGeneratorType = (gcnew System::Windows::Forms::ComboBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -62,7 +66,7 @@ namespace TileConverter
 			this->Convert_BTN->Enabled = false;
 			this->Convert_BTN->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Convert_BTN->Location = System::Drawing::Point(310, 57);
+			this->Convert_BTN->Location = System::Drawing::Point(310, 101);
 			this->Convert_BTN->Name = L"Convert_BTN";
 			this->Convert_BTN->Size = System::Drawing::Size(92, 36);
 			this->Convert_BTN->TabIndex = 0;
@@ -157,7 +161,7 @@ namespace TileConverter
 			// 
 			this->ConvertProgress_PB->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->ConvertProgress_PB->Location = System::Drawing::Point(12, 75);
+			this->ConvertProgress_PB->Location = System::Drawing::Point(12, 119);
 			this->ConvertProgress_PB->Name = L"ConvertProgress_PB";
 			this->ConvertProgress_PB->Size = System::Drawing::Size(292, 18);
 			this->ConvertProgress_PB->TabIndex = 5;
@@ -168,7 +172,7 @@ namespace TileConverter
 			this->Progress_LBL->AutoSize = true;
 			this->Progress_LBL->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Progress_LBL->Location = System::Drawing::Point(9, 56);
+			this->Progress_LBL->Location = System::Drawing::Point(9, 100);
 			this->Progress_LBL->Name = L"Progress_LBL";
 			this->Progress_LBL->Size = System::Drawing::Size(100, 16);
 			this->Progress_LBL->TabIndex = 6;
@@ -179,11 +183,37 @@ namespace TileConverter
 			this->ProgressUpdater->Interval = 50;
 			this->ProgressUpdater->Tick += gcnew System::EventHandler(this, &MainGui::ProgressUpdater_Tick);
 			// 
+			// CB_SelectedGeneratorType
+			// 
+			this->CB_SelectedGeneratorType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->CB_SelectedGeneratorType->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->CB_SelectedGeneratorType->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->CB_SelectedGeneratorType->FormattingEnabled = true;
+			this->CB_SelectedGeneratorType->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Generate from .tile file", L"Generate from .lua script" });
+			this->CB_SelectedGeneratorType->Location = System::Drawing::Point(12, 71);
+			this->CB_SelectedGeneratorType->Name = L"CB_SelectedGeneratorType";
+			this->CB_SelectedGeneratorType->Size = System::Drawing::Size(390, 24);
+			this->CB_SelectedGeneratorType->TabIndex = 7;
+			this->CB_SelectedGeneratorType->SelectedIndexChanged += gcnew System::EventHandler(this, &MainGui::CB_SelectedGeneratorType_SelectedIndexChanged);
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F));
+			this->label1->Location = System::Drawing::Point(9, 52);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(102, 16);
+			this->label1->TabIndex = 8;
+			this->label1->Text = L"Generator Type";
+			// 
 			// MainGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(414, 103);
+			this->ClientSize = System::Drawing::Size(414, 147);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->CB_SelectedGeneratorType);
 			this->Controls->Add(this->Progress_LBL);
 			this->Controls->Add(this->ConvertProgress_PB);
 			this->Controls->Add(this->TilePathSelector_BTN);
@@ -191,7 +221,7 @@ namespace TileConverter
 			this->Controls->Add(this->Convert_BTN);
 			this->Controls->Add(this->menuStrip1);
 			this->MainMenuStrip = this->menuStrip1;
-			this->MinimumSize = System::Drawing::Size(430, 142);
+			this->MinimumSize = System::Drawing::Size(430, 186);
 			this->Name = L"MainGui";
 			this->ShowIcon = false;
 			this->Text = L"Tile Converter";
@@ -218,5 +248,6 @@ namespace TileConverter
 		System::Void TS_About_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void TS_Settings_BTN_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void ProgressUpdater_Tick(System::Object^ sender, System::EventArgs^ e);
+		System::Void CB_SelectedGeneratorType_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e);
 	};
 }

@@ -141,6 +141,9 @@
     <ClCompile Include="Code\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\LuaWorldGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
@@ -330,6 +333,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\Mod\DecalsetReader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\LuaWorldGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
