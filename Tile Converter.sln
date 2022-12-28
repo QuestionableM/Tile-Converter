@@ -8,7 +8,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tile Converter", "Tile Conv
 		{BB62BF96-0530-40ED-877E-FB3BDB331144} = {BB62BF96-0530-40ED-877E-FB3BDB331144}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lua", "..\LUA DLL\LUA DLL.vcxproj", "{BB62BF96-0530-40ED-877E-FB3BDB331144}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lua", "Lua.vcxproj", "{BB62BF96-0530-40ED-877E-FB3BDB331144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
