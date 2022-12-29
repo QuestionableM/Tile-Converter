@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 extern "C"
 {
 	#include <lstate.h>
@@ -25,6 +27,12 @@ namespace SM
 
 			//Registers all the lua base functions
 			static void Register(lua_State* L);
+
+			inline static const std::wstring& GetCurrentFile() { return Base::m_CurrentLuaFile; }
+			inline static void SetCurrentFile(const std::wstring& file) { Base::m_CurrentLuaFile = file; }
+
+		private:
+			inline static std::wstring m_CurrentLuaFile = L"";
 		};
 	}
 }

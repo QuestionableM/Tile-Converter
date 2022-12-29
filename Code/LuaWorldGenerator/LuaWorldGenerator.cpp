@@ -21,21 +21,6 @@ namespace SM
 	}
 
 	/*
-	static const luaL_Reg loadedlibs[] = {
-  {LUA_GNAME, luaopen_base},
-  {LUA_LOADLIBNAME, luaopen_package},
-  {LUA_COLIBNAME, luaopen_coroutine},
-  {LUA_TABLIBNAME, luaopen_table},
-  {LUA_IOLIBNAME, luaopen_io},
-  {LUA_OSLIBNAME, luaopen_os},
-  {LUA_STRLIBNAME, luaopen_string},
-  {LUA_MATHLIBNAME, luaopen_math},
-  {LUA_UTF8LIBNAME, luaopen_utf8},
-  {LUA_DBLIBNAME, luaopen_debug},
-  {NULL, NULL}
-};
-
-
 LUALIB_API void luaL_openlibs (lua_State *L) {
   const luaL_Reg *lib;
 	for (lib = loadedlibs; lib->func; lib++) {
@@ -105,8 +90,20 @@ LUALIB_API void luaL_openlibs (lua_State *L) {
 		Lua::Base::Register(m_lState);
 		this->RegisterSMTable();
 
+		Lua::Base::SetCurrentFile(path);
+
 		//Load the main lua file
 		G_LUA_ERROR_CHECK(luaL_dostring(m_lState, v_file_data.c_str()), m_lState);
+
+		lua_getglobal(m_lState, "Init");
+		if (!lua_isfunction(m_lState, -1))
+		{
+			DebugOutL("Couldn't find the terrain generator init function!");
+			return;
+		}
+
+		//Call the init function
+		G_LUA_ERROR_CHECK(lua_pcall(m_lState, 0, 0, 0), m_lState);
 
 		//Find the create function and call it
 		lua_getglobal(m_lState, "Create");

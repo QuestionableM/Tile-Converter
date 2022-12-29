@@ -153,6 +153,9 @@
     <ClCompile Include="Code\Utils\Crypt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\LuaBitLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">

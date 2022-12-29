@@ -186,6 +186,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\Gui\MainGui.cpp" />
     <ClCompile Include="Code\Gui\SettingsGui.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\BaseLuaFunctions.cpp" />
+    <ClCompile Include="Code\LuaWorldGenerator\LuaBitLibrary.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaUuid.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaWorldGenerator.cpp" />
     <ClCompile Include="Code\Main.cpp" />

@@ -2,17 +2,25 @@
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 #include "Utils\String.hpp"
+#include "Utils\File.hpp"
 #include "Console.hpp"
 
+#include <filesystem>
 #include <string>
 
 extern "C"
 {
-	#include <lapi.h>
-	#include <lua.h>
 	#include <lauxlib.h>
 	#include <luaconf.h>
+	#include <lualib.h>
+	#include <lapi.h>
+	#include <lua.h>
 }
+
+//A link to the bit library
+extern "C" int luaopen_bit(lua_State * L);
+
+namespace fs = std::filesystem;
 
 namespace SM
 {
@@ -56,6 +64,14 @@ namespace SM
 			std::wstring v_file_path = String::ToWide(luaL_optstring(L, 1, NULL));
 			KeywordReplacer::ReplaceKeyR(v_file_path);
 
+			const std::wstring v_old_file = Base::GetCurrentFile();
+			if (!File::Exists(v_file_path))
+			{
+				const fs::path v_path = v_old_file;
+				if (v_path.has_parent_path())
+					v_file_path = v_path.parent_path().wstring() + L"/" + v_file_path;
+			}
+
 			DebugOutL("Dofile: ", v_file_path);
 
 			lua_settop(L, 1);
@@ -63,7 +79,12 @@ namespace SM
 			if (luaL_loadfile(L, String::ToUtf8(v_file_path).c_str()) != LUA_OK)
 				return lua_error(L);
 
-			lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
+			{
+				Base::SetCurrentFile(v_file_path);
+				lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
+				Base::SetCurrentFile(v_old_file);
+			}
+
 			return dofilecont(L, 0, 0);
 		}
 
@@ -270,14 +291,33 @@ namespace SM
 
 		void Base::Register(lua_State* L)
 		{
-			lua_pushglobaltable(L);
-			luaL_setfuncs(L, g_base_functions, 0);
+			{
+				//register the base functions
+				lua_pushglobaltable(L);
+				luaL_setfuncs(L, g_base_functions, 0);
 
-			lua_pushvalue(L, -1);
-			lua_setfield(L, -2, LUA_GNAME);
+				lua_pushvalue(L, -1);
+				lua_setfield(L, -2, LUA_GNAME);
 
-			lua_pushliteral(L, LUA_VERSION);
-			lua_setfield(L, -2, "_VERSION");
+				lua_pushliteral(L, LUA_VERSION);
+				lua_setfield(L, -2, "_VERSION");
+			}
+
+			//register bit library
+			luaL_requiref(L, "bit", luaopen_bit, 1);
+			lua_pop(L, 1);
+
+			//register math library
+			luaL_requiref(L, LUA_MATHLIBNAME, luaopen_math, 1);
+			lua_pop(L, 1);
+
+			//register string library
+			luaL_requiref(L, LUA_STRLIBNAME, luaopen_string, 1);
+			lua_pop(L, 1);
+
+			//register table library
+			luaL_requiref(L, LUA_TABLIBNAME, luaopen_table, 1);
+			lua_pop(L, 1);
 		}
 	}
 }
