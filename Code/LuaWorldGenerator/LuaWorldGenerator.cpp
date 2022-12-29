@@ -20,42 +20,6 @@ namespace SM
 		if (m_lState) lua_close(m_lState);
 	}
 
-	/*
-LUALIB_API void luaL_openlibs (lua_State *L) {
-  const luaL_Reg *lib;
-	for (lib = loadedlibs; lib->func; lib++) {
-		luaL_requiref(L, lib->name, lib->func, 1);
-		lua_pop(L, 1); 
-	}
-}
-	*/
-
-	/*
-	{"assert", luaB_assert},
-		{"collectgarbage", luaB_collectgarbage},
-		{"dofile", luaB_dofile},
-		{"error", luaB_error},
-		{"getmetatable", luaB_getmetatable},
-		{"ipairs", luaB_ipairs},
-		{"loadfile", luaB_loadfile},
-		{"load", luaB_load},
-		{"next", luaB_next},
-		{"pairs", luaB_pairs},
-		{"pcall", luaB_pcall},
-		{"print", luaB_print},
-		{"warn", luaB_warn},
-		{"rawequal", luaB_rawequal},
-		{"rawlen", luaB_rawlen},
-		{"rawget", luaB_rawget},
-		{"rawset", luaB_rawset},
-		{"select", luaB_select},
-		{"setmetatable", luaB_setmetatable},
-		{"tonumber", luaB_tonumber},
-		{"tostring", luaB_tostring},
-		{"type", luaB_type},
-		{"xpcall", luaB_xpcall},
-	*/
-
 	void LuaWorldGenerator::RegisterSMTable()
 	{
 		lua_newtable(m_lState);

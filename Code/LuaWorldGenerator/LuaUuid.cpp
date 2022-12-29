@@ -29,30 +29,30 @@ namespace SM
 		int Uuid::New(lua_State* L)
 		{
 			const int v_num_args = lua_gettop(L);
-			if (v_num_args == 1)
+			if (v_num_args != 1)
 			{
-				const int v_arg_type = lua_type(L, 1);
-				if (v_arg_type != LUA_TSTRING)
-				{
-					lua_pushfstring(L, "Argument 1: string expected, got: %s", lua_typename(L, v_arg_type));
-					return lua_error(L);
-				}
-
-				const char* v_uuid_str = lua_tostring(L, 1);
-				if (strlen(v_uuid_str) != 36)
-				{
-					lua_pushstring(L, "Invalid UUID string!");
-					return lua_error(L);
-				}
-
-				SMUuid* v_new_uuid = CreateUuidInternal(L);
-				v_new_uuid->FromCString(v_uuid_str);
-
-				return 1;
+				lua_pushfstring(L, "Expected 1 argument, got: %d", v_num_args);
+				return lua_error(L);
 			}
-			
-			lua_pushfstring(L, "Expected 1 argument, got: %d", v_num_args);
-			return lua_error(L);
+
+			const int v_arg_type = lua_type(L, 1);
+			if (v_arg_type != LUA_TSTRING)
+			{
+				lua_pushfstring(L, "Argument 1: string expected, got: %s", lua_typename(L, v_arg_type));
+				return lua_error(L);
+			}
+
+			const char* v_uuid_str = lua_tostring(L, 1);
+			if (strlen(v_uuid_str) != 36)
+			{
+				lua_pushstring(L, "Invalid UUID string!");
+				return lua_error(L);
+			}
+
+			SMUuid* v_new_uuid = CreateUuidInternal(L);
+			v_new_uuid->FromCString(v_uuid_str);
+
+			return 1;
 		}
 
 		int Uuid::GetNil(lua_State* L)
@@ -67,33 +67,31 @@ namespace SM
 		int Uuid::GenerateNamed(lua_State* L)
 		{
 			const int v_num_args = lua_gettop(L);
-			if (v_num_args == 2)
+			if (v_num_args != 2)
 			{
-				SMUuid* v_uuid = reinterpret_cast<SMUuid*>(luaL_testudata(L, 1, "Uuid"));
-				if (!v_uuid)
-				{
-					lua_pushfstring(L, "Uuid expected, got: %s", luaL_typename(L, 1));
-					return lua_error(L);
-				}
-
-				if (lua_type(L, 2) != LUA_TSTRING)
-				{
-					lua_pushfstring(L, "String expected, got: %s", luaL_typename(L, 2));
-					return lua_error(L);
-				}
-
-				const std::string v_str = lua_tostring(L, 2);
-				const SMUuid v_named_uuid = SMUuid::GenerateNamed(*v_uuid, v_str);
-
-				SMUuid* v_new_uuid = CreateUuidInternal(L);
-				std::memcpy(v_new_uuid->m_Data8, v_named_uuid.m_Data8, 16);
-
-				return 1;
+				lua_pushfstring(L, "Expected 2 arguments, got: %d", v_num_args);
+				return lua_error(L);
 			}
 
+			SMUuid* v_uuid = reinterpret_cast<SMUuid*>(luaL_testudata(L, 1, "Uuid"));
+			if (!v_uuid)
+			{
+				lua_pushfstring(L, "Uuid expected, got: %s", luaL_typename(L, 1));
+				return lua_error(L);
+			}
 
-			lua_pushfstring(L, "Expected 2 arguments, got: %d", v_num_args);
-			return lua_error(L);
+			if (lua_type(L, 2) != LUA_TSTRING)
+			{
+				lua_pushfstring(L, "String expected, got: %s", luaL_typename(L, 2));
+				return lua_error(L);
+			}
+
+			const std::string v_str = lua_tostring(L, 2);
+
+			SMUuid* v_new_uuid = CreateUuidInternal(L);
+			v_new_uuid->GenerateNamed(*v_uuid, v_str);
+
+			return 1;
 		}
 
 		int Uuid::ToString(lua_State* L)

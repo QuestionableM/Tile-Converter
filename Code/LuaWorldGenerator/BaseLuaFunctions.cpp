@@ -275,6 +275,61 @@ namespace SM
 			return 1;
 		}
 
+		#define SPACECHARS	" \f\n\r\t\v"
+
+		static const char* b_str2int(const char* s, int base, lua_Integer* pn) {
+			lua_Unsigned n = 0;
+			int neg = 0;
+			s += strspn(s, SPACECHARS);  /* skip initial spaces */
+			if (*s == '-') { s++; neg = 1; }  /* handle sign */
+			else if (*s == '+') s++;
+			if (!isalnum((unsigned char)*s))  /* no digit? */
+				return NULL;
+			do {
+				int digit = (isdigit((unsigned char)*s)) ? *s - '0'
+					: (toupper((unsigned char)*s) - 'A') + 10;
+				if (digit >= base) return NULL;  /* invalid numeral */
+				n = n * base + digit;
+				s++;
+			} while (isalnum((unsigned char)*s));
+			s += strspn(s, SPACECHARS);  /* skip trailing spaces */
+			*pn = (lua_Integer)((neg) ? (0u - n) : n);
+			return s;
+		}
+
+		int Base::ToNumber(lua_State* L)
+		{
+			if (lua_isnoneornil(L, 2)) {  /* standard conversion? */
+				if (lua_type(L, 1) == LUA_TNUMBER) {  /* already a number? */
+					lua_settop(L, 1);  /* yes; return it */
+					return 1;
+				}
+				else {
+					size_t l;
+					const char* s = lua_tolstring(L, 1, &l);
+					if (s != NULL && lua_stringtonumber(L, s) == l + 1)
+						return 1;  /* successful conversion to number */
+					/* else not a number */
+					luaL_checkany(L, 1);  /* (but there must be some parameter) */
+				}
+			}
+			else {
+				size_t l;
+				const char* s;
+				lua_Integer n = 0;  /* to avoid warnings */
+				lua_Integer base = luaL_checkinteger(L, 2);
+				luaL_checktype(L, 1, LUA_TSTRING);  /* no numbers as strings */
+				s = lua_tolstring(L, 1, &l);
+				luaL_argcheck(L, 2 <= base && base <= 36, 2, "base out of range");
+				if (b_str2int(s, (int)base, &n) == s + l) {
+					lua_pushinteger(L, n);
+					return 1;
+				}  /* else not a number */
+			}  /* else not a number */
+			luaL_pushfail(L);  /* not a number */
+			return 1;
+		}
+
 		static const luaL_Reg g_base_functions[] =
 		{
 			{ "print"   , Lua::Base::Print    },
@@ -283,11 +338,38 @@ namespace SM
 			{ "error"   , Lua::Base::Error    },
 			{ "type"    , Lua::Base::Type     },
 			{ "tostring", Lua::Base::ToString },
+			{ "tonumber", Lua::Base::ToNumber },
 
 			{ LUA_GNAME , NULL },
 			{ "_VERSION", NULL },
 			{ NULL      , NULL }
 		};
+
+		/*
+	{"assert", luaB_assert},
+		{"collectgarbage", luaB_collectgarbage},
+		{"dofile", luaB_dofile},
+		{"error", luaB_error},
+		{"getmetatable", luaB_getmetatable},
+		{"ipairs", luaB_ipairs},
+		{"loadfile", luaB_loadfile},
+		{"load", luaB_load},
+		{"next", luaB_next},
+		{"pairs", luaB_pairs},
+		{"pcall", luaB_pcall},
+		{"print", luaB_print},
+		{"warn", luaB_warn},
+		{"rawequal", luaB_rawequal},
+		{"rawlen", luaB_rawlen},
+		{"rawget", luaB_rawget},
+		{"rawset", luaB_rawset},
+		{"select", luaB_select},
+		{"setmetatable", luaB_setmetatable},
+		{"tonumber", luaB_tonumber},
+		{"tostring", luaB_tostring},
+		{"type", luaB_type},
+		{"xpcall", luaB_xpcall},
+	*/
 
 		void Base::Register(lua_State* L)
 		{

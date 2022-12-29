@@ -25,6 +25,8 @@ namespace SM
 
 			static int ToString(lua_State* L);
 
+			static int ToNumber(lua_State* L);
+
 			//Registers all the lua base functions
 			static void Register(lua_State* L);
 
