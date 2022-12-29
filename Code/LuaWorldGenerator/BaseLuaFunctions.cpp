@@ -82,6 +82,36 @@ namespace SM
 			return 1;
 		}
 
+		inline int luaC_print_type_get_udata_idx(int idx)
+		{
+			return (idx == -1) ? -2 : idx;
+		}
+
+		inline void luaC_print_type(lua_State* L, int idx)
+		{
+			const int tt = luaL_getmetafield(L, idx, "__name");
+			if (tt == LUA_TSTRING) //we might be looking at custom types
+			{
+				const char* v_type_name = lua_tostring(L, -1);
+				if (strcmp(v_type_name, "Uuid") == 0)
+				{
+					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
+					DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
+				}
+				else
+				{
+					DebugOut(v_type_name);
+				}
+			}
+			else
+			{
+				DebugOut(lua_typename(L, lua_type(L, idx)));
+			}
+
+			if (tt != LUA_TNIL)
+				lua_pop(L, 1);
+		}
+
 	#if defined(_DEBUG)
 		void luaC_print_table(lua_State* L, int idx);
 
@@ -109,7 +139,7 @@ namespace SM
 				break;
 			case LUA_TTABLE:
 				{
-					if (lua_isstring(L, -2))
+					if (lua_type(L, -2) == LUA_TSTRING)
 					{
 						const char* v_data = lua_tostring(L, -2);
 						if (strcmp(v_data, "_G") == 0)
@@ -123,25 +153,8 @@ namespace SM
 					break;
 				}
 			default:
-				{
-					//TODO: Check the name metafield instead of using this method
-					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(luaL_testudata(L, -1, "Uuid"));
-					if (v_uuid)
-					{
-						DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
-						break;
-					}
-
-					const int tt = luaL_getmetafield(L, -1, "__name"); //try name
-					const char* kind = (tt == LUA_TSTRING) ? lua_tostring(L, -1) : luaL_typename(L, -1);
-					lua_pushfstring(L, "%s: %p", kind, lua_topointer(L, -1));
-					if (tt != LUA_TNIL)
-						lua_remove(L, -2); //remove __name
-
-					DebugOut(lua_tostring(L, -1));
-					lua_pop(L, 1);
-					break;
-				}
+				luaC_print_type(L, -1);
+				break;
 			}
 		}
 
@@ -167,12 +180,14 @@ namespace SM
 			DebugOut("{ ");
 
 			if (lua_next(L, idx) != 0)
+			{
 				luaC_print_table_internal(L);
 
-			while (lua_next(L, idx) != 0)
-			{
-				DebugOut(", ");
-				luaC_print_table_internal(L);
+				while (lua_next(L, idx) != 0)
+				{
+					DebugOut(", ");
+					luaC_print_table_internal(L);
+				}
 			}
 
 			DebugOut(" }");
@@ -183,14 +198,14 @@ namespace SM
 			switch (lua_type(L, idx))
 			{
 			case LUA_TNUMBER:
-			{
-				if (lua_isinteger(L, idx))
-					DebugOut((LUAI_UACINT)lua_tointeger(L, idx));
-				else
-					DebugOut((LUAI_UACNUMBER)lua_tonumber(L, idx));
+				{
+					if (lua_isinteger(L, idx))
+						DebugOut((LUAI_UACINT)lua_tointeger(L, idx));
+					else
+						DebugOut((LUAI_UACNUMBER)lua_tonumber(L, idx));
 
-				break;
-			}
+					break;
+				}
 			case LUA_TSTRING:
 				DebugOut(lua_tostring(L, idx));
 				break;
@@ -204,24 +219,8 @@ namespace SM
 				luaC_print_table(L, idx);
 				break;
 			default:
-				{
-					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(luaL_testudata(L, idx, "Uuid"));
-					if (v_uuid)
-					{
-						DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
-						break;
-					}
-
-					const int tt = luaL_getmetafield(L, idx, "__name"); //try name
-					const char* kind = (tt == LUA_TSTRING) ? lua_tostring(L, -1) : luaL_typename(L, idx);
-					lua_pushfstring(L, "%s: %p", kind, lua_topointer(L, idx));
-					if (tt != LUA_TNIL)
-						lua_remove(L, -2); //remove __name
-
-					DebugOut(lua_tostring(L, -1));
-					lua_pop(L, 1);
-					break;
-				}
+				luaC_print_type(L, idx);
+				break;
 			}
 		}
 	#endif
