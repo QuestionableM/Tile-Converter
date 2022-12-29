@@ -8,10 +8,10 @@
 
 extern "C"
 {
-	#include <lua.h>
-	#include <lapi.h>
-	#include <lualib.h>
-	#include <lauxlib.h>
+	#include <lua\lua.h>
+	#include <lua\lapi.h>
+	#include <lua\lualib.h>
+	#include <lua\lauxlib.h>
 }
 
 namespace SM
@@ -28,19 +28,8 @@ namespace SM
 
 		int Uuid::New(lua_State* L)
 		{
-			const int v_num_args = lua_gettop(L);
-			if (v_num_args != 1)
-			{
-				lua_pushfstring(L, "Expected 1 argument, got: %d", v_num_args);
-				return lua_error(L);
-			}
-
-			const int v_arg_type = lua_type(L, 1);
-			if (v_arg_type != LUA_TSTRING)
-			{
-				lua_pushfstring(L, "Argument 1: string expected, got: %s", lua_typename(L, v_arg_type));
-				return lua_error(L);
-			}
+			G_LUA_CUSTOM_ARG_CHECK(L, 1);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
 
 			const char* v_uuid_str = lua_tostring(L, 1);
 			if (strlen(v_uuid_str) != 36)
@@ -66,31 +55,26 @@ namespace SM
 
 		int Uuid::GenerateNamed(lua_State* L)
 		{
-			const int v_num_args = lua_gettop(L);
-			if (v_num_args != 2)
-			{
-				lua_pushfstring(L, "Expected 2 arguments, got: %d", v_num_args);
-				return lua_error(L);
-			}
+			G_LUA_CUSTOM_ARG_CHECK(L, 2);
 
-			SMUuid* v_uuid = reinterpret_cast<SMUuid*>(luaL_testudata(L, 1, "Uuid"));
-			if (!v_uuid)
-			{
-				lua_pushfstring(L, "Uuid expected, got: %s", luaL_typename(L, 1));
-				return lua_error(L);
-			}
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMUUID);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSTRING);
 
-			if (lua_type(L, 2) != LUA_TSTRING)
-			{
-				lua_pushfstring(L, "String expected, got: %s", luaL_typename(L, 2));
-				return lua_error(L);
-			}
-
+			SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, 1));
 			const std::string v_str = lua_tostring(L, 2);
 
 			SMUuid* v_new_uuid = CreateUuidInternal(L);
 			v_new_uuid->GenerateNamed(*v_uuid, v_str);
 
+			return 1;
+		}
+
+		int Uuid::GenerateRandom(lua_State * L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 0);
+
+			//TODO: Make it actually random later
+			SMUuid* v_new_uuid = CreateUuidInternal(L);
 			return 1;
 		}
 
@@ -124,15 +108,12 @@ namespace SM
 
 		int Uuid::IsNil(lua_State* L)
 		{
-			SMUuid* v_uuid1 = reinterpret_cast<SMUuid*>(luaL_testudata(L, 1, "Uuid"));
-			if (v_uuid1)
-			{
-				lua_pushboolean(L, v_uuid1->m_Data64[0] == 0 && v_uuid1->m_Data64[1] == 0);
-				return 1;
-			}
+			G_LUA_CUSTOM_ARG_CHECK(L, 1);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMUUID);
 
-			lua_pushstring(L, "IsNil: called on invalid userdata");
-			return lua_error(L);
+			SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, 1));
+			lua_pushboolean(L, v_uuid->m_Data64[0] == 0 && v_uuid->m_Data64[1] == 0);
+			return 1;
 		}
 
 		void Uuid::Register(lua_State* L)
@@ -143,8 +124,10 @@ namespace SM
 				lua_newtable(L);
 
 				Table::PushFunction(L, "new", Lua::Uuid::New);
+				Table::PushFunction(L, "isNil", Lua::Uuid::IsNil);
 				Table::PushFunction(L, "getNil", Lua::Uuid::GetNil);
 				Table::PushFunction(L, "generateNamed", Lua::Uuid::GenerateNamed);
+				Table::PushFunction(L, "generateRandom", Lua::Uuid::GenerateRandom);
 
 				lua_settable(L, -3);
 			}
@@ -152,14 +135,16 @@ namespace SM
 			{
 				//Create uuid metatable
 				luaL_newmetatable(L, "Uuid");
-				Table::PushFunction(L, "__tostring", Uuid::ToString);
-				Table::PushFunction(L, "__eq", Uuid::Equals);
+
+				Table::PushPair(L, "__typeid", LUA_TSMUUID);
+				Table::PushFunction(L, "__tostring", Lua::Uuid::ToString);
+				Table::PushFunction(L, "__eq"      , Lua::Uuid::Equals);
 				
 				{
 					lua_pushstring(L, "__index");
 					lua_newtable(L);
 
-					Table::PushFunction(L, "isNil", Uuid::IsNil);
+					Table::PushFunction(L, "isNil", Lua::Uuid::IsNil);
 
 					lua_settable(L, -3);
 				}

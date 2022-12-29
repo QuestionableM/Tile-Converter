@@ -1,12 +1,24 @@
 #include "LuaWorldGenerator.hpp"
 #include "BaseLuaFunctions.hpp"
 #include "LuaUuid.hpp"
+#include "LuaVec3.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
 #include "Utils\String.hpp"
 #include "Utils\File.hpp"
 #include "Console.hpp"
+
+#define G_LUA_ERROR_CHECK(val, lua_state)                      \
+	if ((val) != LUA_OK) {                                     \
+		const char* v_error_str = lua_tostring(lua_state, -1); \
+		if (!v_error_str) {                                    \
+			DebugErrorL("Lua Error: Unknown Error");           \
+			return;                                            \
+		}                                                      \
+		DebugErrorL("Lua Error: ", v_error_str);               \
+		return;                                                \
+	}
 
 namespace SM
 {
@@ -25,15 +37,10 @@ namespace SM
 		lua_newtable(m_lState);
 
 		Lua::Uuid::Register(m_lState);
+		Lua::Vec3::Register(m_lState);
 
 		//Push SM namespace into the global environment
 		lua_setglobal(m_lState, "sm");
-	}
-
-#define G_LUA_ERROR_CHECK(val, lua_state) \
-	if ((val) != LUA_OK) { \
-		DebugErrorL("Lua Error: ", lua_tostring(lua_state, -1)); \
-		return; \
 	} 
 
 	void LuaWorldGenerator::Load(const std::wstring& path, const std::wstring& name)

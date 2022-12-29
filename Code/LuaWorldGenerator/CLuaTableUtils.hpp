@@ -4,7 +4,7 @@
 
 extern "C"
 {
-	#include <lstate.h>
+	#include <lua\lstate.h>
 }
 
 

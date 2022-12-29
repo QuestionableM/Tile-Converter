@@ -10,12 +10,14 @@
 
 extern "C"
 {
-	#include <lauxlib.h>
-	#include <luaconf.h>
-	#include <lualib.h>
-	#include <lapi.h>
-	#include <lua.h>
+	#include <lua\lauxlib.h>
+	#include <lua\luaconf.h>
+	#include <lua\lualib.h>
+	#include <lua\lapi.h>
+	#include <lua\lua.h>
 }
+
+#include <glm.hpp>
 
 //A link to the bit library
 extern "C" int luaopen_bit(lua_State * L);
@@ -88,18 +90,26 @@ namespace SM
 			return dofilecont(L, 0, 0);
 		}
 
-		int Base::Type(lua_State* L)
+		int Base::TypeLua(lua_State* L)
 		{
 			const int t = lua_type(L, 1);
 			luaL_argcheck(L, t != LUA_TNONE, 1, "value expected");
 
-			const int tt = luaL_getmetafield(L, 1, "__name"); //try name
-			const char* kind = (tt == LUA_TSTRING) ? lua_tostring(L, -1) : lua_typename(L, t);
+			const int v_tt = luaL_getmetafield(L, 1, "__typeid");
+			if (v_tt == LUA_TNUMBER)
+			{
+				const int v_type_idx = static_cast<int>(lua_tointeger(L, -1));
 
-			if (tt != LUA_TNIL)
-				lua_remove(L, -2); //remove __name
+				lua_pop(L, 1); //pop __typeid off the stack
 
-			lua_pushstring(L, kind);
+				lua_pushstring(L, Base::Typename(v_type_idx));
+				return 1;
+			}
+
+			if (v_tt != LUA_TNIL)
+				lua_remove(L, -1);
+
+			lua_pushstring(L, luaL_typename(L, 1));
 			return 1;
 		}
 
@@ -110,27 +120,25 @@ namespace SM
 
 		inline void luaC_print_type(lua_State* L, int idx)
 		{
-			const int tt = luaL_getmetafield(L, idx, "__name");
-			if (tt == LUA_TSTRING) //we might be looking at custom types
+			const int v_type_idx = Base::Type(L, idx);
+			switch (v_type_idx)
 			{
-				const char* v_type_name = lua_tostring(L, -1);
-				if (strcmp(v_type_name, "Uuid") == 0)
+			case LUA_TSMUUID:
 				{
 					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
 					DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
+					break;
 				}
-				else
+			case LUA_TSMVEC3:
 				{
-					DebugOut(v_type_name);
+					glm::vec3* v_vec3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
+					DebugOut("{<Vec3>, ", v_vec3->x, ", ", v_vec3->y, ", ", v_vec3->z, "}");
+					break;
 				}
+			default:
+				DebugOut(Base::Typename(v_type_idx));
+				break;
 			}
-			else
-			{
-				DebugOut(lua_typename(L, lua_type(L, idx)));
-			}
-
-			if (tt != LUA_TNIL)
-				lua_pop(L, 1);
 		}
 
 	#if defined(_DEBUG)
@@ -198,7 +206,7 @@ namespace SM
 		{
 			lua_pushnil(L);
 
-			DebugOut("{ ");
+			DebugOut("{");
 
 			if (lua_next(L, idx) != 0)
 			{
@@ -211,7 +219,7 @@ namespace SM
 				}
 			}
 
-			DebugOut(" }");
+			DebugOut("}");
 		}
 
 		void custom_print_string(lua_State* L, int idx)
@@ -251,7 +259,7 @@ namespace SM
 		#if defined(_DEBUG)
 			const int n = lua_gettop(L); //number of arguments
 
-			DebugOut("[LUA AHHHH] ");
+			DebugOut("[LUA] ");
 
 			custom_print_string(L, 1);
 
@@ -330,13 +338,55 @@ namespace SM
 			return 1;
 		}
 
+		int Base::Type(lua_State* L, const int& idx)
+		{
+			const int v_tt = luaL_getmetafield(L, idx, "__typeid");
+			if (v_tt == LUA_TNUMBER)
+			{
+				const int v_type_idx = static_cast<int>(lua_tointeger(L, -1));
+
+				lua_pop(L, 1); //pop __typeid off the stack
+
+				return v_type_idx;
+			}
+
+			if (v_tt != LUA_TNIL)
+				lua_pop(L, 1); //pop __typeid off the stack
+
+			return lua_type(L, idx);
+		}
+
+		const char* Base::Typename(const int& idx)
+		{
+			switch (idx)
+			{
+			//Base lua types
+			case LUA_TNIL: return "nil";
+			case LUA_TBOOLEAN: return "boolean";
+			case LUA_TLIGHTUSERDATA: return "userdata";
+			case LUA_TNUMBER: return "number";
+			case LUA_TSTRING: return "string";
+			case LUA_TTABLE: return "table";
+			case LUA_TFUNCTION: return "function";
+			case LUA_TUSERDATA: return "userdata";
+			case LUA_TTHREAD: return "thread";
+
+			//Custom lua types
+			case LUA_TSMVEC3: return "Vec3";
+			case LUA_TSMQUAT: return "Quat";
+			case LUA_TSMUUID: return "Uuid";
+
+			default: return "unknown";
+			}
+		}
+
 		static const luaL_Reg g_base_functions[] =
 		{
 			{ "print"   , Lua::Base::Print    },
 			{ "dofile"  , Lua::Base::Dofile   },
 			{ "assert"  , Lua::Base::Assert   },
 			{ "error"   , Lua::Base::Error    },
-			{ "type"    , Lua::Base::Type     },
+			{ "type"    , Lua::Base::TypeLua  },
 			{ "tostring", Lua::Base::ToString },
 			{ "tonumber", Lua::Base::ToNumber },
 

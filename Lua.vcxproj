@@ -18,6 +18,71 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Dependencies\LUA\Include\lua\lapi.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lauxlib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lbaselib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lcode.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lcorolib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lctype.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ldblib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ldebug.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ldo.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ldump.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lfunc.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lgc.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\linit.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\liolib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\llex.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lmathlib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lmem.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\loadlib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lobject.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lopcodes.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\loslib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lparser.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lstate.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lstring.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lstrlib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ltable.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ltablib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ltests.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\ltm.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lundump.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lutf8lib.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lvm.c" />
+    <ClCompile Include="Dependencies\LUA\Include\lua\lzio.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Dependencies\LUA\Include\lua\lapi.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lauxlib.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lcode.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lctype.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\ldebug.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\ldo.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lfunc.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lgc.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\ljumptab.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\llex.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\llimits.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lmem.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lobject.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lopcodes.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lopnames.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lparser.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lprefix.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lstate.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lstring.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\ltable.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\ltests.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\ltm.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lua.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\luaconf.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lualib.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lundump.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lvm.h" />
+    <ClInclude Include="Dependencies\LUA\Include\lua\lzio.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -143,71 +208,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lapi.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lauxlib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lbaselib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lcode.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lcorolib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lctype.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ldblib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ldebug.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ldo.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ldump.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lfunc.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lgc.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\linit.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\liolib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\llex.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lmathlib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lmem.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\loadlib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lobject.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lopcodes.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\loslib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lparser.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lstate.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lstring.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lstrlib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ltable.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ltablib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ltests.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\ltm.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lundump.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lutf8lib.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lvm.c" />
-    <ClCompile Include="..\Tile-Converter\Dependencies\LUA\Include\lzio.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lapi.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lauxlib.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lcode.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lctype.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\ldebug.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\ldo.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lfunc.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lgc.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\ljumptab.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\llex.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\llimits.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lmem.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lobject.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lopcodes.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lopnames.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lparser.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lprefix.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lstate.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lstring.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\ltable.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\ltests.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\ltm.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lua.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\luaconf.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lualib.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lundump.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lvm.h" />
-    <ClInclude Include="..\Tile-Converter\Dependencies\LUA\Include\lzio.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

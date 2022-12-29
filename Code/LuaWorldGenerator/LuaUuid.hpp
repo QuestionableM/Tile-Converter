@@ -2,7 +2,7 @@
 
 extern "C"
 {
-	#include <lstate.h>
+	#include <lua\lstate.h>
 }
 
 namespace SM
@@ -16,6 +16,8 @@ namespace SM
 			int GetNil(lua_State* L);
 
 			int GenerateNamed(lua_State* L);
+
+			int GenerateRandom(lua_State* L);
 
 			int ToString(lua_State* L);
 
