@@ -268,6 +268,7 @@ namespace SM
 				Table::PushFunction(L, "__eq", Lua::Vec3::Equals);
 				Table::PushFunction(L, "__newindex", Lua::Vec3::NewIndex);
 				Table::PushFunction(L, "__index", Lua::Vec3::Index);
+				Table::PushFunction(L, "__tostring", Lua::Vec3::ToString);
 
 				lua_pop(L, 1); //pop the metatable off the stack
 			}
