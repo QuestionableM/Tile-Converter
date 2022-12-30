@@ -9,16 +9,17 @@
 class Color
 {
 public:
-	inline Color() { std::memset(m_bytes, 0, 3); }
+	inline Color() { m_color = 0x000000ff; }
 
-	inline Color(const std::string& color) { this->FromString(color); }
-	inline Color(const std::wstring& color) { this->FromWstring(color); }
+	inline Color(const std::string& color)  { this->FromString<std::string>(color);  }
+	inline Color(const std::wstring& color) { this->FromString<std::wstring>(color); }
 
 	inline Color(const Byte& r, const Byte& g, const Byte& b)
 	{
 		m_bytes[0] = r;
 		m_bytes[1] = g;
 		m_bytes[2] = b;
+		m_bytes[3] = 255;
 	}
 
 	inline Color(const unsigned int& color)
@@ -26,6 +27,7 @@ public:
 		m_bytes[0] = static_cast<Byte>(color);
 		m_bytes[1] = static_cast<Byte>(color >> 8);
 		m_bytes[2] = static_cast<Byte>(color >> 16);
+		m_bytes[3] = static_cast<Byte>(color >> 24);
 	}
 
 
@@ -48,20 +50,30 @@ public:
 
 	inline std::string StringHex() const
 	{
-		std::stringstream sstream;
+		char v_buffer[7];
+		sprintf_s(v_buffer, "%02x%02x%02x", m_bytes[2], m_bytes[1], m_bytes[0]);
 
-		const int v_full_color = m_bytes[2] | (m_bytes[1] << 8) | (m_bytes[0] << 16);
-		sstream << std::hex << std::setfill('0') << std::setw(6) << v_full_color;
+		return std::string(v_buffer);
+	}
 
-		return sstream.str();
+	//Convert to string with alpha component
+	inline std::string StringHexAlpha() const
+	{
+		char v_buffer[9];
+		sprintf(v_buffer, "%02x%02x%02x%02x", m_bytes[3], m_bytes[2], m_bytes[1], m_bytes[0]);
+
+		return std::string(v_buffer);
 	}
 
 private:
-	inline void FromString(const std::string& color)
+	template<typename T>
+	inline void FromString(const T& color)
 	{
-		if (color.size() < 6)
+		static_assert(std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring>, "Color::FromString can only be used with std::string, std::wstring");
+
+		if (color.empty())
 		{
-			std::memset(m_bytes, 0, 3);
+			m_color = 0x000000ff;
 			return;
 		}
 
@@ -69,49 +81,41 @@ private:
 		{
 			if (color.size() < 7)
 			{
-				std::memset(m_bytes, 0, 3);
+				m_color = 0x000000ff;
 				return;
 			}
 
 			m_bytes[0] = static_cast<Byte>(std::stoi(color.substr(1, 2), nullptr, 16));
 			m_bytes[1] = static_cast<Byte>(std::stoi(color.substr(3, 2), nullptr, 16));
 			m_bytes[2] = static_cast<Byte>(std::stoi(color.substr(5, 2), nullptr, 16));
+
+			if (color.size() >= 9)
+				m_bytes[3] = static_cast<Byte>(std::stoi(color.substr(7, 2), nullptr, 16));
+			else
+				m_bytes[3] = 255;
 		}
 		else
 		{
-			m_bytes[0] = static_cast<Byte>(std::stoi(color.substr(0, 2), nullptr, 16));
-			m_bytes[1] = static_cast<Byte>(std::stoi(color.substr(2, 2), nullptr, 16));
-			m_bytes[2] = static_cast<Byte>(std::stoi(color.substr(4, 2), nullptr, 16));
-		}
-	}
-
-	inline void FromWstring(const std::wstring& color)
-	{
-		if (color.size() < 6)
-		{
-			std::memset(m_bytes, 0, 3);
-			return;
-		}
-
-		if (color[0] == '#')
-		{
-			if (color.size() < 7)
+			if (color.size() < 6)
 			{
-				std::memset(m_bytes, 0, 3);
+				m_color = 0x000000ff;
 				return;
 			}
 
-			m_bytes[0] = static_cast<Byte>(std::stoi(color.substr(1, 2), nullptr, 16));
-			m_bytes[1] = static_cast<Byte>(std::stoi(color.substr(3, 2), nullptr, 16));
-			m_bytes[2] = static_cast<Byte>(std::stoi(color.substr(5, 2), nullptr, 16));
-		}
-		else
-		{
 			m_bytes[0] = static_cast<Byte>(std::stoi(color.substr(0, 2), nullptr, 16));
 			m_bytes[1] = static_cast<Byte>(std::stoi(color.substr(2, 2), nullptr, 16));
 			m_bytes[2] = static_cast<Byte>(std::stoi(color.substr(4, 2), nullptr, 16));
+
+			if (color.size() >= 8)
+				m_bytes[3] = static_cast<Byte>(std::stoi(color.substr(6, 2), nullptr, 16));
+			else
+				m_bytes[3] = 255;
 		}
 	}
 
-	Byte m_bytes[3];
+	union
+	{
+		Byte m_bytes[4];
+		unsigned int m_color;
+	};
 };
