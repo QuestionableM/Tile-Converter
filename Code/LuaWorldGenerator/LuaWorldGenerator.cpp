@@ -1,5 +1,6 @@
 #include "LuaWorldGenerator.hpp"
 #include "BaseLuaFunctions.hpp"
+#include "LuaColor.hpp"
 #include "LuaUuid.hpp"
 #include "LuaVec3.hpp"
 
@@ -38,6 +39,7 @@ namespace SM
 
 		Lua::Uuid::Register(m_lState);
 		Lua::Vec3::Register(m_lState);
+		Lua::Color::Register(m_lState);
 
 		//Push SM namespace into the global environment
 		lua_setglobal(m_lState, "sm");

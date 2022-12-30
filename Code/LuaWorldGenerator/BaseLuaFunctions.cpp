@@ -2,6 +2,7 @@
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 #include "Utils\String.hpp"
+#include "Utils\Color.hpp"
 #include "Utils\File.hpp"
 #include "Console.hpp"
 
@@ -23,6 +24,8 @@ extern "C"
 extern "C" int luaopen_bit(lua_State * L);
 
 namespace fs = std::filesystem;
+
+using SMColor = ::Color;
 
 namespace SM
 {
@@ -132,7 +135,13 @@ namespace SM
 			case LUA_TSMVEC3:
 				{
 					glm::vec3* v_vec3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
-					DebugOut("{<Vec3>, ", v_vec3->x, ", ", v_vec3->y, ", ", v_vec3->z, "}");
+					DebugOut("{<Vec3>, x = ", v_vec3->x, ", y = ", v_vec3->y, ", z = ", v_vec3->z, "}");
+					break;
+				}
+			case LUA_TSMCOLOR:
+				{
+					SMColor* v_color = reinterpret_cast<SMColor*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
+					DebugOut("{<Color>, r = ", v_color->GetFloat<float>(0), ", g = ", v_color->GetFloat<float>(1), ", b = ", v_color->GetFloat<float>(2), ", a = ", v_color->GetFloat<float>(3), "}");
 					break;
 				}
 			default:
@@ -375,6 +384,7 @@ namespace SM
 			case LUA_TSMVEC3: return "Vec3";
 			case LUA_TSMQUAT: return "Quat";
 			case LUA_TSMUUID: return "Uuid";
+			case LUA_TSMCOLOR: return "Color";
 
 			default: return "unknown";
 			}

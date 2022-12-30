@@ -2,8 +2,6 @@
 
 #include "Utils/ByteImpl.hpp"
 
-#include <sstream>
-#include <iomanip>
 #include <string>
 
 class Color
@@ -22,28 +20,70 @@ public:
 		m_bytes[3] = 255;
 	}
 
+	inline Color(const Byte& r, const Byte& g, const Byte& b, const Byte& a)
+	{
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = a;
+	}
+
 	inline Color(const unsigned int& color)
 	{
-		m_bytes[0] = static_cast<Byte>(color);
-		m_bytes[1] = static_cast<Byte>(color >> 8);
-		m_bytes[2] = static_cast<Byte>(color >> 16);
-		m_bytes[3] = static_cast<Byte>(color >> 24);
+		this->SetIntLittleEndian(color);
 	}
 
 
-	inline void operator=(const std::string& color) { this->FromString(color); }
-	inline void operator=(const std::wstring& color) { this->FromWstring(color); }
+	inline void operator=(const std::string& color) { this->FromString<std::string>(color); }
+	inline void operator=(const std::wstring& color) { this->FromString<std::wstring>(color); }
+
+	inline void SetIntLittleEndian(const unsigned int& color)
+	{
+		this->r = static_cast<Byte>(color);
+		this->g = static_cast<Byte>(color >> 8);
+		this->b = static_cast<Byte>(color >> 16);
+		this->a = static_cast<Byte>(color >> 24);
+	}
+
+	inline void SetIntBigEndian(const unsigned int& color)
+	{
+		this->r = static_cast<Byte>(color >> 24);
+		this->g = static_cast<Byte>(color >> 16);
+		this->b = static_cast<Byte>(color >> 8);
+		this->a = static_cast<Byte>(color);
+	}
+
+	template<class T>
+	constexpr inline void SetRGBFloat(const T& r, const T& g, const T& b)
+	{
+		static_assert(std::is_floating_point_v<T>, "SetRGBFloat can only be used with floating point types");
+
+		this->r = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(r, static_cast<T>(1.0))) * static_cast<T>(255.0));
+		this->g = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(g, static_cast<T>(1.0))) * static_cast<T>(255.0));
+		this->b = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(b, static_cast<T>(1.0))) * static_cast<T>(255.0));
+	}
+
+	template<class T>
+	constexpr inline void SetRGBAFloat(const T& r, const T& g, const T& b, const T& a)
+	{
+		static_assert(std::is_floating_point_v<T>, "SetRGBAFloat can only be used with floating point types");
+
+		this->r = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(r, static_cast<T>(1.0))) * static_cast<T>(255.0));
+		this->g = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(g, static_cast<T>(1.0))) * static_cast<T>(255.0));
+		this->b = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(b, static_cast<T>(1.0))) * static_cast<T>(255.0));
+		this->a = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(a, static_cast<T>(1.0))) * static_cast<T>(255.0));
+	}
 
 	inline std::string String() const
 	{
-		return std::to_string(m_bytes[0]) + " " + std::to_string(m_bytes[1]) + " " + std::to_string(m_bytes[2]);
+		return std::to_string(this->r) + " " + std::to_string(this->g) + " " + std::to_string(this->b);
 	}
 
 	inline std::string StringNormalized() const
 	{
-		const float v_norm_r = static_cast<float>(m_bytes[0]) / 255.0f;
-		const float v_norm_g = static_cast<float>(m_bytes[1]) / 255.0f;
-		const float v_norm_b = static_cast<float>(m_bytes[2]) / 255.0f;
+		const float v_norm_r = static_cast<float>(this->r) / 255.0f;
+		const float v_norm_g = static_cast<float>(this->g) / 255.0f;
+		const float v_norm_b = static_cast<float>(this->b) / 255.0f;
 
 		return std::to_string(v_norm_r) + " " + std::to_string(v_norm_g) + " " + std::to_string(v_norm_b);
 	}
@@ -51,7 +91,7 @@ public:
 	inline std::string StringHex() const
 	{
 		char v_buffer[7];
-		sprintf_s(v_buffer, "%02x%02x%02x", m_bytes[2], m_bytes[1], m_bytes[0]);
+		sprintf_s(v_buffer, "%02x%02x%02x", this->r, this->g, this->b);
 
 		return std::string(v_buffer);
 	}
@@ -60,12 +100,27 @@ public:
 	inline std::string StringHexAlpha() const
 	{
 		char v_buffer[9];
-		sprintf(v_buffer, "%02x%02x%02x%02x", m_bytes[3], m_bytes[2], m_bytes[1], m_bytes[0]);
+		sprintf_s(v_buffer, "%02x%02x%02x%02x", this->r, this->g, this->b, this->a);
 
 		return std::string(v_buffer);
 	}
 
-private:
+	template<typename T>
+	inline T GetFloat(const std::size_t& idx) const
+	{
+		static_assert(std::is_floating_point_v<T>, "GetFloat can only be used with floating point types");
+
+		return static_cast<T>(m_bytes[idx]) / static_cast<T>(255.0);
+	}
+
+	template<typename T>
+	constexpr inline void SetFloat(const std::size_t& idx, const T& fp_val)
+	{
+		static_assert(std::is_floating_point_v<T>, "SetFloat can only be used with floating point types");
+
+		m_bytes[idx] = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(fp_val, static_cast<T>(1.0))) * static_cast<T>(255.0));
+	}
+
 	template<typename T>
 	inline void FromString(const T& color)
 	{
@@ -85,14 +140,14 @@ private:
 				return;
 			}
 
-			m_bytes[0] = static_cast<Byte>(std::stoi(color.substr(1, 2), nullptr, 16));
-			m_bytes[1] = static_cast<Byte>(std::stoi(color.substr(3, 2), nullptr, 16));
-			m_bytes[2] = static_cast<Byte>(std::stoi(color.substr(5, 2), nullptr, 16));
+			this->r = static_cast<Byte>(std::stoi(color.substr(1, 2), nullptr, 16));
+			this->g = static_cast<Byte>(std::stoi(color.substr(3, 2), nullptr, 16));
+			this->b = static_cast<Byte>(std::stoi(color.substr(5, 2), nullptr, 16));
 
 			if (color.size() >= 9)
-				m_bytes[3] = static_cast<Byte>(std::stoi(color.substr(7, 2), nullptr, 16));
+				this->a = static_cast<Byte>(std::stoi(color.substr(7, 2), nullptr, 16));
 			else
-				m_bytes[3] = 255;
+				this->a = 255;
 		}
 		else
 		{
@@ -102,14 +157,14 @@ private:
 				return;
 			}
 
-			m_bytes[0] = static_cast<Byte>(std::stoi(color.substr(0, 2), nullptr, 16));
-			m_bytes[1] = static_cast<Byte>(std::stoi(color.substr(2, 2), nullptr, 16));
-			m_bytes[2] = static_cast<Byte>(std::stoi(color.substr(4, 2), nullptr, 16));
+			this->r = static_cast<Byte>(std::stoi(color.substr(0, 2), nullptr, 16));
+			this->g = static_cast<Byte>(std::stoi(color.substr(2, 2), nullptr, 16));
+			this->b = static_cast<Byte>(std::stoi(color.substr(4, 2), nullptr, 16));
 
 			if (color.size() >= 8)
-				m_bytes[3] = static_cast<Byte>(std::stoi(color.substr(6, 2), nullptr, 16));
+				this->a = static_cast<Byte>(std::stoi(color.substr(6, 2), nullptr, 16));
 			else
-				m_bytes[3] = 255;
+				this->a = 255;
 		}
 	}
 
@@ -117,5 +172,13 @@ private:
 	{
 		Byte m_bytes[4];
 		unsigned int m_color;
+
+		struct
+		{
+			Byte r;
+			Byte g;
+			Byte b;
+			Byte a;
+		};
 	};
 };

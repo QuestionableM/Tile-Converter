@@ -180,6 +180,14 @@ namespace SM
 			return 1;
 		}
 
+		int Vec3::ToString(lua_State* L)
+		{
+			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			lua_pushfstring(L, "(%f,%f,%f)", v_vec->x, v_vec->y, v_vec->z);
+
+			return 1;
+		}
+
 		int Vec3::NewIndex(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
@@ -191,17 +199,12 @@ namespace SM
 
 			switch (*v_index_str)
 			{
-			case 'x': v_userdata->x = static_cast<float>(lua_tonumber(L, 3)); break;
-			case 'y': v_userdata->y = static_cast<float>(lua_tonumber(L, 3)); break;
-			case 'z': v_userdata->z = static_cast<float>(lua_tonumber(L, 3)); break;
-			default:
-				{
-					lua_pushfstring(L, "vec3: invalid index \"%s\"", v_index_str);
-					return lua_error(L);
-				}
+			case 'x': v_userdata->x = static_cast<float>(lua_tonumber(L, 3)); return 0;
+			case 'y': v_userdata->y = static_cast<float>(lua_tonumber(L, 3)); return 0;
+			case 'z': v_userdata->z = static_cast<float>(lua_tonumber(L, 3)); return 0;
 			}
 
-			return 0;
+			return luaL_error(L, "Unknown member '%s' in userdata", v_index_str);
 		}
 
 		static const std::unordered_map<std::string, int (*)(lua_State*)> g_vec3Userdata =
@@ -226,10 +229,7 @@ namespace SM
 
 			const auto v_iter = g_vec3Userdata.find(v_index_str);
 			if (v_iter == g_vec3Userdata.end())
-			{
-				lua_pushfstring(L, "vec3: attempt to index unknown userdata: \"%s\"", v_index_str);
-				return lua_error(L);
-			}
+				return luaL_error(L, "Unknown member '%s' in userdata", v_index_str);
 
 			lua_pushcfunction(L, v_iter->second);
 			return 1;

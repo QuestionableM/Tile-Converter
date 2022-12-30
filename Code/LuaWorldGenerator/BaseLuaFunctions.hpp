@@ -10,19 +10,21 @@ extern "C"
 #define LUA_TSMVEC3 (LUA_TOTALTYPES + 1)
 #define LUA_TSMQUAT (LUA_TOTALTYPES + 2)
 #define LUA_TSMUUID (LUA_TOTALTYPES + 3)
-#define LUA_SM_NUM_TYPES (LUA_TOTALTYPES + 4)
+#define LUA_TSMCOLOR (LUA_TOTALTYPES + 4)
+#define LUA_SM_NUM_TYPES (LUA_TOTALTYPES + 5)
 
 #define G_LUA_CUSTOM_ARG_CHECK(L, N) \
 	const int v_num_args = lua_gettop(L); \
 	if (v_num_args != N) { \
-		lua_pushfstring(L, "Expected %d arguments, got: %d", N, v_num_args); \
-		return lua_error(L); \
+		return luaL_error(L, "Expected %d arguments, got: %d", N, v_num_args); \
 	}
+
+#define G_LUA_CUSTOM_ARG_TYPE_ERROR(L, I, T) \
+	return luaL_error(L, "Argument %d: %s expected, got: %s", I, SM::Lua::Base::Typename(T), SM::Lua::Base::Typename(SM::Lua::Base::Type(L, I)))
 
 #define G_LUA_CUSTOM_ARG_TYPE_CHECK(L, I, T) \
 	if (SM::Lua::Base::Type(L, I) != T) { \
-		lua_pushfstring(L, "Argument %d: %s expected, got: %s", I, SM::Lua::Base::Typename(T), SM::Lua::Base::Typename(SM::Lua::Base::Type(L, I))); \
-		return lua_error(L); \
+		G_LUA_CUSTOM_ARG_TYPE_ERROR(L, I, T); \
 	}
 
 namespace SM

@@ -31,6 +31,8 @@ namespace SM
 			int SetY(lua_State* L);
 			int SetZ(lua_State* L);
 
+			int ToString(lua_State* L);
+
 			int NewIndex(lua_State* L);
 
 			int Index(lua_State* L);
