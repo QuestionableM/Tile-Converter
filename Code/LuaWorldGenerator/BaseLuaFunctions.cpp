@@ -354,6 +354,57 @@ namespace SM
 			return 1;
 		}
 
+		/*
+		** Traversal function for 'ipairs'
+		*/
+		static int ipairsaux(lua_State* L) {
+			lua_Integer i = luaL_checkinteger(L, 2);
+			i = luaL_intop(+, i, 1);
+			lua_pushinteger(L, i);
+			return (lua_geti(L, 1, i) == LUA_TNIL) ? 1 : 2;
+		}
+
+		int Base::IPairs(lua_State* L)
+		{
+			luaL_checkany(L, 1);
+			lua_pushcfunction(L, ipairsaux);  /* iteration function */
+			lua_pushvalue(L, 1);  /* state */
+			lua_pushinteger(L, 0);  /* initial value */
+			return 3;
+		}
+
+		int Base::Next(lua_State* L)
+		{
+			luaL_checktype(L, 1, LUA_TTABLE);
+			lua_settop(L, 2);  /* create a 2nd argument if there isn't one */
+			if (lua_next(L, 1))
+				return 2;
+			else {
+				lua_pushnil(L);
+				return 1;
+			}
+		}
+
+		static int pairscont(lua_State *L, int status, lua_KContext k) {
+			(void)L; (void)status; (void)k;  /* unused */
+			return 3;
+		}
+
+		int Base::Pairs(lua_State* L)
+		{
+			luaL_checkany(L, 1);
+			if (luaL_getmetafield(L, 1, "__pairs") == LUA_TNIL) {  /* no metamethod? */
+				lua_pushcfunction(L, Base::Next);  /* will return generator, */
+				lua_pushvalue(L, 1);  /* state, */
+				lua_pushnil(L);  /* and initial value */
+			}
+			else {
+				lua_pushvalue(L, 1);  /* argument 'self' to metamethod */
+				lua_callk(L, 1, 3, 0, pairscont);  /* get 3 values from metamethod */
+			}
+			return 3;
+		}
+
 		int Base::Type(lua_State* L, const int& idx)
 		{
 			const int v_tt = luaL_getmetafield(L, idx, "__typeid");
@@ -370,6 +421,55 @@ namespace SM
 				lua_pop(L, 1); //pop __typeid off the stack
 
 			return lua_type(L, idx);
+		}
+
+
+		static int finishpcall(lua_State* L, int status, lua_KContext extra) {
+			if (luai_unlikely(status != LUA_OK && status != LUA_YIELD)) {  /* error? */
+				lua_pushboolean(L, 0);  /* first result (false) */
+				lua_pushvalue(L, -2);  /* error message */
+				return 2;  /* return false, msg */
+			}
+			else
+				return lua_gettop(L) - (int)extra;  /* return all results */
+		}
+
+		int Base::PCall(lua_State* L)
+		{
+			int status;
+			luaL_checkany(L, 1);
+			lua_pushboolean(L, 1);  /* first result if no errors */
+			lua_insert(L, 1);  /* put it in place */
+			status = lua_pcallk(L, lua_gettop(L) - 2, LUA_MULTRET, 0, 0, finishpcall);
+			return finishpcall(L, status, 0);
+		}
+
+		int Base::Select(lua_State* L)
+		{
+			int n = lua_gettop(L);
+			if (lua_type(L, 1) == LUA_TSTRING && *lua_tostring(L, 1) == '#') {
+				lua_pushinteger(L, n - 1);
+				return 1;
+			}
+			else {
+				lua_Integer i = luaL_checkinteger(L, 1);
+				if (i < 0) i = n + i;
+				else if (i > n) i = n;
+				luaL_argcheck(L, 1 <= i, 1, "index out of range");
+				return n - (int)i;
+			}
+		}
+
+		int Base::XPCall(lua_State* L)
+		{
+			int status;
+			int n = lua_gettop(L);
+			luaL_checktype(L, 2, LUA_TFUNCTION);  /* check error function */
+			lua_pushboolean(L, 1);  /* first result */
+			lua_pushvalue(L, 1);  /* function */
+			lua_rotate(L, 3, 2);  /* move them below function's arguments */
+			status = lua_pcallk(L, n - 2, LUA_MULTRET, 2, 2, finishpcall);
+			return finishpcall(L, status, 2);
 		}
 
 		const char* Base::Typename(const int& idx)
@@ -406,37 +506,17 @@ namespace SM
 			{ "type"    , Lua::Base::TypeLua  },
 			{ "tostring", Lua::Base::ToString },
 			{ "tonumber", Lua::Base::ToNumber },
+			{ "ipairs"  , Lua::Base::IPairs   },
+			{ "next"    , Lua::Base::Next     },
+			{ "pairs"   , Lua::Base::Pairs    },
+			{ "pcall"   , Lua::Base::PCall    },
+			{ "select"  , Lua::Base::Select   },
+			{ "xpcall"  , Lua::Base::XPCall   },
 
 			{ LUA_GNAME , NULL },
 			{ "_VERSION", NULL },
 			{ NULL      , NULL }
 		};
-
-		/*
-	{"assert", luaB_assert},
-		{"collectgarbage", luaB_collectgarbage},
-		{"dofile", luaB_dofile},
-		{"error", luaB_error},
-		{"getmetatable", luaB_getmetatable},
-		{"ipairs", luaB_ipairs},
-		{"loadfile", luaB_loadfile},
-		{"load", luaB_load},
-		{"next", luaB_next},
-		{"pairs", luaB_pairs},
-		{"pcall", luaB_pcall},
-		{"print", luaB_print},
-		{"warn", luaB_warn},
-		{"rawequal", luaB_rawequal},
-		{"rawlen", luaB_rawlen},
-		{"rawget", luaB_rawget},
-		{"rawset", luaB_rawset},
-		{"select", luaB_select},
-		{"setmetatable", luaB_setmetatable},
-		{"tonumber", luaB_tonumber},
-		{"tostring", luaB_tostring},
-		{"type", luaB_type},
-		{"xpcall", luaB_xpcall},
-	*/
 
 		void Base::Register(lua_State* L)
 		{

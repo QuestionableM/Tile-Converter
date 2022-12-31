@@ -41,6 +41,12 @@ namespace SM
 			static int Print(lua_State* L);
 			static int ToString(lua_State* L);
 			static int ToNumber(lua_State* L);
+			static int IPairs(lua_State* L);
+			static int Next(lua_State* L);
+			static int Pairs(lua_State* L);
+			static int PCall(lua_State* L);
+			static int Select(lua_State* L);
+			static int XPCall(lua_State* L);
 
 			//Returns the type id of an object
 			static int Type(lua_State* L, const int& idx);
