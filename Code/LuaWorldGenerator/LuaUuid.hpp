@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils\Uuid.hpp"
+
 extern "C"
 {
 	#include <lua\lstate.h>
@@ -11,6 +13,8 @@ namespace SM
 	{
 		namespace Uuid
 		{
+			SMUuid* CreateUuid(lua_State* L);
+
 			int New(lua_State* L);
 
 			int GetNil(lua_State* L);

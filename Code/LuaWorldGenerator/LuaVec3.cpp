@@ -2,6 +2,7 @@
 
 #include "BaseLuaFunctions.hpp"
 #include "CLuaTableUtils.hpp"
+#include "LuaQuat.hpp"
 #include "Console.hpp"
 
 #include <unordered_map>
@@ -14,7 +15,7 @@ extern "C"
 
 #include <glm.hpp>
 #include <gtx\rotate_vector.hpp>
-
+#include <gtx\quaternion.hpp>
 /*
 vec3 {
 	bezier2 = function,
@@ -28,7 +29,7 @@ namespace SM
 {
 	namespace Lua
 	{
-		inline glm::vec3* CreateVec3Internal(lua_State* L)
+		glm::vec3* Vec3::CreateVector3(lua_State* L)
 		{
 			glm::vec3* v_new_vec = reinterpret_cast<glm::vec3*>(lua_newuserdata(L, sizeof(glm::vec3)));
 			luaL_setmetatable(L, "Vec3");
@@ -44,7 +45,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
 
-			glm::vec3* v_new_uuid = CreateVec3Internal(L);
+			glm::vec3* v_new_uuid = Vec3::CreateVector3(L);
 			v_new_uuid->x = static_cast<float>(lua_tonumber(L, 1));
 			v_new_uuid->y = static_cast<float>(lua_tonumber(L, 2));
 			v_new_uuid->z = static_cast<float>(lua_tonumber(L, 3));
@@ -56,7 +57,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 0);
 
-			glm::vec3* v_new_uuid = CreateVec3Internal(L);
+			glm::vec3* v_new_uuid = Vec3::CreateVector3(L);
 			v_new_uuid->x = 0;
 			v_new_uuid->y = 0;
 			v_new_uuid->z = 0;
@@ -68,7 +69,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 0);
 
-			glm::vec3* v_new_uuid = CreateVec3Internal(L);
+			glm::vec3* v_new_uuid = Vec3::CreateVector3(L);
 			v_new_uuid->x = 1;
 			v_new_uuid->y = 1;
 			v_new_uuid->z = 1;
@@ -102,7 +103,7 @@ namespace SM
 				{
 					const float v_number = static_cast<float>(lua_tonumber(L, 2));
 
-					glm::vec3* v_new_vec = CreateVec3Internal(L);
+					glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 					(*v_new_vec) = (*v_vec1) * v_number;
 
 					return 1;
@@ -111,7 +112,7 @@ namespace SM
 				{
 					glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-					glm::vec3* v_new_vec = CreateVec3Internal(L);
+					glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 					(*v_new_vec) = (*v_vec1) * (*v_vec2);
 
 					return 1;
@@ -132,7 +133,7 @@ namespace SM
 				{
 					const float v_number = static_cast<float>(lua_tonumber(L, 2));
 
-					glm::vec3* v_new_vec = CreateVec3Internal(L);
+					glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 					(*v_new_vec) = (*v_vec1) / v_number;
 
 					return 1;
@@ -141,7 +142,7 @@ namespace SM
 				{
 					glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-					glm::vec3* v_new_vec = CreateVec3Internal(L);
+					glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 					(*v_new_vec) = (*v_vec1) / (*v_vec2);
 
 					return 1;
@@ -159,7 +160,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = (*v_vec1) + (*v_vec2);
 
 			return 1;
@@ -173,7 +174,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = (*v_vec1) - (*v_vec2);
 
 			return 1;
@@ -211,7 +212,7 @@ namespace SM
 			if (glm::length(*v_vec) < 0.00000011920929f)
 				return luaL_error(L, "Vector must not be of length zero");
 		
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::normalize(*v_vec);
 
 			return 1;
@@ -231,7 +232,7 @@ namespace SM
 				return 1;
 			}
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::normalize(*v_vec);
 
 			return 1;
@@ -247,7 +248,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::cross(*v_vec1, *v_vec2);
 
 			return 1;
@@ -265,7 +266,7 @@ namespace SM
 			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 			const float v_lerp_val = static_cast<float>(lua_tonumber(L, 3));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::mix(*v_vec1, *v_vec2, v_lerp_val);
 
 			return 1;
@@ -295,7 +296,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::min(*v_vec1, *v_vec2);
 
 			return 1;
@@ -311,8 +312,24 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::max(*v_vec1, *v_vec2);
+
+			return 1;
+		}
+
+		int Vec3::GetRotation(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 2);
+
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
+
+			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+
+			glm::quat* v_quat = Quat::CreateQuaternion(L);
+			(*v_quat) = glm::rotation(*v_vec1, *v_vec2);
 
 			return 1;
 		}
@@ -329,7 +346,7 @@ namespace SM
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 			glm::vec3* v_normal = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 3));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotate(*v_vec1, v_rotate_angle, *v_normal);
 
 			return 1;
@@ -345,7 +362,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotateX(*v_vec1, v_rotate_angle);
 
 			return 1;
@@ -361,7 +378,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotateY(*v_vec1, v_rotate_angle);
 
 			return 1;
@@ -377,7 +394,7 @@ namespace SM
 			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 
-			glm::vec3* v_new_vec = CreateVec3Internal(L);
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotateZ(*v_vec1, v_rotate_angle);
 
 			return 1;
@@ -544,6 +561,7 @@ namespace SM
 				Table::PushFunction(L, "rotateY", Lua::Vec3::RotateY);
 				Table::PushFunction(L, "rotateZ", Lua::Vec3::RotateZ);
 				Table::PushFunction(L, "rotate", Lua::Vec3::Rotate);
+				Table::PushFunction(L, "getRotation", Lua::Vec3::GetRotation);
 
 				Table::PushFunction(L, "getX", Lua::Vec3::GetX);
 				Table::PushFunction(L, "getY", Lua::Vec3::GetY);

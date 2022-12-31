@@ -1,8 +1,6 @@
 #include "LuaUuid.hpp"
+
 #include "BaseLuaFunctions.hpp"
-
-#include "Utils\Uuid.hpp"
-
 #include "CLuaTableUtils.hpp"
 #include "Console.hpp"
 
@@ -18,12 +16,12 @@ namespace SM
 {
 	namespace Lua
 	{
-		inline SMUuid* CreateUuidInternal(lua_State* L)
+		SMUuid* Uuid::CreateUuid(lua_State* L)
 		{
-			SMUuid* v_new_uuid = reinterpret_cast<SMUuid*>(lua_newuserdata(L, sizeof(SMUuid)));
+			SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_newuserdata(L, sizeof(SMUuid)));
 			luaL_setmetatable(L, "Uuid");
 
-			return v_new_uuid;
+			return v_uuid;
 		}
 
 		int Uuid::New(lua_State* L)
@@ -38,7 +36,7 @@ namespace SM
 				return lua_error(L);
 			}
 
-			SMUuid* v_new_uuid = CreateUuidInternal(L);
+			SMUuid* v_new_uuid = Uuid::CreateUuid(L);
 			v_new_uuid->FromCString(v_uuid_str);
 
 			return 1;
@@ -46,7 +44,7 @@ namespace SM
 
 		int Uuid::GetNil(lua_State* L)
 		{
-			SMUuid* v_new_uuid = CreateUuidInternal(L);
+			SMUuid* v_new_uuid = Uuid::CreateUuid(L);
 			v_new_uuid->m_Data64[0] = 0;
 			v_new_uuid->m_Data64[1] = 0;
 
@@ -63,7 +61,7 @@ namespace SM
 			SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, 1));
 			const std::string v_str = lua_tostring(L, 2);
 
-			SMUuid* v_new_uuid = CreateUuidInternal(L);
+			SMUuid* v_new_uuid = Uuid::CreateUuid(L);
 			v_new_uuid->GenerateNamed(*v_uuid, v_str);
 
 			return 1;
@@ -74,7 +72,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 0);
 
 			//TODO: Make it actually random later
-			SMUuid* v_new_uuid = CreateUuidInternal(L);
+			SMUuid* v_new_uuid = Uuid::CreateUuid(L);
 			return 1;
 		}
 

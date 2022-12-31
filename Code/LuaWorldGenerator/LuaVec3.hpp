@@ -5,12 +5,16 @@ extern "C"
 	#include <lua\lstate.h>
 }
 
+#include <glm.hpp>
+
 namespace SM
 {
 	namespace Lua
 	{
 		namespace Vec3
 		{
+			glm::vec3* CreateVector3(lua_State* L);
+
 			int New(lua_State* L);
 			int Zero(lua_State* L);
 			int One(lua_State* L);
@@ -31,6 +35,7 @@ namespace SM
 			int Dot(lua_State* L);
 			int Min(lua_State* L);
 			int Max(lua_State* L);
+			int GetRotation(lua_State* L);
 
 			int Rotate(lua_State* L);
 			int RotateX(lua_State* L);

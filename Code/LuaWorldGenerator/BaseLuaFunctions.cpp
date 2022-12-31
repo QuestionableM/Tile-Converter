@@ -19,6 +19,7 @@ extern "C"
 }
 
 #include <glm.hpp>
+#include <gtx\quaternion.hpp>
 
 //A link to the bit library
 extern "C" int luaopen_bit(lua_State * L);
@@ -126,16 +127,22 @@ namespace SM
 			const int v_type_idx = Base::Type(L, idx);
 			switch (v_type_idx)
 			{
-			case LUA_TSMUUID:
-				{
-					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
-					DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
-					break;
-				}
 			case LUA_TSMVEC3:
 				{
 					glm::vec3* v_vec3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
 					DebugOut("{<Vec3>, x = ", v_vec3->x, ", y = ", v_vec3->y, ", z = ", v_vec3->z, "}");
+					break;
+				}
+			case LUA_TSMQUAT:
+				{
+					glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
+					DebugOut("{<Quat>, x = ", v_quat->x, ", y = ", v_quat->y, ", z = ", v_quat->z, ", w = ", v_quat->w, "}");
+					break;
+				}
+			case LUA_TSMUUID:
+				{
+					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
+					DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
 					break;
 				}
 			case LUA_TSMCOLOR:

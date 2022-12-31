@@ -6,6 +6,20 @@
 
 #include "Tile/CellHeader.hpp"
 
+struct TileHeaderBaseInfo
+{
+	int version;
+	long long creator_id;
+	SMUuid uuid;
+
+	int width;
+	int height;
+	int type;
+
+	int cell_header_offset;
+	int cell_header_size;
+};
+
 class TileHeader
 {
 	TileHeader() = default;
@@ -13,16 +27,17 @@ class TileHeader
 	std::vector<Byte> m_TileBytes = {};
 
 public:
-	int m_Version;
-	long long m_CreatorId;
-	SMUuid m_Uuid;
+	TileHeaderBaseInfo m_data;
+	//int m_Version;
+	//long long m_CreatorId;
+	//SMUuid m_Uuid;
 
-	int m_Width;
-	int m_Height;
-	int m_Type;
+	//int m_Width;
+	//int m_Height;
+	//int m_Type;
 
-	int m_CellHeaderOffset;
-	int m_CellHeadersSize;
+	//int m_CellHeaderOffset;
+	//int m_CellHeadersSize;
 	std::vector<CellHeader*> m_CellHeaders = {};
 
 	~TileHeader()
@@ -33,7 +48,7 @@ public:
 
 	void FillHeaderBytes(const std::vector<Byte>& header_bytes, const std::size_t& header_size)
 	{
-		const int wh_mul = m_Width * m_Height;
+		const int wh_mul = m_data.width * m_data.height;
 		for (int a = 0; a < wh_mul; a++)
 		{
 			std::vector<Byte> bytes_temp = {};
@@ -65,40 +80,40 @@ public:
 		TileHeader* new_tile = new TileHeader();
 		new_tile->m_TileBytes = bytes;
 
-		new_tile->m_Version = mMemory.NextObject<int>();
-		DebugOutL("Version: ", new_tile->m_Version);
+		new_tile->m_data.version = mMemory.NextObject<int>();
+		DebugOutL("Version: ", new_tile->m_data.version);
 
-		if (new_tile->m_Version <= 1000000)
+		if (new_tile->m_data.version <= 1000000)
 		{
-			new_tile->m_Uuid = mMemory.NextObject<SMUuid>();
-			new_tile->m_CreatorId = mMemory.NextObject<long long>();
+			new_tile->m_data.uuid = mMemory.NextObject<SMUuid>();
+			new_tile->m_data.creator_id = mMemory.NextObject<long long>();
 		}
 
-		DebugOutL("CreatorId: ", new_tile->m_CreatorId);
-		DebugOutL("Uuid: ", new_tile->m_Uuid.ToString());
+		DebugOutL("CreatorId: ", new_tile->m_data.creator_id);
+		DebugOutL("Uuid: ", new_tile->m_data.uuid.ToString());
 
-		new_tile->m_Width  = mMemory.NextObject<int>();
-		new_tile->m_Height = mMemory.NextObject<int>();
+		new_tile->m_data.width  = mMemory.NextObject<int>();
+		new_tile->m_data.height = mMemory.NextObject<int>();
 
-		const int wh_mul = new_tile->m_Width * new_tile->m_Height;
+		const int wh_mul = new_tile->m_data.width * new_tile->m_data.height;
 		new_tile->m_CellHeaders.resize(wh_mul);
 
-		DebugOutL("Size: {w: ", new_tile->m_Width, ", h: ", new_tile->m_Height, "}");
+		DebugOutL("Size: {w: ", new_tile->m_data.width, ", h: ", new_tile->m_data.height, "}");
 
-		new_tile->m_CellHeaderOffset = mMemory.NextObject<int>();
-		new_tile->m_CellHeadersSize  = mMemory.NextObject<int>();
+		new_tile->m_data.cell_header_offset = mMemory.NextObject<int>();
+		new_tile->m_data.cell_header_size   = mMemory.NextObject<int>();
 		mMemory.Skip(8);
 
-		DebugOutL("CellHeadersOffset: ", new_tile->m_CellHeaderOffset);
-		DebugOutL("CellHeadersSize: ",   new_tile->m_CellHeadersSize);
+		DebugOutL("CellHeadersOffset: ", new_tile->m_data.cell_header_offset);
+		DebugOutL("CellHeadersSize: ", new_tile->m_data.cell_header_size);
 
-		if (new_tile->m_Version <= 1000000)
+		if (new_tile->m_data.version <= 1000000)
 		{
-			new_tile->m_Type = mMemory.NextObject<int>() >> 0x18;
-			DebugOutL("Type: ", new_tile->m_Type);
+			new_tile->m_data.type = mMemory.NextObject<int>() >> 0x18;
+			DebugOutL("Type: ", new_tile->m_data.type);
 		}
 
-		if (mMemory.Index() != new_tile->m_CellHeaderOffset)
+		if (mMemory.Index() != new_tile->m_data.cell_header_offset)
 		{
 			DebugOutL("Error: index doesn't match the cell header offset!");
 			cError = ConvertError(1, L"TileHeader::ReadTile -> Index doesn't match the cell header offset!");
@@ -111,13 +126,13 @@ public:
 		{
 			//Keep an eye on this line of code, in case the reader breaks
 			//388 bytes : 292 bytes
-			const std::size_t header_size = (new_tile->m_Version > 9) ? 0x184 : 0x124;
+			const std::size_t header_size = (new_tile->m_data.version > 9) ? 0x184 : 0x124;
 
 			std::vector<Byte> headerBytes = {};
 			headerBytes.resize(wh_mul * header_size); //0x124
 
 			for (int a = 0; a < wh_mul; a++)
-				mMemory.NextObjectsRef(headerBytes.data() + (a * header_size), new_tile->m_CellHeadersSize);
+				mMemory.NextObjectsRef(headerBytes.data() + (a * header_size), new_tile->m_data.cell_header_size);
 
 			new_tile->FillHeaderBytes(headerBytes, header_size);
 		}
@@ -132,6 +147,6 @@ public:
 
 	CellHeader* GetHeader(const int& x, const int& y)
 	{
-		return m_CellHeaders[(std::size_t)(x + y * m_Width)];
+		return m_CellHeaders[(std::size_t)(x + y * m_data.width)];
 	}
 };

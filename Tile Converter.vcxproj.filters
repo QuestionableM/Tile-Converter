@@ -162,6 +162,15 @@
     <ClCompile Include="Code\LuaWorldGenerator\LuaColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\LuaTerrainTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\LuaUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\LuaQuat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
@@ -372,6 +381,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\LuaWorldGenerator\LuaColor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\LuaTerrainTile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\LuaUtil.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\LuaQuat.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

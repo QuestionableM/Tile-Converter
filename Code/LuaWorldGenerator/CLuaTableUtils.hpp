@@ -21,7 +21,9 @@ namespace SM
 				std::is_same_v<T, std::string>,
 				"Only the specified types can be used: any arithmetic type, const char*, std::string");
 
-			if constexpr (std::is_integral_v<T>)
+			if constexpr (std::is_same_v<T, bool>)
+				lua_pushboolean(L, value ? 1 : 0);
+			else if constexpr (std::is_integral_v<T>)
 				lua_pushinteger(L, static_cast<long long>(value));
 			else if constexpr (std::is_floating_point_v<T>)
 				lua_pushnumber(L, static_cast<double>(value));
