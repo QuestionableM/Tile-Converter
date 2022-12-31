@@ -8,6 +8,7 @@
 #include "LuaTerrainTile.hpp"
 #include "LuaUtil.hpp"
 #include "LuaQuat.hpp"
+#include "LuaLog.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
@@ -62,6 +63,7 @@ namespace SM
 		Lua::TerrainTile::Register(m_lState);
 		Lua::Util::Register(m_lState);
 		Lua::Quat::Register(m_lState);
+		Lua::Log::Register(m_lState);
 
 		//Push SM namespace into the global environment
 		lua_setglobal(m_lState, "sm");

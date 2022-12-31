@@ -188,6 +188,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile Include="Code\LuaWorldGenerator\BaseLuaFunctions.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaBitLibrary.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaColor.cpp" />
+    <ClCompile Include="Code\LuaWorldGenerator\LuaLog.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaQuat.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaTerrainTile.cpp" />
     <ClCompile Include="Code\LuaWorldGenerator\LuaUtil.cpp" />
@@ -250,6 +251,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClInclude Include="Code\LuaWorldGenerator\BaseLuaFunctions.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\CLuaTableUtils.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\LuaColor.hpp" />
+    <ClInclude Include="Code\LuaWorldGenerator\LuaLog.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\LuaQuat.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\LuaTerrainTile.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\LuaUtil.hpp" />
