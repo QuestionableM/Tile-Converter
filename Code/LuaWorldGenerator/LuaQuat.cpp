@@ -268,6 +268,76 @@ namespace SM
 			return 1;
 		}
 
+		int Quat::Mul(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 2);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
+
+			glm::quat* v_quat1 = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+
+			switch (Lua::Base::Type(L, 2))
+			{
+			case LUA_TSMQUAT:
+				{
+					glm::quat* v_quat2 = reinterpret_cast<glm::quat*>(lua_touserdata(L, 2));
+
+					glm::quat* v_output = Quat::CreateQuaternion(L);
+					(*v_output) = (*v_quat1) * (*v_quat2);
+
+					return 1;
+				}
+			case LUA_TSMVEC3:
+				{
+					glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+
+					glm::vec3* v_output = Vec3::CreateVector3(L);
+					(*v_output) = (*v_quat1) * (*v_vec);
+
+					return 1;
+				}
+			}
+
+			G_LUA_CUSTOM_ARG_TYPE_ERROR(L, 2, LUA_TSMQUAT);
+		}
+
+		int Quat::Index(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 2);
+
+			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			const char* v_index_str = lua_tostring(L, 2);
+
+			switch (*v_index_str)
+			{
+			case 'x': lua_pushnumber(L, static_cast<lua_Number>(v_quat->x)); return 1;
+			case 'y': lua_pushnumber(L, static_cast<lua_Number>(v_quat->y)); return 1;
+			case 'z': lua_pushnumber(L, static_cast<lua_Number>(v_quat->z)); return 1;
+			case 'w': lua_pushnumber(L, static_cast<lua_Number>(v_quat->w)); return 1;
+			}
+
+			return luaL_error(L, "Unknown member '%s' in userdata", v_index_str);
+		}
+
+		int Quat::NewIndex(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 3);
+
+			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			const char* v_index_str = lua_tostring(L, 2);
+
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
+
+			switch (*v_index_str)
+			{
+			case 'x': v_quat->x = static_cast<float>(lua_tonumber(L, 3)); return 0;
+			case 'y': v_quat->y = static_cast<float>(lua_tonumber(L, 3)); return 0;
+			case 'z': v_quat->z = static_cast<float>(lua_tonumber(L, 3)); return 0;
+			case 'w': v_quat->w = static_cast<float>(lua_tonumber(L, 3)); return 0;
+			}
+
+			return luaL_error(L, "Unknown member '%s' in userdata", v_index_str);
+		}
+
 		void Quat::Register(lua_State* L)
 		{
 			{
@@ -305,6 +375,9 @@ namespace SM
 				//Create Quat metatable
 				luaL_newmetatable(L, "Quat");
 				Table::PushPair(L, "__typeid", LUA_TSMQUAT);
+				Table::PushFunction(L, "__mul", Quat::Mul);
+				Table::PushFunction(L, "__newindex", Quat::NewIndex);
+				Table::PushFunction(L, "__index", Quat::Index);
 
 				lua_pop(L, 1);
 			}

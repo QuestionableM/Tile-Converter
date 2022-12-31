@@ -524,9 +524,9 @@ namespace SM
 
 			switch (*v_index_str)
 			{
-			case 'x': lua_pushinteger(L, static_cast<lua_Integer>(v_vec3->x)); return 1;
-			case 'y': lua_pushinteger(L, static_cast<lua_Integer>(v_vec3->y)); return 1;
-			case 'z': lua_pushinteger(L, static_cast<lua_Integer>(v_vec3->z)); return 1;
+			case 'x': lua_pushnumber(L, static_cast<lua_Number>(v_vec3->x)); return 1;
+			case 'y': lua_pushnumber(L, static_cast<lua_Number>(v_vec3->y)); return 1;
+			case 'z': lua_pushnumber(L, static_cast<lua_Number>(v_vec3->z)); return 1;
 			}
 
 			const auto v_iter = g_vec3Userdata.find(v_index_str);

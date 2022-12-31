@@ -38,6 +38,11 @@ namespace SM
 			int Slerp(lua_State* L);
 			int LookRotation(lua_State* L);
 
+			int Mul(lua_State* L);
+
+			int Index(lua_State* L);
+			int NewIndex(lua_State* L);
+
 			void Register(lua_State* L);
 		}
 	}
