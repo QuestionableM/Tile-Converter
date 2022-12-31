@@ -50,6 +50,32 @@ nlohmann::json JsonReader::LoadParseJson(const std::wstring& path)
 	return m_emptyObject;
 }
 
+bool JsonReader::LoadParseJsonLua(const std::wstring& path, nlohmann::json& v_json, std::string& v_error_message)
+{
+	std::string v_fileData;
+	if (!File::ReadToString(path, v_fileData))
+	{
+		v_error_message = "Failed to open file";
+		return false;
+	}
+
+	try
+	{
+		v_json = nlohmann::json::parse(v_fileData, nullptr, true, true);
+		return true;
+	}
+	catch (nlohmann::json::parse_error& p_err)
+	{
+		v_error_message = "Parse error: " + std::string(p_err.what());
+	}
+	catch (...)
+	{
+		v_error_message = "Unknown json error";
+	}
+
+	return false;
+}
+
 void JsonReader::WriteJson(const std::wstring& path, const nlohmann::json& pJson)
 {
 	std::ofstream out_file(path);

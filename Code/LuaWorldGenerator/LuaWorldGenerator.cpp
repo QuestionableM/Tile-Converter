@@ -9,6 +9,7 @@
 #include "LuaUtil.hpp"
 #include "LuaQuat.hpp"
 #include "LuaLog.hpp"
+#include "LuaJson.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
@@ -64,6 +65,7 @@ namespace SM
 		Lua::Util::Register(m_lState);
 		Lua::Quat::Register(m_lState);
 		Lua::Log::Register(m_lState);
+		Lua::Json::Register(m_lState);
 
 		//Push SM namespace into the global environment
 		lua_setglobal(m_lState, "sm");
@@ -109,13 +111,6 @@ namespace SM
 			DebugOutL("Couldn't find the terrain generator entry point!");
 			return;
 		}
-
-		/*
-		Overworld.cellMinX = -64
-Overworld.cellMaxX = 63
-Overworld.cellMinY = -48
-Overworld.cellMaxY = 47
-		*/
 		
 		//Push arguments
 		{
