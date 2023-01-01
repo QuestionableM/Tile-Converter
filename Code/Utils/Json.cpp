@@ -76,6 +76,26 @@ bool JsonReader::LoadParseJsonLua(const std::wstring& path, nlohmann::json& v_js
 	return false;
 }
 
+bool JsonReader::ParseJsonStringLua(const std::string& json_str, nlohmann::json& v_json, std::string& v_error_message)
+{
+	try
+	{
+		v_json = nlohmann::json::parse(json_str, nullptr, true, true);
+		return true;
+	}
+	catch (nlohmann::json::parse_error& p_err)
+	{
+		v_error_message = "Parse error: " + std::string(p_err.what());
+	}
+	catch (...)
+	{
+		v_error_message = "Unknown parse error";
+	}
+
+
+	return false;
+}
+
 void JsonReader::WriteJson(const std::wstring& path, const nlohmann::json& pJson)
 {
 	std::ofstream out_file(path);
@@ -83,4 +103,12 @@ void JsonReader::WriteJson(const std::wstring& path, const nlohmann::json& pJson
 
 	out_file << std::setw(1) << std::setfill('\t') << pJson;
 	out_file.close();
+}
+
+std::string JsonReader::WriteJsonString(const nlohmann::json& v_json)
+{
+	std::stringstream v_str;
+	v_str << std::setw(0) << v_json;
+
+	return v_str.str();
 }

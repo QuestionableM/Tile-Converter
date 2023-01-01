@@ -7,9 +7,12 @@ class JsonReader
 public:
 	static nlohmann::json ParseJsonString(const std::string& json_str);
 	static nlohmann::json LoadParseJson(const std::wstring& path);
+
 	static bool LoadParseJsonLua(const std::wstring& path, nlohmann::json& v_json, std::string& v_error_message);
+	static bool ParseJsonStringLua(const std::string& json_str, nlohmann::json& v_json, std::string& v_error_message);
 
 	static void WriteJson(const std::wstring& path, const nlohmann::json& pJson);
+	static std::string WriteJsonString(const nlohmann::json& v_json);
 
 	inline static const nlohmann::json& Get(const nlohmann::json& obj, const std::string& key)
 	{

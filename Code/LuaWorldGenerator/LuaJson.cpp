@@ -272,7 +272,7 @@ namespace SM
 			nlohmann::json v_f_json;
 			std::string v_error_msg;
 			if (!JsonReader::LoadParseJsonLua(v_json_path, v_f_json, v_error_msg))
-				return luaL_error(L, "Failed to parse %s. Error: %s", v_path_cache, v_error_msg);
+				return luaL_error(L, "Failed to parse %s. Error: %s", v_path_cache, v_error_msg.c_str());
 
 			JsonInternal::JsonToLua(L, v_f_json);
 			return 1;
@@ -283,17 +283,46 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 2);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSTRING);
 
-			const char* v_path_cache = lua_tostring(L, 2);
-			std::wstring v_json_path = String::ToWide(v_path_cache);
+			std::wstring v_json_path = String::ToWide(lua_tostring(L, 2));
 			KeywordReplacer::ReplaceKeyR(v_json_path);
 
-			lua_pushvalue(L, 1); //push the table (1st argument) onto the stack for conversion to json
+			lua_pushvalue(L, 1);
 
 			nlohmann::json v_output_json;
 			JsonInternal::LuaToJson(L, v_output_json, -1);
 			JsonReader::WriteJson(v_json_path, v_output_json);
 
 			return 0;
+		}
+
+		int Json::ParseJsonString(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 1);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
+
+			const std::string v_json_str = lua_tostring(L, 1);
+
+			nlohmann::json v_f_json;
+			std::string v_error_msg;
+			if (!JsonReader::ParseJsonStringLua(v_json_str, v_f_json, v_error_msg))
+				return luaL_error(L, "Failed to parse string. Error: %s", v_error_msg.c_str());
+
+			JsonInternal::JsonToLua(L, v_f_json);
+			return 1;
+		}
+
+		int Json::WriteJsonString(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 1);
+
+			lua_pushvalue(L, 1);
+
+			nlohmann::json v_output_json;
+			JsonInternal::LuaToJson(L, v_output_json, -1);
+			const std::string v_json_str = JsonReader::WriteJsonString(v_output_json);
+
+			lua_pushstring(L, v_json_str.c_str());
+			return 1;
 		}
 
 		void Json::Register(lua_State* L)
@@ -304,6 +333,8 @@ namespace SM
 			Table::PushFunction(L, "fileExists", Json::FileExists);
 			Table::PushFunction(L, "open", Json::Open);
 			Table::PushFunction(L, "save", Json::Save);
+			Table::PushFunction(L, "parseJsonString", Json::ParseJsonString);
+			Table::PushFunction(L, "writeJsonString", Json::WriteJsonString);
 
 			lua_settable(L, -3);
 		}
