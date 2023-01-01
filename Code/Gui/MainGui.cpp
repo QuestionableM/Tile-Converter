@@ -109,6 +109,7 @@ namespace TileConverter
 		this->TilePath_TB->Enabled = ui_active;
 		this->Convert_BTN->Enabled = (ui_active && this->TilePath_TB->TextLength > 0);
 		this->TilePathSelector_BTN->Enabled = ui_active;
+		this->CB_SelectedGeneratorType->Enabled = ui_active;
 	}
 
 	void MainGui::TilePath_TB_TextChanged(System::Object^ sender, System::EventArgs^ e)
