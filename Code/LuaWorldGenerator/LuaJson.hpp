@@ -21,6 +21,7 @@ namespace SM
 			bool IsTable(lua_State* L);
 
 			void LuaToJson(lua_State* L, nlohmann::json& v_json, const int& v_idx);
+			void JsonToLua(lua_State* L, const nlohmann::json& v_json);
 		}
 
 		namespace Json
