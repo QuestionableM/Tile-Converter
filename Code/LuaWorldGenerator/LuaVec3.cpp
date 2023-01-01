@@ -379,6 +379,42 @@ namespace SM
 			return 1;
 		}
 
+		int	lua_find_biggest_axis_idx(const glm::vec3& v_vec)
+		{
+			int v_output = 0;
+			float v_cur_val_abs = std::fabsf(v_vec.x);
+
+			for (int a = 1; a < 3; a++)
+			{
+				const float v_test_val = std::fabsf(v_vec[a]);
+				if (v_test_val > v_cur_val_abs)
+				{
+					v_output = a;
+					v_cur_val_abs = v_test_val;
+				}
+			}
+
+			return v_output;
+		}
+
+		int Vec3::ClosestAxis(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 1);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
+
+			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
+			v_new_vec->x = 0.0f;
+			v_new_vec->y = 0.0f;
+			v_new_vec->z = 0.0f;
+
+			const int v_biggest_axis = lua_find_biggest_axis_idx(*v_vec1);
+			(*v_new_vec)[v_biggest_axis] = ((*v_vec1)[v_biggest_axis] >= 0.0f) ? 1.0f : -1.0f;
+
+			return 1;
+		}
+
 		int Vec3::Rotate(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
@@ -609,6 +645,7 @@ namespace SM
 				Table::PushFunction(L, "getRotation", Lua::Vec3::GetRotation);
 				Table::PushFunction(L, "bezier2", Lua::Vec3::Bezier2);
 				Table::PushFunction(L, "bezier3", Lua::Vec3::Bezier3);
+				Table::PushFunction(L, "closestAxis", Lua::Vec3::ClosestAxis);
 
 				Table::PushFunction(L, "getX", Lua::Vec3::GetX);
 				Table::PushFunction(L, "getY", Lua::Vec3::GetY);

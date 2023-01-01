@@ -38,6 +38,7 @@ namespace SM
 			int GetRotation(lua_State* L);
 			int Bezier2(lua_State* L);
 			int Bezier3(lua_State* L);
+			int ClosestAxis(lua_State* L);
 
 			int Rotate(lua_State* L);
 			int RotateX(lua_State* L);
