@@ -16,6 +16,9 @@ extern "C"
 #include <matrix.hpp>
 #include <gtc\matrix_transform.hpp>
 
+#define LUA_QUAT_FROM_UDATA(L, I) reinterpret_cast<glm::quat*>(lua_touserdata(L, I))
+#define LUA_QUAT_TEST_UDATA(L, I) reinterpret_cast<glm::quat*>(luaL_testudata(L, I, "Quat"))
+
 namespace SM
 {
 	namespace Lua
@@ -64,7 +67,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->x));
 			return 1;
@@ -75,7 +78,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->y));
 			return 1;
@@ -86,7 +89,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->z));
 			return 1;
@@ -97,7 +100,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->w));
 			return 1;
@@ -109,7 +112,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 			v_quat->x = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->x));
@@ -122,7 +125,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 			v_quat->y = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->y));
@@ -135,7 +138,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 			v_quat->z = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->z));
@@ -148,7 +151,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 			v_quat->w = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_quat->w));
@@ -160,7 +163,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotate(*v_quat, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -173,7 +176,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotate(*v_quat, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -186,7 +189,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotate(*v_quat, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -201,7 +204,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
 			const float v_angle = static_cast<float>(lua_tonumber(L, 1));
-			glm::vec3* v_axis = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_axis = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::quat* v_quat = Quat::CreateQuaternion(L);
 			(*v_quat) = glm::angleAxis(v_angle, *v_axis);
@@ -214,7 +217,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			glm::quat* v_new_quat = Quat::CreateQuaternion(L);
 			(*v_new_quat) = glm::inverse(*v_quat);
@@ -228,7 +231,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_euler = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_euler = LUA_VEC3_FROM_UDATA(L, 1);
 
 			glm::quat* v_new_quat = Quat::CreateQuaternion(L);
 			(*v_new_quat) = glm::quat(glm::radians(*v_euler));
@@ -243,8 +246,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMQUAT);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
 
-			glm::quat* v_quat1 = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
-			glm::quat* v_quat2 = reinterpret_cast<glm::quat*>(lua_touserdata(L, 2));
+			glm::quat* v_quat1 = LUA_QUAT_FROM_UDATA(L, 1);
+			glm::quat* v_quat2 = LUA_QUAT_FROM_UDATA(L, 2);
 			const float v_step = static_cast<float>(lua_tonumber(L, 3));
 
 			glm::quat* v_output = Quat::CreateQuaternion(L);
@@ -259,8 +262,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::quat* v_output = Quat::CreateQuaternion(L);
 			(*v_output) = glm::quat_cast(glm::lookAt(glm::vec3(0), *v_vec1, *v_vec2));
@@ -273,13 +276,13 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 2);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
 
-			glm::quat* v_quat1 = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat1 = LUA_QUAT_FROM_UDATA(L, 1);
 
 			switch (Lua::Base::Type(L, 2))
 			{
 			case LUA_TSMQUAT:
 				{
-					glm::quat* v_quat2 = reinterpret_cast<glm::quat*>(lua_touserdata(L, 2));
+					glm::quat* v_quat2 = LUA_QUAT_FROM_UDATA(L, 2);
 
 					glm::quat* v_output = Quat::CreateQuaternion(L);
 					(*v_output) = (*v_quat1) * (*v_quat2);
@@ -288,7 +291,7 @@ namespace SM
 				}
 			case LUA_TSMVEC3:
 				{
-					glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+					glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 2);
 
 					glm::vec3* v_output = Vec3::CreateVector3(L);
 					(*v_output) = (*v_quat1) * (*v_vec);
@@ -300,11 +303,26 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_ERROR(L, 2, LUA_TSMQUAT);
 		}
 
+		int Quat::Equals(lua_State* L)
+		{
+			glm::quat* v_quat1 = LUA_QUAT_TEST_UDATA(L, 1);
+			glm::quat* v_quat2 = LUA_QUAT_TEST_UDATA(L, 2);
+
+			if (v_quat1 && v_quat2)
+			{
+				lua_pushboolean(L, (*v_quat1) == (*v_quat2));
+				return 1;
+			}
+
+			lua_pushboolean(L, 0);
+			return 1;
+		}
+
 		int Quat::Index(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 2);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 			const char* v_index_str = lua_tostring(L, 2);
 
 			switch (*v_index_str)
@@ -322,7 +340,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
 
-			glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, 1));
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 			const char* v_index_str = lua_tostring(L, 2);
 
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
@@ -376,6 +394,7 @@ namespace SM
 				luaL_newmetatable(L, "Quat");
 				Table::PushPair(L, "__typeid", LUA_TSMQUAT);
 				Table::PushFunction(L, "__mul", Quat::Mul);
+				Table::PushFunction(L, "__eq", Quat::Equals);
 				Table::PushFunction(L, "__newindex", Quat::NewIndex);
 				Table::PushFunction(L, "__index", Quat::Index);
 

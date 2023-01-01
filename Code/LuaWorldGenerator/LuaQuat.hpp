@@ -39,6 +39,7 @@ namespace SM
 			int LookRotation(lua_State* L);
 
 			int Mul(lua_State* L);
+			int Equals(lua_State* L);
 
 			int Index(lua_State* L);
 			int NewIndex(lua_State* L);

@@ -7,6 +7,9 @@ extern "C"
 
 #include <glm.hpp>
 
+#define LUA_VEC3_FROM_UDATA(L, I) reinterpret_cast<glm::vec3*>(lua_touserdata(L, I))
+#define LUA_VEC3_TEST_UDATA(L, I) reinterpret_cast<glm::vec3*>(luaL_testudata(L, I, "Vec3"))
+
 namespace SM
 {
 	namespace Lua
