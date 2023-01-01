@@ -268,6 +268,7 @@ namespace SM
 			int Bezier2(lua_State* L);
 			int Bezier3(lua_State* L);
 			int Easing(lua_State* L);
+			int AxesToQuat(lua_State* L);
 
 			void Register(lua_State* L);
 		}
