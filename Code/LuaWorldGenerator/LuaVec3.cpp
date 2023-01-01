@@ -3,6 +3,7 @@
 #include "BaseLuaFunctions.hpp"
 #include "CLuaTableUtils.hpp"
 #include "LuaQuat.hpp"
+#include "LuaUtil.hpp"
 #include "Console.hpp"
 
 #include <unordered_map>
@@ -334,6 +335,50 @@ namespace SM
 			return 1;
 		}
 
+		int Vec3::Bezier2(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 4);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 4, LUA_TNUMBER);
+
+			glm::vec3* v_c0 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_c1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_c2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 3));
+			const float v_t = static_cast<float>(lua_tonumber(L, 4));
+
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
+			v_new_vec->x = Lua::Math::QuadraticBezier(v_c0->x, v_c1->x, v_c2->x, v_t);
+			v_new_vec->y = Lua::Math::QuadraticBezier(v_c0->y, v_c1->y, v_c2->y, v_t);
+			v_new_vec->z = Lua::Math::QuadraticBezier(v_c0->z, v_c1->z, v_c2->z, v_t);
+
+			return 1;
+		}
+
+		int Vec3::Bezier3(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 5);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 4, LUA_TSMVEC3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 5, LUA_TNUMBER);
+
+			glm::vec3* v_c0 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_c1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_c2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 3));
+			glm::vec3* v_c3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 4));
+			const float v_t = static_cast<float>(lua_tonumber(L, 5));
+
+			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
+			v_new_vec->x = Lua::Math::CubicBezier(v_c0->x, v_c1->x, v_c2->x, v_c3->x, v_t);
+			v_new_vec->y = Lua::Math::CubicBezier(v_c0->y, v_c1->y, v_c2->y, v_c3->y, v_t);
+			v_new_vec->z = Lua::Math::CubicBezier(v_c0->z, v_c1->z, v_c2->z, v_c3->z, v_t);
+
+			return 1;
+		}
+
 		int Vec3::Rotate(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
@@ -562,6 +607,8 @@ namespace SM
 				Table::PushFunction(L, "rotateZ", Lua::Vec3::RotateZ);
 				Table::PushFunction(L, "rotate", Lua::Vec3::Rotate);
 				Table::PushFunction(L, "getRotation", Lua::Vec3::GetRotation);
+				Table::PushFunction(L, "bezier2", Lua::Vec3::Bezier2);
+				Table::PushFunction(L, "bezier3", Lua::Vec3::Bezier3);
 
 				Table::PushFunction(L, "getX", Lua::Vec3::GetX);
 				Table::PushFunction(L, "getY", Lua::Vec3::GetY);

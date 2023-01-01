@@ -13,18 +13,12 @@ extern "C"
 	#include <lua\lauxlib.h>
 }
 
+#include <glm.hpp>
+
 namespace SM
 {
 	namespace Lua
 	{
-		template<typename T>
-		inline T lua_lerp(const T& a, const T& b, const T& f)
-		{
-			static_assert(std::is_floating_point_v<T>, "lua_lerp can only be used with floating point values");
-
-			return a * (static_cast<T>(1.0) - f) + (b * f);
-		}
-
 		int Util::Lerp(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
@@ -37,7 +31,7 @@ namespace SM
 			const double v_second_val = lua_tonumber(L, 2);
 			const double v_step = lua_tonumber(L, 3);
 
-			lua_pushnumber(L, lua_lerp(v_first_val, v_second_val, v_step));
+			lua_pushnumber(L, Lua::Math::Lerp(v_first_val, v_second_val, v_step));
 			return 1;
 		}
 
@@ -76,6 +70,72 @@ namespace SM
 			return 1;
 		}
 
+		int Util::Smoothstep(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
+
+			const double v_edge0 = lua_tonumber(L, 1);
+			const double v_edge1 = lua_tonumber(L, 2);
+			const double v_x = lua_tonumber(L, 3);
+
+			lua_pushnumber(L, glm::smoothstep(v_edge0, v_edge1, v_x));
+			return 1;
+		}
+
+		int Util::Smootherstep(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 3);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
+
+			const double v_edge0 = lua_tonumber(L, 1);
+			const double v_edge1 = lua_tonumber(L, 2);
+			const double v_x = lua_tonumber(L, 3);
+
+			lua_pushnumber(L, Lua::Math::Smootherstep(v_edge0, v_edge1, v_x));
+			return 1;
+		}
+
+		int Util::Bezier2(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 4);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 4, LUA_TNUMBER);
+
+			const double v_c0 = lua_tonumber(L, 1);
+			const double v_c1 = lua_tonumber(L, 2);
+			const double v_c2 = lua_tonumber(L, 3);
+			const double v_t = lua_tonumber(L, 4);
+
+			lua_pushnumber(L, Lua::Math::QuadraticBezier(v_c0, v_c1, v_c2, v_t));
+			return 1;
+		}
+
+		int Util::Bezier3(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 5);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 4, LUA_TNUMBER);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 5, LUA_TNUMBER);
+
+			const double v_c0 = lua_tonumber(L, 1);
+			const double v_c1 = lua_tonumber(L, 2);
+			const double v_c2 = lua_tonumber(L, 3);
+			const double v_c3 = lua_tonumber(L, 4);
+			const double v_t = lua_tonumber(L, 5);
+
+			lua_pushnumber(L, Lua::Math::CubicBezier(v_c0, v_c1, v_c2, v_c3, v_t));
+			return 1;
+		}
+
 		void Util::Register(lua_State* L)
 		{
 			lua_pushstring(L, "util");
@@ -84,6 +144,10 @@ namespace SM
 			Table::PushFunction(L, "lerp", Util::Lerp);
 			Table::PushFunction(L, "clamp", Util::Clamp);
 			Table::PushFunction(L, "positiveModulo", Util::PositiveModulo);
+			Table::PushFunction(L, "smoothstep", Util::Smoothstep);
+			Table::PushFunction(L, "smootherstep", Util::Smootherstep);
+			Table::PushFunction(L, "bezier2", Util::Bezier2);
+			Table::PushFunction(L, "bezier3", Util::Bezier3);
 
 			lua_settable(L, -3);
 		}
