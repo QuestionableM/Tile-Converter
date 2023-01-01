@@ -3,6 +3,7 @@
 #include "BaseLuaFunctions.hpp"
 #include "CLuaTableUtils.hpp"
 
+#include <unordered_map>
 #include <algorithm>
 #include <cmath>
 
@@ -136,6 +137,61 @@ namespace SM
 			return 1;
 		}
 
+		static const std::unordered_map<std::string, double (*)(const double&)> g_easingFunctions =
+		{
+			{ "linear"          , Easing::Linear           },
+			{ "easeInSine"      , Easing::EaseInSine       },
+			{ "easeOutSine"     , Easing::EaseOutSine      },
+			{ "easeInOutSine"   , Easing::EaseInOutSine    },
+			{ "easeInCubic"     , Easing::EaseInCubic      },
+			{ "easeOutCubic"    , Easing::EaseOutCubic     },
+			{ "easeInOutCubic"  , Easing::EaseInOutCubic   },
+			{ "easeInQuint"     , Easing::EaseInQuint      },
+			{ "easeOutQuint"    , Easing::EaseOutQuint     },
+			{ "easeInOutQuint"  , Easing::EaseInOutQuint   },
+			{ "easeInCirc"      , Easing::EaseInCirc       },
+			{ "easeOutCirc"     , Easing::EaseOutCirc      },
+			{ "easeInOutCirc"   , Easing::EaseInOutCirc    },
+			{ "easeInElastic"   , Easing::EaseInElastic    },
+			{ "easeOutElastic"  , Easing::EaseOutElastic   },
+			{ "easeInOutElastic", Easing::EaseInOutElastic },
+			{ "easeInQuad"      , Easing::EaseInQuad       },
+			{ "easeOutQuad"     , Easing::EaseOutQuad      },
+			{ "easeInOutQuad"   , Easing::EaseInOutQuad    },
+			{ "easeInQuart"     , Easing::EaseInQuart      },
+			{ "easeOutQuart"    , Easing::EaseOutQuart     },
+			{ "easeInOutQuart"  , Easing::EaseInOutQuart   },
+			{ "easeInExpo"      , Easing::EaseInExpo       },
+			{ "easeOutExpo"     , Easing::EaseOutExpo      },
+			{ "easeInOutExpo"   , Easing::EaseInOutExpo    },
+			{ "easeInBack"      , Easing::EaseInBack       },
+			{ "easeOutBack"     , Easing::EaseOutBack      },
+			{ "easeInOutBack"   , Easing::EaseInOutBack    },
+			{ "easeInBounce"    , Easing::EaseInBounce     },
+			{ "easeOutBounce"   , Easing::EaseOutBounce    },
+			{ "easeInOutBounce" , Easing::EaseInOutBounce  }
+		};
+
+		int Util::Easing(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 2);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
+
+			const std::string v_easing_type = lua_tostring(L, 1);
+			const double v_x = lua_tonumber(L, 2);
+
+			const auto v_iter = g_easingFunctions.find(v_easing_type);
+			if (v_iter == g_easingFunctions.end())
+			{
+				lua_pushnumber(L, 0);
+				return 1;
+			}
+
+			lua_pushnumber(L, v_iter->second(v_x));
+			return 1;
+		}
+
 		void Util::Register(lua_State* L)
 		{
 			lua_pushstring(L, "util");
@@ -148,6 +204,7 @@ namespace SM
 			Table::PushFunction(L, "smootherstep", Util::Smootherstep);
 			Table::PushFunction(L, "bezier2", Util::Bezier2);
 			Table::PushFunction(L, "bezier3", Util::Bezier3);
+			Table::PushFunction(L, "easing", Util::Easing);
 
 			lua_settable(L, -3);
 		}

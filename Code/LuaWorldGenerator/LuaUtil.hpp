@@ -5,6 +5,8 @@ extern "C"
 	#include <lua\lstate.h>
 }
 
+#include <cmath>
+
 namespace SM
 {
 	namespace Lua
@@ -50,6 +52,212 @@ namespace SM
 			}
 		}
 
+		namespace Easing
+		{
+			inline constexpr const static double PI_VALUE = 3.14159265358979323846264338327950288;
+
+			inline double Linear(const double& x)
+			{
+				return x;
+			}
+
+			inline double EaseInSine(const double& x)
+			{
+				return 1.0 - std::cos((x * PI_VALUE) / 2.0);
+			}
+
+			inline double EaseOutSine(const double& x)
+			{
+				return std::sin((x * PI_VALUE) / 2.0);
+			}
+
+			inline double EaseInOutSine(const double& x)
+			{
+				return -(std::cos(PI_VALUE * x) - 1.0) / 2.0;
+			}
+
+			inline double EaseInCubic(const double& x)
+			{
+				return x * x * x;
+			}
+
+			inline double EaseOutCubic(const double& x)
+			{
+				return 1.0 - std::pow(1.0 - x, 3.0);
+			}
+
+			inline double EaseInOutCubic(const double& x)
+			{
+				return (x < 0.5)
+					? (4.0 * x * x * x)
+					: (1.0 - std::pow(-2.0 * x + 2.0, 3.0) / 2.0);
+			}
+
+			inline double EaseInQuint(const double& x)
+			{
+				return x * x * x * x * x;
+			}
+
+			inline double EaseOutQuint(const double& x)
+			{
+				return 1.0 - std::pow(1.0 - x, 5.0);
+			}
+
+			inline double EaseInOutQuint(const double& x)
+			{
+				return (x < 0.5)
+					? (16.0 * x * x * x * x * x)
+					: (1.0 - std::pow(-2.0 * x + 2.0, 5.0) / 2.0);
+			}
+
+			inline double EaseInCirc(const double& x)
+			{
+				return 1.0 - std::sqrt(1.0 - (x * x));
+			}
+
+			inline double EaseOutCirc(const double& x)
+			{
+				return 1.0 - std::pow(x - 1.0, 2.0);
+			}
+
+			inline double EaseInOutCirc(const double& x)
+			{
+				return (x < 0.5)
+					? ((1.0 - std::sqrt(1.0 - std::pow(2.0 * x, 2.0))) / 2.0)
+					: ((std::sqrt(1.0 - std::pow(-2.0 * x + 2.0, 2.0)) + 1.0) / 2.0);
+			}
+
+			inline double EaseInElastic(const double& x)
+			{
+				constexpr const double c4 = (2.0 * PI_VALUE) / 3.0;
+				return (x == 0) ? 0.0 : (x == 1) ? 1.0 : (-std::pow(2.0, 10.0 * x - 10.0) * std::sin((x * 10.0 - 10.75) * c4));
+			}
+
+			inline double EaseOutElastic(const double& x)
+			{
+				constexpr const double c4 = (2.0 * PI_VALUE) / 3.0;
+				return (x == 0.0) ? 0.0 : (x == 1.0) ? 1.0 : (std::pow(2.0, -10.0 * x) * std::sin((x * 10.0 - 0.75) * c4));
+			}
+
+			inline double EaseInOutElastic(const double& x)
+			{
+				constexpr const double c5 = (2.0 * PI_VALUE) / 4.5;
+				return (x == 0.0) ? 0.0 : (x == 1.0) ? 1.0 : (x < 0.5)
+					? (-(std::pow(2.0, 20.0 * x - 10.0) * std::sin((20.0 * x - 11.125) * c5)) / 2.0)
+					: ((std::pow(2.0, -20.0 * x + 10.0) * std::sin((20.0 * x - 11.125) * c5)) / 2.0 + 1.0);
+			}
+
+			inline double EaseInQuad(const double& x)
+			{
+				return x * x;
+			}
+
+			inline double EaseOutQuad(const double& x)
+			{
+				return 1.0 - (1.0 - x) * (1.0 - x);
+			}
+
+			inline double EaseInOutQuad(const double& x)
+			{
+				return (x < 0.5)
+					? (2.0 * x * x)
+					: (1.0 - std::pow(-2.0 * x + 2.0, 2.0) / 2.0);
+			}
+
+			inline double EaseInQuart(const double& x)
+			{
+				return x * x * x * x;
+			}
+
+			inline double EaseOutQuart(const double& x)
+			{
+				return 1.0 - std::pow(1.0 - x, 4.0);
+			}
+
+			inline double EaseInOutQuart(const double& x)
+			{
+				return (x < 0.5)
+					? (8.0 * x * x * x * x)
+					: (1.0 - std::pow(-2.0 * x + 2.0, 4.0) / 2.0);
+			}
+
+			inline double EaseInExpo(const double& x)
+			{
+				return (x == 0.0) ? 0.0 : std::pow(2.0, 10.0 * x - 10.0);
+			}
+
+			inline double EaseOutExpo(const double& x)
+			{
+				return (x == 1.0) ? 1.0 : (1.0 - std::pow(2.0, -10.0 * x));
+			}
+
+			inline double EaseInOutExpo(const double& x)
+			{
+				return (x == 0.0) ? 0.0 : (x == 1.0) ? 1.0 : (x < 0.5)
+					? (std::pow(2.0, 20.0 * x - 10.0) / 2.0)
+					: (2.0 - std::pow(2.0, -20.0 * x + 10.0) / 2.0);
+			}
+
+			inline double EaseInBack(const double& x)
+			{
+				constexpr const double c1 = 1.70158;
+				constexpr const double c3 = c1 + 1.0;
+
+				return c3 * x * x * x - c1 * x * x;
+			}
+
+			inline double EaseOutBack(const double& x)
+			{
+				constexpr const double c1 = 1.70158;
+				constexpr const double c3 = c1 + 1.0;
+
+				return 1.0 + c3 * std::pow(x - 1.0, 3.0) + c1 * std::pow(x - 1.0, 2.0);
+			}
+
+			inline double EaseInOutBack(const double& x)
+			{
+				constexpr const double c1 = 1.70158;
+				constexpr const double c2 = c1 * 1.525;
+
+				return (x < 0.5)
+					? ((std::pow(2.0 * x, 2.0) * ((c2 + 1.0) * 2.0 * x - c2)) / 2.0)
+					: ((std::pow(2.0 * x - 2.0, 2.0) * ((c2 + 1.0) * (x * 2.0 - 2.0) + c2) + 2.0) / 2.0);
+			}
+
+			inline double EaseOutBounce(const double& x_input)
+			{
+				double x = x_input;
+
+				constexpr const double n1 = 7.5625;
+				constexpr const double d1 = 2.75;
+
+				if (x < 1.0 / d1) {
+					return n1 * x * x;
+				}
+				else if (x < 2.0 / d1) {
+					return n1 * (x -= 1.5 / d1) * x + 0.75;
+				}
+				else if (x < 2.5 / d1) {
+					return n1 * (x -= 2.25 / d1) * x + 0.9375;
+				}
+				else {
+					return n1 * (x -= 2.625 / d1) * x + 0.984375;
+				}
+			}
+
+			inline double EaseInBounce(const double& x)
+			{
+				return 1.0 - Easing::EaseOutBounce(1.0 - x);
+			}
+
+			inline double EaseInOutBounce(const double& x)
+			{
+				return (x < 0.5)
+					? (1.0 - Easing::EaseOutBounce(1.0 - 2.0 * x) / 2.0)
+					: (1.0 + Easing::EaseOutBounce(2.0 * x - 1.0) / 2.0);
+			}
+		}
+
 		namespace Util
 		{
 			int Lerp(lua_State* L);
@@ -59,6 +267,7 @@ namespace SM
 			int Smootherstep(lua_State* L);
 			int Bezier2(lua_State* L);
 			int Bezier3(lua_State* L);
+			int Easing(lua_State* L);
 
 			void Register(lua_State* L);
 		}
