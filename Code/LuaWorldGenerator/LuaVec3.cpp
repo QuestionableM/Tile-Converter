@@ -17,14 +17,9 @@ extern "C"
 #include <glm.hpp>
 #include <gtx\rotate_vector.hpp>
 #include <gtx\quaternion.hpp>
-/*
-vec3 {
-	bezier2 = function,
-	bezier3 = function,
-	closestAxis = function,
-	getRotation = function,
-}
-*/
+
+#define LUA_VEC3_FROM_UDATA(L, I) reinterpret_cast<glm::vec3*>(lua_touserdata(L, I))
+#define LUA_VEC3_TEST_UDATA(L, I) reinterpret_cast<glm::vec3*>(luaL_testudata(L, I, "Vec3"))
 
 namespace SM
 {
@@ -80,8 +75,8 @@ namespace SM
 
 		int Vec3::Equals(lua_State* L)
 		{
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(luaL_testudata(L, 1, "Vec3"));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(luaL_testudata(L, 2, "Vec3"));
+			glm::vec3* v_vec1 = LUA_VEC3_TEST_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_TEST_UDATA(L, 2);
 
 			if (v_vec1 && v_vec2)
 			{
@@ -97,7 +92,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			switch (Base::Type(L, 2))
 			{
 			case LUA_TNUMBER:
@@ -111,7 +106,7 @@ namespace SM
 				}
 			case LUA_TSMVEC3:
 				{
-					glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+					glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 					glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 					(*v_new_vec) = (*v_vec1) * (*v_vec2);
@@ -127,7 +122,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			switch (Base::Type(L, 2))
 			{
 			case LUA_TNUMBER:
@@ -141,7 +136,7 @@ namespace SM
 				}
 			case LUA_TSMVEC3:
 				{
-					glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+					glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 					glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 					(*v_new_vec) = (*v_vec1) / (*v_vec2);
@@ -158,8 +153,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = (*v_vec1) + (*v_vec2);
@@ -172,8 +167,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = (*v_vec1) - (*v_vec2);
@@ -186,7 +181,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(glm::length(*v_vec1)));
 			return 1;
@@ -197,7 +192,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			const float v_length = (v_vec1->x * v_vec1->x) + (v_vec1->y * v_vec1->y) + (v_vec1->z * v_vec1->z);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_length));
@@ -209,7 +204,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 			if (glm::length(*v_vec) < 0.00000011920929f)
 				return luaL_error(L, "Vector must not be of length zero");
 		
@@ -225,11 +220,13 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 
 			if (glm::length(*v_vec) < 0.00000011920929f)
 			{
-				lua_pushvalue(L, 2); //push the fallback vector as the return value
+				glm::vec3* v_new_vec = Vec3::CreateVector3(L);
+				(*v_new_vec) = *LUA_VEC3_FROM_UDATA(L, 2);
+
 				return 1;
 			}
 
@@ -246,8 +243,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::cross(*v_vec1, *v_vec2);
@@ -263,8 +260,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 			const float v_lerp_val = static_cast<float>(lua_tonumber(L, 3));
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
@@ -280,8 +277,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			lua_pushnumber(L, static_cast<lua_Number>(glm::dot(*v_vec1, *v_vec2)));
 			return 1;
@@ -294,8 +291,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::min(*v_vec1, *v_vec2);
@@ -310,8 +307,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::max(*v_vec1, *v_vec2);
@@ -326,8 +323,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_vec2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_vec2 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::quat* v_quat = Quat::CreateQuaternion(L);
 			(*v_quat) = glm::rotation(*v_vec1, *v_vec2);
@@ -343,9 +340,9 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 4, LUA_TNUMBER);
 
-			glm::vec3* v_c0 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_c1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
-			glm::vec3* v_c2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 3));
+			glm::vec3* v_c0 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_c1 = LUA_VEC3_FROM_UDATA(L, 2);
+			glm::vec3* v_c2 = LUA_VEC3_FROM_UDATA(L, 3);
 			const float v_t = static_cast<float>(lua_tonumber(L, 4));
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
@@ -365,10 +362,10 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 4, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 5, LUA_TNUMBER);
 
-			glm::vec3* v_c0 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
-			glm::vec3* v_c1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 2));
-			glm::vec3* v_c2 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 3));
-			glm::vec3* v_c3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 4));
+			glm::vec3* v_c0 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v_c1 = LUA_VEC3_FROM_UDATA(L, 2);
+			glm::vec3* v_c2 = LUA_VEC3_FROM_UDATA(L, 3);
+			glm::vec3* v_c3 = LUA_VEC3_FROM_UDATA(L, 4);
 			const float v_t = static_cast<float>(lua_tonumber(L, 5));
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
@@ -402,7 +399,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			v_new_vec->x = 0.0f;
@@ -423,9 +420,9 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TSMVEC3);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
-			glm::vec3* v_normal = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 3));
+			glm::vec3* v_normal = LUA_VEC3_FROM_UDATA(L, 3);
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
 			(*v_new_vec) = glm::rotate(*v_vec1, v_rotate_angle, *v_normal);
@@ -440,7 +437,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
@@ -456,7 +453,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
@@ -472,7 +469,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::vec3* v_vec1 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec1 = LUA_VEC3_FROM_UDATA(L, 1);
 			const float v_rotate_angle = static_cast<float>(lua_tonumber(L, 2));
 
 			glm::vec3* v_new_vec = Vec3::CreateVector3(L);
@@ -486,7 +483,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_vec->x));
 			return 1;
@@ -497,7 +494,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_vec->y));
 			return 1;
@@ -508,7 +505,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_vec->z));
 			return 1;
@@ -520,7 +517,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 			v_vec->x = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_vec->x));
@@ -533,7 +530,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 			v_vec->y = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_vec->y));
@@ -546,7 +543,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER);
 
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 			v_vec->z = static_cast<float>(lua_tonumber(L, 2));
 
 			lua_pushnumber(L, static_cast<lua_Number>(v_vec->z));
@@ -555,7 +552,7 @@ namespace SM
 
 		int Vec3::ToString(lua_State* L)
 		{
-			glm::vec3* v_vec = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec = LUA_VEC3_FROM_UDATA(L, 1);
 			lua_pushfstring(L, "(%f,%f,%f)", v_vec->x, v_vec->y, v_vec->z);
 
 			return 1;
@@ -565,7 +562,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
 
-			glm::vec3* v_userdata = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_userdata = LUA_VEC3_FROM_UDATA(L, 1);
 			const char* v_index_str = lua_tostring(L, 2);
 
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER);
@@ -600,7 +597,7 @@ namespace SM
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 2);
 
-			glm::vec3* v_vec3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, 1));
+			glm::vec3* v_vec3 = LUA_VEC3_FROM_UDATA(L, 1);
 			const char* v_index_str = lua_tostring(L, 2);
 
 			switch (*v_index_str)
