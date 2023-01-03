@@ -6,6 +6,7 @@ extern "C"
 }
 
 #include <cmath>
+#include <gtx\quaternion.hpp>
 
 namespace SM
 {
@@ -260,6 +261,9 @@ namespace SM
 
 		namespace Util
 		{
+			void MatrixToQuaternion(float* a1, glm::quat* a2);
+			void QuaternionToMatrix(float* a1, glm::quat* a2);
+
 			int Lerp(lua_State* L);
 			int Clamp(lua_State* L);
 			int PositiveModulo(lua_State* L);

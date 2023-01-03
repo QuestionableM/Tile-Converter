@@ -17,7 +17,6 @@ extern "C"
 	#include <lua\lauxlib.h>
 }
 
-#include <gtx\quaternion.hpp>
 #include <matrix.hpp>
 #include <glm.hpp>
 
@@ -25,6 +24,138 @@ namespace SM
 {
 	namespace Lua
 	{
+		void Util::MatrixToQuaternion(float* a1, glm::quat* a2)
+		{
+			float v2; // xmm3_4
+			float v3; // xmm2_4
+			float v4; // xmm4_4
+			float v6; // xmm1_4
+			float v7; // xmm0_4
+			float v8; // xmm4_4
+			float v9; // xmm2_4
+			float v10; // xmm3_4
+			float v11; // xmm0_4
+			__int64 v12; // r11
+			__int64 v13; // r9
+			__int64 v14; // rdx
+			float v15; // xmm1_4
+			//__int64 result; // rax
+			float v17[3]; // [rsp+0h] [rbp-28h]
+			float v18; // [rsp+Ch] [rbp-1Ch]
+
+			v2 = *a1;
+			v3 = a1[5];
+			v4 = a1[10];
+			v6 = (*a1 + v3) + v4;
+			if (v6 <= 0.0)
+			{
+				v12 = 0i64;
+				if (v2 >= v3)
+				{
+					if (v4 > v2)
+						v12 = 2i64;
+				}
+				else
+				{
+					if (v4 > v3)
+					{
+						v12 &= 0xff00;
+						v12 |= 1;
+					}
+					else
+					{
+						v12 &= 0xff00;
+						v12 |= 0;
+					}
+
+					v12 = (unsigned int)(v12 + 1);
+				}
+
+				v13 = ((int)v12 + 1) % 3u;
+				v14 = ((int)v12 + 2) % 3u;
+				v15 = std::sqrtf(((a1[5 * v12] - a1[5 * v13]) - a1[5 * v14]) + 1.0f);
+				v17[v12] = v15 * 0.5f;
+				//*(float*)&v17[v12] = v15 * 0.5f;
+				v18 = (a1[4 * v14 + v13] - a1[4 * v13 + v14]) * (0.5f / v15);
+				//result = v14 + 4 * v12;
+				//*(float*)&v17[v13] = (a1[4 * v13 + v12] + a1[4 * v12 + v13]) * (0.5f / v15);
+				//*(float*)&v17[v14] = (a1[result] + a1[4 * v14 + v12]) * (0.5f / v15);
+				v17[v13] = (a1[4 * v13 + v12] + a1[4 * v12 + v13]) * (0.5f / v15);
+				v17[v14] = (a1[v14 + 4 * v12] + a1[4 * v14 + v12]) * (0.5f / v15);
+				v8 = v18;
+				v10 = v17[2]; //v10 = *(float*)&v17[2];
+				v11 = v17[1]; //v11 = *(float*)&v17[1];
+				v9 = v17[0]; //v9 = *(float*)v17;
+			}
+			else
+			{
+				v7 = std::sqrtf(v6 + 1.0f);
+				v8 = v7 * 0.5f;
+				v9 = (a1[9] - a1[6]) * (0.5f / v7);
+				v10 = (a1[4] - a1[1]) * (0.5f / v7);
+				v11 = (a1[2] - a1[8]) * (0.5f / v7);
+			}
+
+			a2->x = v9;
+			a2->y = v11;
+			a2->z = v10;
+			a2->w = v8;
+		}
+
+		void Util::QuaternionToMatrix(float* a1, glm::quat* a2)
+		{
+			float v3; // xmm9_4
+			float v4; // xmm10_4
+			float v5; // xmm12_4
+			float v6; // xmm13_4
+			float v7; // xmm7_4
+			float v8; // xmm4_4
+			float v9; // xmm0_4
+			float v10; // xmm0_4
+			float v11; // xmm7_4
+			float v12; // xmm8_4
+			float v13; // xmm6_4
+			float v14; // xmm5_4
+			float v15; // xmm4_4
+			float v16; // xmm12_4
+			float v17; // xmm9_4
+			float v18; // xmm13_4
+
+			v3 = a2->w;//a2[3];
+			v4 = a2->z;//a2[2];
+			v5 = a2->x;//*a2;
+			v6 = a2->y;//a2[1];
+			v7 = a2->x;//*a2;
+			v8 = a2->x;//*a2;
+
+			v9 = 1.0f / ((v3 * v3 + v4 * v4) + (v5 * v5 + v6 * v6));
+			v10 = v9 + v9;
+			v11 = v7 * (v5 * v10);
+			v12 = v3 * (v5 * v10);
+			v13 = v3 * (v6 * v10);
+			v14 = v6 * (v6 * v10);
+			v15 = v8 * (v6 * v10);
+			v16 = v5 * (v4 * v10);
+			v17 = v3 * (v4 * v10);
+			v18 = v6 * (v4 * v10);
+
+			a1[0] = 1.0f - ((v4 * v4 * v10) + v14);
+			a1[1] = v15 - v17;
+			a1[2] = v16 + v13;
+			a1[3] = 0.0f;
+
+			a1[4] = v15 + v17;
+			a1[5] = 1.0f - ((v4 * v4 * v10) + v11);
+			a1[6] = v18 - v12;
+			a1[7] = 0.0f;
+
+			a1[8] = v16 - v13;
+			a1[9] = v18 + v12;
+			a1[10] = 1.0f - (v14 + v11);
+			a1[11] = 0.0f;
+		}
+
+
 		int Util::Lerp(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 3);
@@ -197,113 +328,32 @@ namespace SM
 			return 1;
 		}
 
-		/*
-			a1 - matrix
-			a2 - quat
-		*/
-		void matrix_to_quat(float* a1, glm::quat* a2)
-		{
-			float v2; // xmm3_4
-			float v3; // xmm2_4
-			float v4; // xmm4_4
-			float v6; // xmm1_4
-			float v7; // xmm0_4
-			float v8; // xmm4_4
-			float v9; // xmm2_4
-			float v10; // xmm3_4
-			float v11; // xmm0_4
-			__int64 v12; // r11
-			__int64 v13; // r9
-			__int64 v14; // rdx
-			float v15; // xmm1_4
-			//__int64 result; // rax
-			float v17[3]; // [rsp+0h] [rbp-28h]
-			float v18; // [rsp+Ch] [rbp-1Ch]
-
-			v2 = *a1;
-			v3 = a1[5];
-			v4 = a1[10];
-			v6 = (*a1 + v3) + v4;
-			if (v6 <= 0.0)
-			{
-				v12 = 0i64;
-				if (v2 >= v3)
-				{
-					if (v4 > v2)
-						v12 = 2i64;
-				}
-				else
-				{
-					if (v4 > v3)
-					{
-						v12 &= 0xff00;
-						v12 |= 1;
-					}
-					else
-					{
-						v12 &= 0xff00;
-						v12 |= 0;
-					}
-
-					v12 = (unsigned int)(v12 + 1);
-				}
-
-				v13 = ((int)v12 + 1) % 3u;
-				v14 = ((int)v12 + 2) % 3u;
-				v15 = std::sqrtf(((a1[5 * v12] - a1[5 * v13]) - a1[5 * v14]) + 1.0f);
-				v17[v12] = v15 * 0.5f;
-				//*(float*)&v17[v12] = v15 * 0.5f;
-				v18 = (a1[4 * v14 + v13] - a1[4 * v13 + v14]) * (0.5f / v15);
-				//result = v14 + 4 * v12;
-				//*(float*)&v17[v13] = (a1[4 * v13 + v12] + a1[4 * v12 + v13]) * (0.5f / v15);
-				//*(float*)&v17[v14] = (a1[result] + a1[4 * v14 + v12]) * (0.5f / v15);
-				v17[v13] = (a1[4 * v13 + v12] + a1[4 * v12 + v13]) * (0.5f / v15);
-				v17[v14] = (a1[v14 + 4 * v12] + a1[4 * v14 + v12]) * (0.5f / v15);
-				v8 = v18;
-				v10 = v17[2]; //v10 = *(float*)&v17[2];
-				v11 = v17[1]; //v11 = *(float*)&v17[1];
-				v9 = v17[0]; //v9 = *(float*)v17;
-			}
-			else
-			{
-				v7 = std::sqrtf(v6 + 1.0f);
-				v8 = v7 * 0.5f; 
-				v9 = (a1[9] - a1[6]) * (0.5f / v7);
-				v10 = (a1[4] - a1[1]) * (0.5f / v7);
-				v11 = (a1[2] - a1[8]) * (0.5f / v7);
-			}
-
-			a2->x = v9;
-			a2->y = v11;
-			a2->z = v10;
-			a2->w = v8;
-		}
-
 		int Util::AxesToQuat(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 2);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSMVEC3);
 
-			glm::vec3 v4 = *LUA_VEC3_FROM_UDATA(L, 1);
-			glm::vec3 v5 = *LUA_VEC3_FROM_UDATA(L, 2);
+			glm::vec3* v4 = LUA_VEC3_FROM_UDATA(L, 1);
+			glm::vec3* v5 = LUA_VEC3_FROM_UDATA(L, 2);
 
 			glm::mat4 v17;
-			((float*)&v17)[0] = v4.x;
-			((float*)&v17)[1] = (v5.y * v4.z) - (v5.z * v4.y);
-			((float*)&v17)[2] = v5.x;
-			((float*)&v17)[3] = 0.0f;
-			((float*)&v17)[4] = v4.y;
-			((float*)&v17)[5] = (v5.z * v4.x) - (v5.x * v4.z);
-			((float*)&v17)[6] = v5.y;
-			((float*)&v17)[7] = 0.0f;
-			((float*)&v17)[8] = v4.z;
-			((float*)&v17)[9] = (v5.x * v4.y) - (v5.y * v4.x);
-			((float*)&v17)[10] = v5.z;
-			((float*)&v17)[11] = 0.0f;
+			float* v_m_ptr = reinterpret_cast<float*>(&v17);
+			v_m_ptr[0] = v4->x;
+			v_m_ptr[1] = (v5->y * v4->z) - (v5->z * v4->y);
+			v_m_ptr[2] = v5->x;
+			v_m_ptr[3] = 0.0f;
+			v_m_ptr[4] = v4->y;
+			v_m_ptr[5] = (v5->z * v4->x) - (v5->x * v4->z);
+			v_m_ptr[6] = v5->y;
+			v_m_ptr[7] = 0.0f;
+			v_m_ptr[8] = v4->z;
+			v_m_ptr[9] = (v5->x * v4->y) - (v5->y * v4->x);
+			v_m_ptr[10] = v5->z;
+			v_m_ptr[11] = 0.0f;
 
 			glm::quat* v_new_quat = Quat::CreateQuaternion(L);
-			matrix_to_quat(reinterpret_cast<float*>(&v17), v_new_quat);
+			Util::MatrixToQuaternion(reinterpret_cast<float*>(&v17), v_new_quat);
 
 			return 1;
 		}

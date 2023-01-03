@@ -3,7 +3,8 @@
 #include "BaseLuaFunctions.hpp"
 #include "CLuaTableUtils.hpp"
 #include "LuaVec3.hpp"
-
+#include "LuaUtil.hpp"
+#include "Console.hpp"
 
 extern "C"
 {
@@ -271,6 +272,47 @@ namespace SM
 			return 1;
 		}
 
+		inline void lua_euler_angles_round90(float& pitch, float& yaw, float& roll)
+		{
+			/* just a little reminder
+				pitch - x
+				yaw - y
+				roll - z
+			*/
+			if (std::fabsf(pitch) == glm::half_pi<float>())
+			{
+				if (roll <= 0.0f)
+					roll += glm::pi<float>();
+				else
+					roll -= glm::pi<float>();
+
+				if (yaw <= 0.0f)
+					yaw += glm::pi<float>();
+				else
+					yaw -= glm::pi<float>();
+			}
+
+			pitch = std::roundf(pitch * glm::two_over_pi<float>()) * glm::half_pi<float>();
+			yaw = std::roundf(yaw * glm::two_over_pi<float>()) * glm::half_pi<float>();
+			roll = std::roundf(roll * glm::two_over_pi<float>()) * glm::half_pi<float>();
+		}
+
+		int Quat::Round90(lua_State* L)
+		{
+			G_LUA_CUSTOM_ARG_CHECK(L, 1);
+			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMQUAT);
+
+			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
+
+			glm::vec3 v_euler_angles = glm::eulerAngles(*v_quat);
+			lua_euler_angles_round90(v_euler_angles.x, v_euler_angles.y, v_euler_angles.z);
+
+			glm::quat* v_new_quat = Quat::CreateQuaternion(L);
+			(*v_new_quat) = glm::quat(v_euler_angles);
+
+			return 1;
+		}
+
 		int Quat::Mul(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 2);
@@ -371,6 +413,7 @@ namespace SM
 				Table::PushFunction(L, "fromEuler", Quat::FromEuler);
 				Table::PushFunction(L, "slerp", Quat::Slerp);
 				Table::PushFunction(L, "lookRotation", Quat::LookRotation);
+				Table::PushFunction(L, "round90", Quat::Round90);
 
 				Table::PushFunction(L, "getRight", Quat::GetRight);
 				Table::PushFunction(L, "getAt", Quat::GetAt);

@@ -37,6 +37,7 @@ namespace SM
 			int FromEuler(lua_State* L);
 			int Slerp(lua_State* L);
 			int LookRotation(lua_State* L);
+			int Round90(lua_State* L);
 
 			int Mul(lua_State* L);
 			int Equals(lua_State* L);

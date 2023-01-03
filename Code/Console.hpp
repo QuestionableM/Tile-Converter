@@ -6,6 +6,7 @@
 #include "Utils/WinInclude.hpp"
 #include <string>
 #include <vector>
+#include <stdio.h>
 
 class ConColor
 {
@@ -55,7 +56,7 @@ inline constexpr ConColor operator"" _fg(unsigned long long val) noexcept
 
 class __ConsoleOutputHandler;
 
-#define DECLARE_INTEGER_OUTPUT(type) inline static void Output(const type number) { DebugConsole::Output(std::to_string(number)); }
+#define DECLARE_INTEGER_OUTPUT(type) inline static void Output(const type number) { DebugConsole::OutputArithmetic(number); }
 
 class DebugConsole
 {
@@ -114,6 +115,24 @@ private:
 	inline static void Output(const std::string_view& str_view)
 	{
 		WriteConsoleA(DebugConsole::Handle, str_view.data(), static_cast<DWORD>(str_view.size()), NULL, NULL);
+	}
+
+	template<typename T>
+	inline constexpr static void OutputArithmetic(const T& number)
+	{
+		static_assert(std::is_arithmetic_v<T>, "Value must be arithmetic");
+
+		if constexpr (std::is_floating_point_v<T>)
+		{
+			char v_buffer[64];
+			sprintf_s(v_buffer, "%g", number);
+
+			DebugConsole::Output(v_buffer);
+		}
+		else
+		{
+			DebugConsole::Output(std::to_string(number));
+		}
 	}
 
 	DECLARE_INTEGER_OUTPUT(unsigned char&);
