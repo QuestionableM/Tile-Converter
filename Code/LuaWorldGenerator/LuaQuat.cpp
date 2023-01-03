@@ -16,6 +16,7 @@ extern "C"
 #include <gtx\quaternion.hpp>
 #include <matrix.hpp>
 #include <gtc\matrix_transform.hpp>
+#include <gtx\euler_angles.hpp>
 
 #define LUA_QUAT_FROM_UDATA(L, I) reinterpret_cast<glm::quat*>(lua_touserdata(L, I))
 #define LUA_QUAT_TEST_UDATA(L, I) reinterpret_cast<glm::quat*>(luaL_testudata(L, I, "Quat"))
@@ -226,16 +227,18 @@ namespace SM
 			return 1;
 		}
 
-		//TODO: Fix this implementation to be exactly the same as in SM
 		int Quat::FromEuler(lua_State* L)
 		{
 			G_LUA_CUSTOM_ARG_CHECK(L, 1);
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSMVEC3);
 
 			glm::vec3* v_euler = LUA_VEC3_FROM_UDATA(L, 1);
+			(*v_euler) = glm::radians(*v_euler);
+
+			glm::mat4 v_matrix = glm::eulerAngleXYZ(v_euler->x, v_euler->y, v_euler->z);
 
 			glm::quat* v_new_quat = Quat::CreateQuaternion(L);
-			(*v_new_quat) = glm::quat(glm::radians(*v_euler));
+			(*v_new_quat) = glm::quat_cast(v_matrix);
 
 			return 1;
 		}
@@ -272,29 +275,29 @@ namespace SM
 			return 1;
 		}
 
-		inline void lua_euler_angles_round90(float& pitch, float& yaw, float& roll)
+		inline void lua_euler_angles_round90(glm::vec3& vec)
 		{
 			/* just a little reminder
 				pitch - x
 				yaw - y
 				roll - z
 			*/
-			if (std::fabsf(pitch) == glm::half_pi<float>())
+			if (std::fabsf(vec.x) == glm::half_pi<float>())
 			{
-				if (roll <= 0.0f)
-					roll += glm::pi<float>();
+				if (vec.z <= 0.0f)
+					vec.z += glm::pi<float>();
 				else
-					roll -= glm::pi<float>();
+					vec.z -= glm::pi<float>();
 
-				if (yaw <= 0.0f)
-					yaw += glm::pi<float>();
+				if (vec.y <= 0.0f)
+					vec.y += glm::pi<float>();
 				else
-					yaw -= glm::pi<float>();
+					vec.y -= glm::pi<float>();
 			}
 
-			pitch = std::roundf(pitch * glm::two_over_pi<float>()) * glm::half_pi<float>();
-			yaw = std::roundf(yaw * glm::two_over_pi<float>()) * glm::half_pi<float>();
-			roll = std::roundf(roll * glm::two_over_pi<float>()) * glm::half_pi<float>();
+			vec.x = std::roundf(vec.x * glm::two_over_pi<float>()) * glm::half_pi<float>();
+			vec.y = std::roundf(vec.y * glm::two_over_pi<float>()) * glm::half_pi<float>();
+			vec.z = std::roundf(vec.z * glm::two_over_pi<float>()) * glm::half_pi<float>();
 		}
 
 		int Quat::Round90(lua_State* L)
@@ -305,7 +308,7 @@ namespace SM
 			glm::quat* v_quat = LUA_QUAT_FROM_UDATA(L, 1);
 
 			glm::vec3 v_euler_angles = glm::eulerAngles(*v_quat);
-			lua_euler_angles_round90(v_euler_angles.x, v_euler_angles.y, v_euler_angles.z);
+			lua_euler_angles_round90(v_euler_angles);
 
 			glm::quat* v_new_quat = Quat::CreateQuaternion(L);
 			(*v_new_quat) = glm::quat(v_euler_angles);

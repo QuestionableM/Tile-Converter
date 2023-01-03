@@ -99,7 +99,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;$(SolutionDir)Dependencies\DirectXMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
@@ -119,7 +119,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;$(SolutionDir)Dependencies\DirectXMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
@@ -139,7 +139,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;$(SolutionDir)Dependencies\DirectXMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
@@ -161,7 +161,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;$(SolutionDir)Dependencies\DirectXMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code;$(SolutionDir)Dependencies\Assimp\Include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\lz4\Include;$(SolutionDir)Dependencies\nlohmann_json;$(SolutionDir)Dependencies\PerlinNoise;$(SolutionDir)Dependencies\FreeImage\Include;$(SolutionDir)Dependencies\ValveVDF\include;$(SolutionDir)Dependencies\LUA\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ShowIncludes>false</ShowIncludes>
