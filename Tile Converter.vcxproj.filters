@@ -144,37 +144,37 @@
     <ClCompile Include="Code\LuaWorldGenerator\LuaWorldGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\BaseLuaFunctions.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaBaseFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaUuid.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaUuid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\Utils\Crypt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaBitLibrary.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaBitLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaVec3.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaVec3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaColor.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaTerrainTile.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTerrainTile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaUtil.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaQuat.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaQuat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaLog.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\LuaWorldGenerator\LuaJson.cpp">
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaJson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -371,37 +371,37 @@
     <ClInclude Include="Code\LuaWorldGenerator\LuaWorldGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\BaseLuaFunctions.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaBaseFunctions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaUuid.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaUuid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\CLuaTableUtils.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\CLuaTableUtils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Utils\Crypt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaVec3.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaVec3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaColor.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaColor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaTerrainTile.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTerrainTile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaUtil.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaUtil.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaQuat.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaQuat.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaLog.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaLog.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\LuaJson.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaJson.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

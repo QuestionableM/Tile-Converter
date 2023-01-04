@@ -1,21 +1,21 @@
 #include "LuaWorldGenerator.hpp"
-#include "BaseLuaFunctions.hpp"
 
-#include "CLuaTableUtils.hpp"
-#include "LuaColor.hpp"
-#include "LuaUuid.hpp"
-#include "LuaVec3.hpp"
-#include "LuaTerrainTile.hpp"
-#include "LuaUtil.hpp"
-#include "LuaQuat.hpp"
-#include "LuaLog.hpp"
-#include "LuaJson.hpp"
+#include "SMLuaLibs\LuaBaseFunctions.hpp"
+#include "SMLuaLibs\CLuaTableUtils.hpp"
+#include "SMLuaLibs\LuaTerrainTile.hpp"
+#include "SMLuaLibs\LuaColor.hpp"
+#include "SMLuaLibs\LuaUuid.hpp"
+#include "SMLuaLibs\LuaVec3.hpp"
+#include "SMLuaLibs\LuaUtil.hpp"
+#include "SMLuaLibs\LuaQuat.hpp"
+#include "SMLuaLibs\LuaJson.hpp"
+#include "SMLuaLibs\LuaLog.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
+#include "Console.hpp"
 
 #include "Utils\String.hpp"
 #include "Utils\File.hpp"
-#include "Console.hpp"
 
 #define G_LUA_ERROR_CHECK(val, lua_state)                      \
 	if ((val) != LUA_OK) {                                     \

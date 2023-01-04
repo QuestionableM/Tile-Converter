@@ -1,5 +1,6 @@
 #include "LuaTerrainTile.hpp"
-#include "BaseLuaFunctions.hpp"
+
+#include "LuaBaseFunctions.hpp"
 #include "CLuaTableUtils.hpp"
 #include "LuaUuid.hpp"
 

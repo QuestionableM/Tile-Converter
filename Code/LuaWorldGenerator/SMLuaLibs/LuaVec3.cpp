@@ -1,7 +1,8 @@
 #include "LuaVec3.hpp"
 
-#include "BaseLuaFunctions.hpp"
+#include "LuaBaseFunctions.hpp"
 #include "CLuaTableUtils.hpp"
+
 #include "LuaQuat.hpp"
 #include "LuaUtil.hpp"
 #include "Console.hpp"
@@ -14,9 +15,9 @@ extern "C"
 	#include <lua\lauxlib.h>
 }
 
-#include <glm.hpp>
 #include <gtx\rotate_vector.hpp>
 #include <gtx\quaternion.hpp>
+#include <glm.hpp>
 
 namespace SM
 {
