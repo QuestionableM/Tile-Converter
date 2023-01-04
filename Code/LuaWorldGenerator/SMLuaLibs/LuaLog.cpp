@@ -1,7 +1,7 @@
 #include "LuaLog.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
+#include "LuaTableUtils.hpp"
 #include "Console.hpp"
 
 extern "C"

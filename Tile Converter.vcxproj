@@ -250,7 +250,7 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaBaseFunctions.hpp" />
-    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\CLuaTableUtils.hpp" />
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTableUtils.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaColor.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaJson.hpp" />
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaLog.hpp" />

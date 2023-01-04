@@ -1,8 +1,8 @@
 #include "LuaWorldGenerator.hpp"
 
 #include "SMLuaLibs\LuaBaseFunctions.hpp"
-#include "SMLuaLibs\CLuaTableUtils.hpp"
 #include "SMLuaLibs\LuaTerrainTile.hpp"
+#include "SMLuaLibs\LuaTableUtils.hpp"
 #include "SMLuaLibs\LuaColor.hpp"
 #include "SMLuaLibs\LuaUuid.hpp"
 #include "SMLuaLibs\LuaVec3.hpp"

@@ -1,10 +1,10 @@
 #include "LuaVec3.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
-
+#include "LuaTableUtils.hpp"
 #include "LuaQuat.hpp"
 #include "LuaUtil.hpp"
+
 #include "Console.hpp"
 
 #include <unordered_map>

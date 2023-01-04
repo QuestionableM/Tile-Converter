@@ -1,14 +1,13 @@
 #include "LuaTerrainTile.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
+#include "LuaTableUtils.hpp"
 #include "LuaUuid.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
-
+//TODO: Make it so the order in those 2 files wouldn't matter
 #include "Tile\TileConverter.hpp"
 #include "SMReaders\TileReader.hpp"
-
 #include "Utils\String.hpp"
 
 extern "C"

@@ -377,7 +377,7 @@
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaUuid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\CLuaTableUtils.hpp">
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTableUtils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Utils\Crypt.hpp">

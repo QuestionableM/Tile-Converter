@@ -1,9 +1,10 @@
 #include "LuaQuat.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
+#include "LuaTableUtils.hpp"
 #include "LuaVec3.hpp"
 #include "LuaUtil.hpp"
+
 #include "Console.hpp"
 
 extern "C"
@@ -13,10 +14,10 @@ extern "C"
 	#include <lua\lauxlib.h>
 }
 
-#include <gtx\quaternion.hpp>
-#include <matrix.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtx\euler_angles.hpp>
+#include <gtx\quaternion.hpp>
+#include <matrix.hpp>
 
 #define LUA_QUAT_FROM_UDATA(L, I) reinterpret_cast<glm::quat*>(lua_touserdata(L, I))
 #define LUA_QUAT_TEST_UDATA(L, I) reinterpret_cast<glm::quat*>(luaL_testudata(L, I, "Quat"))

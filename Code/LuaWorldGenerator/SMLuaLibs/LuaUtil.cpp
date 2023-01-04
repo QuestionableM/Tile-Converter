@@ -1,7 +1,7 @@
 #include "LuaUtil.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
+#include "LuaTableUtils.hpp"
 
 #include "LuaVec3.hpp"
 #include "LuaQuat.hpp"

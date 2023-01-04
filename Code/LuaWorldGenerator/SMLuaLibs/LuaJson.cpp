@@ -1,7 +1,7 @@
 #include "LuaJson.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
+#include "LuaTableUtils.hpp"
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 #include "Console.hpp"

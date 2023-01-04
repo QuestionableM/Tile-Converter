@@ -1,7 +1,7 @@
 #include "LuaColor.hpp"
 
 #include "LuaBaseFunctions.hpp"
-#include "CLuaTableUtils.hpp"
+#include "LuaTableUtils.hpp"
 
 #include "Utils\Color.hpp"
 #include "Console.hpp"
