@@ -2,8 +2,10 @@
 
 #include "SMLuaLibs\LuaBaseFunctions.hpp"
 #include "SMLuaLibs\LuaTerrainTile.hpp"
+#include "SMLuaLibs\LuaTerrainData.hpp"
 #include "SMLuaLibs\LuaTableUtils.hpp"
 #include "SMLuaLibs\LuaColor.hpp"
+#include "SMLuaLibs\LuaNoise.hpp"
 #include "SMLuaLibs\LuaUuid.hpp"
 #include "SMLuaLibs\LuaVec3.hpp"
 #include "SMLuaLibs\LuaUtil.hpp"
@@ -16,6 +18,8 @@
 
 #include "Utils\String.hpp"
 #include "Utils\File.hpp"
+
+#include <random>
 
 #define G_LUA_ERROR_CHECK(val, lua_state)                      \
 	if ((val) != LUA_OK) {                                     \
@@ -62,10 +66,12 @@ namespace SM
 		Lua::Vec3::Register(m_lState);
 		Lua::Color::Register(m_lState);
 		Lua::TerrainTile::Register(m_lState);
+		Lua::TerrainData::Register(m_lState);
 		Lua::Util::Register(m_lState);
 		Lua::Quat::Register(m_lState);
 		Lua::Log::Register(m_lState);
 		Lua::Json::Register(m_lState);
+		Lua::Noise::Register(m_lState);
 
 		//Push SM namespace into the global environment
 		lua_setglobal(m_lState, "sm");
@@ -119,7 +125,12 @@ namespace SM
 			lua_pushinteger(m_lState, 63); //xMax
 			lua_pushinteger(m_lState, -48); //yMin
 			lua_pushinteger(m_lState, 47); //yMax
-			lua_pushinteger(m_lState, static_cast<long long>(rand())); //seed
+
+			std::random_device v_randomDevice;
+			std::mt19937_64 v_randomGenerator(v_randomDevice());
+			std::uniform_int_distribution<int> v_randomDistribution;
+
+			lua_pushinteger(m_lState, static_cast<long long>(v_randomDistribution(v_randomGenerator))); //seed
 
 			G_LUA_ERROR_CHECK(lua_pcall(m_lState, 5, 0, 0), m_lState);
 		}

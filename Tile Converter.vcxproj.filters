@@ -177,6 +177,12 @@
     <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaJson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTerrainData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
@@ -402,6 +408,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaJson.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaNoise.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTerrainData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
