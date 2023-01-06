@@ -7,6 +7,7 @@
 #include "ObjectDatabase\Mod\MaterialManager.hpp"
 #include "ObjectDatabase\Mod\ObjectRotations.hpp"
 #include "ObjectDatabase\Mod\GameDataMod.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
 
 #include "Utils\Json.hpp"
 #include "Console.hpp"
@@ -60,6 +61,8 @@ void DatabaseLoader::LoadDatabase()
 
 	DatabaseLoader::LoadGameDatabase();
 	DatabaseLoader::LoadModDatabase();
+
+	KeywordReplacer::ClearContentKey();
 
 	DebugOutL(0b0101_fg, "Finished! (Blocks: ", Mod::BlockStorage.size(), ", Parts: ", Mod::PartStorage.size(), ", Harvestables: ", Mod::HarvestableStorage.size(), ", Assets: ", Mod::AssetStorage.size(), ")");
 }

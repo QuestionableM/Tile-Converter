@@ -68,7 +68,7 @@ namespace SM
 		int Base::Dofile(lua_State* L)
 		{
 			std::wstring v_file_path = String::ToWide(luaL_optstring(L, 1, NULL));
-			KeywordReplacer::ReplaceKeyR(v_file_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_file_path);
 
 			const std::wstring v_old_file = Base::GetCurrentFile();
 			if (!File::Exists(v_file_path))

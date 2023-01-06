@@ -42,7 +42,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
 
 			std::wstring v_tile_path = String::ToWide(lua_tostring(L, 1));
-			KeywordReplacer::ReplaceKeyR(v_tile_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_tile_path);
 
 			TileHeaderBaseInfo v_base_info;
 			if (ReadTileHeaderWrapped(L, v_tile_path, v_base_info) == 0)
@@ -60,7 +60,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
 
 			std::wstring v_tile_path = String::ToWide(lua_tostring(L, 1));
-			KeywordReplacer::ReplaceKeyR(v_tile_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_tile_path);
 
 			TileHeaderBaseInfo v_base_info;
 			if (ReadTileHeaderWrapped(L, v_tile_path, v_base_info) == 0)
@@ -76,7 +76,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
 
 			std::wstring v_tile_path = String::ToWide(lua_tostring(L, 1));
-			KeywordReplacer::ReplaceKeyR(v_tile_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_tile_path);
 
 			TileHeaderBaseInfo v_base_info;
 			if (ReadTileHeaderWrapped(L, v_tile_path, v_base_info) == 0)

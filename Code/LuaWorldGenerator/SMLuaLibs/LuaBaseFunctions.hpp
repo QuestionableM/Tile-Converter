@@ -27,6 +27,10 @@ extern "C"
 		G_LUA_CUSTOM_ARG_TYPE_ERROR(L, I, T); \
 	}
 
+#define G_LUA_REPLACE_KEY_CHECKED(L, v_path) \
+	if (!KeywordReplacer::ReplaceKeyRLua(v_path)) \
+		return luaL_error(L, "Path contains $CONTENT_DATA, but it is not defined!")
+
 namespace SM
 {
 	namespace Lua

@@ -64,6 +64,8 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TNUMBER); //y
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 3, LUA_TNUMBER); //seed
 
+			luaL_checkinteger(L, 1);
+
 			const int v_x = static_cast<int>(lua_tonumber(L, 1));
 			const int v_y = static_cast<int>(lua_tonumber(L, 2));
 			const int v_seed = static_cast<int>(lua_tonumber(L, 3));

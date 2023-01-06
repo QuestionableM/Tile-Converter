@@ -255,7 +255,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 1, LUA_TSTRING);
 
 			std::wstring v_json_path = String::ToWide(lua_tostring(L, 1));
-			KeywordReplacer::ReplaceKeyR(v_json_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_json_path);
 
 			lua_pushboolean(L, File::Exists(v_json_path) ? 1 : 0);
 			return 1;
@@ -268,7 +268,7 @@ namespace SM
 
 			const char* v_path_cache = lua_tostring(L, 1);
 			std::wstring v_json_path = String::ToWide(v_path_cache);
-			KeywordReplacer::ReplaceKeyR(v_json_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_json_path);
 
 			nlohmann::json v_f_json;
 			std::string v_error_msg;
@@ -285,7 +285,7 @@ namespace SM
 			G_LUA_CUSTOM_ARG_TYPE_CHECK(L, 2, LUA_TSTRING);
 
 			std::wstring v_json_path = String::ToWide(lua_tostring(L, 2));
-			KeywordReplacer::ReplaceKeyR(v_json_path);
+			G_LUA_REPLACE_KEY_CHECKED(L, v_json_path);
 
 			lua_pushvalue(L, 1);
 

@@ -39,6 +39,20 @@ void KeywordReplacer::SetModData(const std::wstring& path, const SMUuid& uuid)
 	KeywordReplacer::SetReplacement(L"$content_data", path);
 }
 
+void KeywordReplacer::ClearContentKey()
+{
+	const StringMap::iterator v_iter = m_KeyReplacements.find(L"$content_data");
+	if (v_iter == m_KeyReplacements.end())
+		return;
+
+	m_KeyReplacements.erase(v_iter);
+}
+
+bool KeywordReplacer::ContentKeyExists()
+{
+	return (m_KeyReplacements.find(L"$content_data") != m_KeyReplacements.end());
+}
+
 void KeywordReplacer::UpgradeResource(const std::wstring& mPath, std::wstring& mOutput)
 {
 	std::wstring v_lowerPath = mPath;
@@ -96,32 +110,65 @@ std::wstring KeywordReplacer::ReplaceKey(const std::wstring& path)
 	std::wstring v_output;
 	KeywordReplacer::UpgradeResource(path, v_output);
 
+	if (v_output.empty() || v_output[0] != L'$')
+		return v_output;
+
 	const std::size_t v_key_idx = v_output.find_first_of(L'/');
-	if (v_key_idx != std::wstring::npos)
-	{
-		const std::wstring v_key_chunk = v_output.substr(0, v_key_idx);
+	if (v_key_idx == std::wstring::npos)
+		return v_output;
 
-		const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
-		if (v_iter != m_KeyReplacements.end())
-			return (v_iter->second + v_output.substr(v_key_idx));
-	}
+	const std::wstring v_key_chunk = v_output.substr(0, v_key_idx);
+	const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
+	if (v_iter == m_KeyReplacements.end())
+		return v_output;
 
-	return v_output;
+	return (v_iter->second + v_output.substr(v_key_idx));
 }
 
 void KeywordReplacer::ReplaceKeyR(std::wstring& path)
 {
 	KeywordReplacer::UpgradeResource(path, path);
 
-	const std::size_t v_key_idx = path.find_first_of(L'/');
-	if (v_key_idx != std::wstring::npos)
-	{
-		const std::wstring v_key_chunk = path.substr(0, v_key_idx);
+	if (path.empty() || path[0] != L'$')
+		return;
 
-		const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
-		if (v_iter != m_KeyReplacements.end())
-			path = (v_iter->second + path.substr(v_key_idx));
+	const std::size_t v_key_idx = path.find_first_of(L'/');
+	if (v_key_idx == std::wstring::npos)
+		return;
+
+	const std::wstring v_key_chunk = path.substr(0, v_key_idx);
+	const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
+	if (v_iter == m_KeyReplacements.end())
+		return;
+
+	path = (v_iter->second + path.substr(v_key_idx));
+}
+
+bool KeywordReplacer::ReplaceKeyRLua(std::wstring& path)
+{
+	KeywordReplacer::UpgradeResource(path, path);
+
+	if (path.empty() || path[0] != L'$')
+		return true;
+
+	const std::size_t v_key_idx = path.find_first_of(L'/');
+	if (v_key_idx == std::wstring::npos)
+		return true;
+
+	const std::wstring v_key_chunk = path.substr(0, v_key_idx);
+	if (v_key_chunk == L"$content_data")
+	{
+		//Throw key error if $CONTENT_DATA doesn't exist
+		if (!KeywordReplacer::ContentKeyExists())
+			return false;
 	}
+
+	const StringMap::const_iterator v_iter = m_KeyReplacements.find(v_key_chunk);
+	if (v_iter == m_KeyReplacements.end())
+		return true;
+
+	path = (v_iter->second + path.substr(v_key_idx));
+	return true;
 }
 
 void KeywordReplacer::Clear()

@@ -15,11 +15,18 @@ public:
 	static void SetReplacement(const std::wstring& key, const std::wstring& replacement);
 	static void SetModData(const std::wstring& path, const SMUuid& uuid);
 
+	//Clears $CONTENT_DATA key
+	static void ClearContentKey();
+	//Checks if $CONTENT_DATA key is defined
+	static bool ContentKeyExists();
+
 	static void UpgradeResource(const std::wstring& mPath, std::wstring& mOutput);
 	static void LoadResourceUpgrades(const std::wstring& path);
 
 	static std::wstring ReplaceKey(const std::wstring& path);
 	static void ReplaceKeyR(std::wstring& path);
+	//Returns false if $CONTENT_DATA key is found but not defined
+	static bool ReplaceKeyRLua(std::wstring& path);
 
 	static void Clear();
 };
