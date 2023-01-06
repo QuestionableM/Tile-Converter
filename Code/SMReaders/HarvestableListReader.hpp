@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Tile/CellHeader.hpp"
-#include "Utils/Memory.hpp"
-#include "Tile/TilePart.hpp"
-#include "Tile/Tile.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase\Mod\Mod.hpp"
+#include "Utils\Memory.hpp"
 
-#include "Tile/Object/Harvestable.hpp"
+#include "Tile\Object\Harvestable.hpp"
+#include "Tile\ConvertSettings.hpp"
+#include "Tile\ConvertError.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\TilePart.hpp"
+#include "Tile\Tile.hpp"
 
 #include "lz4/lz4.h"
 

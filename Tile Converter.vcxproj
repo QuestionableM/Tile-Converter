@@ -297,6 +297,8 @@ xcopy /y /d "$(SolutionDir)Resources" "$(SolutionDir)Build\$(PlatformShortName)-
     <ClInclude Include="Code\SMReaders\PrefabReader.hpp" />
     <ClInclude Include="Code\SMReaders\TileReader.hpp" />
     <ClInclude Include="Code\Tile\CellHeader.hpp" />
+    <ClInclude Include="Code\Tile\ConvertError.hpp" />
+    <ClInclude Include="Code\Tile\ConvertSettings.hpp" />
     <ClInclude Include="Code\Tile\Object\Asset.hpp" />
     <ClInclude Include="Code\Tile\Object\Block.hpp" />
     <ClInclude Include="Code\Tile\Object\Blueprint.hpp" />

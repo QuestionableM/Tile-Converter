@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Tile\ConvertSettings.hpp"
+#include "Tile\ConvertError.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\TilePart.hpp"
+
 #include "ObjectDatabase/Mod/Mod.hpp"
-
-#include "Tile/CellHeader.hpp"
-#include "Tile/TilePart.hpp"
-#include "Utils/Uuid.hpp"
-
-#include "lz4/lz4.h"
+#include "Utils\Uuid.hpp"
+#include "lz4\lz4.h"
 
 class ClutterReader
 {

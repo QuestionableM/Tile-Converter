@@ -7,6 +7,7 @@
 #include "Tile\Object\Blueprint.hpp"
 #include "Tile\Object\Prefab.hpp"
 #include "Tile\Object\Decal.hpp"
+#include "Tile\ConvertSettings.hpp"
 
 #include "Utils\Memory.hpp"
 #include "Utils\File.hpp"

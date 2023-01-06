@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Utils/Memory.hpp"
-#include "Utils/ByteImpl.hpp"
+#include "Utils\Memory.hpp"
+#include "Utils\ByteImpl.hpp"
 #include "Utils\Uuid.hpp"
 
-#include "Tile/CellHeader.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\ConvertError.hpp"
 
 struct TileHeaderBaseInfo
 {

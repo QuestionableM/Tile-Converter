@@ -416,5 +416,11 @@
     <ClInclude Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTerrainData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Tile\ConvertError.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Tile\ConvertSettings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
