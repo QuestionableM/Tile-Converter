@@ -183,6 +183,9 @@
     <ClCompile Include="Code\LuaWorldGenerator\SMLuaLibs\LuaTerrainData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\simdjson\simdjson\simdjson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
@@ -420,6 +423,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Tile\ConvertSettings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\simdjson\simdjson\simdjson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
