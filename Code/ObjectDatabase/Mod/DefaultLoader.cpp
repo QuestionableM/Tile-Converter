@@ -3,84 +3,84 @@
 #include "Utils/String.hpp"
 #include "ObjectDatabase/KeywordReplacer.hpp"
 
-TextureList DefaultLoader::LoadTextureList(const nlohmann::json& texList)
+TextureList DefaultLoader::LoadTextureList(const simdjson::dom::array& texList)
 {
 	TextureList new_list;
 
-	const int arr_sz = (int)texList.size();
-	const int list_sz = (arr_sz > 3 ? 3 : arr_sz);
+	const int v_arr_sz = static_cast<int>(texList.size());
+	const int v_list_sz = (v_arr_sz > 3 ? 3 : v_arr_sz);
 
-	for (int a = 0; a < list_sz; a++)
+	for (int a = 0; a < v_list_sz; a++)
 	{
-		const auto& cur_item = texList.at(a);
+		const auto v_cur_item = texList.at(a);
 
-		if (cur_item.is_string())
+		if (v_cur_item.is_string())
 		{
-			std::wstring& wstr_path = new_list.GetStringRef(a);
+			std::wstring v_wstr_path = new_list.GetStringRef(a);
 
-			wstr_path = String::ToWide(cur_item.get_ref<const std::string&>());
-			KeywordReplacer::ReplaceKeyR(wstr_path);
+			v_wstr_path = String::ToWide(v_cur_item.get_string());
+			KeywordReplacer::ReplaceKeyR(v_wstr_path);
 		}
 	}
 
 	return new_list;
 }
 
-void DefaultLoader::AddSubMesh(const nlohmann::json& subMesh, TextureData& tData, const std::wstring& idx)
+void DefaultLoader::AddSubMesh(const simdjson::dom::element& subMesh, TextureData& tData, const std::wstring& idx)
 {
-	const auto& sTexList = JsonReader::Get(subMesh, "textureList");
-	if (!sTexList.is_array()) return;
+	const auto v_tex_list = subMesh["textureList"];
+	if (!v_tex_list.is_array()) return;
 
-	TextureList new_tList = DefaultLoader::LoadTextureList(sTexList);
+	TextureList v_new_tList = DefaultLoader::LoadTextureList(v_tex_list.get_array());
 
-	const auto& sCustomProp = JsonReader::Get(subMesh, "custom");
-	if (sCustomProp.is_object())
+	const auto v_custom_prop = subMesh["custom"];
+	if (v_custom_prop.is_object())
 	{
-		const auto& def_color_idx = JsonReader::Get(sCustomProp, "color");
-		if (def_color_idx.is_string())
-			new_tList.def_color_idx = String::ToWide(def_color_idx.get_ref<const std::string&>());
+		const auto v_def_col_idx = v_custom_prop["color"];
+		if (v_def_col_idx.is_string())
+			v_new_tList.def_color_idx = String::ToWide(v_def_col_idx.get_string());
 	}
 
-	const auto& sTexName = JsonReader::Get(subMesh, "material");
-	if (sTexName.is_string())
-		new_tList.material = String::ToWide(sTexName.get_ref<const std::string&>());
+	const auto v_mat_name = subMesh["material"];
+	if (v_mat_name.is_string())
+		v_new_tList.material = String::ToWide(v_mat_name.get_string());
 
-	tData.AddEntry(idx, new_tList);
+	tData.AddEntry(idx, v_new_tList);
 }
 
-bool DefaultLoader::LoadTextureData(const nlohmann::json& jLodList, TextureData& tData)
+bool DefaultLoader::LoadTextureData(const simdjson::dom::element& jLodList, TextureData& tData)
 {
-	const auto& jSubMeshList = JsonReader::Get(jLodList, "subMeshList");
-	if (jSubMeshList.is_array())
+	const auto v_sub_mesh_list_obj = jLodList["subMeshList"];
+	if (v_sub_mesh_list_obj.is_array())
 	{
 		std::size_t _idx = 0;
 		tData = TextureData(TextureDataType::SubMeshList);
 
-		for (const auto& subMeshItem : jSubMeshList)
+		for (const auto v_sub_mesh_item : v_sub_mesh_list_obj.get_array())
 		{
-			if (!subMeshItem.is_object()) continue;
+			if (!v_sub_mesh_item.is_object()) continue;
 
-			const auto& sIdx = JsonReader::Get(subMeshItem, "idx");
-			std::size_t cur_idx = (sIdx.is_number() ? sIdx.get<std::size_t>() : _idx);
+			const auto v_idx = v_sub_mesh_item["idx"];
+			std::size_t v_cur_idx = (v_idx.is_number() ? JsonReader::GetNumber<std::size_t>(v_idx) : _idx);
 
-			DefaultLoader::AddSubMesh(subMeshItem, tData, std::to_wstring(cur_idx));
+			DefaultLoader::AddSubMesh(v_sub_mesh_item, tData, std::to_wstring(v_cur_idx));
 			_idx++;
 		}
 
 		return true;
 	}
 
-	const auto& jSubMeshMap = JsonReader::Get(jLodList, "subMeshMap");
-	if (jSubMeshMap.is_object())
+	const auto v_sub_mesh_map_obj = jLodList["subMeshMap"];
+	if (v_sub_mesh_map_obj.is_object())
 	{
 		tData = TextureData(TextureDataType::SubMeshMap);
 
-		for (const auto& subMeshItem : jSubMeshMap.items())
+		for (const auto v_sub_mesh_item : v_sub_mesh_map_obj.get_object())
 		{
-			if (!subMeshItem.value().is_object()) continue;
+			if (!v_sub_mesh_item.value.is_object()) continue;
 
-			std::wstring subMeshName = String::ToWide(subMeshItem.key());
-			DefaultLoader::AddSubMesh(subMeshItem.value(), tData, subMeshName);
+			const std::wstring v_sub_mesh_name = String::ToWide(v_sub_mesh_item.key);
+			DefaultLoader::AddSubMesh(v_sub_mesh_item.value, tData, v_sub_mesh_name);
 		}
 
 		return true;
@@ -89,44 +89,54 @@ bool DefaultLoader::LoadTextureData(const nlohmann::json& jLodList, TextureData&
 	return false;
 }
 
-bool DefaultLoader::LoadRenderableData(const nlohmann::json& jRenderable, TextureData& tData, std::wstring& mesh)
+bool DefaultLoader::LoadRenderableData(const simdjson::dom::element& jRenderable, TextureData& tData, std::wstring& mesh)
 {
-	const auto& aLodList = JsonReader::Get(jRenderable, "lodList");
-	if (!aLodList.is_array()) return false;
-
-	const auto& aLodList0 = JsonReader::Get(aLodList, 0);
-	if (!aLodList0.is_object()) return false;
-
-	if (!DefaultLoader::LoadTextureData(aLodList0, tData))
+	const auto v_lod_list_obj = jRenderable["lodList"];
+	if (!v_lod_list_obj.is_array())
 		return false;
 
-	const auto& aMeshPath = JsonReader::Get(aLodList0, "mesh");
-	if (!aMeshPath.is_string()) return false;
+	const auto v_lod_list_array = v_lod_list_obj.get_array();
+	if (v_lod_list_array.size() == 0)
+		return false;
 
-	mesh = String::ToWide(aMeshPath.get_ref<const std::string&>());
+	const auto v_lod_list0 = v_lod_list_array.at(0);
+	if (!v_lod_list0.is_object())
+		return false;
+
+	if (!DefaultLoader::LoadTextureData(v_lod_list0.value_unsafe(), tData))
+		return false;
+
+	const auto v_mesh_path = v_lod_list0["mesh"];
+	if (!v_mesh_path.is_string())
+		return false;
+
+	mesh = String::ToWide(v_mesh_path.get_string());
 	KeywordReplacer::ReplaceKeyR(mesh);
 
 	return true;
 }
 
-bool DefaultLoader::LoadRenderable(const nlohmann::json& jAsset, TextureData& tData, std::wstring& mesh)
+bool DefaultLoader::LoadRenderable(const simdjson::dom::element& jAsset, TextureData& tData, std::wstring& mesh)
 {
-	const auto& v_rendJson = JsonReader::Get(jAsset, "renderable");
-	switch (v_rendJson.type())
+	const auto v_rend_data = jAsset["renderable"];
+	if (v_rend_data.error() != simdjson::SUCCESS)
+		return false;
+
+	switch (v_rend_data.type())
 	{
-	case nlohmann::json::value_t::string:
+	case simdjson::dom::element_type::STRING:
 		{
-			std::wstring v_renderablePath = String::ToWide(v_rendJson.get_ref<const std::string&>());
+			std::wstring v_renderablePath = String::ToWide(v_rend_data.get_string());
 			KeywordReplacer::ReplaceKeyR(v_renderablePath);
 
-			const nlohmann::json v_rendData = JsonReader::LoadParseJson(v_renderablePath);
-			if (!v_rendData.is_object())
+			simdjson::dom::document v_rend_doc;
+			if (!JsonReader::LoadParseSimdjsonCommentsC(v_renderablePath, v_rend_doc, simdjson::dom::element_type::OBJECT))
 				return false;
 
-			return DefaultLoader::LoadRenderableData(v_rendData, tData, mesh);
+			return DefaultLoader::LoadRenderableData(v_rend_doc.root(), tData, mesh);
 		}
-	case nlohmann::json::value_t::object:
-		return DefaultLoader::LoadRenderableData(v_rendJson, tData, mesh);
+	case simdjson::dom::element_type::OBJECT:
+		return DefaultLoader::LoadRenderableData(v_rend_data.value_unsafe(), tData, mesh);
 	default:
 		return false;
 	}

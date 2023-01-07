@@ -18,14 +18,14 @@ Color Asset::GetColor(const std::wstring& color) const
 			return v_iter->second;
 	}
 
-	return 0x000000;
+	return Color(static_cast<unsigned int>(0x000000));
 }
 
 std::string Asset::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {
 	const std::wstring mName = (pParent->Textures.Type() == TextureDataType::SubMeshList ? std::to_wstring(mIdx) : mat_name);
 
-	Color sColor = 0x000000;
+	Color sColor = static_cast<unsigned int>(0x000000);
 
 	std::string mat_idx = "m1";
 

@@ -7,69 +7,71 @@
 
 #include "Console.hpp"
 
-inline void GetWstringFromDecalset(const nlohmann::json& obj, const std::string& key, std::wstring& r_output)
+inline void GetWstringFromDecalset(const simdjson::dom::element& obj, const std::string& key, std::wstring& r_output)
 {
-	const auto& v_jsonString = JsonReader::Get(obj, key);
-	if (v_jsonString.is_string())
+	const auto v_json_str = obj[key];
+	if (v_json_str.is_string())
 	{
-		r_output = String::ToWide(v_jsonString.get_ref<const std::string&>());
+		r_output = String::ToWide(v_json_str.get_string());
 		KeywordReplacer::ReplaceKeyR(r_output);
 	}
 }
 
 void DecalsetReader::LoadFromFile(const std::wstring& path, Mod* mod)
 {
-	const nlohmann::json v_decalJson = JsonReader::LoadParseJson(path);
-	if (!v_decalJson.is_object())
+	simdjson::dom::document v_json_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(path, v_json_doc, simdjson::dom::element_type::OBJECT))
 		return;
 
-	const auto& v_decalList = JsonReader::Get(v_decalJson, "decalList");
-	if (!v_decalList.is_object())
+	const auto v_root = v_json_doc.root();
+
+	const auto v_decal_list = v_root["decalList"];
+	if (!v_decal_list.is_object())
 		return;
 
 	TextureList v_texList;
-	GetWstringFromDecalset(v_decalJson, "difSheet", v_texList.dif);
-	GetWstringFromDecalset(v_decalJson, "asgSheet", v_texList.asg);
-	GetWstringFromDecalset(v_decalJson, "norSheet", v_texList.nor);
+	GetWstringFromDecalset(v_root, "difSheet", v_texList.dif);
+	GetWstringFromDecalset(v_root, "asgSheet", v_texList.asg);
+	GetWstringFromDecalset(v_root, "norSheet", v_texList.nor);
 
-	for (const auto& v_curDecal : v_decalList.items())
+	for (const auto v_decal : v_decal_list.get_object())
 	{
-		const auto& v_curVal = v_curDecal.value();
-		if (!v_curVal.is_object()) continue;
+		if (!v_decal.value.is_object()) continue;
 
-		const auto& v_decalUuidStr = JsonReader::Get(v_curVal, "uuid");
-		const auto& v_decalMaterial = JsonReader::Get(v_curVal, "material");
+		const auto v_uuid = v_decal.value["uuid"];
+		const auto v_material = v_decal.value["material"];
 
-		if (!v_decalUuidStr.is_string() || !v_decalMaterial.is_string())
+		if (!(v_uuid.is_string() && v_material.is_string()))
 			continue;
 
-		const auto& v_decalRegion = JsonReader::Get(v_curVal, "region");
-		if (!v_decalRegion.is_array() || v_decalRegion.size() != 4)
+		const auto v_decal_region = v_decal.value["region"];
+		if (!v_decal_region.is_array())
 			continue;
 
-		const SMUuid v_decalUuid(v_decalUuidStr.get_ref<const std::string&>());
-		Mod::UuidObjMapIterator<DecalData*> v_iter = Mod::DecalStorage.find(v_decalUuid);
-		if (v_iter != Mod::DecalStorage.end())
+		const auto v_decal_reg_array = v_decal_region.get_array();
+		if (v_decal_reg_array.size() != 4)
+			continue;
+
+		const SMUuid v_decal_uuid = v_uuid.get_c_str();
+		if (Mod::DecalStorage.find(v_decal_uuid) != Mod::DecalStorage.end())
 		{
-			DebugWarningL("A decal with the same uuid already exists! (uuid: ", v_decalUuid.ToString(), ")");
+			DebugWarningL("A decal with the same uuid already exists! (uuid: ", v_decal_uuid.ToString(), ")");
 			continue;
 		}
 
-		v_texList.material = String::ToWide(v_decalMaterial.get_ref<const std::string&>());
+		v_texList.material = String::ToWide(v_material.get_string());
 
-		DecalData* v_newDecal = new DecalData();
-		v_newDecal->m_name = v_curDecal.key();
-		v_newDecal->m_uuid = v_decalUuid;
-		v_newDecal->m_textures = v_texList;
-		v_newDecal->m_mod = mod;
-		v_newDecal->m_ranges[0] = v_decalRegion[0];
-		v_newDecal->m_ranges[1] = v_decalRegion[1];
-		v_newDecal->m_ranges[2] = v_decalRegion[2];
-		v_newDecal->m_ranges[3] = v_decalRegion[3];
+		DecalData* v_new_decal = new DecalData();
+		v_new_decal->m_name = std::string(v_decal.key.data(), v_decal.key.size());
+		v_new_decal->m_uuid = v_decal_uuid;
+		v_new_decal->m_textures = v_texList;
+		v_new_decal->m_mod = mod;
 
-		const auto v_decalPair = std::make_pair(v_newDecal->m_uuid, v_newDecal);
+		for (std::size_t a = 0; a < 4; a++)
+			v_new_decal->m_ranges[a] = v_decal_reg_array.at(a);
 
-		Mod::DecalStorage.insert(v_decalPair);
-		mod->m_Decals.insert(v_decalPair);
+		const auto v_decal_pair = std::make_pair(v_new_decal->m_uuid, v_new_decal);
+		Mod::DecalStorage.insert(v_decal_pair);
+		mod->m_Decals.insert(v_decal_pair);
 	}
 }

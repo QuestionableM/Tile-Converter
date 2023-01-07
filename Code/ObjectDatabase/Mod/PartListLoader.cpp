@@ -15,34 +15,37 @@ const PartListLoader::__CollisionLoaderData PartListLoader::g_collisionDataLoade
 	{ "slant"   , PartListLoader::LoadBoxCollision      }
 };
 
-void PartListLoader::LoadBoxCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
+void PartListLoader::LoadBoxCollision(const simdjson::dom::element& collision, glm::vec3& vec_ref)
 {
-	const auto& v_coll_x = JsonReader::Get(collision, "x");
-	const auto& v_coll_y = JsonReader::Get(collision, "y");
-	const auto& v_coll_z = JsonReader::Get(collision, "z");
+	const auto v_coll_x = collision["x"];
+	const auto v_coll_y = collision["y"];
+	const auto v_coll_z = collision["z"];
 
 	if (v_coll_x.is_number() && v_coll_y.is_number() && v_coll_z.is_number())
-		vec_ref = glm::vec3(v_coll_x.get<float>(), v_coll_y.get<float>(), v_coll_z.get<float>());
+		vec_ref = glm::vec3(JsonReader::GetNumber<float>(v_coll_x), JsonReader::GetNumber<float>(v_coll_y), JsonReader::GetNumber<float>(v_coll_z));
 }
 
-void PartListLoader::LoadCylinderCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
+void PartListLoader::LoadCylinderCollision(const simdjson::dom::element& collision, glm::vec3& vec_ref)
 {
-	const auto& v_diameter = JsonReader::Get(collision, "diameter");
-	const auto& v_depth = JsonReader::Get(collision, "depth");
+	const auto v_diameter = collision["diameter"];
+	const auto v_depth = collision["depth"];
 
-	if (!v_diameter.is_number() || !v_depth.is_number())
+	if (!(v_diameter.is_number() && v_depth.is_number()))
 		return;
 
-	const auto& v_axis = JsonReader::Get(collision, "axis");
-	const std::string v_axis_str = (v_axis.is_string() ? v_axis.get_ref<const std::string&>() : "z");
+	char v_axis_char = 'z';
 
-	if (v_axis_str.empty())
-		return;
+	const auto v_axis = collision["axis"];
+	if (v_axis.is_string())
+	{
+		const std::string_view v_axis_str = v_axis.get_string();
+		if (v_axis_str.size() > 0)
+			v_axis_char = v_axis_str.data()[0];
+	}
 
-	const float v_diameter_f = v_diameter.get<float>();
-	const float v_depth_f = v_depth.get<float>();
+	const float v_diameter_f = JsonReader::GetNumber<float>(v_diameter);
+	const float v_depth_f = JsonReader::GetNumber<float>(v_depth);
 
-	const char v_axis_char = std::tolower(v_axis_str[0]);
 	switch (v_axis_char)
 	{
 	case 'x': vec_ref = glm::vec3(v_depth_f   , v_diameter_f, v_diameter_f); break;
@@ -51,14 +54,14 @@ void PartListLoader::LoadCylinderCollision(const nlohmann::json& collision, glm:
 	}
 }
 
-void PartListLoader::LoadSphereCollision(const nlohmann::json& collision, glm::vec3& vec_ref)
+void PartListLoader::LoadSphereCollision(const simdjson::dom::element& collision, glm::vec3& vec_ref)
 {
-	const auto& v_diameter = JsonReader::Get(collision, "diameter");
+	const auto v_diameter = collision["diameter"];
 	if (v_diameter.is_number())
-		vec_ref = glm::vec3(v_diameter.get<float>());
+		vec_ref = glm::vec3(JsonReader::GetNumber<float>(v_diameter));
 }
 
-glm::vec3 PartListLoader::LoadPartCollision(const nlohmann::json& collision)
+glm::vec3 PartListLoader::LoadPartCollision(const simdjson::dom::element& collision)
 {
 	glm::vec3 v_out_collision(1.0f);
 
@@ -67,55 +70,56 @@ glm::vec3 PartListLoader::LoadPartCollision(const nlohmann::json& collision)
 	{
 		const __CollisionLoaderData& v_curData = g_collisionDataLoaders[a];
 
-		const auto& v_collisionData = JsonReader::Get(collision, v_curData.key);
-		if (!v_collisionData.is_object())
+		const auto v_collision_data = collision[v_curData.key];
+		if (!v_collision_data.is_object())
 			continue;
 
-		v_curData.func_ptr(v_collisionData, v_out_collision);
+		v_curData.func_ptr(v_collision_data.value_unsafe(), v_out_collision);
 		break;
 	}
 
 	return v_out_collision;
 }
 
-void PartListLoader::Load(const nlohmann::json& fParts, Mod* mod)
+void PartListLoader::Load(const simdjson::dom::element& fParts, Mod* mod)
 {
 	if (!fParts.is_array()) return;
 
-	ProgCounter::ProgressMax += fParts.size();
-	for (const auto& fPart : fParts)
+	const auto v_prt_array = fParts.get_array();
+	ProgCounter::ProgressMax += v_prt_array.size();
+
+	for (const auto v_prt : v_prt_array)
 	{
-		if (!fPart.is_object()) continue;
+		if (!v_prt.is_object()) continue;
 
-		const auto& pUuid = JsonReader::Get(fPart, "uuid");
-		const auto& pColor = JsonReader::Get(fPart, "color");
+		const auto v_uuid = v_prt["uuid"];
+		const auto v_color = v_prt["color"];
 
-		if (!pUuid.is_string()) continue;
+		if (!v_uuid.is_string()) continue;
 
-		const SMUuid part_uuid(pUuid.get_ref<const std::string&>());
-		if (Mod::PartStorage.find(part_uuid) != Mod::PartStorage.end())
+		const SMUuid v_prt_uuid = v_uuid.get_c_str();
+		if (Mod::PartStorage.find(v_prt_uuid) != Mod::PartStorage.end())
 		{
-			DebugWarningL("Part with the uuid already exists! (", part_uuid.ToString(), ")");
+			DebugWarningL("Part with the same uuid already exists! (", v_prt_uuid.ToString(), ")");
 			continue;
 		}
 
-		std::wstring mesh_path;
-		TextureData tex_data;
-		if (!DefaultLoader::LoadRenderable(fPart, tex_data, mesh_path))
+		std::wstring v_mesh_path;
+		TextureData v_tex_data;
+		if (!DefaultLoader::LoadRenderable(v_prt, v_tex_data, v_mesh_path))
 			continue;
 
-		PartData* new_part = new PartData();
-		new_part->Mesh = mesh_path;
-		new_part->Textures = tex_data;
-		new_part->Uuid = part_uuid;
-		new_part->pMod = mod;
-		new_part->DefaultColor = (pColor.is_string() ? pColor.get_ref<const std::string&>() : "375000");
-		new_part->Bounds = PartListLoader::LoadPartCollision(fPart);
+		PartData* v_new_part = new PartData();
+		v_new_part->Mesh = v_mesh_path;
+		v_new_part->Textures = v_tex_data;
+		v_new_part->Uuid = v_prt_uuid;
+		v_new_part->pMod = mod;
+		v_new_part->DefaultColor = (v_color.is_string() ? v_color.get_c_str() : "375000");
+		v_new_part->Bounds = PartListLoader::LoadPartCollision(v_prt);
 
-		const auto new_pair = std::make_pair(new_part->Uuid, new_part);
-
-		Mod::PartStorage.insert(new_pair);
-		mod->m_Parts.insert(new_pair);
+		const auto v_new_pair = std::make_pair(v_new_part->Uuid, v_new_part);
+		Mod::PartStorage.insert(v_new_pair);
+		mod->m_Parts.insert(v_new_pair);
 
 		ProgCounter::ProgressValue++;
 	}

@@ -6,20 +6,20 @@
 #include "Utils\String.hpp"
 #include "Console.hpp"
 
-void DecalsetListReader::Load(const nlohmann::json& j_data, Mod* mod)
+void DecalsetListReader::Load(const simdjson::dom::element& j_data, Mod* mod)
 {
 	if (!j_data.is_array()) return;
 
-	for (const auto& v_decalSet : j_data)
+	for (const auto v_decal_set : j_data.get_array())
 	{
-		if (!v_decalSet.is_object()) continue;
+		if (!v_decal_set.is_object()) continue;
 
-		const auto& v_setPath = JsonReader::Get(v_decalSet, "set");
-		if (!v_setPath.is_string()) continue;
+		const auto v_set_path = v_decal_set["set"];
+		if (!v_set_path.is_string()) continue;
 
-		const std::wstring v_setPathStr = String::ToWide(v_setPath.get_ref<const std::string&>());
-		const std::wstring v_setPathReplaced = KeywordReplacer::ReplaceKey(v_setPathStr);
+		std::wstring v_set_path_str = String::ToWide(v_set_path.get_string());
+		KeywordReplacer::ReplaceKeyR(v_set_path_str);
 
-		DecalsetReader::LoadFromFile(v_setPathReplaced, mod);
+		DecalsetReader::LoadFromFile(v_set_path_str, mod);
 	}
 }

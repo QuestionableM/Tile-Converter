@@ -5,40 +5,41 @@
 
 #include "Console.hpp"
 
-void HarvestableListLoader::Load(const nlohmann::json& fHarvestables, Mod* mod)
+void HarvestableListLoader::Load(const simdjson::dom::element& fHarvestables, Mod* mod)
 {
 	if (!fHarvestables.is_array()) return;
+	
+	const auto v_hvs_array = fHarvestables.get_array();
+	ProgCounter::ProgressMax += v_hvs_array.size();
 
-	ProgCounter::ProgressMax += fHarvestables.size();
-	for (const auto& mHarvestable : fHarvestables)
+	for (const auto v_hvs : v_hvs_array)
 	{
-		if (!mHarvestable.is_object()) continue;
+		if (!v_hvs.is_object()) continue;
 
-		const auto& hUuid = JsonReader::Get(mHarvestable, "uuid");
-		if (!hUuid.is_string()) continue;
+		const auto v_uuid_obj = v_hvs["uuid"];
+		if (!v_uuid_obj.is_string()) continue;
 
-		const SMUuid hvs_uuid(hUuid.get_ref<const std::string&>());
-		if (Mod::HarvestableStorage.find(hvs_uuid) != Mod::HarvestableStorage.end())
+		const SMUuid v_hvs_uuid = v_uuid_obj.get_c_str();
+		if (Mod::HarvestableStorage.find(v_hvs_uuid) != Mod::HarvestableStorage.end())
 		{
-			DebugWarningL("Harvestable with the specified uuid already exists! (", hvs_uuid.ToString(), ")");
+			DebugWarningL("Harvestable with the specified uuid already exists! (", v_hvs_uuid.ToString(), ")");
 			continue;
 		}
 
-		std::wstring tMesh;
-		TextureData tData;
-		if (!DefaultLoader::LoadRenderable(mHarvestable, tData, tMesh))
+		std::wstring v_tMesh;
+		TextureData v_tData;
+		if (!DefaultLoader::LoadRenderable(v_hvs, v_tData, v_tMesh))
 			continue;
 
-		HarvestableData* new_hvs = new HarvestableData();
-		new_hvs->Uuid = hvs_uuid;
-		new_hvs->Mesh = tMesh;
-		new_hvs->Textures = tData;
-		new_hvs->pMod = mod;
+		HarvestableData* v_new_hvs = new HarvestableData();
+		v_new_hvs->Uuid = v_hvs_uuid;
+		v_new_hvs->Mesh = v_tMesh;
+		v_new_hvs->Textures = v_tData;
+		v_new_hvs->pMod = mod;
 
-		const auto new_pair = std::make_pair(new_hvs->Uuid, new_hvs);
-
-		mod->m_Harvestables.insert(new_pair);
-		Mod::HarvestableStorage.insert(new_pair);
+		const auto v_new_pair = std::make_pair(v_new_hvs->Uuid, v_new_hvs);
+		mod->m_Harvestables.insert(v_new_pair);
+		Mod::HarvestableStorage.insert(v_new_pair);
 
 		ProgCounter::ProgressValue++;
 	}

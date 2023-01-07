@@ -61,54 +61,57 @@ Mod* Mod::LoadFromDescription(const std::wstring& mod_folder, const bool& is_loc
 	const std::wstring mDescPath = mod_folder + L"/description.json";
 	if (!File::Exists(mDescPath)) return nullptr;
 
-	nlohmann::json mDesc = JsonReader::LoadParseJson(mDescPath);
-	if (!mDesc.is_object()) return nullptr;
+	simdjson::dom::document v_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(mDescPath, v_doc, simdjson::dom::element_type::OBJECT))
+		return nullptr;
 
-	const auto& mType = JsonReader::Get(mDesc, "type");
-	if (!mType.is_string()) return nullptr;
+	const auto v_root = v_doc.root();
 
-	const std::string& mTypeStr = mType.get_ref<const std::string&>();
+	const auto v_mod_type = v_root["type"];
+	if (!v_mod_type.is_string()) return nullptr;
 
-	const auto& mUuid = JsonReader::Get(mDesc, "localId");
-	const auto& mName = JsonReader::Get(mDesc, "name");
+	const auto v_mod_uuid_obj = v_root["localId"];
+	const auto v_mod_name_obj = v_root["name"];
 
-	if (!mUuid.is_string() || !mName.is_string()) return nullptr;
+	if (!(v_mod_uuid_obj.is_string() && v_mod_name_obj.is_string()))
+		return nullptr;
 
-	const SMUuid v_modUuid(mUuid.get_ref<const std::string&>());
-	const std::wstring v_modName = String::ToWide(mName.get_ref<const std::string&>());
+	const SMUuid v_mod_uuid = v_mod_uuid_obj.get_c_str();
+	const std::wstring v_mod_name = String::ToWide(v_mod_name_obj.get_c_str());
 
-	const UuidObjMapIterator<Mod*> v_iter = Mod::ModStorage.find(v_modUuid);
+	const UuidObjMapIterator<Mod*> v_iter = Mod::ModStorage.find(v_mod_uuid);
 	if (v_iter != Mod::ModStorage.end())
 	{
 		const Mod* v_modPtr = v_iter->second;
 
 		if (v_iter->second->m_isLocal && !is_local)
 		{
-			DebugOutL("Skipped a mod as it was already loaded locally (name: ", v_modName, ", uuid: ", v_modUuid.ToString(), ")");
+			DebugOutL("Skipped a mod as it was already loaded locally (name: ", v_mod_name, ", uuid: ", v_mod_uuid.ToString(), ")");
 			return nullptr;
 		}
 
 		if (v_iter->second->m_isLocal == is_local)
 		{
-			DebugWarningL("Uuid conflict between: ", v_iter->second->m_Name, " and ", v_modName, " (uuid: ", v_modUuid.ToString(), ")");
+			DebugWarningL("Uuid conflict between: ", v_iter->second->m_Name, " and ", v_mod_name, " (uuid: ", v_mod_uuid.ToString(), ")");
 			return nullptr;
 		}
 	}
 
 	Mod* v_newMod;
-	if (mTypeStr == "Blocks and Parts")
+	const char* v_mod_type_str = v_mod_type.get_c_str();
+	if (strcmp(v_mod_type_str, "Blocks and Parts") == 0)
 		v_newMod = new BlocksAndPartsMod();
-	else if (mTypeStr == "Terrain Assets")
+	else if (strcmp(v_mod_type_str, "Terrain Assets") == 0)
 		v_newMod = new TerrainAssetsMod();
 	else
 		return nullptr;
 
-	v_newMod->m_Name = v_modName;
+	v_newMod->m_Name = v_mod_name;
 	v_newMod->m_Directory = mod_folder;
-	v_newMod->m_Uuid = v_modUuid;
+	v_newMod->m_Uuid = v_mod_uuid;
 	v_newMod->m_isLocal = is_local;
 
-	DebugOutL("Mod: ", 0b1101_fg, v_newMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, v_newMod->m_Uuid.ToString(), 0b1110_fg, ", Type: ", 0b1101_fg, mTypeStr);
+	DebugOutL("Mod: ", 0b1101_fg, v_newMod->m_Name, 0b1110_fg, ", Uuid: ", 0b1101_fg, v_newMod->m_Uuid.ToString(), 0b1110_fg, ", Type: ", 0b1101_fg, v_mod_type_str);
 	Mod::ModStorage.insert(std::make_pair(v_newMod->m_Uuid, v_newMod));
 	Mod::ModVector.push_back(v_newMod);
 
@@ -186,7 +189,7 @@ ClutterData* Mod::GetGlobalClutterById(const std::size_t& idx)
 	return Mod::ClutterVector[idx];
 }
 
-using DataLoaderMap = std::unordered_map<std::string, void (*)(const nlohmann::json&, Mod*)>;
+using DataLoaderMap = std::unordered_map<std::string, void (*)(const simdjson::dom::element&, Mod*)>;
 static const DataLoaderMap g_DataLoaders =
 {
 	{ "assetListRenderable", AssetListLoader::Load       },
@@ -199,24 +202,24 @@ static const DataLoaderMap g_DataLoaders =
 
 void Mod::LoadFile(const std::wstring& path)
 {
-	nlohmann::json file_json = JsonReader::LoadParseJson(path);
-	if (!file_json.is_object()) return;
+	simdjson::dom::document v_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(path, v_doc, simdjson::dom::element_type::OBJECT))
+		return;
 
 	DebugOutL("Loading: ", path);
 
-	for (const auto& fKey : file_json.items())
+	for (const auto v_obj : v_doc.root().get_object())
 	{
-		const std::string key_str = fKey.key();
+		const std::string v_key_str = std::string(v_obj.key.data(), v_obj.key.size());
 
-		const DataLoaderMap::const_iterator iter = g_DataLoaders.find(key_str);
-		if (iter != g_DataLoaders.end())
+		const DataLoaderMap::const_iterator v_iter = g_DataLoaders.find(v_key_str);
+		if (v_iter == g_DataLoaders.end())
 		{
-			iter->second(fKey.value(), this);
+			DebugErrorL("Couldn't find the loader for: ", v_key_str);
+			continue;
 		}
-		else
-		{
-			DebugErrorL("Couldn't find the loader for: ", key_str);
-		}
+
+		v_iter->second(v_obj.value, this);
 	}
 }
 

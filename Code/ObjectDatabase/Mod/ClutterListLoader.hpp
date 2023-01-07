@@ -10,8 +10,8 @@ class ClutterListLoader
 {
 	ClutterListLoader() = default;
 
-	static bool LoadTextureData(const nlohmann::json& fClutter, TextureList& tList, std::wstring& mesh);
-	static void LoadClutterData(const nlohmann::json& fClutter, ClutterData* pClutter);
+	static bool LoadTextureData(const simdjson::dom::element& fClutter, TextureList& tList, std::wstring& mesh);
+	static void LoadClutterData(const simdjson::dom::element& fClutter, ClutterData* pClutter);
 public:
-	static void Load(const nlohmann::json& fClutter, Mod* mod);
+	static void Load(const simdjson::dom::element& fClutter, Mod* mod);
 };

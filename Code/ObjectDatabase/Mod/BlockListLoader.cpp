@@ -10,30 +10,30 @@
 #include "Console.hpp"
 
 static const std::string blkTexNames[3] = { "dif", "asg", "nor" };
-bool BlockListLoader::GetBlockTextures(const nlohmann::json& block, TextureList& tex)
+bool BlockListLoader::GetBlockTextures(const simdjson::dom::element& block, TextureList& tex)
 {
 	for (int a = 0; a < 3; a++)
 	{
-		const auto& bTexture = JsonReader::Get(block, blkTexNames[a]);
+		const auto v_cur_tex = block[blkTexNames[a]];
 
-		if (bTexture.is_string())
+		if (v_cur_tex.is_string())
 		{
-			std::wstring& strRef = tex.GetStringRef(a);
+			std::wstring& v_str_ref = tex.GetStringRef(a);
 
-			strRef = String::ToWide(bTexture.get_ref<const std::string&>());
-			KeywordReplacer::ReplaceKeyR(strRef);
+			v_str_ref = String::ToWide(v_cur_tex.get_string());
+			KeywordReplacer::ReplaceKeyR(v_str_ref);
 		}
 	}
 
 	return (!tex.dif.empty() || !tex.asg.empty() || !tex.nor.empty());
 }
 
-void BlockListLoader::GetBlockMaterial(const nlohmann::json& block, TextureList& tex)
+void BlockListLoader::GetBlockMaterial(const simdjson::dom::element& block, TextureList& tex)
 {
-	const auto& bGlass = JsonReader::Get(block, "glass");
-	const auto& bAlpha = JsonReader::Get(block, "alpha");
+	const auto v_glass = block["glass"];
+	const auto v_alpha = block["alpha"];
 
-	if (bGlass.is_boolean() && bGlass.get<bool>())
+	if (v_glass.is_bool() && v_glass.get_bool() == true)
 	{
 		tex.material = L"BlockGlass";
 	}
@@ -41,51 +41,52 @@ void BlockListLoader::GetBlockMaterial(const nlohmann::json& block, TextureList&
 	{
 		tex.material = L"BlockDifAsgNor";
 
-		if (bAlpha.is_boolean() && bAlpha.get<bool>())
+		if (v_alpha.is_bool() && v_alpha.get_bool() == true)
 			tex.material.append(L"Alpha");
 	}
 }
 
-void BlockListLoader::Load(const nlohmann::json& fBlocks, Mod* mod)
+void BlockListLoader::Load(const simdjson::dom::element& fBlocks, Mod* mod)
 {
 	if (!fBlocks.is_array()) return;
 
-	ProgCounter::ProgressMax += fBlocks.size();
-	for (const auto& fBlock : fBlocks)
+	const auto v_blk_array = fBlocks.get_array();
+	ProgCounter::ProgressMax += v_blk_array.size();
+
+	for (const auto v_blk : v_blk_array)
 	{
-		if (!fBlock.is_object()) continue;
+		if (!v_blk.is_object()) continue;
 
-		const auto& bUuid = JsonReader::Get(fBlock, "uuid");
-		const auto& bTiling = JsonReader::Get(fBlock, "tiling");
-		const auto& bColor = JsonReader::Get(fBlock, "color");
+		const auto v_uuid = v_blk["uuid"];
+		const auto v_tiling = v_blk["tiling"];
+		const auto v_color = v_blk["color"];
 
-		if (!bUuid.is_string()) continue;
+		if (!v_uuid.is_string()) continue;
 
-		const SMUuid block_uuid(bUuid.get_ref<const std::string&>());
-		if (Mod::BlockStorage.find(block_uuid) != Mod::BlockStorage.end())
+		const SMUuid v_blk_uuid = v_uuid.get_c_str();
+		if (Mod::BlockStorage.find(v_blk_uuid) != Mod::BlockStorage.end())
 		{
-			DebugWarningL("Block with this uuid already exists! (", block_uuid.ToString(), ")");
+			DebugWarningL("Block with the same uuid already exists! (", v_blk_uuid.ToString(), ")");
 			continue;
 		}
 
-		TextureList tList;
-		if (!BlockListLoader::GetBlockTextures(fBlock, tList)) continue;
-		BlockListLoader::GetBlockMaterial(fBlock, tList);
+		TextureList v_tList;
+		if (!BlockListLoader::GetBlockTextures(v_blk, v_tList)) continue;
+		BlockListLoader::GetBlockMaterial(v_blk, v_tList);
 
-		int tiling_value = (bTiling.is_number() ? bTiling.get<int>() : 4);
-		if (tiling_value > 16 || tiling_value <= 0) tiling_value = 4;
+		int v_blk_tiling = (v_tiling.is_number() ? JsonReader::GetNumber<int>(v_tiling) : 4);
+		if (v_blk_tiling > 16 || v_blk_tiling <= 0) v_blk_tiling = 4;
 
-		BlockData* new_block = new BlockData();
-		new_block->Uuid = block_uuid;
-		new_block->Textures = tList;
-		new_block->Tiling = tiling_value;
-		new_block->DefaultColor = (bColor.is_string() ? bColor.get_ref<const std::string&>() : "375000");
-		new_block->pMod = mod;
-		
-		const auto new_pair = std::make_pair(new_block->Uuid, new_block);
+		BlockData* v_new_blk = new BlockData();
+		v_new_blk->Uuid = v_blk_uuid;
+		v_new_blk->Textures = v_tList;
+		v_new_blk->Tiling = v_blk_tiling;
+		v_new_blk->DefaultColor = (v_color.is_string() ? v_color.get_c_str() : "375000");
+		v_new_blk->pMod = mod;
 
-		Mod::BlockStorage.insert(new_pair);
-		mod->m_Blocks.insert(new_pair);
+		const auto v_new_pair = std::make_pair(v_new_blk->Uuid, v_new_blk);
+		Mod::BlockStorage.insert(v_new_pair);
+		mod->m_Blocks.insert(v_new_pair);
 
 		ProgCounter::ProgressValue++;
 	}

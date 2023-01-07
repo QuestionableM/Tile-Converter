@@ -8,5 +8,5 @@ class HarvestableListLoader
 {
 	HarvestableListLoader() = default;
 public:
-	static void Load(const nlohmann::json& fHarvestables, Mod* mod);
+	static void Load(const simdjson::dom::element& fHarvestables, Mod* mod);
 };

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Utils/ByteImpl.hpp"
+#include "Utils\ByteImpl.hpp"
+#include "Utils\String.hpp"
 
 #include <string>
 
@@ -9,8 +10,9 @@ class Color
 public:
 	inline Color() { m_color = 0x000000ff; }
 
-	inline Color(const std::string& color)  { this->FromString<std::string>(color);  }
+	inline Color(const std::string& color) { this->FromString<std::string>(color); }
 	inline Color(const std::wstring& color) { this->FromString<std::wstring>(color); }
+	inline Color(const char* color) { this->FromCString(color); }
 
 	inline Color(const Byte& r, const Byte& g, const Byte& b)
 	{
@@ -36,6 +38,7 @@ public:
 
 	inline void operator=(const std::string& color) { this->FromString<std::string>(color); }
 	inline void operator=(const std::wstring& color) { this->FromString<std::wstring>(color); }
+	inline void operator=(const char* color) { this->FromCString(color); }
 
 	inline void SetIntLittleEndian(const unsigned int& color)
 	{
@@ -119,6 +122,44 @@ public:
 		static_assert(std::is_floating_point_v<T>, "SetFloat can only be used with floating point types");
 
 		m_bytes[idx] = static_cast<Byte>(std::max(static_cast<T>(0.0), std::min(fp_val, static_cast<T>(1.0))) * static_cast<T>(255.0));
+	}
+
+	inline void FromCString(const char* color)
+	{
+		const std::size_t v_str_len = strlen(color);
+		if (v_str_len == 0)
+		{
+			m_color = 0x000000ff;
+			return;
+		}
+
+		char v_str_cpy[9] = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 'f', 'f', 0x0};
+
+		if (color[0] == '#')
+		{
+			if (v_str_len < 7)
+			{
+				m_color = 0x000000ff;
+				return;
+			}
+			
+			std::memcpy(v_str_cpy, color + 1, (v_str_len >= 9) ? 8 : 6);
+		}
+		else
+		{
+			if (v_str_len < 6)
+			{
+				m_color = 0x000000ff;
+				return;
+			}
+
+			std::memcpy(v_str_cpy, color, (v_str_len >= 8) ? 8 : 6);
+		}
+
+		this->a = String::HexStrtolSafe(v_str_cpy + 6);
+		this->b = String::HexStrtolSafe(v_str_cpy + 4);
+		this->g = String::HexStrtolSafe(v_str_cpy + 2);
+		this->r = String::HexStrtolSafe(v_str_cpy);
 	}
 
 	template<typename T>

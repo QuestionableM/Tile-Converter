@@ -11,7 +11,7 @@ class AssetListLoader
 {
 	AssetListLoader() = default;
 
-	static void LoadDefaultColors(const nlohmann::json& jAsset, std::unordered_map<std::wstring, Color>& def_colors);
+	static void LoadDefaultColors(const simdjson::dom::element& jAsset, std::unordered_map<std::wstring, Color>& def_colors);
 public:
-	static void Load(const nlohmann::json& fAssets, Mod* mod);
+	static void Load(const simdjson::dom::element& fAssets, Mod* mod);
 };
