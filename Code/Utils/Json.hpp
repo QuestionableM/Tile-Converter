@@ -53,6 +53,8 @@ public:
 	static bool LoadParseSimdjsonComments(const std::wstring& path, simdjson::dom::document& v_doc);
 	//Parse simdjson with comments and root node type checking
 	static bool LoadParseSimdjsonCommentsC(const std::wstring& path, simdjson::dom::document& v_doc, const simdjson::dom::element_type& type_check);
+	//Parse simdjson from string
+	static bool ParseSimdjsonString(const std::string& json_str, simdjson::dom::document& v_doc);
 
 	//Should be used to get numbers from simdjson elements
 	template<typename T>

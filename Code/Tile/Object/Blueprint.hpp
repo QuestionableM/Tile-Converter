@@ -42,8 +42,8 @@ public:
 	}
 
 private:
-	static glm::vec3 JsonToVector(const nlohmann::json& vec_json);
+	static glm::vec3 JsonToVector(const simdjson::simdjson_result<simdjson::dom::element>& vec_json);
 
-	void LoadBodies(const nlohmann::json& pJson);
-	void LoadJoints(const nlohmann::json& pJson);
+	void LoadBodies(const simdjson::dom::element& pJson);
+	void LoadJoints(const simdjson::dom::element& pJson);
 };

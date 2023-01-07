@@ -190,7 +190,7 @@ bool JsonReader::LoadParseSimdjson(const std::wstring& path, simdjson::dom::docu
 
 		return true;
 	}
-#ifdef QENGINE_DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 	catch (const simdjson::simdjson_error& v_err)
 	{
 		DebugErrorL("Couldn't parse: ", path, "\nError: ", v_err.what());
@@ -220,7 +220,7 @@ bool JsonReader::LoadParseSimdjsonC(const std::wstring& path, simdjson::dom::doc
 
 		return true;
 	}
-#ifdef QENGINE_DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 	catch (const simdjson::simdjson_error& v_err)
 	{
 		DebugErrorL("Couldn't parse: ", path, "\nError: ", v_err.what());
@@ -247,7 +247,7 @@ bool JsonReader::LoadParseSimdjsonComments(const std::wstring& path, simdjson::d
 
 		return true;
 	}
-#ifdef QENGINE_DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 	catch (const simdjson::simdjson_error& v_err)
 	{
 		DebugErrorL("Couldn't parse: ", path, "\nError: ", v_err.what());
@@ -274,10 +274,31 @@ bool JsonReader::LoadParseSimdjsonCommentsC(const std::wstring& path, simdjson::
 
 		return true;
 	}
-#ifdef QENGINE_DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 	catch (const simdjson::simdjson_error& v_err)
 	{
 		DebugErrorL("Couldn't parse: ", path, "\nError: ", v_err.what());
+	}
+#else
+	catch (...) {}
+#endif
+
+	return false;
+}
+
+bool JsonReader::ParseSimdjsonString(const std::string& json_str, simdjson::dom::document& v_doc)
+{
+	try
+	{
+		simdjson::dom::parser v_parser;
+		v_parser.parse_into_document(v_doc, json_str);
+
+		return true;
+	}
+#if defined(_DEBUG) || defined(DEBUG)
+	catch (const simdjson::simdjson_error& v_err)
+	{
+		DebugErrorL("Couldn't parse a json string. Error: ", v_err.what());
 	}
 #else
 	catch (...) {}

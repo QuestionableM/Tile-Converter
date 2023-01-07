@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utils\WinInclude.hpp"
+#include "Utils\String.hpp"
 #include "Utils\Crypt.hpp"
 
 #include <iomanip>
@@ -150,22 +151,6 @@ public:
 		return wstream.str();
 	}
 
-	inline static unsigned char hex_strtol_safe(char* v_ptr)
-	{
-		char* v_end_ptr;
-		const long v_output = strtol(v_ptr, &v_end_ptr, 16);
-
-		if (v_ptr == v_end_ptr)
-		{
-			*v_ptr = 0;
-			return 0;
-		}
-
-		*v_ptr = 0;
-
-		return static_cast<unsigned char>(v_output);
-	}
-
 	inline void FromCString(const char* v_str)
 	{
 		if (strlen(v_str) != 36)
@@ -178,26 +163,26 @@ public:
 		v_str_cpy[36] = 0;
 		std::memcpy(v_str_cpy, v_str, 36);
 
-		m_Data8[15] = hex_strtol_safe(v_str_cpy + 34);
-		m_Data8[14] = hex_strtol_safe(v_str_cpy + 32);
-		m_Data8[13] = hex_strtol_safe(v_str_cpy + 30);
-		m_Data8[12] = hex_strtol_safe(v_str_cpy + 28);
-		m_Data8[11] = hex_strtol_safe(v_str_cpy + 26);
-		m_Data8[10] = hex_strtol_safe(v_str_cpy + 24);
+		m_Data8[15] = String::HexStrtolSafe(v_str_cpy + 34);
+		m_Data8[14] = String::HexStrtolSafe(v_str_cpy + 32);
+		m_Data8[13] = String::HexStrtolSafe(v_str_cpy + 30);
+		m_Data8[12] = String::HexStrtolSafe(v_str_cpy + 28);
+		m_Data8[11] = String::HexStrtolSafe(v_str_cpy + 26);
+		m_Data8[10] = String::HexStrtolSafe(v_str_cpy + 24);
 
-		m_Data8[9] = hex_strtol_safe(v_str_cpy + 21);
-		m_Data8[8] = hex_strtol_safe(v_str_cpy + 19);
+		m_Data8[9] = String::HexStrtolSafe(v_str_cpy + 21);
+		m_Data8[8] = String::HexStrtolSafe(v_str_cpy + 19);
 
-		m_Data8[7] = hex_strtol_safe(v_str_cpy + 16);
-		m_Data8[6] = hex_strtol_safe(v_str_cpy + 14);
+		m_Data8[7] = String::HexStrtolSafe(v_str_cpy + 16);
+		m_Data8[6] = String::HexStrtolSafe(v_str_cpy + 14);
 
-		m_Data8[5] = hex_strtol_safe(v_str_cpy + 11);
-		m_Data8[4] = hex_strtol_safe(v_str_cpy + 9);
+		m_Data8[5] = String::HexStrtolSafe(v_str_cpy + 11);
+		m_Data8[4] = String::HexStrtolSafe(v_str_cpy + 9);
 
-		m_Data8[3] = hex_strtol_safe(v_str_cpy + 6);
-		m_Data8[2] = hex_strtol_safe(v_str_cpy + 4);
-		m_Data8[1] = hex_strtol_safe(v_str_cpy + 2);
-		m_Data8[0] = hex_strtol_safe(v_str_cpy);
+		m_Data8[3] = String::HexStrtolSafe(v_str_cpy + 6);
+		m_Data8[2] = String::HexStrtolSafe(v_str_cpy + 4);
+		m_Data8[1] = String::HexStrtolSafe(v_str_cpy + 2);
+		m_Data8[0] = String::HexStrtolSafe(v_str_cpy);
 	}
 
 	template<typename T>
