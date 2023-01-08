@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nlohmann\json.hpp>
+#include "Utils\Json.hpp"
 
 extern "C"
 {
@@ -22,7 +22,7 @@ namespace SM
 
 			//Requires the value to be pushed onto the stack
 			void LuaToJson(lua_State* L, nlohmann::json& v_json, const int& v_idx);
-			void JsonToLua(lua_State* L, const nlohmann::json& v_json);
+			void JsonToLua(lua_State* L, const simdjson::dom::element& v_element);
 		}
 
 		namespace Json

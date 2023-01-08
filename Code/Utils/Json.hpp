@@ -55,12 +55,22 @@ public:
 	static bool LoadParseSimdjsonCommentsC(const std::wstring& path, simdjson::dom::document& v_doc, const simdjson::dom::element_type& type_check);
 	//Parse simdjson from string
 	static bool ParseSimdjsonString(const std::string& json_str, simdjson::dom::document& v_doc);
+	//Parse simdjson with error strings that can be used in lua
+	static bool LoadParseSimdjsonLua(const std::wstring& path, simdjson::dom::document& v_doc, std::string& v_error_message);
+	//Parse simdjson string with error strings that can be used in lua
+	static bool ParseSimdjsonStringLua(const std::string& json_str, simdjson::dom::document& v_doc, std::string& v_error_message);
+
+
 
 	//Should be used to get numbers from simdjson elements
-	template<typename T>
-	inline constexpr static T GetNumber(const simdjson::simdjson_result<simdjson::dom::element>& v_elem)
+	template<typename T, typename V>
+	inline constexpr static T GetNumber(const V& v_elem)
 	{
 		static_assert(std::is_arithmetic_v<T>, "Json::GetNumber -> Template argument must be of arithmetic type!");
+		static_assert(
+			std::is_same_v<V, simdjson::dom::element> ||
+			std::is_same_v<V, simdjson::simdjson_result<simdjson::dom::element>>,
+			"Json::GetNumber -> Template can only be used with simdjson::dom::element");
 
 		switch (v_elem.type())
 		{

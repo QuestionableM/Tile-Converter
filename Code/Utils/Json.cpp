@@ -306,3 +306,54 @@ bool JsonReader::ParseSimdjsonString(const std::string& json_str, simdjson::dom:
 
 	return false;
 }
+
+bool JsonReader::LoadParseSimdjsonLua(const std::wstring& path, simdjson::dom::document& v_doc, std::string& v_error_message)
+{
+	std::string v_json_str;
+	if (!File::ReadToString(path, v_json_str))
+	{
+		v_error_message = "Failed to open file";
+		return false;
+	}
+
+	v_json_str = JsonReader::RemoveComments(v_json_str);
+
+	try
+	{
+		simdjson::dom::parser v_parser;
+		v_parser.parse_into_document(v_doc, v_json_str);
+
+		return true;
+	}
+	catch (const simdjson::simdjson_error& v_err)
+	{
+		v_error_message = "Parse error: " + std::string(v_err.what());
+	}
+	catch (...)
+	{
+		v_error_message = "Unknown json error";
+	}
+
+	return false;
+}
+
+bool JsonReader::ParseSimdjsonStringLua(const std::string& json_str, simdjson::dom::document& v_doc, std::string& v_error_message)
+{
+	try
+	{
+		simdjson::dom::parser v_parser;
+		v_parser.parse_into_document(v_doc, json_str);
+
+		return true;
+	}
+	catch (const simdjson::simdjson_error& v_err)
+	{
+		v_error_message = "Parse error: " + std::string(v_err.what());
+	}
+	catch (...)
+	{
+		v_error_message = "Unknown parse error";
+	}
+
+	return false;
+}

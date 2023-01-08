@@ -185,30 +185,30 @@ namespace SM
 			}
 		}
 
-		void JsonInternal::JsonToLua(lua_State* L, const nlohmann::json& v_json)
+		void JsonInternal::JsonToLua(lua_State* L, const simdjson::dom::element& v_element)
 		{
-			switch (v_json.type())
+			switch (v_element.type())
 			{
-			case nlohmann::json::value_t::object:
+			case simdjson::dom::element_type::OBJECT:
 				{
 					lua_newtable(L);
 
-					for (const auto& v_obj : v_json.items())
+					for (const auto v_obj : v_element.get_object())
 					{
-						lua_pushstring(L, v_obj.key().c_str());
-						JsonInternal::JsonToLua(L, v_obj.value());
+						lua_pushstring(L, std::string(v_obj.key.data(), v_obj.key.size()).c_str());
+						JsonInternal::JsonToLua(L, v_obj.value);
 
 						lua_settable(L, -3);
 					}
 
 					break;
 				}
-			case nlohmann::json::value_t::array:
+			case simdjson::dom::element_type::ARRAY:
 				{
 					lua_newtable(L);
 
 					long long v_arr_idx = 1;
-					for (const auto& v_obj : v_json)
+					for (const auto v_obj : v_element.get_array())
 					{
 						JsonInternal::JsonToLua(L, v_obj);
 						lua_rawseti(L, -2, v_arr_idx);
@@ -218,26 +218,25 @@ namespace SM
 
 					break;
 				}
-			case nlohmann::json::value_t::number_float:
+			case simdjson::dom::element_type::DOUBLE:
 				{
-					lua_pushnumber(L, v_json.get<lua_Number>());
+					lua_pushnumber(L, JsonReader::GetNumber<lua_Number>(v_element));
 					break;
 				}
-			case nlohmann::json::value_t::binary:
-			case nlohmann::json::value_t::number_integer:
-			case nlohmann::json::value_t::number_unsigned:
+			case simdjson::dom::element_type::INT64:
+			case simdjson::dom::element_type::UINT64:
 				{
-					lua_pushinteger(L, v_json.get<lua_Integer>());
+					lua_pushinteger(L, JsonReader::GetNumber<lua_Integer>(v_element));
 					break;
 				}
-			case nlohmann::json::value_t::boolean:
+			case simdjson::dom::element_type::BOOL:
 				{
-					lua_pushboolean(L, v_json.get<bool>() ? 1 : 0);
+					lua_pushboolean(L, v_element.get_bool() ? 1 : 0);
 					break;
 				}
-			case nlohmann::json::value_t::string:
+			case simdjson::dom::element_type::STRING:
 				{
-					lua_pushstring(L, v_json.get<std::string>().c_str());
+					lua_pushstring(L, v_element.get_c_str());
 					break;
 				}
 			default:
@@ -270,12 +269,12 @@ namespace SM
 			std::wstring v_json_path = String::ToWide(v_path_cache);
 			G_LUA_REPLACE_KEY_CHECKED(L, v_json_path);
 
-			nlohmann::json v_f_json;
+			simdjson::dom::document v_doc;
 			std::string v_error_msg;
-			if (!JsonReader::LoadParseJsonLua(v_json_path, v_f_json, v_error_msg))
+			if (!JsonReader::LoadParseSimdjsonLua(v_json_path, v_doc, v_error_msg))
 				return luaL_error(L, "Failed to parse %s. Error: %s", v_path_cache, v_error_msg.c_str());
 
-			JsonInternal::JsonToLua(L, v_f_json);
+			JsonInternal::JsonToLua(L, v_doc.root());
 			return 1;
 		}
 
@@ -303,12 +302,12 @@ namespace SM
 
 			const std::string v_json_str = lua_tostring(L, 1);
 
-			nlohmann::json v_f_json;
+			simdjson::dom::document v_doc;
 			std::string v_error_msg;
-			if (!JsonReader::ParseJsonStringLua(v_json_str, v_f_json, v_error_msg))
+			if (!JsonReader::ParseSimdjsonStringLua(v_json_str, v_doc, v_error_msg))
 				return luaL_error(L, "Failed to parse string. Error: %s", v_error_msg.c_str());
 
-			JsonInternal::JsonToLua(L, v_f_json);
+			JsonInternal::JsonToLua(L, v_doc.root());
 			return 1;
 		}
 
