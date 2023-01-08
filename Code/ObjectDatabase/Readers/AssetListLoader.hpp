@@ -1,9 +1,9 @@
 #pragma once
 
-#include <unordered_map>
+#include "Utils\Color.hpp"
+#include "Utils\Json.hpp"
 
-#include "Utils/Json.hpp"
-#include "Utils/Color.hpp"
+#include <unordered_map>
 
 class Mod;
 

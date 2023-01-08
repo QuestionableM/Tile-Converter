@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Tile/Object/TileEntity.hpp"
-#include "Tile/WriterOffset.hpp"
+#include "Tile\Object\TileEntity.hpp"
+#include "Tile\WriterOffset.hpp"
 
 class Asset;
 class Blueprint;

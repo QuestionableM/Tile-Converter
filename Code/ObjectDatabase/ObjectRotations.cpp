@@ -1,15 +1,14 @@
 #include "ObjectRotations.hpp"
 
-#include "Utils/Json.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
+#include "Utils\Json.hpp"
 #include "Console.hpp"
 
-#include <string>
 #include <unordered_map>
+#include <string>
 
+#include <gtc\matrix_transform.hpp>
 #include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-
-#include "ObjectDatabase/DatabaseConfig.hpp"
 
 namespace Rotations
 {

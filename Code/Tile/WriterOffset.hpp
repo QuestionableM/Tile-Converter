@@ -2,7 +2,7 @@
 
 #include <vcruntime.h>
 
-#include <gtx/hash.hpp>
+#include <gtx\hash.hpp>
 
 struct WriterOffsetData
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ObjectDatabase\Mod\Mod.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 #include "Utils\Json.hpp"
 
 class DecalsetListReader

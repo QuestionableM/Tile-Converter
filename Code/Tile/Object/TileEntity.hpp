@@ -1,15 +1,16 @@
 #pragma once
 
-#include <glm.hpp>
-#include <gtx/quaternion.hpp>
-#include <gtx/transform.hpp>
+#include "ObjectDatabase\ObjectData.hpp"
+#include "Tile\WriterOffset.hpp"
+
+#include "Utils\Color.hpp"
+#include "Utils\Uuid.hpp"
 
 #include <string>
-#include "Utils/Uuid.hpp"
-#include "Utils/Color.hpp"
 
-#include "ObjectDatabase/ObjectData.hpp"
-#include "Tile/WriterOffset.hpp"
+#include <gtx\quaternion.hpp>
+#include <gtx\transform.hpp>
+#include <glm.hpp>
 
 struct ObjectTexData
 {

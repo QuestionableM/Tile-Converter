@@ -1,10 +1,10 @@
 #include "AssetListLoader.hpp"
-#include "ObjectDatabase/Mod/DefaultLoader.hpp"
 
-#include "Utils/String.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase\Readers\DefaultLoader.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
+#include "Utils\String.hpp"
 #include "Console.hpp"
 
 void AssetListLoader::LoadDefaultColors(const simdjson::dom::element& jAsset, std::unordered_map<std::wstring, Color>& def_colors)

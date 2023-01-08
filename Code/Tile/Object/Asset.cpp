@@ -1,8 +1,8 @@
 #include "Asset.hpp"
 
-#include "ObjectDatabase/ObjectData.hpp"
-#include "ObjectDatabase/ModelStorage.hpp"
-#include "ObjectDatabase/Mod/MaterialManager.hpp"
+#include "ObjectDatabase\MaterialManager.hpp"
+#include "ObjectDatabase\ModelStorage.hpp"
+#include "ObjectDatabase\ObjectData.hpp"
 
 Color Asset::GetColor(const std::wstring& color) const
 {

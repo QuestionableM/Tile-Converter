@@ -1,6 +1,6 @@
 #include "DecalsetListReader.hpp"
 
-#include "ObjectDatabase\Mod\DecalsetReader.hpp"
+#include "ObjectDatabase\Readers\DecalsetReader.hpp"
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
 #include "Utils\String.hpp"

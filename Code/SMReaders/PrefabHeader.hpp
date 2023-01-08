@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Utils/Memory.hpp"
-#include "Utils/BitStream.hpp"
+#include "Utils\BitStream.hpp"
+#include "Utils\Memory.hpp"
 #include "Console.hpp"
 
 class PrefabHeader

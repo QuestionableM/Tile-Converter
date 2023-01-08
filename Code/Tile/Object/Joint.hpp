@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Tile/Object/TileEntity.hpp"
-
-#include "Utils/Color.hpp"
-#include "ObjectDatabase/ModelStorage.hpp"
+#include "ObjectDatabase\ModelStorage.hpp"
+#include "Tile\Object\TileEntity.hpp"
+#include "Utils\Color.hpp"
 
 class Joint : public TileEntity
 {

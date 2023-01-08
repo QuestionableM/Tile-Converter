@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Console.hpp"
-#include "Utils/Memory.hpp"
-#include <array>
+#include "Utils\ByteImpl.hpp"
+#include "Utils\Memory.hpp"
 
-#include "Utils/ByteImpl.hpp"
+#include "Console.hpp"
+
+#include <array>
 
 class CellHeader
 {

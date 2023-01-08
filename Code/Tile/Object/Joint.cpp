@@ -1,8 +1,8 @@
 #include "Joint.hpp"
 
-#include "ObjectDatabase/ObjectData.hpp"
-#include "ObjectDatabase/Mod/ObjectRotations.hpp"
-#include "ObjectDatabase/Mod/MaterialManager.hpp"
+#include "ObjectDatabase\ObjectRotations.hpp"
+#include "ObjectDatabase\MaterialManager.hpp"
+#include "ObjectDatabase\ObjectData.hpp"
 
 #include "Console.hpp"
 

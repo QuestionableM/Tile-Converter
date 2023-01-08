@@ -1,22 +1,23 @@
 #pragma once
 
-#include <string>
-#include "Tile/CellHeader.hpp"
-#include "Tile/TileHeader.hpp"
-#include "Tile/Tile.hpp"
 
-#include "SMReaders\MipReader.hpp"
-#include "SMReaders\ClutterReader.hpp"
-#include "SMReaders\AssetListReader.hpp"
 #include "SMReaders\HarvestableListReader.hpp"
-#include "SMReaders\PrefabReader.hpp"
 #include "SMReaders\BlueprintListReader.hpp"
+#include "SMReaders\AssetListReader.hpp"
 #include "SMReaders\DecalListReader.hpp"
+#include "SMReaders\ClutterReader.hpp"
+#include "SMReaders\PrefabReader.hpp"
+#include "SMReaders\MipReader.hpp"
 
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\TileHeader.hpp"
+#include "Tile\Tile.hpp"
 
-#include "Utils/File.hpp"
-#include "Utils/String.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "Utils\String.hpp"
+#include "Utils\File.hpp"
+
+#include <string>
 
 class TileReader
 {

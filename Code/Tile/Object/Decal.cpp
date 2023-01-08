@@ -1,6 +1,6 @@
 #include "Decal.hpp"
 
-#include "ObjectDatabase\Mod\MaterialManager.hpp"
+#include "ObjectDatabase\MaterialManager.hpp"
 #include "ObjectDatabase\ModelStorage.hpp"
 #include "ObjectDatabase\ProgCounter.hpp"
 

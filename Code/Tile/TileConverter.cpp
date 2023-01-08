@@ -1,7 +1,7 @@
 #include "TileConverter.hpp"
-#include "SMReaders/TileReader.hpp"
 
-#include "Utils/File.hpp"
+#include "SMReaders\TileReader.hpp"
+#include "Utils\File.hpp"
 
 #include <filesystem>
 namespace fs = std::filesystem;

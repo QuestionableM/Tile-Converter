@@ -2,7 +2,7 @@
 
 #include "ObjectDatabase\KeywordReplacer.hpp"
 #include "ObjectDatabase\ObjectDatabase.hpp"
-#include "ObjectDatabase\Mod\Mod.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
 #include "Tile\Object\Blueprint.hpp"
 #include "Tile\Object\Prefab.hpp"

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Tile/CellHeader.hpp"
-#include "Tile/Tile.hpp"
-#include "Tile/Object/Asset.hpp"
-#include "ObjectDatabase/ObjectDatabase.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
+#include "Tile\Object\Asset.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\Tile.hpp"
 
-#include "Utils/String.hpp"
+#include "ObjectDatabase\ObjectDatabase.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
+#include "Utils\String.hpp"
 
-#include "lz4/lz4.h"
+#include <lz4\lz4.h>
 
 class AssetListReader
 {

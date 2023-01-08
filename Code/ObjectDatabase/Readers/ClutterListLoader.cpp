@@ -1,10 +1,10 @@
 #include "ClutterListLoader.hpp"
 
-#include "ObjectDatabase/KeywordReplacer.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
-#include "Utils/String.hpp"
+#include "Utils\String.hpp"
 #include "Console.hpp"
 
 bool ClutterListLoader::LoadTextureData(const simdjson::dom::element& fClutter, TextureList& tList, std::wstring& mesh)

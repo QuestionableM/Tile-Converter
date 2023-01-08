@@ -4,9 +4,9 @@
 #include "ObjectDatabase\DatabaseConfig.hpp"
 #include "ObjectDatabase\ProgCounter.hpp"
 
-#include "ObjectDatabase\Mod\MaterialManager.hpp"
-#include "ObjectDatabase\Mod\ObjectRotations.hpp"
-#include "ObjectDatabase\Mod\GameDataMod.hpp"
+#include "ObjectDatabase\Mods\GameDataMod.hpp"
+#include "ObjectDatabase\MaterialManager.hpp"
+#include "ObjectDatabase\ObjectRotations.hpp"
 #include "ObjectDatabase\KeywordReplacer.hpp"
 
 #include "Utils\Json.hpp"

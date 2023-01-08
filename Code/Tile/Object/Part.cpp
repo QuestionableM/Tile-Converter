@@ -1,7 +1,9 @@
 #include "Part.hpp"
+
+#include "ObjectDatabase\ObjectRotations.hpp"
+#include "ObjectDatabase\MaterialManager.hpp"
+
 #include "Console.hpp"
-#include "ObjectDatabase/Mod/ObjectRotations.hpp"
-#include "ObjectDatabase/Mod/MaterialManager.hpp"
 
 std::string Part::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {

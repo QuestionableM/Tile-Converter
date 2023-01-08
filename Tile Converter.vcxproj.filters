@@ -15,28 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\ObjectDatabase\Mod\AssetListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\AssetListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\BlockListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\BlockListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\ClutterListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\ClutterListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\DefaultLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\DefaultLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\HarvestableListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\HarvestableListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\Mod.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Mods\Mod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\ObjectRotations.cpp">
+    <ClCompile Include="Code\ObjectDatabase\ObjectRotations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\PartListLoader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\PartListLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\ObjectDatabase\DatabaseConfig.cpp">
@@ -114,28 +114,28 @@
     <ClCompile Include="Code\ObjectDatabase\ProgCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\MaterialManager.cpp">
+    <ClCompile Include="Code\ObjectDatabase\MaterialManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\ObjectDatabase\GroundTextureDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\BlocksAndPartsMod.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Mods\BlocksAndPartsMod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\TerrainAssetsMod.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Mods\TerrainAssetsMod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\GameDataMod.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Mods\GameDataMod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\Tile\Object\Decal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\DecalsetListReader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\DecalsetListReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\ObjectDatabase\Mod\DecalsetReader.cpp">
+    <ClCompile Include="Code\ObjectDatabase\Readers\DecalsetReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\Console.cpp">
@@ -188,28 +188,28 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\ObjectDatabase\Mod\AssetListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\AssetListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\BlockListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\BlockListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\ClutterListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\ClutterListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\DefaultLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\DefaultLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\HarvestableListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\HarvestableListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\Mod.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Mods\Mod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\ObjectRotations.hpp">
+    <ClInclude Include="Code\ObjectDatabase\ObjectRotations.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\PartListLoader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\PartListLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\DatabaseConfig.hpp">
@@ -347,19 +347,19 @@
     <ClInclude Include="Code\ObjectDatabase\ProgCounter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\MaterialManager.hpp">
+    <ClInclude Include="Code\ObjectDatabase\MaterialManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\ObjectDatabase\GroundTextureDatabase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\BlocksAndPartsMod.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Mods\BlocksAndPartsMod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\TerrainAssetsMod.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Mods\TerrainAssetsMod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\GameDataMod.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Mods\GameDataMod.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\Tile\Object\GroundTerrainData.hpp">
@@ -371,10 +371,10 @@
     <ClInclude Include="Code\Tile\Object\Decal.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\DecalsetListReader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\DecalsetListReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\ObjectDatabase\Mod\DecalsetReader.hpp">
+    <ClInclude Include="Code\ObjectDatabase\Readers\DecalsetReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\LuaWorldGenerator\LuaWorldGenerator.hpp">

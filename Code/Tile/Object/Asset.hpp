@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Tile/Object/TileEntity.hpp"
+#include "Tile\Object\TileEntity.hpp"
 
-#include "Utils/Uuid.hpp"
-#include "Utils/Color.hpp"
+#include "Utils\Color.hpp"
+#include "Utils\Uuid.hpp"
 
 #include <unordered_map>
 

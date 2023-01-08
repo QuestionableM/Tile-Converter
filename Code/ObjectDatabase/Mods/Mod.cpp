@@ -1,14 +1,15 @@
 #include "Mod.hpp"
 
-#include "ObjectDatabase\Mod\HarvestableListLoader.hpp"
-#include "ObjectDatabase\Mod\DecalsetListReader.hpp"
-#include "ObjectDatabase\Mod\ClutterListLoader.hpp"
-#include "ObjectDatabase\Mod\BlocksAndPartsMod.hpp"
-#include "ObjectDatabase\Mod\TerrainAssetsMod.hpp"
-#include "ObjectDatabase\Mod\AssetListLoader.hpp"
-#include "ObjectDatabase\Mod\BlockListLoader.hpp"
-#include "ObjectDatabase\Mod\PartListLoader.hpp"
+#include "ObjectDatabase\Readers\HarvestableListLoader.hpp"
+#include "ObjectDatabase\Readers\DecalsetListReader.hpp"
+#include "ObjectDatabase\Readers\ClutterListLoader.hpp"
+#include "ObjectDatabase\Readers\AssetListLoader.hpp"
+#include "ObjectDatabase\Readers\BlockListLoader.hpp"
+#include "ObjectDatabase\Readers\PartListLoader.hpp"
 #include "ObjectDatabase\KeywordReplacer.hpp"
+
+#include "ObjectDatabase\Mods\BlocksAndPartsMod.hpp"
+#include "ObjectDatabase\Mods\TerrainAssetsMod.hpp"
 
 #include "Utils\String.hpp"
 #include "Utils\File.hpp"

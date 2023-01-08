@@ -1,15 +1,15 @@
 #pragma once
 
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
+#include "Tile\WriterOffset.hpp"
 
 #include <unordered_map>
+#include <fstream>
 #include <string>
 #include <vector>
-#include <fstream>
 
-#include "Tile/WriterOffset.hpp"
+#include <assimp\postprocess.h>
+#include <assimp\Importer.hpp>
+#include <assimp\scene.h>
 
 #include <glm.hpp>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Utils/Json.hpp"
-#include "ObjectDatabase/ObjectData.hpp"
+#include "ObjectDatabase\ObjectData.hpp"
+#include "Utils\Json.hpp"
 
 class DefaultLoader
 {

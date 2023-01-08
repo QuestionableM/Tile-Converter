@@ -1,15 +1,14 @@
 #include "SettingsGui.h"
 
-#include "ObjectDatabase/DatabaseConfig.hpp"
-#include "Utils/File.hpp"
-#include "Utils/String.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
+#include "Utils\String.hpp"
+#include "Utils\File.hpp"
+#include "Console.hpp"
 
-#include <msclr/marshal_cppstd.h>
+#include <msclr\marshal_cppstd.h>
 #include <filesystem>
 namespace fs = std::filesystem;
 namespace WForms = System::Windows::Forms;
-
-#include "Console.hpp"
 
 namespace TileConverter
 {

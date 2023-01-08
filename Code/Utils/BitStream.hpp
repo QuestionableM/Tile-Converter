@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Utils\ByteImpl.hpp"
+#include "Utils\Memory.hpp"
+#include "Utils\Uuid.hpp"
+
 #include <vector>
-#include "Utils/ByteImpl.hpp"
-#include "Utils/Memory.hpp"
-#include "Utils/Uuid.hpp"
 
 class BitStream
 {

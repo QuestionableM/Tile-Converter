@@ -1,6 +1,6 @@
 #include "AboutGui.h"
 
-#include "Utils/WinInclude.hpp"
+#include "Utils\WinInclude.hpp"
 
 typedef System::Diagnostics::Process SysProcess;
 

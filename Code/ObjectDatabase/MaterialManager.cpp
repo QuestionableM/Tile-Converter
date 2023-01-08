@@ -1,9 +1,9 @@
 #include "MaterialManager.hpp"
 
-#include "ObjectDatabase/DatabaseConfig.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
 
-#include "Utils/String.hpp"
-#include "Utils/Json.hpp"
+#include "Utils\String.hpp"
+#include "Utils\Json.hpp"
 
 #include "Console.hpp"
 

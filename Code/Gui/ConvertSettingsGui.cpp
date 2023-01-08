@@ -1,9 +1,9 @@
 #include "ConvertSettingsGui.h"
 
-#include "Tile/TileConverter.hpp"
-#include "Utils/String.hpp"
+#include "Tile\TileConverter.hpp"
+#include "Utils\String.hpp"
 
-#include <msclr/marshal_cppstd.h>
+#include <msclr\marshal_cppstd.h>
 
 #include <filesystem>
 namespace fs = std::filesystem;

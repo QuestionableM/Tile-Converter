@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Utils/Memory.hpp"
-#include "Utils/ByteImpl.hpp"
+#include "Utils\ByteImpl.hpp"
+#include "Utils\Memory.hpp"
 
-#include "Tile/CellHeader.hpp"
-#include "Tile/TilePart.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\TilePart.hpp"
 
-#include "lz4/lz4.h"
+#include <lz4\lz4.h>
 
 #include <sstream>
 #include <iomanip>

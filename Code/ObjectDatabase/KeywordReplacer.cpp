@@ -1,7 +1,7 @@
 #include "KeywordReplacer.hpp"
 
-#include "ObjectDatabase/DatabaseConfig.hpp"
-#include "Utils/String.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
+#include "Utils\String.hpp"
 #include "Console.hpp"
 
 void KeywordReplacer::CreateKey(std::wstring& key, std::wstring& replacement)

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Tile/Object/TileEntity.hpp"
-#include "Tile/Object/Block.hpp"
-#include "Tile/Object/Part.hpp"
-#include "Tile/Object/Joint.hpp"
-#include "Utils/Json.hpp"
+#include "Tile\Object\TileEntity.hpp"
+#include "Tile\Object\Block.hpp"
+#include "Tile\Object\Joint.hpp"
+#include "Tile\Object\Part.hpp"
+
+#include "Utils\Json.hpp"
 
 class Blueprint : public TileEntity
 {

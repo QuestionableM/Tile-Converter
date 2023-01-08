@@ -6,7 +6,7 @@
 #include "ObjectDatabase\ObjectDatabase.hpp"
 #include "ObjectDatabase\DatabaseConfig.hpp"
 #include "ObjectDatabase\ProgCounter.hpp"
-#include "ObjectDatabase\Mod\Mod.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
 #include "Gui\ConvertSettingsGui.h"
 #include "Gui\SettingsGui.h"

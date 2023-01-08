@@ -1,16 +1,16 @@
 #include "Blueprint.hpp"
 
-#include "ObjectDatabase/KeywordReplacer.hpp"
-#include "ObjectDatabase/Mod/ObjectRotations.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "ObjectDatabase\ObjectRotations.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
-#include "Utils/String.hpp"
-#include "Utils/File.hpp"
+#include "Utils\String.hpp"
+#include "Utils\File.hpp"
 
 #include "Console.hpp"
 
-#include <gtx/quaternion.hpp>
+#include <gtx\quaternion.hpp>
 
 static const std::string bp_secret = "?JB:";
 

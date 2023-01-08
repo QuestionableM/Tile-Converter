@@ -1,7 +1,7 @@
 #include "TileEntity.hpp"
 
-#include "ObjectDatabase/ModelStorage.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase\ModelStorage.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
 
 void TileEntity::WriteObjectToFile(std::ofstream& file, WriterOffsetData& mOffset, const glm::mat4& transform_matrix) const
 {

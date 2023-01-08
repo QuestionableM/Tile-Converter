@@ -1,7 +1,7 @@
 #include "DefaultLoader.hpp"
 
-#include "Utils/String.hpp"
-#include "ObjectDatabase/KeywordReplacer.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "Utils\String.hpp"
 
 TextureList DefaultLoader::LoadTextureList(const simdjson::dom::array& texList)
 {

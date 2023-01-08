@@ -5,7 +5,8 @@
 #include "Tile\TilePart.hpp"
 #include "Tile\Tile.hpp"
 
-#include "ObjectDatabase\Mod\Mod.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
+#include "Tile\Object\Decal.hpp"
 #include "Utils\Memory.hpp"
 
 #include <lz4\lz4.h>

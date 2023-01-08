@@ -1,11 +1,11 @@
 #include "BlockListLoader.hpp"
 
-#include "ObjectDatabase/Mod/Mod.hpp"
-#include "ObjectDatabase/KeywordReplacer.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
-#include "Utils/Uuid.hpp"
-#include "Utils/String.hpp"
+#include "Utils\String.hpp"
+#include "Utils\Uuid.hpp"
 
 #include "Console.hpp"
 

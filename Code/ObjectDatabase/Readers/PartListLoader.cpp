@@ -1,8 +1,8 @@
 #include "PartListLoader.hpp"
 
-#include "ObjectDatabase/Mod/DefaultLoader.hpp"
-#include "ObjectDatabase/Mod/Mod.hpp"
-#include "ObjectDatabase/ProgCounter.hpp"
+#include "ObjectDatabase\Readers\DefaultLoader.hpp"
+#include "ObjectDatabase\ProgCounter.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 
 #include "Console.hpp"
 

@@ -1,6 +1,6 @@
 #include "Harvestable.hpp"
 
-#include "ObjectDatabase/Mod/MaterialManager.hpp"
+#include "ObjectDatabase\MaterialManager.hpp"
 
 std::string Harvestable::GetMtlName(const std::wstring& mat_name, const std::size_t& mIdx) const
 {

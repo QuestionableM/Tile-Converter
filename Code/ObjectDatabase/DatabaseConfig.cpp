@@ -1,10 +1,9 @@
 #include "DatabaseConfig.hpp"
 
-#include "ObjectDatabase/KeywordReplacer.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
+#include "Utils\String.hpp"
+#include "Utils\File.hpp"
 #include "Console.hpp"
-
-#include "Utils/String.hpp"
-#include "Utils/File.hpp"
 
 #include <valve_vdf\vdf_parser.hpp>
 

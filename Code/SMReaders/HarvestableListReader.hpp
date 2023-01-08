@@ -1,8 +1,5 @@
 #pragma once
 
-#include "ObjectDatabase\Mod\Mod.hpp"
-#include "Utils\Memory.hpp"
-
 #include "Tile\Object\Harvestable.hpp"
 #include "Tile\ConvertSettings.hpp"
 #include "Tile\ConvertError.hpp"
@@ -10,7 +7,10 @@
 #include "Tile\TilePart.hpp"
 #include "Tile\Tile.hpp"
 
-#include "lz4/lz4.h"
+#include "ObjectDatabase\Mods\Mod.hpp"
+#include "Utils\Memory.hpp"
+
+#include <lz4\lz4.h>
 
 class HarvestableListReader
 {

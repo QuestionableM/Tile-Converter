@@ -1,9 +1,11 @@
 #pragma once
 
-#include <string>
+#include "Utils\Color.hpp"
+#include "Utils\Uuid.hpp"
+
 #include <unordered_map>
-#include "Utils/Uuid.hpp"
-#include "Utils/Color.hpp"
+#include <string>
+
 #include <glm.hpp>
 
 enum class TextureDataType

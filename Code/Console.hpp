@@ -3,7 +3,8 @@
 #include "ProgramConfig.hpp"
 
 #ifdef WC_ENABLE_DEBUG_CONSOLE
-#include "Utils/WinInclude.hpp"
+
+#include "Utils\WinInclude.hpp"
 #include <string>
 #include <vector>
 #include <stdio.h>

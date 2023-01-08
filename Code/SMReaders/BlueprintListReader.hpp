@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Tile/CellHeader.hpp"
-#include "Tile/TilePart.hpp"
-#include "Tile/Tile.hpp"
-#include "Utils/Memory.hpp"
+#include "Tile\CellHeader.hpp"
+#include "Tile\TilePart.hpp"
+#include "Tile\Tile.hpp"
 
-#include <lz4/lz4.h>
+#include "Utils\Memory.hpp"
+
+#include <lz4\lz4.h>
 
 class BlueprintListReader
 {

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <array>
-#include <vector>
+#include "Utils\ByteImpl.hpp"
+
 #include <algorithm>
+#include <vector>
+#include <array>
+
 #include <gtc\quaternion.hpp>
-
-#include "Utils/ByteImpl.hpp"
-
 
 class MemoryWrapper
 {

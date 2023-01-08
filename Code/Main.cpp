@@ -1,5 +1,5 @@
-#include "Utils/WinInclude.hpp"
-#include "Gui/MainGui.h"
+#include "Utils\WinInclude.hpp"
+#include "Gui\MainGui.h"
 
 #include "Console.hpp"
 

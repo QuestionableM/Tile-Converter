@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Utils\WinInclude.hpp"
+#include "Utils\ByteImpl.hpp"
+
 #include <vector>
 #include <string>
-#include "Utils/ByteImpl.hpp"
 
-#include "Utils/WinInclude.hpp"
 #include <shobjidl.h>
 
 namespace File

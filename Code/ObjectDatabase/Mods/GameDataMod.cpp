@@ -1,6 +1,6 @@
 #include "GameDataMod.hpp"
 
-#include "ObjectDatabase/DatabaseConfig.hpp"
+#include "ObjectDatabase\DatabaseConfig.hpp"
 
 #include <filesystem>
 namespace fs = std::filesystem;

@@ -1,12 +1,11 @@
 #include "TilePart.hpp"
 
-#include "Tile/Tile.hpp"
-#include "Utils/String.hpp"
-
-#include <gtx/quaternion.hpp>
-#include <gtx/transform.hpp>
-
+#include "Utils\String.hpp"
+#include "Tile\Tile.hpp"
 #include "Console.hpp"
+
+#include <gtx\quaternion.hpp>
+#include <gtx\transform.hpp>
 
 TilePart::TilePart(Tile* parent)
 {

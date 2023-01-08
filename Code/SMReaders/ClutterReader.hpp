@@ -5,9 +5,10 @@
 #include "Tile\CellHeader.hpp"
 #include "Tile\TilePart.hpp"
 
-#include "ObjectDatabase/Mod/Mod.hpp"
+#include "ObjectDatabase\Mods\Mod.hpp"
 #include "Utils\Uuid.hpp"
-#include "lz4\lz4.h"
+
+#include <lz4\lz4.h>
 
 class ClutterReader
 {

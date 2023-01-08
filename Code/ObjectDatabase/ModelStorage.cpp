@@ -1,12 +1,12 @@
 #include "ModelStorage.hpp"
 
+#include "Tile\Object\TileEntity.hpp"
+#include "Tile\TileConverter.hpp"
+
+#include "Utils\String.hpp"
 #include "Console.hpp"
-#include "Utils/String.hpp"
 
-#include "Tile/Object/TileEntity.hpp"
-#include "Tile/TileConverter.hpp"
-
-#include <gtx/matrix_decompose.hpp>
+#include <gtx\matrix_decompose.hpp>
 
 void Model::WriteToFile(const glm::mat4& model_mat, WriterOffsetData& offset, std::ofstream& file, const TileEntity* pEntity)
 {
