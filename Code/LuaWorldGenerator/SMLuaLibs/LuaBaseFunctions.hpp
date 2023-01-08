@@ -35,6 +35,19 @@ namespace SM
 {
 	namespace Lua
 	{
+	#if defined(_DEBUG) || defined(DEBUG)
+		namespace PrintInternal
+		{
+			void PrintTableElement(lua_State* L);
+			void PrintTable(lua_State* L);
+			void PrintArray(lua_State* L);
+
+			//push the element onto the stack before printing it
+			void PrintCustomType(lua_State* L);
+			void PrintBase(lua_State* L);
+		}
+	#endif
+
 		struct Base
 		{
 			static int Error(lua_State* L);
@@ -51,6 +64,9 @@ namespace SM
 			static int PCall(lua_State* L);
 			static int Select(lua_State* L);
 			static int XPCall(lua_State* L);
+
+			//Checks if the value at stack id -1 is a table or an array
+			static bool IsTable(lua_State* L);
 
 			//Returns the type id of an object
 			static int Type(lua_State* L, const int& idx);

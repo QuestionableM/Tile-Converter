@@ -32,6 +32,205 @@ namespace SM
 {
 	namespace Lua
 	{
+	#if defined(_DEBUG) || defined(DEBUG)
+		void PrintInternal::PrintTableElement(lua_State* L)
+		{
+			switch (lua_type(L, -1))
+			{
+			case LUA_TNUMBER:
+				{
+					if (lua_isinteger(L, -1))
+						DebugOut((LUAI_UACINT)lua_tointeger(L, -1));
+					else
+						DebugOut((LUAI_UACNUMBER)lua_tonumber(L, -1));
+
+					break;
+				}
+			case LUA_TBOOLEAN:
+				DebugOut(lua_toboolean(L, -1) ? "true" : "false");
+				break;
+			case LUA_TSTRING:
+				DebugOut(lua_tostring(L, -1));
+				break;
+			case LUA_TNIL:
+				DebugOut("nil");
+				break;
+			case LUA_TTABLE:
+			{
+				if (lua_type(L, -2) == LUA_TSTRING)
+				{
+					const char* v_data = lua_tostring(L, -2);
+					if (strcmp(v_data, "_G") == 0)
+					{
+						DebugOut("table");
+						break;
+					}
+				}
+
+				if (Base::IsTable(L))
+					PrintInternal::PrintTable(L);
+				else
+					PrintInternal::PrintArray(L);
+
+				break;
+			}
+			default:
+				PrintInternal::PrintCustomType(L);
+				break;
+			}
+		}
+
+		inline void luaG_print_table_internal(lua_State* L)
+		{
+			switch (lua_type(L, -2))
+			{
+			case LUA_TSTRING:
+				DebugOut(lua_tostring(L, -2), " = ");
+				break;
+			case LUA_TBOOLEAN:
+				DebugOut("[", lua_toboolean(L, -2) ? "true" : "false", "] = ");
+				break;
+			case LUA_TNUMBER:
+				{
+					if (lua_isinteger(L, -2))
+						DebugOut("[", lua_tointeger(L, -2), "] = ");
+					else
+						DebugOut("[", lua_tonumber(L, -2), "] = ");
+
+					break;
+				}
+			default:
+				DebugOut("[nil] = ");
+				break;
+			}
+
+			PrintInternal::PrintTableElement(L);
+
+			lua_pop(L, 1);
+		}
+
+		void PrintInternal::PrintTable(lua_State* L)
+		{
+			lua_pushnil(L);
+
+			DebugOut("{");
+
+			if (lua_next(L, -2) != 0)
+			{
+				luaG_print_table_internal(L);
+
+				while (lua_next(L, -2) != 0)
+				{
+					DebugOut(", ");
+					luaG_print_table_internal(L);
+				}
+			}
+
+			DebugOut("}");
+		}
+
+		inline void luaG_print_array_internal(lua_State* L)
+		{
+			PrintInternal::PrintTableElement(L);
+			lua_pop(L, 1);
+		}
+
+		void PrintInternal::PrintArray(lua_State* L)
+		{
+			lua_pushnil(L);
+
+			DebugOut("{");
+
+			if (lua_next(L, -2) != 0)
+			{
+				luaG_print_array_internal(L);
+
+				while (lua_next(L, -2) != 0)
+				{
+					DebugOut(", ");
+					luaG_print_array_internal(L);
+				}
+			}
+
+			DebugOut("}");
+		}
+
+		void PrintInternal::PrintCustomType(lua_State* L)
+		{
+			const int v_type_idx = Base::Type(L, -1);
+			switch (v_type_idx)
+			{
+			case LUA_TSMVEC3:
+				{
+					glm::vec3* v_vec3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, -1));
+					DebugOut("{<Vec3>, x = ", v_vec3->x, ", y = ", v_vec3->y, ", z = ", v_vec3->z, "}");
+					break;
+				}
+			case LUA_TSMQUAT:
+				{
+					glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, -1));
+					DebugOut("{<Quat>, x = ", v_quat->x, ", y = ", v_quat->y, ", z = ", v_quat->z, ", w = ", v_quat->w, "}");
+					break;
+				}
+			case LUA_TSMUUID:
+				{
+					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, -1));
+					DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
+					break;
+				}
+			case LUA_TSMCOLOR:
+				{
+					SMColor* v_color = reinterpret_cast<SMColor*>(lua_touserdata(L, -1));
+					DebugOut("{<Color>, r = ", v_color->GetFloat<float>(0), ", g = ", v_color->GetFloat<float>(1), ", b = ", v_color->GetFloat<float>(2), ", a = ", v_color->GetFloat<float>(3), "}");
+					break;
+				}
+			default:
+				DebugOut(Base::Typename(v_type_idx));
+				break;
+			}
+		}
+
+		void PrintInternal::PrintBase(lua_State* L)
+		{
+			switch (lua_type(L, -1))
+			{
+			case LUA_TSTRING:
+				DebugOut(lua_tostring(L, -1));
+				break;
+			case LUA_TNUMBER:
+				{
+					if (lua_isinteger(L, -1))
+						DebugOut(lua_tointeger(L, -1));
+					else
+						DebugOut(lua_tonumber(L, -1));
+
+					break;
+				}
+			case LUA_TBOOLEAN:
+				DebugOut(lua_toboolean(L, -1) ? "true" : "false");
+				break;
+			case LUA_TTABLE:
+				{
+					if (Base::IsTable(L))
+						PrintInternal::PrintTable(L);
+					else
+						PrintInternal::PrintArray(L);
+
+					break;
+				}
+			case LUA_TNIL:
+				DebugOut("nil");
+				break;
+			default:
+				PrintInternal::PrintCustomType(L);
+				break;
+			}
+		}
+	#endif
+
+
+
+
 		int Base::Error(lua_State* L)
 		{
 			const int level = (int)luaL_optinteger(L, 2, 1);
@@ -117,159 +316,6 @@ namespace SM
 			return 1;
 		}
 
-		inline int luaC_print_type_get_udata_idx(int idx)
-		{
-			return (idx == -1) ? -2 : idx;
-		}
-
-		inline void luaC_print_type(lua_State* L, int idx)
-		{
-			const int v_type_idx = Base::Type(L, idx);
-			switch (v_type_idx)
-			{
-			case LUA_TSMVEC3:
-				{
-					glm::vec3* v_vec3 = reinterpret_cast<glm::vec3*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
-					DebugOut("{<Vec3>, x = ", v_vec3->x, ", y = ", v_vec3->y, ", z = ", v_vec3->z, "}");
-					break;
-				}
-			case LUA_TSMQUAT:
-				{
-					glm::quat* v_quat = reinterpret_cast<glm::quat*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
-					DebugOut("{<Quat>, x = ", v_quat->x, ", y = ", v_quat->y, ", z = ", v_quat->z, ", w = ", v_quat->w, "}");
-					break;
-				}
-			case LUA_TSMUUID:
-				{
-					SMUuid* v_uuid = reinterpret_cast<SMUuid*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
-					DebugOut("{<Uuid>, ", v_uuid->ToString(), "}");
-					break;
-				}
-			case LUA_TSMCOLOR:
-				{
-					SMColor* v_color = reinterpret_cast<SMColor*>(lua_touserdata(L, luaC_print_type_get_udata_idx(idx)));
-					DebugOut("{<Color>, r = ", v_color->GetFloat<float>(0), ", g = ", v_color->GetFloat<float>(1), ", b = ", v_color->GetFloat<float>(2), ", a = ", v_color->GetFloat<float>(3), "}");
-					break;
-				}
-			default:
-				DebugOut(Base::Typename(v_type_idx));
-				break;
-			}
-		}
-
-	#if defined(_DEBUG)
-		void luaC_print_table(lua_State* L, int idx);
-
-		void luaC_print_table_element(lua_State* L)
-		{
-			switch (lua_type(L, -1))
-			{
-			case LUA_TNUMBER:
-				{
-					if (lua_isinteger(L, -1))
-						DebugOut((LUAI_UACINT)lua_tointeger(L, -1));
-					else
-						DebugOut((LUAI_UACNUMBER)lua_tonumber(L, -1));
-
-					break;
-				}
-			case LUA_TBOOLEAN:
-				DebugOut(lua_toboolean(L, -1) ? "true" : "false");
-				break;
-			case LUA_TSTRING:
-				DebugOut(lua_tostring(L, -1));
-				break;
-			case LUA_TNIL:
-				DebugOut("nil");
-				break;
-			case LUA_TTABLE:
-				{
-					if (lua_type(L, -2) == LUA_TSTRING)
-					{
-						const char* v_data = lua_tostring(L, -2);
-						if (strcmp(v_data, "_G") == 0)
-						{
-							DebugOut("table");
-							break;
-						}
-					}
-
-					luaC_print_table(L, -2);
-					break;
-				}
-			default:
-				luaC_print_type(L, -1);
-				break;
-			}
-		}
-
-		inline void luaC_print_table_internal(lua_State* L)
-		{
-			if (lua_isnumber(L, -2))
-			{
-				luaC_print_table_element(L);
-			}
-			else
-			{
-				DebugOut(lua_tostring(L, -2), " = ");
-				luaC_print_table_element(L);
-			}
-
-			lua_pop(L, 1);
-		}
-
-		void luaC_print_table(lua_State* L, int idx)
-		{
-			lua_pushnil(L);
-
-			DebugOut("{");
-
-			if (lua_next(L, idx) != 0)
-			{
-				luaC_print_table_internal(L);
-
-				while (lua_next(L, idx) != 0)
-				{
-					DebugOut(", ");
-					luaC_print_table_internal(L);
-				}
-			}
-
-			DebugOut("}");
-		}
-
-		void custom_print_string(lua_State* L, int idx)
-		{
-			switch (lua_type(L, idx))
-			{
-			case LUA_TNUMBER:
-				{
-					if (lua_isinteger(L, idx))
-						DebugOut((LUAI_UACINT)lua_tointeger(L, idx));
-					else
-						DebugOut((LUAI_UACNUMBER)lua_tonumber(L, idx));
-
-					break;
-				}
-			case LUA_TSTRING:
-				DebugOut(lua_tostring(L, idx));
-				break;
-			case LUA_TBOOLEAN:
-				DebugOut(lua_toboolean(L, idx) ? "true" : "false");
-				break;
-			case LUA_TNIL:
-				DebugOut("nil");
-				break;
-			case LUA_TTABLE:
-				luaC_print_table(L, idx);
-				break;
-			default:
-				luaC_print_type(L, idx);
-				break;
-			}
-		}
-	#endif
-
 		int Base::Print(lua_State* L)
 		{
 		#if defined(_DEBUG)
@@ -277,12 +323,17 @@ namespace SM
 
 			DebugOut("[LUA] ");
 
-			custom_print_string(L, 1);
+			lua_pushvalue(L, 1);
+			PrintInternal::PrintBase(L);
+			lua_pop(L, 1);
 
 			for (int i = 2; i <= n; i++)
 			{
 				DebugOut(" ");
-				custom_print_string(L, i);
+
+				lua_pushvalue(L, i);
+				PrintInternal::PrintBase(L);
+				lua_pop(L, 1);
 			}
 
 			DebugOut("\n");
@@ -470,6 +521,32 @@ namespace SM
 			lua_rotate(L, 3, 2);  /* move them below function's arguments */
 			status = lua_pcallk(L, n - 2, LUA_MULTRET, 2, 2, finishpcall);
 			return finishpcall(L, status, 2);
+		}
+
+		bool Base::IsTable(lua_State* L)
+		{
+			lua_pushnil(L);
+
+			bool v_is_table = false;
+			long long v_order_test = 1;
+			while (lua_next(L, -2) != 0)
+			{
+				if (!lua_isinteger(L, -2))
+				{
+					v_is_table = true;
+				}
+				else
+				{
+					const long long v_cur_idx = lua_tointeger(L, -2);
+					if (v_order_test != v_cur_idx)
+						v_is_table = true;
+				}
+
+				lua_pop(L, 1);
+				v_order_test++;
+			}
+
+			return v_is_table;
 		}
 
 		const char* Base::Typename(const int& idx)

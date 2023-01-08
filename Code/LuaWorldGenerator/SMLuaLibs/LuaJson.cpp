@@ -40,7 +40,7 @@ namespace SM
 				{
 					nlohmann::json v_object;
 
-					if (JsonInternal::IsTable(L))
+					if (Base::IsTable(L))
 					{
 						v_object = nlohmann::json::object();
 						JsonInternal::IterateTable(L, v_object);
@@ -57,17 +57,6 @@ namespace SM
 				return nlohmann::json::object();
 			}
 		}
-
-		/*
-		void TraceStack(lua_State* L, const int from, const int to)
-		{
-			DebugOut("Stack: { ", Base::Typename(Base::Type(L, -1)));
-			for (int a = -2; a > -5; a--)
-				DebugOut(", ", Base::Typename(Base::Type(L, a)));
-
-			DebugOut(" }\n");
-		}
-		*/
 
 		void JsonInternal::IterateArray(lua_State* L, nlohmann::json& v_array)
 		{
@@ -115,32 +104,6 @@ namespace SM
 			}
 		}
 
-		bool JsonInternal::IsTable(lua_State* L)
-		{
-			lua_pushnil(L);
-
-			bool v_is_table = false;
-			long long v_order_test = 1;
-			while (lua_next(L, -2) != 0)
-			{
-				if (!lua_isinteger(L, -2))
-				{
-					v_is_table = true;
-				}
-				else
-				{
-					const long long v_cur_idx = lua_tointeger(L, -2);
-					if (v_order_test != v_cur_idx)
-						v_is_table = true;
-				}
-
-				lua_pop(L, 1);
-				v_order_test++;
-			}
-
-			return v_is_table;
-		}
-
 		void JsonInternal::LuaToJson(lua_State* L, nlohmann::json& v_json, const int& v_idx)
 		{
 			switch (Base::Type(L, v_idx))
@@ -152,7 +115,7 @@ namespace SM
 				}
 			case LUA_TTABLE:
 				{
-					if (JsonInternal::IsTable(L))
+					if (Base::IsTable(L))
 					{
 						v_json = nlohmann::json::object();
 						JsonInternal::IterateTable(L, v_json);

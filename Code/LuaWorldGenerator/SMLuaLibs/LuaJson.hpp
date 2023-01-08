@@ -18,8 +18,6 @@ namespace SM
 			void IterateArray(lua_State* L, nlohmann::json& v_array);
 			void IterateTable(lua_State* L, nlohmann::json& v_object);
 
-			bool IsTable(lua_State* L);
-
 			//Requires the value to be pushed onto the stack
 			void LuaToJson(lua_State* L, nlohmann::json& v_json, const int& v_idx);
 			void JsonToLua(lua_State* L, const simdjson::dom::element& v_element);
