@@ -271,6 +271,11 @@ bool JsonReader::LoadParseSimdjsonCommentsC(const std::wstring& path, simdjson::
 
 		simdjson::dom::parser v_parser;
 		const auto v_root = v_parser.parse_into_document(v_doc, v_json_str);
+		if (v_root.type() != type_check)
+		{
+			DebugErrorL("Mismatching root json type!\nFile: ", path);
+			return false;
+		}
 
 		return true;
 	}

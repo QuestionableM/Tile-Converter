@@ -11,20 +11,21 @@ MaterialManager::MaterialMap MaterialManager::m_materialStorage = {};
 
 void MaterialManager::Initialize()
 {
-	nlohmann::json pMatMap = JsonReader::LoadParseJson(DatabaseConfig::MaterialMapPath.data());
-	if (!pMatMap.is_object()) return;
+	simdjson::dom::document v_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(DatabaseConfig::MaterialMapPath.data(), v_doc, simdjson::dom::element_type::OBJECT))
+		return;
 
-	for (const auto& pObject : pMatMap.items())
+	for (const auto v_object : v_doc.root().get_object())
 	{
-		if (!pObject.value().is_string()) continue;
+		if (!v_object.value.is_string()) continue;
 
-		const std::wstring pKey = String::ToWide(pObject.key());
-		const std::wstring pValue = String::ToWide(pObject.value().get_ref<const std::string&>());
+		const std::wstring v_key = String::ToWide(v_object.key);
+		const std::wstring v_value = String::ToWide(v_object.value.get_string());
 
-		if (m_materialStorage.find(pKey) != m_materialStorage.end())
+		if (m_materialStorage.find(v_key) != m_materialStorage.end())
 			continue;
 
-		m_materialStorage.insert(std::make_pair(pKey, pValue));
+		m_materialStorage.insert(std::make_pair(v_key, v_value));
 	}
 }
 

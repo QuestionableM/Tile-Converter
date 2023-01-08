@@ -28,20 +28,21 @@ bool BlocksAndPartsMod::GetShapeSetDatabaseFile(const std::wstring& mod_folder, 
 
 void BlocksAndPartsMod::LoadShapeSetDatabase(const std::wstring& path, Mod* pMod)
 {
-	const nlohmann::json l_ShapedbJson = JsonReader::LoadParseJson(path);
-	if (!l_ShapedbJson.is_object()) return;
+	simdjson::dom::document v_shapedb_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(path, v_shapedb_doc, simdjson::dom::element_type::OBJECT))
+		return;
 
-	const auto& l_ShapeSetList = JsonReader::Get(l_ShapedbJson, "shapeSetList");
-	if (!l_ShapeSetList.is_array()) return;
+	const auto v_shapeset_list = v_shapedb_doc.root()["shapeSetList"];
+	if (!v_shapeset_list.is_array()) return;
 
-	for (const auto& l_shapeset : l_ShapeSetList)
+	for (const auto v_shapeset : v_shapeset_list.get_array())
 	{
-		if (!l_shapeset.is_string()) continue;
+		if (!v_shapeset.is_string()) continue;
 
-		const std::wstring l_shapeset_wide = String::ToWide(l_shapeset.get_ref<const std::string&>());
-		const std::wstring l_shapeset_path = KeywordReplacer::ReplaceKey(l_shapeset_wide);
+		std::wstring v_shapeset_path = String::ToWide(v_shapeset.get_string());
+		KeywordReplacer::ReplaceKeyR(v_shapeset_path);
 
-		pMod->LoadFile(l_shapeset_path);
+		pMod->LoadFile(v_shapeset_path);
 	}
 }
 

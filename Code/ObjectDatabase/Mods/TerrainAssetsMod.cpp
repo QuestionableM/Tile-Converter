@@ -44,23 +44,24 @@ bool TerrainAssetsMod::GetAssetSetDatabaseFile(const std::wstring& asset_db_dir,
 
 void TerrainAssetsMod::LoadAssetSetDatabase(const std::wstring& path, Mod* pMod)
 {
-	const nlohmann::json assetset_db_json = JsonReader::LoadParseJson(path);
-	if (!assetset_db_json.is_object()) return;
+	simdjson::dom::document v_assetset_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(path, v_assetset_doc, simdjson::dom::element_type::OBJECT))
+		return;
 
-	const auto& asset_set_list = JsonReader::Get(assetset_db_json, "assetSetList");
-	if (!asset_set_list.is_array()) return;
+	const auto v_assetset_list = v_assetset_doc.root()["assetSetList"];
+	if (!v_assetset_list.is_array()) return;
 
-	for (const auto& cur_asset_set : asset_set_list)
+	for (const auto v_asset_set : v_assetset_list.get_array())
 	{
-		if (!cur_asset_set.is_object()) continue;
+		if (!v_asset_set.is_object()) continue;
 
-		const auto& asset_set_str = JsonReader::Get(cur_asset_set, "assetSet");
-		if (!asset_set_str.is_string()) continue;
+		const auto v_assetset_path_obj = v_asset_set["assetSet"];
+		if (!v_assetset_path_obj.is_string()) continue;
 
-		const std::wstring asset_set_wide = String::ToWide(asset_set_str.get_ref<const std::string&>());
-		const std::wstring asset_set_path = KeywordReplacer::ReplaceKey(asset_set_wide);
+		std::wstring v_assetset_path = String::ToWide(v_assetset_path_obj.get_string());
+		KeywordReplacer::ReplaceKeyR(v_assetset_path);
 
-		pMod->LoadFile(asset_set_path);
+		pMod->LoadFile(v_assetset_path);
 	}
 }
 

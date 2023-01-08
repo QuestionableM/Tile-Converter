@@ -4,11 +4,11 @@
 #include "Utils\ByteImpl.hpp"
 #include "Utils\Json.hpp"
 
-#include <FreeImage.h>
-
 #include <vector>
 #include <string>
 #include <array>
+
+#include <FreeImage.h>
 
 class GroundTexture
 {
@@ -60,7 +60,7 @@ class GroundTextureDatabase
 
 	GroundTextureDatabase() = default;
 
-	static void LoadTextureData(const nlohmann::json& tObj, GroundTexBundle& tBundle);
+	static void LoadTextureData(const simdjson::dom::element& tObj, GroundTexBundle& tBundle);
 public:
 	static void Initialize();
 	static void ClearTextureDatabase();

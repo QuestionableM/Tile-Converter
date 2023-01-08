@@ -125,16 +125,14 @@ GroundTexBundle GroundTextureDatabase::DefaultTex = {};
 std::array<GroundTexBundle, 8> GroundTextureDatabase::TexStorage = {};
 
 static const std::string objKeyVec[3] = { "Dif", "Asg", "Nor" };
-void GroundTextureDatabase::LoadTextureData(const nlohmann::json& tObj, GroundTexBundle& tBundle)
+void GroundTextureDatabase::LoadTextureData(const simdjson::dom::element& tObj, GroundTexBundle& tBundle)
 {
 	for (std::size_t a = 0; a < 3; a++)
 	{
-		const std::string& cur_val = objKeyVec[a];
-		const auto& tex_obj = JsonReader::Get(tObj, cur_val);
+		const auto v_tex_obj = tObj[objKeyVec[a]];
 
-		const std::wstring wstr_tex = tex_obj.is_string() ? String::ToWide(tex_obj.get_ref<const std::string&>()) : L"";
-
-		tBundle[a] = new GroundTexture(wstr_tex);
+		const std::wstring v_wstr_tex = v_tex_obj.is_string() ? String::ToWide(v_tex_obj.get_string()) : L"";
+		tBundle[a] = new GroundTexture(v_wstr_tex);
 	}
 }
 
@@ -142,25 +140,27 @@ void GroundTextureDatabase::Initialize()
 {
 	GroundTextureDatabase::ClearTextureDatabase();
 
-	const auto& tex_data = JsonReader::LoadParseJson(DatabaseConfig::GroundTexturesPath.data());
-	if (!tex_data.is_object()) return;
+	simdjson::dom::document v_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(DatabaseConfig::GroundTexturesPath.data(), v_doc, simdjson::dom::element_type::OBJECT))
+		return;
 
-	const auto& def_textures = JsonReader::Get(tex_data, "DefaultTexture");
-	if (def_textures.is_object())
-		GroundTextureDatabase::LoadTextureData(def_textures, GroundTextureDatabase::DefaultTex);
+	const auto v_root = v_doc.root();
+	const auto v_default_textures = v_root["DefaultTexture"];
+	if (v_default_textures.is_object())
+		GroundTextureDatabase::LoadTextureData(v_default_textures.value_unsafe(), GroundTextureDatabase::DefaultTex);
 
-	const auto& tex_list = JsonReader::Get(tex_data, "GroundTextureList");
-	if (tex_list.is_array())
+	const auto v_texture_list = v_root["GroundTextureList"];
+	if (v_texture_list.is_array())
 	{
-		std::size_t mTexDataIdx = 0;
+		std::size_t v_tex_data_idx = 0;
 
-		for (const auto& mTexObj : tex_list)
+		for (const auto v_tex_obj : v_texture_list.get_array())
 		{
-			if (!mTexObj.is_object()) continue;
+			if (!v_tex_obj.is_object()) continue;
 
-			GroundTextureDatabase::LoadTextureData(mTexObj, GroundTextureDatabase::TexStorage[mTexDataIdx++]);
+			GroundTextureDatabase::LoadTextureData(v_tex_obj, GroundTextureDatabase::TexStorage[v_tex_data_idx++]);
 
-			if (mTexDataIdx == 8) break;
+			if (v_tex_data_idx == 8) break;
 		}
 	}
 }
