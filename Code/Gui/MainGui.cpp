@@ -2,6 +2,7 @@
 #include "Console.hpp"
 
 #include "ObjectDatabase\GroundTextureDatabase.hpp"
+#include "ObjectDatabase\KeywordReplacer.hpp"
 #include "ObjectDatabase\ObjectDatabase.hpp"
 #include "ObjectDatabase\DatabaseConfig.hpp"
 #include "ObjectDatabase\ProgCounter.hpp"
@@ -61,10 +62,10 @@ namespace TileConverter
 			return;
 		}
 
-		this->LoadObjectDatabase();
+		this->LoadObjectDatabase(false);
 	}
 
-	void MainGui::LoadObjectDatabase()
+	void MainGui::LoadObjectDatabase(const bool& v_should_reload)
 	{
 		if (this->DatabaseLoader_BW->IsBusy) return;
 
@@ -72,11 +73,15 @@ namespace TileConverter
 
 		this->ChangeGuiState(false, false);
 		this->ProgressUpdater->Start();
-		this->DatabaseLoader_BW->RunWorkerAsync();
+		this->DatabaseLoader_BW->RunWorkerAsync(v_should_reload);
 	}
 
 	void MainGui::DatabaseLoader_BW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
 	{
+		const bool v_should_reload = safe_cast<bool>(e->Argument);
+		if (v_should_reload)
+			KeywordReplacer::Initialize();
+
 		DatabaseLoader::LoadDatabase();
 	}
 
@@ -98,7 +103,7 @@ namespace TileConverter
 
 	void MainGui::TS_ReloadDB_BTN_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		this->LoadObjectDatabase();
+		this->LoadObjectDatabase(true);
 	}
 
 	void MainGui::ChangeGuiState(const bool& db_loaded, const bool& tile_gen)
@@ -317,9 +322,9 @@ namespace TileConverter
 		if (settings_gui->update_after_close)
 		{
 			DatabaseConfig::ReadConfig();
-
 			GroundTextureDatabase::Initialize();
-			this->LoadObjectDatabase();
+			
+			this->LoadObjectDatabase(false);
 		}
 	}
 

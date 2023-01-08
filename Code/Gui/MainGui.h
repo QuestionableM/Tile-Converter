@@ -235,7 +235,7 @@ namespace TileConverter
 #pragma endregion
 	private:
 		System::Void MainGui_Shown(System::Object^ sender, System::EventArgs^ e);
-		System::Void LoadObjectDatabase();
+		System::Void LoadObjectDatabase(const bool& v_should_reload);
 		System::Void DatabaseLoader_BW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e);
 		System::Void DatabaseLoader_BW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e);
 		System::Void TS_ReloadDB_BTN_Click(System::Object^ sender, System::EventArgs^ e);

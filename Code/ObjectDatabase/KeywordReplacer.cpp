@@ -73,44 +73,59 @@ void KeywordReplacer::UpgradeResource(const std::wstring& mPath, std::wstring& m
 	}
 }
 
+void KeywordReplacer::LoadResourceUpgradesFromConfig()
+{
+	for (const std::wstring& v_upgrades_path : DatabaseConfig::ResourceUpgradeFiles)
+		KeywordReplacer::LoadResourceUpgrades(v_upgrades_path);
+}
+
 void KeywordReplacer::LoadResourceUpgrades(const std::wstring& path)
 {
-	const nlohmann::json uJson = JsonReader::LoadParseJson(path);
-	if (!uJson.is_object()) return;
+	simdjson::dom::document v_doc;
+	if (!JsonReader::LoadParseSimdjsonCommentsC(path, v_doc, simdjson::dom::element_type::OBJECT))
+		return;
 
 	DebugOutL("Loading resource upgrades: ", 0b1101_fg, path);
 
-	const auto& upgrade_array = JsonReader::Get(uJson, "upgrade");
-	if (!upgrade_array.is_array()) return;
+	const auto v_upgrade_array = v_doc.root()["upgrade"];
+	if (!v_upgrade_array.is_array())
+		return;
 
-	for (const auto& upgrade_list : upgrade_array)
+	for (const auto v_upgrade_list : v_upgrade_array.get_array())
 	{
-		if (!upgrade_list.is_array()) continue;
+		if (!v_upgrade_list.is_array()) continue;
 
-		for (const auto& upgrade_obj : upgrade_list)
+		for (const auto v_upgrade_obj : v_upgrade_list.get_array())
 		{
-			const auto& upgrade_key = JsonReader::Get(upgrade_obj, 0);
-			const auto& upgrade_val = JsonReader::Get(upgrade_obj, 1);
+			if (!v_upgrade_obj.is_array()) continue;
 
-			if (!(upgrade_key.is_string() && upgrade_val.is_string())) continue;
+			const auto v_upgrade_obj_arr = v_upgrade_obj.get_array();
 
-			std::wstring upKeyWstr = String::ToWide(upgrade_key.get_ref<const std::string&>());
-			std::wstring upValWstr = String::ToWide(upgrade_val.get_ref<const std::string&>());
+			const auto v_upgrade_key = v_upgrade_obj_arr.at(0);
+			const auto v_upgrade_val = v_upgrade_obj_arr.at(1);
 
-			KeywordReplacer::CreateKey(upKeyWstr, upValWstr);
+			if (!(v_upgrade_key.is_string() && v_upgrade_val.is_string())) continue;
 
-			if (m_ResourceUpgrades.find(upKeyWstr) == m_ResourceUpgrades.end())
-				m_ResourceUpgrades.insert(std::make_pair(upKeyWstr, upValWstr));
+			std::wstring v_key_wstr = String::ToWide(v_upgrade_key.get_string());
+			std::wstring v_val_wstr = String::ToWide(v_upgrade_val.get_string());
+
+			KeywordReplacer::CreateKey(v_key_wstr, v_val_wstr);
+
+			if (m_ResourceUpgrades.find(v_key_wstr) != m_ResourceUpgrades.end())
+				m_ResourceUpgrades.insert(std::make_pair(v_key_wstr, v_val_wstr));
 		}
 	}
 }
 
 std::wstring KeywordReplacer::ReplaceKey(const std::wstring& path)
 {
+	if (path.empty())
+		return path;
+
 	std::wstring v_output;
 	KeywordReplacer::UpgradeResource(path, v_output);
 
-	if (v_output.empty() || v_output[0] != L'$')
+	if (v_output[0] != L'$')
 		return v_output;
 
 	const std::size_t v_key_idx = v_output.find_first_of(L'/');
@@ -127,9 +142,12 @@ std::wstring KeywordReplacer::ReplaceKey(const std::wstring& path)
 
 void KeywordReplacer::ReplaceKeyR(std::wstring& path)
 {
+	if (path.empty())
+		return;
+
 	KeywordReplacer::UpgradeResource(path, path);
 
-	if (path.empty() || path[0] != L'$')
+	if (path[0] != L'$')
 		return;
 
 	const std::size_t v_key_idx = path.find_first_of(L'/');
@@ -146,9 +164,12 @@ void KeywordReplacer::ReplaceKeyR(std::wstring& path)
 
 bool KeywordReplacer::ReplaceKeyRLua(std::wstring& path)
 {
+	if (path.empty())
+		return true;
+
 	KeywordReplacer::UpgradeResource(path, path);
 
-	if (path.empty() || path[0] != L'$')
+	if (path[0] != L'$')
 		return true;
 
 	const std::size_t v_key_idx = path.find_first_of(L'/');
@@ -169,6 +190,17 @@ bool KeywordReplacer::ReplaceKeyRLua(std::wstring& path)
 
 	path = (v_iter->second + path.substr(v_key_idx));
 	return true;
+}
+
+void KeywordReplacer::Initialize()
+{
+	DebugOutL(__FUNCTION__);
+
+	KeywordReplacer::Clear();
+	KeywordReplacer::LoadResourceUpgradesFromConfig();
+
+	for (const auto& v_kv_pair : DatabaseConfig::DefaultKeywords)
+		KeywordReplacer::SetReplacement(v_kv_pair.first, v_kv_pair.second);
 }
 
 void KeywordReplacer::Clear()

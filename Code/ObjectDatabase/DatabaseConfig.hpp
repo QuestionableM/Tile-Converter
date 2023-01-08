@@ -12,10 +12,12 @@ public:
 	constexpr static const std::wstring_view MaterialMapPath = L"./Resources/MaterialIds.json";
 	constexpr static const std::wstring_view GroundTexturesPath = L"./Resources/GroundTextures.json";
 
-	inline static std::wstring GamePath                      = L"";
-	inline static std::vector<std::wstring> AssetListFolders = {};
-	inline static std::vector<std::wstring> ModFolders       = {};
-	inline static std::vector<std::wstring> LocalModFolders  = {};
+	inline static std::wstring GamePath                          = L"";
+	inline static std::vector<std::wstring> AssetListFolders     = {};
+	inline static std::vector<std::wstring> ModFolders           = {};
+	inline static std::vector<std::wstring> LocalModFolders      = {};
+	inline static std::vector<std::wstring> ResourceUpgradeFiles = {};
+	inline static std::vector<std::pair<std::wstring, std::wstring>> DefaultKeywords = {};
 
 private:
 	static void WstrArrayToJson(nlohmann::json& j_obj, const std::string& key, const std::vector<std::wstring>& r_wstr_vec);
@@ -30,6 +32,7 @@ private:
 	static void ReadUserSettings(const nlohmann::json& config_json, bool& should_write);
 
 	static nlohmann::json GetConfigJson(bool* should_write, const bool& read_from_file);
+	static void AddKeywordReplacement(const std::wstring& key, const std::wstring& value);
 	static void UpdatePathReplacement();
 
 public:

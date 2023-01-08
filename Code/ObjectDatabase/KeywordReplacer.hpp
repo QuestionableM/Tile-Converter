@@ -21,6 +21,8 @@ public:
 	static bool ContentKeyExists();
 
 	static void UpgradeResource(const std::wstring& mPath, std::wstring& mOutput);
+
+	static void LoadResourceUpgradesFromConfig();
 	static void LoadResourceUpgrades(const std::wstring& path);
 
 	static std::wstring ReplaceKey(const std::wstring& path);
@@ -28,5 +30,6 @@ public:
 	//Returns false if $CONTENT_DATA key is found but not defined
 	static bool ReplaceKeyRLua(std::wstring& path);
 
+	static void Initialize();
 	static void Clear();
 };

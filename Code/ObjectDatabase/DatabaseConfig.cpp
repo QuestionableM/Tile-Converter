@@ -26,17 +26,23 @@ void DatabaseConfig::JsonStrArrayToVector(const nlohmann::json& pJson, const std
 	const auto& v_jArray = JsonReader::Get(pJson, pKey);
 	if (!v_jArray.is_array()) return;
 
-	for (const auto& v_curVal : v_jArray)
+	if (replace_keys)
 	{
-		if (!v_curVal.is_string()) continue;
-
-		const std::wstring v_wstrPath = String::ToWide(v_curVal.get_ref<const std::string&>());
-		if (replace_keys)
+		for (const auto& v_curVal : v_jArray)
 		{
+			if (!v_curVal.is_string()) continue;
+
+			const std::wstring v_wstrPath = String::ToWide(v_curVal.get_ref<const std::string&>());
 			pWstrVec.push_back(KeywordReplacer::ReplaceKey(v_wstrPath));
 		}
-		else
+	}
+	else
+	{
+		for (const auto& v_curVal : v_jArray)
 		{
+			if (!v_curVal.is_string()) continue;
+
+			const std::wstring v_wstrPath = String::ToWide(v_curVal.get_ref<const std::string&>());
 			pWstrVec.push_back(v_wstrPath);
 		}
 	}
@@ -78,17 +84,12 @@ void DatabaseConfig::ReadProgramSettings(const nlohmann::json& config_json)
 			std::wstring pValue = String::ToWide(v_keyObjVal.get_ref<const std::string&>());
 			KeywordReplacer::ReplaceKeyR(pValue);
 
-			KeywordReplacer::SetReplacement(pKey, pValue);
+			DatabaseConfig::AddKeywordReplacement(pKey, pValue);
 		}
 	}
 
-	{
-		std::vector<std::wstring> l_upgrade_array = {};
-		DatabaseConfig::JsonStrArrayToVector(program_settings, "ResourceUpgradeFiles", l_upgrade_array, true);
-
-		for (const std::wstring& l_upgrade_path : l_upgrade_array)
-			KeywordReplacer::LoadResourceUpgrades(l_upgrade_path);
-	}
+	DatabaseConfig::JsonStrArrayToVector(program_settings, "ResourceUpgradeFiles", DatabaseConfig::ResourceUpgradeFiles, true);
+	KeywordReplacer::LoadResourceUpgradesFromConfig();
 
 	DatabaseConfig::JsonStrArrayToVector(program_settings, "ScrapAssetDatabase", DatabaseConfig::AssetListFolders, true);
 }
@@ -328,10 +329,17 @@ nlohmann::json DatabaseConfig::GetConfigJson(bool* should_write, const bool& rea
 	return cfgData;
 }
 
+void DatabaseConfig::AddKeywordReplacement(const std::wstring& key, const std::wstring& value)
+{
+	DebugOutL("Set ", key, " to ", value);
+
+	KeywordReplacer::SetReplacement(key, value);
+	DatabaseConfig::DefaultKeywords.push_back(std::make_pair(key, value));
+}
+
 void DatabaseConfig::UpdatePathReplacement()
 {
-	DebugOutL("Set $GAME_FOLDER to ", DatabaseConfig::GamePath);
-	KeywordReplacer::SetReplacement(L"$GAME_FOLDER", DatabaseConfig::GamePath);
+	DatabaseConfig::AddKeywordReplacement(L"$GAME_FOLDER", DatabaseConfig::GamePath);
 }
 
 void DatabaseConfig::SaveConfig()
@@ -364,6 +372,8 @@ void DatabaseConfig::ReadConfig()
 	DatabaseConfig::AssetListFolders.clear();
 	DatabaseConfig::ModFolders.clear();
 	DatabaseConfig::LocalModFolders.clear();
+	DatabaseConfig::ResourceUpgradeFiles.clear();
+	DatabaseConfig::DefaultKeywords.clear();
 	KeywordReplacer::Clear();
 
 	bool should_write = false;
